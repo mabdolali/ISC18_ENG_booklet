@@ -1,0 +1,416 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1094/}{main/p.1094/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\begin{quote}
+\includegraphics[width=5.98453in,height=0.99667in]{main//p.1094//vertopal_98ee39a136a74a2eadcf9766209bb0b0/media/image1.jpeg}
+\end{quote}
+
+\section{Method for Estimating Genotype Stability, Adaptability, and
+Environmental Discrimination in Plant Breeding
+Programs}
+
+\textbf{Naser Sabaghnia}\footnote{\begin{quote}
+  \textbf{Corresponding Author:} sabaghnia@maragheh.ac.ir
+  \end{quote}}
+
+\begin{quote}
+\textbf{University of Maragheh, Iran}
+\end{quote}
+
+\textbf{Abstract:}
+
+Breeding programs aim not only to improve crop performance but also to
+ensure stability and adaptability across diverse environments.
+Evaluating genotype resilience requires understanding both general
+adaptability ability (GAA), the mean trait performance across multiple
+environments, as well as specific adaptability ability (SAA), the
+deviation of a genotype in a particular environment. A comprehensive
+approach for assessing GAA, SAA, and genotype stability, is presented
+for integrating both linear and nonlinear responses to environmental
+variation. The method relies on multi-environment trials, partitioning
+phenotypic variance into genotype, environment, and genotype ×
+environment interaction components using ANOVA models, and calculating
+stability indices such as the relative stability and stability value of
+genotypes (SVG). This framework allows breeders to select genotypes with
+optimal performance while maintaining stability, balancing trade-offs
+between high mean trait values and environmental sensitivity.
+Furthermore, it provides insights into environmental differentiation and
+the compensatory or destabilizing effects of genotype × environment
+interactions. By combining theoretical and practical aspects of adaptive
+breeding, this approach offers a robust tool for guiding selection
+strategies that enhance both productivity and resilience in crop
+populations. To compare populations and select appropriate breeding
+methods across different environments, a technique is introduced to
+partition the phenotypic variance of a population into GAA and SAA
+variances.
+
+\textbf{Keywords:} Adaptability ability, Stability value, Genotype ×
+environment interaction
+
+\textbf{Mathematics Subject Classification (2010):} 62P10, 62J10, 62K10,
+92D10.
+
+\section{Introduction}
+
+Plant breeders are challenged not only with the task of increasing plant
+performance (productivity), but also with combining performance with
+resistance to biotic and abiotic environmental conditions. Accordingly,
+researchers have focused on studying and developing methods to evaluate
+resilience (stability, general and specific adaptability of genotypes),
+as well as breeding approaches aimed at optimizing these important plant
+traits. Various approaches exist for estimating genotype stability. The
+terms general and specific adaptability (Annicchiarico, 2002), which
+reflect the overall response of a genotype across all environments and
+its specific response in a particular environment, have been reported in
+the literature. Studying genotypes across different environments can
+also provide information about the environments themselves as a context
+for breeding. Kilchevskii \& Khotilova, (1985), proposed a genetic
+analysis method based on testing genotypes in multiple environments that
+allows researchers to determine the general and specific adaptability
+and stability of genotypes, and to compare environments in terms of
+their ability to differentiate genotypes. In this approach, the breeding
+value of a genotype can be estimated depending on the breeding
+objectives, and the breeding process can be guided according to
+adaptability levels. This method also enables the partitioning of a
+population\textquotesingle s phenotypic variance into general and
+specific adaptability variances, allowing comparisons among populations
+and informed selection of breeding methods.
+
+\section{General and specific adaptability
+ability}
+
+Adaptability is defined as the ability of a genotype to maintain its
+specific phenotypic trait under a particular environmental condition.
+General adaptability ability (GAA) of a genotype represents the mean
+trait value across different environmental conditions, while specific
+adaptability ability (SAA) represents the deviation from GAA in a
+specific environment. The method for evaluating GAA and SAA is based on
+testing a population of n genotypes across m environments. The number of
+replications is k. Accordingly; \emph{x\textsubscript{ikr}} is the
+phenotypic value of genotype i in replication r in environment k;
+\emph{u} is the overall mean of all phenotypic values;
+\emph{v\textsubscript{i}} is the effect of genotype i;
+\emph{d\textsubscript{k}} is the effect of environment k;
+\emph{(vd)\textsubscript{ik}} is the interaction effect of genotype i
+with environment k; \emph{e\textsubscript{ikr}} is the random error
+associated with phenotype ikr.
+
+To determine the significance of genotype, environment, and genotype ×
+environment interaction effects on the phenotypic variation of the
+population, a two-way analysis of variance (ANOVA) is used.
+Interpretation of the ANOVA results depends on the underlying
+assumptions of the study. If genotypes and environments are non-random
+samples, their effects are considered fixed, and information can be
+obtained about specific genotypes and environments. In this case, Model
+1 is used, in which all effect values, except for the independent
+variable \emph{e\textsubscript{ikr}} are considered fixed. The variable
+\emph{e\textsubscript{ikr}} is assumed to be normally distributed with
+mean zero and variance σ\textsuperscript{2}\textsubscript{e}. The F-test
+is used to determine the significance of genotype, environment, and
+interaction effects. In this test, the corresponding mean squares are
+compared to the mean square of the random deviations. If genotypes are a
+random sample from the population and environments are a random sample
+from all possible environments, then Model 2 is used. In this case, it
+is possible to obtain information about the population parameters of
+genotypes for a specific set of environments. In Model 2, only the
+overall mean u is considered fixed, while the other effects are
+independently and normally distributed with mean zero and variance
+σ\textsuperscript{2}\textsubscript{θ}. In this case, to test hypotheses
+regarding genotypes and environments, the mean square of genotype ×
+environment interaction is used, and to estimate the genotype ×
+environment interaction effect, the mean square of random deviations is
+applied.
+
+\section{Description of method}
+
+Regarding accept the assumptions of Model 1, the effect of the general
+adaptability ability (GAA) of genotype i is equal to u+v\emph{i}. The
+deviation from the sum u+v\emph{i} represents the specific adaptability
+ability effect (SAA\emph{\textsubscript{ik}}) of genotype i in
+environment k. This effect consists of a linear component (the effect of
+environment dk) and a nonlinear component (the interaction effect
+(vd)\textsubscript{ik}). To determine the effects of
+GAA\textsubscript{i} and SAA\textsubscript{ik}, the mean phenotypic
+values across replications are calculated. In this way, the results of
+testing n genotypes across m environments can be arranged in an n×m
+table, where: x\textsubscript{i} is the sum of all phenotypic values for
+genotype i, x\textsubscript{k} is the total phenotypic sum in
+environment k, X.. is the grand total of all phenotypic values,
+x\textsubscript{ik} is the phenotypic value of genotype i in environment
+k. The GAA and SAA effects are calculated using the following formulas
+(Fig. 1):
+
+\[x_{i.} = \sum_{k}^{}x_{ik} = x_{i1} + x_{i2} + \ldots + x_{im}\]
+
+\[x_{nk} = \sum_{k}^{}x_{ik} = x_{1k} + x_{2k} + \ldots + x_{nk}\]
+
+\[x_{ik} = u + v_{i} + d_{k} + {(vd)}_{ik}\]
+
+\[x_{ik} = u + {GAA}_{i} + {SAA}_{ik}\]
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=4.23313in,height=1.83843in]{main//p.1094//vertopal_98ee39a136a74a2eadcf9766209bb0b0/media/image2.jpeg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 1. Schematic illustration of stability evaluation \\
+\bottomrule()
+\end{longtable}
+
+The variance of random deviations for the mean phenotypic value in a
+specific environment x\textsubscript{ik} is computed as:
+
+\[{var}_{xik} = \frac{\sigma_{e}^{2}}{c} = \sigma^{2}\]
+
+The variance of the difference between the means of two genotypes is
+determined as:
+
+\[{var}_{(x_{ik}/x_{nm})} = 2\sigma^{2}\]
+
+To obtain the standard error of the differences between effects, the
+square root of the corresponding variance must be taken. The least
+significant difference (LSD) is then obtained by multiplying the
+standard error by a constant magnitude. Comparison of genotypes in terms
+of general adaptability can be performed by comparing
+GAA\textsubscript{i} values. To estimate the interaction strength of
+genotype i with environments, the genotype × environment interaction
+variance can be used. To measure the stability of genotype i, it is
+recommended to use the variance of SAA\textsubscript{i}. Therefore,
+stability can be defined as the capacity of a genotype to maintain its
+phenotypic expression under various environmental conditions through
+organized mechanisms.
+
+\section{Stability analysis}
+
+Stabilizing selection provides the evolutionary basis for developing
+organized mechanisms that ensure the phenotypic stability of genotypes.
+In this way, stability in the expression of one trait can be combined
+with flexibility in the expression of other traits. The proposed method
+for estimating stability is based on combining the linear and nonlinear
+components of the genotype's response to the environment. This approach
+differs from other established methods like regression model of Finlay
+and Wilkinson (1963), in which stability is measured using a linear
+response; ecovalence in which stability is estimated via a nonlinear
+response; and regression models of Eberhart \& Russell (1966), in which
+parameters for both linear and nonlinear genotype responses are
+determined.
+
+The concept of relative genotype stability is defined as follows:
+
+\[s_{gi} = \frac{\sigma_{{GAA}_{i}}}{u + {SAA}_{i}} \times 100\]
+
+This index allows comparison of experimental results obtained across
+different sets of crops, genotypes, environments, and traits under
+study. Essentially, relative stability is analogous to the coefficient
+of variation when studying a genotype across multiple environments. The
+ratio l\textsubscript{gi} can serve as a nonlinear index of genotype i's
+response to the environment:
+
+\[l_{gi} = \frac{\sigma_{GE}^{2}}{\sigma_{SAA}^{2}}\]
+
+If lgi→1, the genotype exhibits mostly nonlinear responses across most
+environments, while if lgi→0, the genotype's response to the environment
+is predominantly linear. The response of a genotype to improved
+environmental conditions can be quantified using the regression
+coefficient of the genotype across environments. There is considerable
+disagreement among breeders regarding the interpretation of genotype
+stability. Consequently, Eberhart and Russell (1966), suggested that an
+ideal genotype should have: a high mean trait value, a regression
+coefficient close to 1, and the smallest deviation from the regression
+line. However, the work of Mulder et al. (2007), demonstrated that
+through breeding, any combination of mean trait value and environmental
+sensitivity can be achieved. The most acceptable perspective is that of
+Finlay and Wilkinson (1963), regression model which is defined an
+optimal genotype as one that possesses, as high general adaptability,
+maximum performance under favorable environments, and maximum stability.
+According to Martínez-Peña et al. (2023), a genotype with moderate but
+stable yield has higher economic value than a genotype with high
+potential but highly variable yield. Similarly, Bailey-Serres et al.
+(2019) reported that in crop production, only 30-50\% of the potential
+productivity of dense genotypes is realized, primarily due to
+insufficient environmental stability.
+
+The final evaluation of a breeding genotype depends on the objectives of
+adaptive breeding (Fig. 2). The main directions for adaptive breeding
+are; breeding genotypes for specific adaptability (SAA) in a particular
+environment. Such selection is only desirable under controlled and
+managed environmental conditions (e.g., greenhouse, irrigated field). At
+the same time, there is a risk of erosion of the genetic basis of
+general viability and reduced genotype stability. Breeding genotypes for
+general adaptability (GAA) across multiple environments, selection is
+based on the mean phenotypic value across all environments. According to
+Omel'yanyuk (2013), this approach achieves maximum trait enhancement
+compared to selection in favorable or unfavorable environments, while
+providing moderate environmental sensitivity. The latter is not
+controlled during the breeding process.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=3.97546in,height=3.15064in]{main//p.1094//vertopal_98ee39a136a74a2eadcf9766209bb0b0/media/image3.jpeg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 2. Flowchart of breeding and selection strategy \\
+\bottomrule()
+\end{longtable}
+
+\section{Breeding for GAA while considering
+stability}
+
+The theoretical basis of this adaptive breeding approach is concerning
+the inseparable forms of natural selection: directional and stabilizing.
+The first form alters the structure and performance of organisms, while
+the second stabilizes morphogenesis, leading to automated ontogeny and
+the development of regulatory mechanisms. The effectiveness of
+stabilizing selection in plants has been demonstrated in several studies
+(Cresswell, 1998; Rolhauser \& Pucheta, 2017). However, stabilizing
+selection alone cannot create new traits; it is only important for
+preserving valuable population characteristics and increasing resistance
+to environmental fluctuations. Breeding for GAA with consideration of
+stability requires a specific selection criterion, which allows the
+combination of performance and stability in the genotype.
+
+Kilchevskii \& Khotilova, (1985), proposed the stability value genotype
+(SVG) as:
+
+\[{SVG}_{gi} = \frac{\sqrt{\left( \sum_{}^{}{({SAA}_{gi})}^{2} \right) - (\frac{MSE}{df})}}{u + {SAA}_{i}} \times 100\]
+
+In practice, applying the usual selection criterion p=2 is unlikely,
+because for large values of σ\textsubscript{SAAi}, negative SVG values
+may occur, and some fertility genes could be lost. As a first step
+toward achieving an optimal balance between performance and stability in
+breeding, we suggest using the population mean SVG equal to 0.5 grand
+mean. This facilitates establishing the relationship between the average
+relative stability of genotypes and the value of p. In this approach, at
+the lowest value, selection prioritizes stability, while at the highest
+value, selection favors performance more intensely. Environmental
+evaluation is also crucial in breeding. Environments can be classified
+into three types; stable, in which population polymorphism does not
+appear; analytical, which helps identify different biotypes; harmonized,
+where the viability of different biotypes is constrained and differences
+among them are equalized. The above analysis method allows not only the
+evaluation of genotype adaptability parameters, but also defining the
+environment as a breeding context.
+
+When interpreting SAA and GAA variances, a question arises: how
+informative are they, and can they replace genotype × environment
+interaction variance? Some researchers believe that genotype ×
+environment interaction variance can serve as a measure of genotype
+stability. However, statistical evaluation does not reflect all
+biological realities of genotype × environment interaction, including
+increase or decrease in genotype (or environment) effects. If the signs
+of genotype (environment) effects and the interaction do not match, the
+variance of environmental differentiation or genotype stability
+(compensation effect) decreases. If the signs are aligned, the
+corresponding variance increases (destabilizing effect). Thus, even if
+genotype × environment interaction variance is identical, the variance
+of genotype stability and the variance of environmental differentiation
+may differ. The practical importance of the compensation/destabilization
+effect lies in the unpredictability of genotype stability or
+environmental differentiation when using
+σ\textsuperscript{2}\textsubscript{GE}, as a criterion for selecting
+genotypes or environments. Therefore, SAA and GAA variances provide more
+objective information on genotype stability and environmental
+differentiation compared to genotype × environment interaction variance.
+
+\section{Conclusion}
+
+This study introduces an integrated framework for evaluating genotype
+adaptability and stability based on general adaptability ability (GAA)
+and specific adaptability ability (SAA). By partitioning phenotypic
+variation into general and environment-specific components, the approach
+provides a more informative assessment of genotype performance across
+environments than conventional GE interaction analysis alone. The use of
+GAA, SAA, and stability indices enables simultaneous selection for high
+yield and stability, supporting more effective breeding decisions.
+
+\section{References}
+
+Annicchiarico, P. (2002). \emph{Genotype x environment interactions:
+challenges and opportunities for plant breeding and cultivar
+recommendations}. Food and Agriculture Organization of the United
+Nations. Rome, 2002.
+
+Bailey-Serres, J., Parker, J. E., Ainsworth, E. A., Oldroyd, G. E., \&
+Schroeder, J. I. (2019). Genetic strategies for improving crop yields.
+\emph{Nature,} 575(7781), 109-118.
+
+Cresswell, J. E. (1998). Stabilizing selection and the structural
+variability of flowers within species. \emph{Annals of Botany,} 81(4),
+463-473.
+
+Eberhart, S.A., \& Russell, W.A. (1966). Stability parameters for
+comparing varieties. \emph{Crop Science,} 6(1), 36-40.
+
+Finlay, K. W., \& Wilkinson, G. N. (1963). The analysis of adaptation in
+a plant-breeding programme. \emph{Australian Journal of Agricultural
+Research}, 14(6), 742-754.
+
+Kilchevskiy, A.V., \& Khotyleva, L.V. (1985). Method of evaluation of
+adaptive ability and stability of genotypes, the differentiating ability
+of environment. \emph{Genetics,} 21(9), 1481-1490.
+
+Martínez-Peña, R., Rezzouk, F. Z., del Carmen Díez-Fraile, M.,
+Nieto-Taladriz, M. T., Araus, J. L., Aparicio, N., \& Vicente, R.
+(2023). Genotype-by-environment interaction for grain yield and quality
+traits in durum wheat: Identification of ideotypes adapted to the
+Spanish region of Castile and León. \emph{European Journal of Agronomy,}
+151, 126951.
+
+Mulder, H. A., Bijma, P., \& Hill, W. G. (2007). Prediction of breeding
+values and selection responses with genetic heterogeneity of
+environmental variance. \emph{Genetics,} 175(4), 1895-1910.
+
+Omel'yanyuk, L. V. (2013). Specificity of the response of pea varieties
+of different morphotypes to changes in the hydrodynamic conditions
+during the vegetation period. \emph{Russian Agricultural Sciences,}
+39(3), 236-240.
+
+Rolhauser, A. G., \& Pucheta, E. (2017). Directional, stabilizing, and
+disruptive trait selection as alternative mechanisms for plant community
+assembly. \emph{Ecology,} 98(3), 668-677.
+
+\end{document}

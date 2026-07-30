@@ -1,0 +1,671 @@
+%     7 / 2 / 2026
+\documentclass[twoside]{article}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\input{ISC18-english.sty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Stein Estimators in Right-Censored Zero-inflated Bell Models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Z. Zandi, H. Bevrani, K. Kamary}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Stein Estimators in Right-Censored Zero-inflated Bell Models}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Zahra Zandi$^1$ \footnote[1]{{\bf Corresponding Author:} {\tt z.zandi@uok.ac.ir }}
+%$^1$
+, Hossein Bevrani$^1$, and 
+Kaniav Kamary$^2$ \\
+$^1$Department of Statistics, University of Kurdistan, Sanandaj, Iran \\
+$^2$Institut Camille Jordan, INSA de Lyon, France
+%Department of Statistics, University of Kurdistan, Sanandaj, Iran
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+In the current paper, we propose Stein and positive Stein estimators to improve the efficiency of parameters estimation in the zero-inflated Bell models with right-censored data, assuming that some predictor variables are non-significant. A Monte Carlo simulation study is conducted under various settings, including different censoring constants, and non-significant predictors, to compare the performance of our estimators with the unrestricted estimator. The results demonstrate the superiority of our approach. 
+ 
+\noindent{\bf Keywords:} 
+Right-censored data, Stein estimator, Positive Stein estimator, Zero-inflated Bell model. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J07$, $\rm 62N01$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The Poisson regression model is widely used for analyzing count data where the variance equals the mean. However, when count data indicates over-dispersion, the Poisson model becomes unsuitable. In this situation, the Bell regression model introduced by \cite{Castellares:et:al:2018} is an appropriate model for describing over-dispersed count data. A key advantage of the Bell distribution is that it is a one-parameter distribution belonging to the exponential family.
+\\
+In many applications, count data contains too many zeros which is known as zero-inflated count data. A zero-inflated model is used for description of such data, which is a two-part model known as zero and count components. In the zero-component only structural zeros are generated from a degenerate distribution at zero and the count-component contains count data such as 
+$ 0,1,2, \dots $
+which are generated from a standard count distribution. When the count data in the count-component is equivalent, a Poisson distribution is used to generate this data. Thus, zero-inflated Poisson model introduced by \cite{Lambert:1992} is a suitable model for explanation the data. For the over-dispersed count data in this component, a Bell distribution can be used for generating the count data, so a zero-inflated Bell (ZIB) model introduced by \cite{Lemonte:et:al:2020} is appropriate. 
+\\
+While zero-inflated models are commonly applied to complete count data, censoring can also occurs in count data. Right-censoring is one of the most common type of censored data which occurs when only a lower bound of the count is observed. In other words, the count data is right-censored at $ R $ if the exact value of the count data is higher than $ R $ point. Ignoring censoring may leads to biased estimates and inaccurate inferences. Right-censoring is examined in Poisson (\cite{Terza:1985}) and generalized Poisson (\cite{Famoye:Wang:2004}) regression models amount others. 
+\\
+The main goal of this paper is to develop Stein and positive Stein estimators for the right-censored zero-inflated Bell (RCZIB) model to improve the efficiency of parameter estimation. We compare their performance with the maximum likelihood estimator based on prior information that some predictor variables are non-significant which appears as a linear restriction on the parameter vector in the RCZIB model as
+\begin{eqnarray}\label{e 1}
+\boldsymbol{\mathcal{A}}\, \boldsymbol{\xi} = \boldsymbol{ \mathfrak{a} } ,
+\end{eqnarray}
+where
+$ \boldsymbol{\xi}_{r \times 1} = ( \boldsymbol{\theta}^\prime , \boldsymbol{\delta}^\prime )^\prime $
+is the unknown regression parameter vector in the RCZIB model, here
+$ \boldsymbol{\theta}_{ r_1 \times 1 } $ 
+and
+$ \boldsymbol{\delta}_{ r_2 \times 1 } $ 
+are the vector of parameters related to the count and zero components, respectively, thus the model includes 
+$ r = r_1 + r_2 $
+predictor variables. As well, 
+$ \boldsymbol{\mathcal{A}}_{k \times r} $
+and
+$ \boldsymbol{ \mathfrak{a} }_{k \times 1} $
+indicate a matrix and a vector including constant elements, respectively. Here, 
+$ k $
+is the number of non-significant or inactive predictor variables. The Stein estimators (introduced by \cite{Stein:1956}) are defined by combining the estimation of parameters in the full-model containing all the predictor variables called as unrestricted estimator (UE) and estimate the significant parameters in a sub-model including only active predictors called as restricted estimator. More details about the Stein estimators can be fined in \ \cite{Saleh:2006}. These estimators have been applied in various zero-inflated count regression models in the literature such as zero-inflated negative binomial regression \cite{Zandi:et:al:2021} and right-censored zero-inflated Poisson model \cite{Zandi:et:al:2024} among other models.
+
+
+\section{The RCZIB model and Stein estimators}
+Now, we respectively introduce the ZIB regression, RCZIB model, and Stein estimators of the parameters in the RCZIB model.
+\\
+Let 
+$ \boldsymbol{y} = ( y_1, y_2, \dots , y_n )^\prime $
+be a vector of 
+$ n $
+independent observations of the response variable in the ZIB regression model which its probability function is defined as follows:
+\begin{equation}\label{e 4}
+P( Y_i = y_i )=\left\{ 
+\begin{array}{ll}
+\varphi_i + (1-\varphi_i) \, \exp{ \big ( 1 - e^{ W ( \mu_i ) }   \big )} &  \, \, y_i = 0 \\
+& \\
+(1  -  \varphi_i) \, \Big (  \dfrac{  \exp{ \big ( 1 - e^{ W ( \mu_i ) }   \big )  [ W ( \mu_i ) ]^{y_i} \mathfrak{B}_{y_i} }}{ y_i ! }  \Big )  & \, \,  y_i  = 1, 2, \dots ,
+\end{array} \right.
+\end{equation}
+where 
+$ \mu_i > 0 $,
+$ 0 < \varphi_i < 1 $,
+$ W ( . ) $
+is the Lambert function, and
+$ \mathfrak{B}_y = \frac{1}{e} \sum_{t = 0}^{ \infty } \frac{t^y}{t!} $
+is the Bell number. The ZIB regression has two following link functions as log and logit links related to the count and zero components, respectively:
+\begin{equation*}\label{e 5}
+\log{ ( \mu_i ) } = \boldsymbol{x}^\prime_i \boldsymbol{\theta} , \qquad
+logit ( \varphi_i ) = \log {  \big( \frac{ \varphi_i }{ 1 - \varphi_i  } \big ) } = \boldsymbol{z}^\prime_i \boldsymbol{\delta} ,
+\end{equation*}
+where
+$ \boldsymbol{x}_i = ( x_{i1}, x_{i2}, \dots, x_{ ir_1 } )^\prime $
+and
+$ \boldsymbol{z}_i = ( z_{i1}, z_{i2}, \dots, z_{ ir_2 } )^\prime $
+are the 
+$ i $th
+rows of designs matrix related to the count and zero components, respectively. Furthermore, 
+$ \boldsymbol{\theta} = ( \theta_1, \theta_2, \dots, \theta_{r_1} )^\prime $
+and
+$ \boldsymbol{\delta} = ( \delta_1, \delta_2, \dots, \delta_{r_2} )^\prime $
+are their parameters vector. 
+\\
+When the right-censoring occurs in the ZIB model, the response variable 
+$ Y_i $
+can be observed as the vector 
+$ ( Y_i^*, \gamma_i , \boldsymbol{x}_i , \boldsymbol{z}_i ) $
+for 
+$ i $th
+observation 
+($ i = 1, 2, 3, \dots, n $),
+here
+$ Y_i^*  = \min{ ( Y_i, R_i ) } $ 
+and 
+$ \gamma_i = I ( Y_i < R_i ) $,
+where
+$ I(.) $ 
+is an indicator function and
+$ R_i $
+is a censoring random variable. The likelihood function of the RCZIB model has the following form:
+\begin{small}
+\begin{align*}
+L ( \boldsymbol{ \theta } , \boldsymbol{ \delta } ) & =  \prod_{ i = 1 }^n \Big \lbrace \mathbb{P} ( Y_i = Y_i^* ) \Big \rbrace^{ \gamma_i } \Big \lbrace \mathbb{P} ( Y_i \geq Y_i^* ) \Big \rbrace^{ 1 - \gamma_i }
+\\ 
+& =  \prod_{ i = 1 }^n \Big \lbrace \big [ \mathbb{P} ( Y_i = Y_i^* ) \big ]^{ 1- I_i } \big [ \mathbb{P} ( Y_i = 0  ) \big ]^{ I_i } \Big \rbrace^{ \gamma_i } \Big \lbrace \mathbb{P} ( Y_i \geq Y_i^* ) \Big \rbrace^{ ( 1 - \gamma_i ) ( 1 - I_i ) }
+\\ 
+& =  \prod_{ i = 1 }^n \Bigg \lbrace \Big [ (1  -  \varphi_i) \, \Big (  \dfrac{  \exp{ \big ( 1 - e^{ W ( \mu_i ) }   \big )  [ W ( \mu_i ) ]^{Y_i^*} \mathfrak{B}_{Y_i^*} }}{ Y_i^* ! }  \Big )  \Big ]^{ 1 - I_i }  
+\Big  [  \varphi_i + (1-\varphi_i) \, \exp{ \big ( 1 - e^{ W ( \mu_i ) }   \big )}  \Big  ]^{ I_i } \Bigg \rbrace^{ \gamma_i } 
+\\ 
+&  \qquad \times  \Bigg \lbrace 1 - \varphi_i - ( 1 - \varphi_i )  \sum_{ t = 0}^{Y_i^* - 1}   \dfrac{  \exp{ \big ( 1 - e^{ W ( \mu_i ) }   \big )  [ W ( \mu_i ) ]^{t} \mathfrak{B}_{t} }}{ t ! }    \Bigg \rbrace^{ ( 1 - \gamma_i ) ( 1 - I_i ) } ,
+\end{align*}
+\end{small}
+where $ I_i = I (y_i = 0)  $ is an indicator function. Thus, the log likelihood function in the RCZIB model can be given by:
+
+\begin{footnotesize}
+\begin{align}\label{e 6}
+\mathcal{L} ( \boldsymbol{ \theta } , \boldsymbol{ \delta } ) & =  \sum_{ i = 1 }^n   \gamma_i 
+\Bigg \lbrace
+I_i \ln 
+\Big (
+e^{ \boldsymbol{z}_i^\prime \boldsymbol{ \delta } } + \exp{ \big [ 1 -  e^{W ( e^{\boldsymbol{x}_i^\prime \boldsymbol{ \theta }  } ) }  \big ] }
+\Big ) 
+- \ln \big ( 1 + e^{ \boldsymbol{z}_i^\prime \boldsymbol{ \delta } } \big )
+\nonumber \\
+& +  ( 1 - I_i ) 
+\Big [ 
+1 -  e^{ W ( e^{ \boldsymbol{x}_i^\prime \boldsymbol{ \theta }} ) }
++ Y_i^* \ln \big [ W ( e^{ \boldsymbol{x}_i^\prime \boldsymbol{ \theta }} ) \big ]
++ \ln ( \mathfrak{B}_{Y_i^*} )
+- \ln ( Y_i^* ! )
+\Big ] 
+\Bigg \rbrace
+\nonumber \\ 
+&  +   \sum_{ i = 1 }^n ( 1 - \gamma_i ) ( 1 - I_i ) 
+\Bigg \lbrace
+\ln \Big ( 1 - \sum_{ t = 0 }^{ Y_i^* - 1 } \frac{ 
+e^{ 1 -  e^{W ( e^{\boldsymbol{x}_i^\prime \boldsymbol{ \theta }  } ) } }
+\big [ W ( e^{\boldsymbol{x}_i^\prime \boldsymbol{ \theta } } ) \big ] ^t
+\mathfrak{B}_t }
+{ t ! } \Big ) - 
+\ln ( 1 + e^{ \boldsymbol{z}_i^\prime \boldsymbol{ \delta } } ) 
+\Bigg \rbrace .
+\end{align}
+\end{footnotesize}
+The MLE or unrestricted estimator of the parameter vector 
+$ \boldsymbol{ \xi } = ( \boldsymbol{ \theta }^\prime , \boldsymbol{ \delta }^\prime  )^\prime $
+denoted by 
+$ \hat{ \boldsymbol{ \xi } }_{ \mathcal{UE} } = ( \hat{ \boldsymbol{ \theta } }_{ \mathcal{UE} }^\prime , \hat{ \boldsymbol{ \delta } }_{ \mathcal{UE} }^\prime )^\prime $
+in the full model of the RCZIB regression can be obtained by maximizing (\ref{e 6}) with respect to 
+$ ( \boldsymbol{ \theta } , \boldsymbol{ \delta } ) $
+using numerical methods. Under the regularity conditions of the MLE, as 
+$ n \to \infty $,
+$ \sqrt{n} ( \hat{ \boldsymbol{ \xi } }_{ \mathcal{UE} } - \boldsymbol{ \xi } ) \sim \boldsymbol{ \mathcal{N} }_{r} \big ( \boldsymbol{0} , \boldsymbol{ \mathcal{I} }^{-1} \big ) $,
+where 
+$ \boldsymbol{ \mathcal{I} } = \lim_{ n \rightarrow \infty } \frac{\boldsymbol{I} ( \boldsymbol{ \xi } )}{n}  $
+is a nonsingular matrix and
+$ \boldsymbol{I} ( \boldsymbol{ \xi } ) $
+is Fisher information matrix of the RCZIB model
+\\
+The restricted estimator of the parameters in the RCZIB model denoted by 
+$ \hat{ \boldsymbol{ \xi } }_{ \mathcal{RE} } $
+is obtained by maximizing
+$ \mathcal{L} ( \boldsymbol{ \theta } , \boldsymbol{ \delta } ) $
+under the prior information given in \eqref{e 1}, which has the following general form:
+\begin{equation}\label{e 8}
+\hat{ \boldsymbol{ \xi } }_{ \mathcal{RE} } =  \hat{ \boldsymbol{\xi} }_{ \mathcal{UE} }  - \big [ \boldsymbol{I} ( \boldsymbol{ \xi } ) \big ]^{-1}  \boldsymbol{\mathcal{A}}^\prime  \Big ( \boldsymbol{\mathcal{A}} \ \big [ \boldsymbol{I} ( \boldsymbol{ \xi } ) \big ]^{-1} \boldsymbol{\mathcal{A}}^\prime  \Big )^{-1}  ( \boldsymbol{\mathcal{A}} \hat{ \boldsymbol{\xi} }_{ \mathcal{UE} } - \boldsymbol{ \mathfrak{a} }  ) .
+\end{equation}
+
+\subsection*{Stein and positive Stein estimators}
+The Stein (S) estimator of
+$ \boldsymbol{\xi} $
+in the RCZIB model designated by
+$ \hat{\boldsymbol{\xi}}_{ \mathcal{S} } $
+is defined as a combination of 
+$ \hat{\boldsymbol{\xi}}_{ \mathcal{UE} } $
+and
+$ \hat{\boldsymbol{\xi}}_{ \mathcal{RE} } $ 
+as follows:
+\begin{equation*}
+\hat{\boldsymbol{\xi}}_{ \mathcal{S} } = \hat{\boldsymbol{\xi}}_{ \mathcal{UE} } - \Big( \frac{k - 2}{ \mathcal{S}_n} \Big)  \big (\hat{\boldsymbol{\xi}}_{ \mathcal{UE} } -  \hat{\boldsymbol{\xi}}_{ \mathcal{RE} } \big ) ,\qquad k =  3, 4, \dots .
+\end{equation*}
+where
+$ \mathcal{S}_n $
+is the likelihood ratio test statistic for testing
+$ H_0 \, : \, \boldsymbol{\mathcal{A}}\, \boldsymbol{\xi} = \boldsymbol{ \mathfrak{a} } $
+versus
+$ H_1 \, : \, \boldsymbol{\mathcal{A}}\, \boldsymbol{\xi} \neq \boldsymbol{ \mathfrak{a} } $
+given as follows:
+\begin{equation*}\label{e 10}
+\mathcal{S}_n  =   2\,  \Big (  \mathcal{L} ( \hat{\boldsymbol{\xi} }_{ \mathcal{UE} } ) - \mathcal{L} ( \hat{ \boldsymbol{\xi} }_{ \mathcal{RE} } )  \Big )  ,
+\end{equation*}
+where
+$ \mathcal{L} ( \hat{\boldsymbol{\xi} }_{ \mathcal{UE} } ) $
+and
+$ \mathcal{L} ( \hat{ \boldsymbol{\xi} }_{ \mathcal{RE} } ) $
+are respectively the values of Equation \eqref{e 6} at 
+$ \hat{\boldsymbol{\xi} }_{ \mathcal{UE} } $
+and
+$ \hat{ \boldsymbol{\xi} }_{ \mathcal{RE} } $.
+Under
+$ H_0 $,
+test statistic
+$ \mathcal{S}_n $
+distributed as
+$ \chi^2 ( k ) $
+when
+$ n \rightarrow \infty $.
+\\
+The positive Stein (PS) estimator of 
+$ \boldsymbol{\xi} $
+designated by
+$ \hat{\boldsymbol{\xi}}_{ \mathcal{PS} } $ 
+is defined as follows:
+\begin{equation*}
+\hat{\boldsymbol{\xi}}_{ \mathcal{PS} } = \hat{\boldsymbol{\xi}}_{ \mathcal{UE} } - \max{ \Big ( 0, \frac{k - 2}{ \mathcal{S}_n} \Big ) }  \big (\hat{\boldsymbol{\xi}}_{ \mathcal{UE} } -  \hat{\boldsymbol{\xi}}_{ \mathcal{RE} } \big ) ,\qquad k =  3, 4, \dots .
+\end{equation*}
+
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\section{Simulation study}\label{Sec 3}
+We use a Monte Carlo simulation study to probe the performance of the Stein estimators in the RCZIB model through comparing their performance to the UE by applying simulated relative efficiency (SRE) criterion which is given as:
+\begin{eqnarray*}
+SRE ( \hat{\boldsymbol{\xi}}_{ UE } , \hat{ \boldsymbol{\xi}}_{ \bullet } )= \dfrac{ S_{mse} ( \hat{\boldsymbol{\xi}} ) }{ S_{mse} ( \hat{\boldsymbol{\xi}}_{ \bullet } ) } ,
+\end{eqnarray*}
+here
+$ \hat{ \boldsymbol{\xi}}_{ \bullet } $
+is any one of the RE, S, and PS estimators and
+$ S_{mse} ( \hat{\boldsymbol{\xi}}_{ \bullet } ) $
+indicates the simulated mean squared error of
+$ \hat{ \boldsymbol{\xi}}_{ \bullet } $
+which is defined as:
+\begin{eqnarray*}
+S_{mse} ( \hat{\boldsymbol{\xi}}_{ \bullet } ) =\frac{1}{m} \sum_{e = 1}^{m} ( \boldsymbol{ \xi } - \hat{ \boldsymbol{ \xi } }_{ \bullet } )_e^\prime  \, ( \boldsymbol{ \xi } - \hat{ \boldsymbol{ \xi } }_{ \bullet } )_e ,
+\end{eqnarray*}
+where
+$ m $
+is the number of simulation replications. The performance of 
+$ \hat{\boldsymbol{\xi}}_{ \bullet } $
+is better than the UE when the 
+$ SRE $
+is greater than one. To conduct the simulations, we generate the RCZIB model for various cases when
+$ R = 3, 4 $,
+$ k = 3, 4, 5 $,
+$ r_1 = 3 $,
+$ r_2 = 4, 5, 6 $,
+and
+$ m = 1000 $
+as follows:
+\begin{eqnarray*}
+\log{ ( \mu_i ) } = \boldsymbol{x}^\prime_i \boldsymbol{\theta} , 
+\quad
+\log {  \big( \frac{ \varphi_i }{ 1 - \varphi_i  } \big ) } = \boldsymbol{z}^\prime_i \boldsymbol{\delta} ,
+\quad i = 1, 2, \dots, n,
+\end{eqnarray*}
+where 
+$ \boldsymbol{x}^\prime_i $
+and
+$ \boldsymbol{z}^\prime_i $
+are generated independently
+$ N_{r_1} ( \boldsymbol{0} , \boldsymbol{I}_{r_1} ) $
+and
+$ N_{r_2} ( \boldsymbol{0} , \boldsymbol{I}_{r_2} ) $
+respectively, here
+$ \boldsymbol{I}_a $
+indicates the identity matrix. We set 
+$ n = 100 $
+in our simulations. We assume that the RCZIB model is sparse, i.e. some of the predictor variables are not significant. Therefore, the linear restriction \eqref{e 1} simplifies to
+$ \boldsymbol{\mathcal{A}}\, \boldsymbol{\xi} = \boldsymbol{0} $, 
+where 
+$ \boldsymbol{0} $
+is a 
+$ k \times 1 $
+zero vector and
+$ \boldsymbol{\mathcal{A}}  = [ \boldsymbol{0}_{k \times c} , \boldsymbol{I}_{k \times k} ] $,
+here
+$ \boldsymbol{0} $
+is a zero matrix,
+$ \boldsymbol{I} $
+is an identity matrix, and
+$ c = r_1 + 1 $ 
+such that
+$ c + k = r $.
+To compare the performance of the RE and Stein estimators when 
+$ H_0 $
+is accepted and otherwise, we define the distance between the simulated parameter
+$ \boldsymbol{\xi} $
+and the true parameter vector
+$ \boldsymbol{\xi}^{0} $
+as follows:
+\begin{equation*}
+\Delta = \sum_{ j = 1 }^r \big ( \xi_j - \xi_j^{0} \big )^2
+\end{equation*}
+We opt 
+$ \Delta =  0, 0.5, 0.7, 1, 1.5  $
+and
+$ \boldsymbol{\xi}^{0} = ( ( 0.07, 0.07, 0.05 )^\prime, ( 0.05 , \boldsymbol{0}_{ k \times 1 } )^\prime )^\prime $.
+in our simulations. The reported results in Tables \ref{Tab1} are shown that the SREs of the RE and proposed strategies increase as the number of non-significant predictor variables
+$ k $
+increases. When the censoring value 
+$ R $
+decreases, all estimators demonstrate enhanced efficiency. The RE outperforms the S and PS estimators at 
+$ \Delta = 0 $ 
+for all cases. When 
+$ \Delta $
+moves away from zero, the SREs of all estimators decrease especially for the RE. The PS estimator is superior to the Stein estimator as 
+$ \Delta = 0 $ 
+and near it.
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{SREs of the RE, S, and PS estimators to the UE}\label{Tab1} 
+%\scalebox{0.72}{
+\begin{tabular}{ | c | c c | c c c c c c | c c c c c c c | }
+\hline 
+\multicolumn{1}{|c}{$ k $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ \Delta $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{5}{c}{$ R = 3 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{5}{c|}{$ R = 4 $} 
+\\ 
+\cline{5-9} \cline{12-16}
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ RE $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ S $} &
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ PS $}  &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ RE $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ S $} &
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ PS $}
+\\ 
+\hline
+\hline
+\multicolumn{1}{|c}{$ 3 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 3.274 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.299 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.383 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 2.992 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.270 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.366 $} 
+\\  
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.404 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.124 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.161 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 1.360 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.124 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.153 $}
+\\    
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.7 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.906 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.080 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.090 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.892 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.078 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.084 $}
+\\  
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.516 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.030 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.040 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.515 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.032 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.036 $} 
+\\   
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.251 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.005 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.008 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.253 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.005 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.007 $} 
+\\   
+\hline 
+\multicolumn{1}{|c}{$ 4 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 4.633 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.619 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.734 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 4.216 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.584 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.713 $} 
+\\  
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.929 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.314 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.364 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 1.844 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.305 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.353 $} 
+\\    
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.7 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.236 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.220 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.237 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 1.197 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.214 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.230 $} 
+\\  
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.700 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.127 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.129 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.685 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.123 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.125 $} 
+\\   
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.340 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.057 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.057 $}  &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.335 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.055 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.055 $}  
+\\ 
+\hline
+\multicolumn{1}{|c}{$ 5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 5.825 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.817 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 2.012 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 5.401 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.817 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.996 $} 
+\\
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 2.489 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.520 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.560 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 2.388 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.503 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.545 $} 
+\\
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.7 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.606 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.369 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.388 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 1.557 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.356 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.376 $} 
+\\
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.0 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.915 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.227 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.230 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.895 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.218 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.221 $} 
+\\
+\multicolumn{1}{|c}{} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.5 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 0.446 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.109 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.113 $} &
+\multicolumn{2}{c}{} & 
+\multicolumn{1}{c}{$ 0.438 $} &   
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c}{$ 1.105 $} & 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{$ 1.108 $} 
+\\ 
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Discussion and Conclusion}   
+The main propose of this paper is to improve estimation of parameters in zero-inflated Bell regression with right-censored data by employing Stein and positive Stein strategies, when some predictor variables exhibit negligible effects on the response variable. We demonstrate the superior performance of our proposed estimators compared to the UE through Monte Carlo simulations. The numerical results strongly verified that the performances of proposed estimators were superior to the UE. 
+
+
+
+%\section*{Acknowledgments}   
+%The authors are thankful to the reviewers for the insightful comments and suggestions that have resulted in a
+%much improved version of this paper.
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+\bibitem[Castellares et al. (2018)]{Castellares:et:al:2018}
+Castellares F., Ferrari S. L., and Lemonte A. J. (2018), On the Bell distribution and its associated regression model for count data. {\it Applied Mathematical Modelling}. \textbf{56}, 172-185.
+
+\bibitem[Famoye and Wang (2004)]{Famoye:Wang:2004}
+Famoye F. and Wang W. (2004), Censored generalized Poisson regression model. {\it Computational Statistics and Data Analysis}. {\bf 46(3)}, 547--560.
+
+\bibitem[Lambert (1992)]{Lambert:1992} 
+Lambert D. (1992), Zero-inflated Poisson regression with an application to defects in manufacturing. {\it Technometrics}. {\bf 34 (1)}, 1-14.
+
+\bibitem[Lemonte et al. (2020)]{Lemonte:et:al:2020}
+Lemonte A. J., Moreno-Arenas G. and Castellares F. (2020), Zero-inflated Bell regression models for count data. {\it Journal of Applied Statistics}. {\bf 47(2)}, 265-286.
+
+\bibitem[Saleh (2006)]{Saleh:2006}
+Saleh A. M. E. (2006), {\it Theory of preliminary test and Stein-type estimation with applications}. John
+Wiley, New York.
+
+
+\bibitem[Stein (1956)]{Stein:1956} 
+Stein C. (1956), The admissibility of Hotelling’s $ T^2$-test. {\it Mathematical Statistics}. {\bf 27}, 616-623.
+
+\bibitem[Terza (1985)]{Terza:1985} 
+Terza J. V. (1985), A Tobit-type estimator for the censored Poisson regression model. {\it Economics Letters}. {\bf 18(4)}, 361--365.
+
+
+\bibitem[Zandi et al. (2021)]{Zandi:et:al:2021}
+Zandi Z., Bevrani H., and Arabi Belaghi R. (2021), Improved shrinkage estimators in zero-inflated negative
+binomial regression model. {\it Hacettepe Journal of Mathematics and Statistics}. {\bf 50 (6)}, 1855-1876.
+
+
+\bibitem[Zandi et al. (2024)]{Zandi:et:al:2024}
+Zandi Z., Bevrani H., and Arabi Belaghi R. (2024). Shrinkage estimation in the zero-inflated Poisson regression model with right-censored data. {\it Communication in Statistics - Theory and Methods}. {\bf 53 (13)}, 4898- 4917.
+
+\end{thebibliography}
+ \end{document}
+

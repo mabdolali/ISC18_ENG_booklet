@@ -1,0 +1,54 @@
+# Build / cache (huge intermediates)
+ISC18th_Full_English/_build_from_tex/
+ISC18th_Full_English/_build_final/
+ISC18th_Full_English/_build_original_pdfs/
+ISC18th_Full_English/_build_*/
+ISC18th_Full_English/_latex_build*/
+ISC18th_Full_English/_preview*/
+
+# Raw extracts & staging (reproducible from archives)
+_extracted_raw/
+_staging_papers/
+
+# Bulk archive (too large for GitHub)
+Papers (2).zip
+*.zip
+!**/small_keep.zip
+
+# Oversize / duplicate booklet PDFs (>100MB or same as Full-English.pdf)
+ISC18th_Full_English/Full-English-isc18format-LAST.pdf
+ISC18th_Full_English/Full-English-isc18format.pdf
+ISC18th_Full_English/*-new.pdf
+
+# Older conference tree (not this project)
+ISC16th_Full_English/
+
+# LaTeX junk
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+_booklet_build.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+__MACOSX/
+.vscode/
+.idea/
+*.swp
+__pycache__/
+*.pyc
+
+# Local previews
+**/_preview_*/
+**/*_smoke.pdf
+
+~$*
+*.tmp

@@ -1,0 +1,224 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{KDE-Weighted Twin SVM for Noisy Data}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{E. Eshaghi, M. Arashi, J. A. Nasiri}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Kernel Density Weighted Twin SVM: A Robust Approach to Noisy Data}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Ehsan Eshaghi$^1$, Mohammad Arashi$^1$, Jalal A. Nasiri\footnote[2]{{\bf Corresponding Author:} {\tt jnasiri@um.ac.ir }} \\
+$^1$Department of Statistics, Faculty of Mathematical Sciences, Ferdowsi University of Mashhad, P.O. Box 1159, Mashhad, 91775, Iran \\
+$^2$Department of Applied Mathematics, Faculty of Mathematical Sciences, Ferdowsi University of Mashhad, Mashhad, Iran
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+We address the sensitivity of Twin Support Vector Machine variants to label noise by proposing a density-weighted Least Squares Twin Support Vector Machine (KDEWLSTSVM). The method integrates kernel density estimation (KDE) into the least-squares optimization to assign global density-based sample weights, which naturally reduce the influence of low-density and potentially mislabeled samples while avoiding graph construction used in locally weighted approaches. Experiments on three binary classification datasets with simultaneous feature perturbations and $20\%$ label noise show that KDEWLSTSVM consistently outperforms LSTSVM and LSWLTSVM in both accuracy and overall ranking using a linear kernel. These results demonstrate that density-based weighting improves robustness and generalization under noisy conditions.
+
+\noindent{\bf Keywords:} 
+Twin support vector machine, Kernel density estimation, Label noise robustness, and Density-based weighting. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 68T10$, $\rm 62H30$, $\rm 62G07$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Support Vector Machines (SVMs) are a fundamental class of learning algorithms based on statistical learning theory and convex optimization. They formulate classification and regression as margin maximization problems and determine a single optimal separating hyperplane through a quadratic programming scheme. Although classical SVMs have solid theoretical foundations and practical success, their computational complexity escalates with the size and dimensionality of data \cite{Tanveer2020,Tian2013}. This limitation encouraged researchers to introduce new formulations aiming for better efficiency and scalability.
+
+Twin Support Vector Machine (TSVM) marked an important improvement by constructing two non-parallel hyperplanes through the solution of two smaller quadratic programs. This decomposition decreased computational burden while preserving competitive generalization capability \cite{Quadir2025,Leone2023}. Later, the Least Squares Twin Support Vector Machine (LSTSVM) was developed by converting inequality constraints into equality constraints using the least-squares principle. It replaced quadratic programs with linear equations and removed the dependence on external solvers. The resulting framework enabled fast training on large datasets and became particularly useful for real-time applications \cite{Fongmun2025,Hua2015,Tanveer2016}.
+
+Nevertheless, both TSVM and LSTSVM are quite vulnerable to label noise that frequently appears in practical datasets due to annotation or measurement errors \cite{Zhu2023Noise}. Mislabeled samples may distort the optimization process and degrade classification stability. Several extensions have been proposed to address this problem. Among them, the Least Squares Weighted Twin Support Vector Machine with Local Information (LSWLTSVM) achieved robust performance through locally weighted optimization \cite{Hua2015}. However, its weighting mechanism is based on a local $k$NN adjacency graph, which relies on heuristic similarity measures and captures only neighborhood relationships rather than the underlying data distribution. Consequently, this local graph-based weighting is not well suited to handle label noise. In practice, a mislabeled sample usually lies far from the true distribution of the class to which it is incorrectly assigned. Such points typically appear in low-density regions of that class, yet local graph-based weighting cannot reliably identify or suppress their influence.
+
+To address this limitation, the present work introduces a density-aware weighted LSTSVM that integrates nonparametric density estimation into the optimization framework. Specifically, kernel density estimation (KDE) is employed to estimate the local probability density around each sample and to derive adaptive weights. Samples located in low-density regions, which are more likely to correspond to mislabeled or atypical observations, naturally receive smaller weights. As a result, their influence on the construction of the hyperplanes is reduced. This reduction enhances robustness against label noise and simultaneously avoids explicit graph construction. The proposed KDE-weighted LSTSVM (KDEWLSTSVM), preserves the computational efficiency of least-squares learning while establishing a statistically principled mechanism for enhancing robustness and generalization in noisy data environments. \cite{Tanveer2020}.
+\section{The LSTSVM}\label{sec2}
+In this section, we present a summary of the LSTSVM.
+The LSTSVM is developed on the basis of the TSVM by using equality constraints instead of inequality constraints and also, the optimization problem degenerates into the optimal solution problem of two linear equation systems. Suppose we have a training set 
+\[D=\{(x_i,y_i)| x_i\in \mathbb{R}^{d}, y_i\in\{1,-1\}, i=1,2,\cdots, n\}. \]
+By dividing the training set into $m_1$ positive class sample points and $m_2$ negative class sample points, A and B denote the data matrices of the positive and negative classes, respectively. Then the LSTSVM is defined as follows
+\begin{equation}\label{eq1}
+\begin{aligned}
+\min_{\mathbf{w}_1, b_1} \quad & \frac{1}{2} \|A\mathbf{w_1}+\textbf{e}_{1}b_{1}\|^2 + \frac{c_1}{2}\boldsymbol{\xi}_{1}^{\top}\boldsymbol{\xi}_{1}\\
+\text{s.t.} \quad & -\left( B\mathbf{w}_1+\textbf{e}_{2}b_{1}\right)+\boldsymbol{\xi}_1=\textbf{e}_2, \boldsymbol{\xi}_1\geq 0,
+\end{aligned}
+\end{equation}
+and
+\begin{equation}\label{eq2}
+\begin{aligned}
+\min_{\mathbf{w}_2, b_2} \quad & \frac{1}{2} \|B\mathbf{w_2}+\textbf{e}_{2}b_{2}\|^2 + \frac{c_2}{2}\boldsymbol{\xi}_{2}^{\top}\boldsymbol{\xi}_{2}\\
+\text{s.t.} \quad & \left(A\mathbf{w}_2+\textbf{e}_{1}b_{2}\right)+\boldsymbol{\xi}_2=\textbf{e}_1, \boldsymbol{\xi}_2\geq 0,
+\end{aligned}
+\end{equation}
+where $\textbf{w}_1,\textbf{w}_2\in \mathbb{R}^{d}$ are the weight vectors, the biases are $b_1, b_2\in \mathbb{R}$, $c_1,c_2>0$ are penalty parameters, $\boldsymbol{\xi}_1, \boldsymbol{\xi}_2$ are slack variables with dimension $m_{2}\times 1$ and $m_{1}\times 1$ respectively, $\textbf{e}_1, \textbf{e}_2$ are the column vectors of appropriate dimensionality with all 1 components.
+\\
+By substituting the equality constraints of quadratic programming problem (QPP) (\ref{eq1}) into the objective function, setting the gradient of QPP with respect to $\textbf{w}_1$ and $b_1$ to zero and arranging them in matrix form, solving for $\textbf{w}_1$ and $b_1$ and defining $E=[A\quad \textbf{e}_1]$ and $F=[B\quad \textbf{e}_2]$ we have
+\begin{equation*}\label{eq3}
+[\textbf{w}_1\quad b_1]^{\top}=-(F^{\top}F+\frac{1}{c_1}E^{\top}E)^{-1}F^{\top}\textbf{e}_2.
+\end{equation*}
+\\
+In a similar way the solution of QPP (\ref{eq2}) can be calculate as
+\begin{equation*}\label{eq4}
+[\textbf{w}_2\quad b_2]^{\top}=(E^{\top}E+\frac{1}{c_2}F^{\top}F)^{-1}E^{\top}\textbf{e}_1.
+\end{equation*}
+For the nonlinear case, the kernel trick is employed to map the data into a high-dimensional feature space, and the resulting formulations are obtained in a manner similar to the linear LSTSVM.
+\section{The KDEWLSTSVM}
+Following \cite{Hua2015}, define the coefficients of the LSWLTSVM as
+\begin{equation*}
+[\textbf{w}_1\quad b_1]^{\top}
+=
+-\left[
+F^{\top}F + \frac{1}{c_1}E^{\top}D^{(1)}E
+\right]^{-1}
+F^{\top}D^{(2)} \textbf{e}_2,
+\end{equation*}
+and
+\begin{equation*}
+[\textbf{w}_2\quad b_2]^{\top}
+=
+\left[
+E^{\top}E + \frac{1}{c_2}F^{\top}D^{(2)}F
+\right]^{-1}
+E^{\top}D^{(1)} \textbf{e}_1,
+\end{equation*}
+where
+\[
+D^{(C)}=\operatorname{diag}
+\big(
+\pi_1^{(C)}, \ldots, \pi_{m_C}^{(C)}
+\big),
+\quad C \in \{1,2\},
+\]
+is the diagonal weight matrix whose elements $\pi_i^{(C)}$ are obtained from a local $k$NN adjacency graph. Specifically, each weight is computed according to a hot kernel similarity between neighboring samples, and is nonzero only if the corresponding samples belong to each other's $k$ nearest neighbors. Hence, the weighting scheme reflects local neighborhood relationships rather than a global estimation of the underlying data distribution. In our approach, $\pi_i^{(C)}$ is computed from the KDE. Given class-$C$ samples $\{x_i^{(C)}\}_{i=1}^{m_C}\subset\mathbb{R}^d$, the KDE of the density functuion $p(x\mid C)$ is
+\begin{eqnarray}\label{eq7}
+\pi_i^{(C)}&=&\widehat{p}(x \mid C)\cr
+&=&
+\frac{1}{m_C h_C^d}
+\sum_{i=1}^{m_C}
+K\!\left(
+\frac{x - x_i^{(C)}}{h_C}
+\right),
+\end{eqnarray}
+where $K(\cdot)$ is a kernel satisfying $\int K(u)\,du=1$ and $h_C>0$ is the bandwidth. Our approach provides a global density-based weighting that naturally downweights low-density and potentially mislabeled samples. In this paper, we use the Gaussian kernel,
+\begin{equation*}
+K(u)
+=
+(2\pi)^{-\frac{d}{2}}
+\exp\!\left(
+-\frac{1}{2}\|u\|^2
+\right).
+\end{equation*}
+\section{Experimental Results}\label{sec:results}
+In this section, we conduct an extensive experimental study to empirically assess the performance of the KDEWLSTSVM. Given that the central contribution of this work concerns the explicit modeling of label noise, KDEWLSTSVM is primarily compared with LSTSVM and LSWLTSVM. Experiments are carried out using a linear kernel.
+
+To ensure fair evaluation, hyperparameters of all methods are selected via a parallelized grid-search procedure with five-fold cross-validation on the training set. For each classifier, the regularization parameters are set equal ($c_1 = c_2$) and searched over $\{10^{-4}, 10^{-3}, \ldots, 10^{3}\}$. The KDEWLSTSVM uses Gaussian kernel density estimation, where the bandwidth parameter is tuned over $\{0.1, 0.3, 0.5, \ldots, 1.9\}$. For LSWLTSVM, the neighborhood size $k$ is chosen from $\{1, 2, \ldots, 8\}$ and the hot kernel exponent $t$ is searched over $\{0.5, 1, 2, 4, 8, 16, 32\}$.
+
+Classification accuracy is evaluated on noise-free test sets to ensure an unbiased assessment of predictive performance. In addition to accuracy, robustness is further examined by ranking the competing classifiers based on their overall performance. Higher ranks are interpreted as indicative of greater resilience to both label noise and feature perturbations.
+
+The experimental evaluation is performed on three binary classification datasets drawn from the LibSVM repository \citep{Chang2001LIBSVM} and the UCI Machine Learning Repository \citep{Bache2013UCI}. Prior to training, all features are scaled to the interval \([0,1]\). The selected datasets exhibit substantial diversity in terms of sample size, ranging from 145 to 768 instances, thereby facilitating a comprehensive and representative comparison of the evaluated methods. To maintain consistency across experiments, only binary classification problems are considered. All datasets are carefully preprocessed before analysis, and any instances with missing values are removed to prevent potential biases and to ensure the integrity of the experimental results. Detailed characteristics of the datasets are summarized in Table~\ref{tab1}.
+
+\begin{table}[h]
+\footnotesize
+    \centering
+    \caption{Characteristics of the benchmark datasets.}
+    \label{tab1}
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Dataset} & \textbf{Number of Samples} & \textbf{Number of Features} \\
+        \hline
+        Liver disorders&145&5\\
+        Breast cancer wisconsin diagnostic&569 &30 \\
+        Pima Indians Diabetes & 768 & 8 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\footnotesize
+\centering
+\caption{Comparison of classification accuracy (\%) and ranking using \textbf{Linear Kernel} under feature noise ($\sigma=0.2$) and 20\% label noise.}
+\label{tab:results_linear20}
+\begin{tabular}{lccc}
+\hline
+\textbf{Dataset} & \textbf{LSTSVM} & \textbf{LSWLTSVM} & \textbf{KDEWLSTSVM} \\
+\hline
+Liver Disorders
+& 72.41 (2.5)
+& 72.41 (2.5)
+& \textbf{75.86 (1)} \\
+Breast Cancer Wisconsin Diagnostic
+& 85.40 (3)
+& 95.62 (2)
+& \textbf{97.08 (1)} \\
+Pima Indians Diabetes
+& 76.62 (3)
+& 77.27 (2)
+& \textbf{77.92 (1)} \\
+\hline
+Final Rank
+& 2.83
+& 2.17
+& \textbf{1} \\
+\hline
+Accuracy Mean
+& 78.14
+& 81.77
+& \textbf{83.62} \\
+\hline
+\end{tabular}
+\end{table}
+\subsection{Results}
+Table~\ref{tab:results_linear20} summarizes the classification accuracy and ranking of the compared methods under $20\%$ label noise using a linear kernel. In addition, $40\%$ of the feature columns were selected, and within each selected column, $40\%$ of the training samples were corrupted by additive zero-mean Gaussian noise with a standard deviation of $\sigma = 0.2$. As observed, the KDEWLSTSVM consistently achieves the highest accuracy across all datasets and outperforms both the LSTSVM and the LSWLTSVM. In particular, the KDEWLSTSVM attains notable improvements on the Breast Cancer Wisconsin Diagnostic and Liver Disorders datasets, demonstrating superior robustness to simultaneous feature and label noise. The overall mean accuracy and final ranking also confirm its leading performance (mean accuracy $83.62\%$, rank~1). These results indicate that the density-based weighting effectively improves generalization under noisy conditions.
+\section*{Discussion and Conclusion}
+The KDEWLSTSVM used KDE-based global density weighting within the LSTSVM and outperformed the LSTSVM and the LSWLTSVM under 20\% label noise. Results were limited to three small linear-kernel binary datasets without significance or sensitivity analyses. Future work should test larger datasets and extend to nonlinear and multiclass settings with careful bandwidth and efficiency studies.
+%%%%%%%%%%%%%%%%%%%%%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Funding Statement}   
+Mohammad Arashi's work is based on the research supported in part by the Iran National Science Foundation (INSF) grant No. 4049772.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Bache and Lichman (2013)]{Bache2013UCI}
+Bache K. and Lichman M. (2013), UCI Machine Learning Repository, University of California, Irvine., \url{http://archive.ics.uci.edu/ml/index.php}.
+
+\bibitem[Chang and Lin (2001)]{Chang2001LIBSVM}
+Chang C.-C. and Lin C.-J. (2001), LIBSVM: A library for support vector machines, Technical Report., \url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}.
+
+\bibitem[Fongmun and Mouktonglang (2025)]{Fongmun2025}
+Fongmun R. and Mouktonglang T. (2025), Accelerated least squares twin support vector machine with $L_1$-norm regularization by ADMM, {\it AIMS Mathematics}, 10, 10413–10430.
+
+\bibitem[Hua et al. (2015)]{Hua2015}
+Hua X., Xu S. and Li X. (2015), Least squares weighted twin support vector machines with local information, {\it Journal of Central South University}, 22, 2638–2645.
+
+\bibitem[Leone et al. (2025)]{Leone2023}
+Leone R., Maggioni F. and Spinelli A. (2025), A robust twin parametric margin support vector machine for multiclass classification, {\it EURO Journal on Computational Optimization}, 100115.
+
+\bibitem[Quadir et al. (2025)]{Quadir2025}
+Quadir A., Sajid M., Akhtar M. and Tanveer M. (2025), Twin restricted kernel machines for multiview classification, {\it Proc. International Joint Conference on Neural Networks (IJCNN)}, IEEE, 1–8.
+
+\bibitem[Tanveer et al. (2016)]{Tanveer2016}
+Tanveer M., Khan A. and Ho S. S. (2016), Robust energy-based least squares twin support vector machines, {\it Applied Intelligence}, 45, 174–186.
+
+\bibitem[Tanveer et al. (2021)]{Tanveer2020}
+Tanveer M., Sharma S. and Muhammad K. (2021), Large-scale least squares twin SVMs, {\it ACM Transactions on Intelligent Systems and Technology}, 21, 1–19.
+
+\bibitem[Tian et al. (2014)]{Tian2013}
+Tian Y., Ju X., Qi Z. and Shi Y. (2014), Improved twin support vector machine, {\it Science China Information Sciences}, 57, 417–432.
+
+\bibitem[Zhu et al. (2023)]{Zhu2023Noise}
+Zhu R., Liu H., Wu R., Lin M., Lv T., Fan C. and Wang H. (2023), Rethinking noisy label learning in real-world annotation scenarios from the noise-type perspective, {\it arXiv:2307.16889.}
+
+\end{thebibliography}
+ \end{document}
+

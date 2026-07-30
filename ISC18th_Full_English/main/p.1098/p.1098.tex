@@ -1,0 +1,251 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\def \E{\mbox{${\rm E}$}}
+\def \var{\mbox{${\rm Var}$}}
+\def \diag{\mbox{${\rm diag}$}}
+\def \tr{\mbox{${\rm tr}$}}
+\def \cir{\mbox{${\rm cir}$}}
+\def \Tr{\mbox{${\rm Tr}$}}
+
+\def \mx#1{\mbox{\boldmath ${\bf #1}$}}
+\def \cx#1{\mbox{${\mathcal #1}$}}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Optimal Designs under a Proportional Interference Model}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+%\fancyhead[RO]{R. Khodsiani}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Optimal Designs under a Proportional Interference Model with Nonnegative Proportionality Constant and Correlated Observations}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Razieh Khodsiani \footnote{{\bf Corresponding Author:} {\tt razieh.khodsiani@kntu.ac.ir}} \\
+Department of Computer Science and Statistics, Faculty of Mathematics, K. N. Toosi University of Technology, 16315-1618, Tehran, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+In block experiments where a treatment applied to one plot affects neighboring plots, interference models are used to account for these neighbor effects. A special class is the proportional interference model, in which each neighbor effect is a proportion of the direct treatment effect. 
+
+We study a proportional one-sided interference model in which only the left neighbor contributes a positive proportion of the direct treatment effect, and observations follow a first-order circular autoregressive correlation structure. Under this model we derive exact optimal designs for correlated observations.
+ 
+\noindent{\bf Keywords:} 
+Interference models, Circular block designs, Neighbor balanced designs, Universally optimal criterion.\\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62K05$, $\rm 62K10$.\\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+In block experiments, plots are sometimes located close together, which can cause interference between treatments applied to the plots. Serology, agriculture, forestry, horticulture, and medicine are some fields in which neighbor effects arise. For example, in varietal crop trials, the yields of shorter varieties may be reduced due to shading from taller neighboring varieties (see \cite{KL84}). \cite{R67} introduced neighbor-balanced designs for arranging antigens on a circular plate in serological experiments. Subsequent research has expanded this introduction to circular and non-circular layouts, direct and indirect neighboring, and higher-order neighbor structures.
+
+In the theory of experimental design, a central task is evaluating designs and characterizing optimal ones. Researchers have proposed several optimality criteria; among them, universal optimality, introduced by \cite{K75}, is the most important. A universally optimal design, if it exists, is optimal under all optimality criteria, e.g., A, D, E, etc.
+
+\cite{LZA15} introduced a proportional interference model where the neighbor effects of a treatment are proportional to its direct effect. Their results were obtained only for type$-$H correlation matrices, namely the identity matrix and compound symmetric matrices (all diagonal entries equal and all off$-$diagonal entries equal).
+
+The proportional interference model is attractive because it reduces the number of parameters, though it introduces nonlinear challenges for estimation. Known proportionality constant removes this nonlinearity. In this paper, we analyze proportional one-sided interference models with a known proportionality constant and correlated observations. The existing literature on proportional interference models usually focuses on identifying optimal measures within the framework of approximate design theory, but these measures are often difficult to implement. Hence it is useful to determine the theoretical structure of optimal exact designs. We show that, under our assumptions, the optimal designs depend only on the sign of the proportionality constant, not its magnitude.
+
+This paper is organized as follows. Some notations and key definitions are introduced in Section 2. In Section 3, universal optimality of some circular equineighbored designs is proved, and we recommend some methods for constructing these optimal designs from previous literature.
+
+\section{Notations and Definitions}
+A design is called circular if each block of the design has a circular form, i.e., there are both left- and right-neighbors for each treatment. If the plots in the blocks are arranged in linear form, we can add border plots at the beginning of each block to obtain the effect of circularity (for more details see e.g. \cite{D99}).
+
+In this paper, the class of circular block designs with $t$ treatments, $b$ blocks of size $k$ is shown by $\cx D_{t,b,k}$. If $d(j, i)$ denotes the treatment assigned to plot $i$ of block $j$ for the design $d$ in $\cx D_{t,b,k}$ then $d(j,i)$ is said to be the left-neighbor of $d(j, i+ \delta)$ at distance $\delta$, $\delta=1,2,\cdots,k-1$ where $i+\delta$ is calculated (modulo $k$)$+1$. Also, $d(j, i+ \delta)$ is the right-neighbor of $d(j,i)$ at distance $\delta$. For a circular design $d$ if $d(j, i)$ coincides with $d(j, i- \delta)$ or $d(j, i+ \delta)$, then it is called a self-neighbor at distance $\delta$, $\delta=1,2,\cdots,k-1$, for that treatment.
+
+Let $\mx L_d=(\mx I_b\otimes \mx H_k)\mx T_d$ be the design matrix of left-neighbor effects where $\mx T_d=(\mx T_{d,1},\cdots,\mx T_{d,b})'$, $\mx T_{d,j}$ is the design matrix of treatments in block $j$ and $\mx H_k$ is the circulant matrix with the following elements
+\begin{equation*}
+(\mx H_k)_{ij}=\left\lbrace \begin{matrix}
+1 & \mbox{if} & i-j=1 \; \mbox{or} \; (i=1\; ,\; j=k)\\
+0 & & \mbox{otherwise}
+\end{matrix}\right.
+\end{equation*}
+
+We consider the proportional one-sided interference models, where the left-neighbor effect is proportional to the direct treatment effect, i.e. 
+\begin{equation}\label{model}
+\mx y=(\mx T_d+\lambda \mx L_d)\mx \tau+\mx B\mx \beta+\mx \epsilon
+\end{equation}
+where $\mx y=(y_{11},y_{12},\cdots,y_{1k},\cdots,y_{bk})'$ is the observation vector, $\mx \tau$ is $t$-vector of treatment effects, $\lambda$ is the proportion of the direct treatment effects, $\mx \beta$ is the $b$-vector of block effects, $\mx B=\mx I_b\otimes \mx 1_k$ is the design matrix of block effects, $\mx 1_k$ is the $k$-vector of ones, $\mx I_b$ is the identity matrix with order $b$, and $\otimes$ is the Kronecker product. Also, $\mx \epsilon$ is the $bk$-vector of correlated random errors with $\E(\mx \epsilon)=\mx 0_{bk}$ and $\var(\mx \epsilon)=\sigma^2\mx V$ where $\mx 0_{bk}$ is the $bk$-vector of zeros, $\sigma^2$ is an unknown positive constant and $\mx V$ is a known symmetric positive definite correlation matrix. We assume that $\lambda$ is a known constant in $[0,1]$.
+
+There are different structures for the correlation matrix $\mx V$. We assume that the observations in different blocks are uncorrelated but that observations within blocks are correlated according to a first-order circular autoregression process, AR$(1,C)$. In other words, $\mx V=\mx I_b \otimes\mx \Lambda$ where $(i,j)$-th element of $\mx \Lambda$ is
+\begin{equation*}
+(\mx \Lambda)_{ij}=\left\lbrace \begin{matrix}
+\frac{1+\rho^k}{(1-\rho^k)(1-\rho^2)} & & \mbox{if} \; \vert i-j\vert=0\\
+\frac{\rho^h+\rho^{k-h}}{1+\rho^k} \quad & & \mbox{if} \; \vert i-j\vert=h
+\end{matrix}\right.
+\end{equation*}
+where $\vert\rho\vert<1$ is a correlation parameter. Let $r_{d,i}$ be the  replication of treatment $i$ in design $d$. If for a square matrix $\mx A$, $\mx A^0=\mx I$ and $\mx A^2=\mx A\times \mx A$, then by definition of $\mx H_k$, we define $\mx R_d=\diag (r_{d,1},r_{d,2},\ldots,r_{d,t})$, $\mx S_d$ and $\mx U_d$ as below,
+\begin{equation} \label{RSU}
+\mx T'_d(\mx I_b \otimes \mx H_k)^i\mx T_d=\left\lbrace \begin{matrix}
+\mx R_d & \mbox{if} & i=0\\
+\mx S_d & \mbox{if} & i=1\\
+\mx U_d & \mbox{if} & i=2
+\end{matrix}\right.
+\end{equation}
+The $(i,j)$-th element of $\mathbf{S}_{d}$ and $\mathbf{U}_{d}$ indicates the number of times treatment $i$ is the left neighbor of treatment $j$  at distances 1 and 2 in $d$, respectively. It is worth mentioning that the diagonal elements of $\mx S_d$ and $\mx U_d$ represent the number of self-neighborings at distances 1 and 2, respectively.
+
+\cite{DD89} introduced a generalized binary design (GBD) as a block design $d$ which each treatment repeat $[\frac{k}{t}]$ or $[\frac{k}{t}]+1$ times in each block where $[m]$ denotes the largest integer not exceeding $m$. 
+
+If $d$ in $\cx D_{t,b,k}$ be a GBD such that (i) $r_{d,i}=r$  $ ; i=1,2,\ldots,t$, and (ii) every pair of distinct treatments occurs in the same number of blocks, then $d$ is called a balanced block design (BBD) (see \cite{K58}).  
+
+\begin{dfn} \label{dfn1}
+(\cite{KP22}) A block design is said to be a circular equineighbored design (CED) at level $ \delta $ , and denoted by CED($ t,b,k;\delta $) , $ \delta\leq k-1 $, if it is a circular BBD in $\mathcal{D}_{t,b,k}$ that every pair of unordered treatments appears as the $ \delta $-th neighbors at the same number of blocks.
+\end{dfn}
+\begin{dfn} 
+(\cite{KP22}) A circular block design is said to be circular equineighbored design, CED($ t,b,k $), if it is CED($ t,b,k;\delta $) for all $\delta = 1, 2, ...,k-1 $.
+\end{dfn}
+Throughout this paper, we use some properties of CED$(t, b, k; \delta)$ with $\delta=1,2$ which introduced by \cite{FK26} as CED$(t, b, k; 1, 2)$. Let us denote $\cx B_{t,b,k}$ as the subclass of $\cx D_{t,b,k}$ consisting of GBDs.
+
+\section{Main Results}
+\cite{K75} concluded the necessary and sufficient condition for universal optimality of an arbitrary design $d$ by their information matrix, $\mx C_d$. By Kiefer's results a design $d^*\in \cx D_{t,b,k}$ is universally optimal if (i) $\mx C_{d^*}$ is completely symmetric, i.e., all diagonal elements of $\mx C_{d^*}$ are equal and all its off-diagonal elements are equal, and (ii) $\mx C_{d^*}$ has maximal trace over $\cx D_{t,b,k}$.
+
+Under model \eqref{model}, the information matrix of design $d$ in $\cx D_{t,b,k}$ obtain as
+\begin{equation}\label{Cd1}
+\mx C_d=(\mx T_d+\lambda\mx L_d)'(\mx I_b\otimes \mx \Lambda^*)(\mx T_d+\lambda\mx L_d)
+\end{equation}
+where $\mx \Lambda^{*}=\mx \Lambda^{-1}-(\mx 1'_k\mx \Lambda^{-1}\mx 1_k)^{-1}\mx \Lambda^{-1}\mx 1_k^{}\mx 1'_k\mx \Lambda^{-1}$.
+
+\begin{thm}\label{th1}
+Let $d^*$ be a CED$(t,b,k;1,2)$. Under model \eqref{model} with AR$(C,1)$, $d^*$ is universally optimal over the class $\cx B_{t,b,k}$
+\begin{itemize}
+\item[i.]
+when $k\leq t$ and $\rho\in [-1,1]$;
+\item[ii.]
+if the self-neighboring of each treatment of $d^*$ at distances 1 is maximal, when $k> t$ and $\rho\in [-1,0)$ or $t<k\leq 2t$ and $0<\rho<\lambda$;
+\end{itemize}
+\end{thm}
+\begin{proof}
+Following \cite{KM87} and \cite{FM05}, under AR$(1,C)$ correlation structure the inverse of $\mx \Lambda$ can be presented as
+\begin{equation*}
+\mx \Lambda^{-1}=(1+\rho^2)\mx I_k-\rho(\mx H_k^{}+\mx H'_k)
+\end{equation*}
+and therefore
+ \begin{equation}\label{Ls}
+\mx \Lambda^{*}=(1+\rho^2)\mx I_k-\rho(\mx H_k^{}+\mx H'_k)-\dfrac{(1-\rho)^2}{k}\mx J_k.
+\end{equation}
+where $\mx J_k=\mx 1_k^{}\mx1'_k$. For orthogonal matrix $\mx H_k$, it is clear that $\mx H_k^{}\mx H'_k=\mx H'_k\mx H_k^{}=\mx I_k$ and $\mx H_k\mx J_k=\mx H'_k\mx J_k=\mx J_k$. So by \eqref{Cd1}, \eqref{Ls} and definition of $\mx L_d$, under model \eqref{model} with AR$(1,C)$, the information matrix of design $d$ has the following form
+\begin{equation}\label{Cd2}
+\mx C_d=\left( (1+\lambda^2)(1+\rho^2)-2\rho\lambda\right) \mx R_d+v_1(\mx S_d^{}+\mx S'_d)+v_2 (\mx U_d^{}+\mx U'_d)+v_3\mx N_d^{}\mx N'_d.
+\end{equation}
+where $\mx N_d=\mx T'_d\mx B$ is the treatment-block incidence matrix, and
+\begin{equation*}
+v_i=\left\lbrace \begin{matrix}
+\lambda(1+\rho^2)-\rho(1+\lambda^2)  \; & \mbox{if} & i=1\\
+-\rho \lambda  \qquad \qquad \qquad \; & \mbox{if} & i=2\\
+\frac{-(1-\rho)^2(1+\lambda)^2}{k} \qquad \quad & \mbox{if} & i=3.
+\end{matrix}\right.
+\end{equation*}
+It is clear that $\tr(\mx R_d)=bk$, and $v_3\leq 0$ for every $\lambda$ and $\rho\in [-1,1] $. So, we have
+%If trace of matrices $\mx C_d$ and $\mx N_d^{}\mx N'_d$ are defined by $c_d$ and $n_d$, respectively, since $\tr(\mx R_d)=bk$ and for every $\lambda$ and $\rho\in [-1,1]$, $v_3\leq 0$ we have
+ \begin{equation*}
+c_d\leq bk((1+\lambda^2)(1+\rho^2)-2\rho\lambda)+v_1\tr(\mx S_d^{})+v_2\tr (\mx U_d^{})+v_3\min_{d\in \mathcal{D}_{t,b,k}} n_d.
+\end{equation*}
+where the trace of matrices $\mx C_d$ and $\mx N_d^{}\mx N'_d$ are defined by $c_d$ and $n_d$, respectively.
+It is known (cf. \cite{SS89}) that $n_d$ is minimal for BBDs. In the other hands, by \eqref{Cd2} the complete symmetry of the matrices $\mx R_d$, $\mx N_d^{}\mx N'_d$, $\mx S_d^{}+\mx S'_d$ and $\mx U_d^{}+\mx U'_d$ implies that $\mx C_d$ is completely symmetric. Altogether, the universally optimal design over $\cx B_{t,b,k}$ is one of CEDs at levels 1 and 2. 
+\\
+For $d^*$ as a CED$(t,b,k;1,2)$, we consider the following situations:
+\\
+If $k\leq t$, then there is no self-neighboring for the treatments in designs in $\cx B_{t,b,k}$, i.e $\tr(\mx S_{d})=\tr(\mx U_{d})=0$ for every $d\in \cx B_{t,b,k}$ and therefore $d^*$ is universally optimal over $\cx B_{t,b,k}$.
+\\
+If $k>t$, then for obtaining universally optimal designs, we need to identify the signs of $v_i$, $i=1,2$, for various values of $\rho$ as follows:
+\begin{itemize}
+\item[(a)]
+$v_1=-\rho\lambda^2+\lambda(1+\rho^2)-\rho$ is a second degree polynomial of $\lambda$ with two roots $\rho$ and $1/\rho$. If $\rho>0$ and $\lambda\in(\rho,1/\rho)$ or $\rho<0$ and $\lambda>\rho$, $v_1$ is positive. Otherwise, $v_1<0$.
+\item[(b)]
+$v_2=-\rho\lambda$ is positive if $\rho<0$ and it is negative when $\rho>0$.
+\end{itemize}
+By the determining the sign of $v_i$, $i=1,2$, in items (a) and (b), we deduce the following conditions for $d^*$ with various values of $\rho$:
+\begin{itemize}
+\item
+For $0<\rho<\lambda$, $v_1>0$ and $v_2<0$. Thus, $c_{d^*}$ will be maximal over $\cx B_{t,b,k}$ when $\tr(\mx S_{d^*})$ and $\tr (\mx U_{d^*})$ are maximal and minimal, respectively. It is noticed that by definition of the neighboring matrix $\mx U_d$, its trace will be minimal over $\cx D_{t,b,k}$ if no self-neighboring at distance 2 is in design $d$, i.e. $\min_{d\in \mathcal{D}_{t,b,k}}\tr(\mx U_d)=0$.
+If $k>2t$, some treatments of $d^*$ replicate more than 2 times in a block, and increasing self-neighboring at distance 1 for them makes some self-neighboring at distance 2 too. So, in this case, we limit $k$ to $(t,2t]$ for solving the challenge. %which the maximum self-neighboring at distance 1 for the treatments of a CED$(t,b,k;1,2)$ is 2.
+
+\item
+For $\rho<0$, $v_1,v_2\geq 0$. Since $\max \{v_1,v_2\}=v_1$, $c_{d^*}$ will be maximal over $\cx B_{t,b,k}$ when $\tr(\mx S_{d^*})$ is maximal. In this case there is no restriction on $k>t$ because increasing self-neighborings in distance 2 in every block of $d^*$ create bigger $c_{d^*}$ and it does not have any contradiction to universal optimality of $d^*$.
+\end{itemize}
+\end{proof}
+By \cite{FK26}, for every $k$ and $t$, the number of blocks required to construct a CED at levels 1 and 2 is equal to the number of blocks of constructing a CED introduced by \cite{KP22} and therefore, for building universally optimal design $d^*$ in Theorem \ref{th1}, we can use some of their methods. For example, %for every $\rho\in [-1,1]$, under model \eqref{model} with AR$(C,1)$ the following CED$(7,6,7)$,
+%\begin{equation}\label{ds1}
+%d^{*}_1:\qquad \begin{matrix}
+%1 & 2 & 3 & 4 & 5 & 6 & 7\\
+%1 & 3 & 5 & 7 & 2 & 4 & 6\\
+%1 & 4 & 7 & 3 & 6 & 2 & 5\\
+%1 & 5 & 2 & 6 & 3 & 7 & 4\\
+%1 & 6 & 4 & 2 & 7 & 5 & 3
+%\end{matrix}
+%\end{equation}
+%is universally optimal over $\cx D_{7,6,7}$ . Also, 
+according to Theorem \ref{th1}, under model \eqref{model} with AR$(1,C)$ correlation structure, the following CED$(5,10,12)$, with rows as blocks,
+\begin{equation*}
+d^{*}_1:\qquad \begin{array}{cccccccccccccc}
+1 & 1 & 2 & 2 & 3 & 3 & 4 & 4 & 4 & 5 & 5 & 5\\
+2 & 2 & 3 & 3 & 4 & 4 & 5 & 5 & 5 & 1 & 1 & 1\\
+3 & 3 & 4 & 4 & 5 & 5 & 1 & 1 & 1 & 2 & 2 & 2\\
+4 & 4 & 5 & 5 & 1 & 1 & 2 & 2 & 2 & 3 & 3 & 3\\
+5 & 5 & 1 & 1 & 2 & 2 & 3 & 3 & 3 & 4 & 4 & 4\\
+1 & 1 & 3 & 3 & 5 & 5 & 2 & 2 & 2 & 4 & 4 & 4\\
+2 & 2 & 4 & 4 & 1 & 1 & 3 & 3 & 3 & 5 & 5 & 5\\
+3 & 3 & 5 & 5 & 2 & 2 & 4 & 4 & 4 & 1 & 1 & 1\\
+4 & 4 & 1 & 1 & 3 & 3 & 5 & 5 & 5 & 2 & 2 & 2\\
+5 & 5 & 2 & 2  & 4 & 4 & 1 & 1 & 1 & 3 & 3 & 3 
+\end{array}
+\end{equation*}
+is universally optimal over $\cx B_{5,10,12}$ if $\rho\in [-1,0)$. 
+\section*{Discussion and Conclusion}   
+In this paper, the proportional one-sided interference models for block experiments in which neighbor effects are a known proportion of direct treatment effects and observations follow a first-order circular autoregressive correlation are studied. Focusing on exact-design theory, we derive the theoretical structure of universally optimal circular equineighbored designs and show these designs depend only on the sign, not the magnitude of the proportionality constant. 
+
+%\section*{Acknowledgments}   
+%If you wish to include acknowledgments, this section should appear before the references.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Das and Dey(1989)]{DD89}
+Das A. and Dey A. (1989), A note on balanced block designs. {\it J Stat Plan Inference} 22, 256--268.
+
+\bibitem[Druilhet(1999)]{D99}
+Druilhet P. (1999), Optimality of circular neighbour balanced designs. {\it J Stat Plan Inference} 81, 141--152.
+
+\bibitem[Fakhari-Esferizi and Khodsiani(2026)]{FK26}
+Fakhari-Esferizi A. and Khodsiani R. (2026), Optimal designs under proportional interference models with known signs of the proportionality constants. {\it .Journal of Advanced Mathematical Modeling}. Preprint.
+
+\bibitem[Filipiak and Markiewicz(2005)]{FM05}
+Filipiak K. and Markiewicz A. (2005), Optimality and efficiency of circular neighbor balanced designs for correlated observations. {\it Metrika} 61, 17--27.
+
+\bibitem[Kempton and Lockwood(1984)]{KL84}
+Kempton R.A. and Lockwood G. (1984), Inter-plot competition in variety trials of field beans (Vicia faba L.). {\it The Journal of Agricultural Science} 103, 2, 293--302.
+
+\bibitem[Khodsiani and Pooladsaz(2022)]{KP22}
+Khodsiani R. and Pooladsaz S. (2022), Optimality of circular equineighbored block designs under orrelated observations. {\it Statistical Paper} 63, 1743--1755.
+
+\bibitem[Kiefer(1958)]{K58}
+Kiefer J. (1958), On the nonrandomized optimality and randomized nonoptimality of symmetrical designs. {\it Ann Math Stat} 29, 675--699.
+
+\bibitem[Kiefer(1975)]{K75}
+Kiefer J. (1975), Construction and optimality of generalized youden designs ii. {\it A Survey of Statistical Designs and Linear Models} 333--353.
+
+\bibitem[Kunert and Martin(1987)]{KM87}
+Kunert J. and Martin R. (1987), Some results on optimal design under a first-order autoregression and on finite Williams type II designs. {\it Commun Stat Theory Methods} 16, 1901--1922.
+
+\bibitem[Li et al.(2015)]{LZA15}
+Li K., Zheng W. and Ai M. (2015), Optimal designs for the proportional interference model, {\it The Annals of Statistics}, 1596--1616.
+
+\bibitem[Rees(1967)]{R67}
+Rees D.H. (1967), Some designs of use in serology, {\it Biometrics}, 779--791.
+
+\bibitem[Shah and Sinha(1989)]{SS89}
+Shah K.R. and Sinha B.K. (1989), {\it Theory of optimal designs}, Springer, New York.
+
+\bibitem[Zhang and Kong(2023)]{ZK23}
+Zhang, F., and Kong, X. (2023), Optimal Designs for Proportional Interference Models with Different Guarding Strategies. {\it  Mathematics} 11,2, 443--457.
+
+\end{thebibliography}
+ \end{document}
+

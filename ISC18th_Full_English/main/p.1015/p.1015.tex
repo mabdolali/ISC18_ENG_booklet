@@ -1,0 +1,365 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\/}[1]{\mathbf{\boldsymbol{#1}}}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Covariance Estimation Strategies in Massive Spatial and Spatial-Temporal Data}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{A.M. Mosammam}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf  Covariance Estimation Strategies in Massive Spatial and Spatial-Temporal Data}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Ali M. Mosammam\footnote[1]{{\bf Corresponding Author:} {\tt a.m.mosammam@znu.ac.ir }} \\
+$^1$Department of Statistics,
+University of Zanjan, Zanjan, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Covariance  plays very important roles in
+modelling and in prediction of spatial data. For instance, many statistical inferences  such as maximum likelihood estimation and best linear unbiased prediction   involve covariance matrices which must be inverted and this evaluation is slow when the number of observations is large, and the complexity increases even further in a space-time context.  
+First, we  addresses a Bayesian grouping-based approach, extending Vecchia’s approximation and relying on the conditional independence assumption of ordered data which significantly reduces computational burden in nonparametric estimation of a nonstationary spatial covariance.  Next, we propose \emph{half spectral composite likelihood}
+  for the estimation of spatial-temporal covariances which involves a spectral approach
+  in time and a covariance function in space. The  approach requires no matrix inversions and
+the estimators are shown to be consistent and asymptotically normal under increasing domain asymptotic. Examples are given using simulated and real data.
+
+
+\noindent{\bf Keywords:} 
+ Half-spectral model,  Composite Likelihood, Whittle likelihood, Vecchia approximation  \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 60M30$, $\rm 62M11$, $\rm 62M30$, $\rm 62H11$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+
+
+Spatial and Spatial-temporal(ST) data are frequently encountered in many scientific disciplines, especially in environmental, meteorological or geophysical contexts. One major  challenge in modeling is the high dimensionality of such data.  This is crucial because  many statistical inferences  such as maximum likelihood estimation and best linear unbiased prediction e.g. kriging, with massive datasets, involve  large dimensional covariance matrices which must be inverted.
+Therefore  modeling  covariance structures  and approximating the likelihood functions are two fundamental keys to tackle such problems.
+
+
+There have been several computational efficient approaches to overcome the large dimensional matrix problem, such as  assuming cyclic stationary process, assuming separability on ST covariance functions, tapering the covariance matrix, including lower-dimensional conditional distributions\citep{stein2004approximating}, pseudo-likelihood methods, and approximating the random field (RF) with a Gaussian Markov RF\citep{lindgren2011explicit}. Low-rank approximations such as fixed rank kriging \citep{cressie2008fixed}  have also been developed. 
+
+The nearest neighbor Gaussian process introduced by \cite{datta2016hierarchical} offers a well-defined model for large spatial datasets by constructing sparse precision matrices, enabling efficient Bayesian inference.  In this paper, we  introduces a Bayesian grouping-based method designed to overcome these limitations and improve modeling of complex spatial structures. Built upon Vecchia’s approximation and accounting for repeated observations, the method enables fast and accurate Bayesian inference \citep{kidd2022bayesian}. The core innovation is a spatial grouping algorithm that partitions locations into independent blocks, eliminating weak dependencies and enhancing sparsity in the covariance matrix.
+
+Composite likelihood(CL) as proposed in \cite{lindsay1988composite} is  also convenient in the setting where the full likelihood is not feasible or is difficult
+to construct. The idea of CL method is zeroing out the weak correlation between observations at large distances. \cite{varin2008composite} provided a survey of CL applications.  
+ Earlier, \cite{besag1975statistical} considered a similar approach to CL  for spatial data.   \cite{bevilacqua2012estimating} introduced this approach to a ST framework. 
+Let $Z(\/s, t)$ be a real-valued stationary
+ST process defined on
+   $\mathbb{R}^d\times \mathbb{R}$, where $\/s\in \mathbb{R}^d$
+represents  the spatial site in $d$ dimension,  and $t\in
+\mathbb{R}$ represents the time. Assume that the second moments for
+the RF exist and are finite.
+   Write the ST process in the general form
+ \begin{eqnarray}\label{two121210}
+Z(\/s, t)=\int\int e^{i(\/s'\/\omega+t\tau)}d\/W(\/\omega ,
+\tau)=\int  e^{it\tau}J(\/s,\tau)d\tau, \hspace{.5cm} (\/s, t)\in\mathbb{R}^d\times \mathbb{R}
+\end{eqnarray}
+where
+$
+J(\/s,\tau)=\int_{\/\omega}e^{i\/s'\/\omega}d\/W(\/\omega
+, \tau), \hspace{.2cm} (\/\omega, \tau)\in\mathbb{R}^d\times \mathbb{R}
+$
+and  $\/W$ is a generalized random function with complex symmetry.
+Note that $d\/W(\/\omega , \tau)=d\/W^*(-\/\omega , -\tau)$ ensures
+that $Z(\/s, t)$ is real-valued.
+  Suppose that $C$ is a continuous function on $\mathbb{R}^d\times
+\mathbb{R}$. Then $C$ is a covariance function if and only if it is
+of the form
+\begin{eqnarray}\label{asf1574}
+C(\/h, u)=\int\int e^{i(\/h'\/\omega+u\tau)}d\/F(\/\omega ,
+\tau)=\int e^{iu\tau}H(\/h, \tau)d\tau, \hspace{.5cm} (\/h, u)\in\mathbb{R}^d\times \mathbb{R}
+\end{eqnarray}
+ where $
+H({\/h,\tau})=\int_{\/\omega}e^{i\/h'\/\omega}d\/F(\/\omega
+, \tau)
+$
+and  $\/F$ is a finite,  non-negative and symmetric spectral measure
+on $\mathbb{R}^d\times \mathbb{R}$. Note that $E|d\/W(\/\omega ,
+\tau)|^2=d\/F(\/\omega , \tau)$. We shall call $H$ a ``half spectral function'' since it
+depends on the spatial lag $\/h$  and the temporal frequency $\tau$\citep{mosammam2014estimation}.
+   Here  $C$, $f$
+and $H$ can be obtained from each other via the Fourier transforms.
+Even if these three functions are equivalent, there are situations
+for which it is more effective to use one domain despite to the
+other. For example, the  half-spectral function $H$ is very useful
+in practice  when we have long records of time series data at a
+modest number of scattered spatial locations. Notice $H(\/h,\tau)$ can be interpreted in two ways. First, write $H(\/h,\tau)=k(\tau)\rho(\/h, \tau)$
+where for a fixed spatial site $\/s$, $k(\tau)=H(\/0, \tau)$ is the spectral
+density of the stationary time series $\{Z(\/s, t),\
+t\in\mathbb{R}\}$ and for any fixed spatial lag $\/h$, $\rho(\/h, \tau)$
+is the coherence function of the two stationary time series $\{Z(\/s,
+t),\ t\in\mathbb{R}\} $ and $\{Z(\/s+\/h, t),\ t\in\mathbb{R} \}$,
+each with spectral density $k(\tau)$; for each $\tau\in \mathbb{R} $,
+$\/h\neq 0$, we have $| \rho(\/h, \tau)|\leq1$ and $\rho(\/0,
+\tau)=1$.
+Second, for any fixed temporal frequency $\tau$, it is a  complex-valued spatial autocorrelation function of the two complex-valued series
+$\{J(\/s,\tau), \/s\in \mathbb{R}^d\}$ and
+$\{J(\/s+\/h,\tau), \/s\in \mathbb{R}^d\}$ as a function of the spatial lag $\/h$.
+Define   $ \gamma(\/h,\tau)=\kappa(\tau)-H(\/h,\tau)$  which is generally a complex valued function.
+By the first interpretation $ 2\gamma(\/h,\tau)=2\kappa(\tau)(1-Re\{\rho(\/h,\tau)\})$ is the spectral density  of
+$\{Z(\/s+\/h,t)-Z(\/s,t)\}$ while by the second interpretation $  \gamma(\/h,\tau)$ is the spatial semi-variogram of $J(\/s,\tau)$.
+
+In this paper our second objective is to consider the estimation of the parameters of ST covariance functions using a half-spectral composite likelihood (HSCL) approach which involves a spectral approach in time but a covariance approach in space. The idea of  the proposed approach  is to facilitate the
+  analysis of spectral density  of contrast components at
+  different spatial sites. Then,   the Whittle likelihood(WL) approximation  is used.
+The  resulting HSCL approach requires no matrix inversions and
+the estimators are shown to be consistent and asymptotically normal under increasing domain asymptotic in a fashion similar to  \cite{bevilacqua2012estimating}.
+
+This paper is organized as follows.  In Section \ref{sec2} Vecchia  grouping for Bayesian estimating  of nonparametric nonstationary spatial covariances is proposed.    HSCL  estimation methods for  estimating ST covariances are proposed in Section \ref{sec3}.  A simulation study and real data analysis is conducted in Section \ref{sec4}. The paper ends with a conclusion.
+\section{  Vecchia  Grouping for Bayesian Estimating  Spatial Covariances}\label{sec2}
+Let  
+$\mathbf{Y}= \left\lbrace y_{i}^{(l)}: i=1, \dots, n, \quad l= 1, \dots, N\right\rbrace$  
+denote $N$ replicates of a nonstationary Gaussian random field observed at spatial locations  
+$\mathbf{s}_1, \mathbf{s}_2, \dots,\mathbf{s}_n$.  Assume the locations are ordered using the maximum-minimum distance, which selects locations such that the minimum distance between the nearest points in the selected set is maximized.  After ordering, let $\mathbf{y}_i = \left( y_{i}^{(1)}, \dots,  y_{i}^{(N)}\right)'$ denote the observations vector at location $\mathbf{s}_i$, for $i=1, \dots, n$. Also, define  
+$\mathbf{y}^{(l)}=\left(  y_{1}^{(l)}, \dots,  y_{n}^{(l)}\right)'$  
+as the spatial observation in the $l$-th replicate, modeled as 
+$
+\mathbf{y}^{(l)} \stackrel{iid}{\sim} \mathcal{N}_n(\/0, \mathbf{\Sigma}), \quad l= 1, \dots, N$, where $\mathbf{\Sigma}$ is the spatial covariance matrix with entries defined by the covariance function $C(\mathbf{s}_i, \mathbf{s}_j)$. 
+The goal is to estimate the spatial covariance matrix $\mathbf{\Sigma}$ or its inverse (the precision matrix) from the observations. 
+Next, we apply Vecchia’s approximation
+\begin{equation}\label{vecchia eq}
+	p(y_1^{(l)}, \ldots, y_n^{(l)} \mid \mathbf{\Sigma}) = p(y_{1}^{(l)}) \prod_{i=2}^{n} p(y_{i}^{(l)} \mid y_{j_{i1}}^{(l)}, \ldots, y_{j_{im}}^{(l)} ,\mathbf{\Sigma}),\quad l=1, \dots , N
+\end{equation}
+where 
+ $J_{m}(i)=\{j_{i1}, \ldots, j_{im}\}$ is subset of $m$ nearest neighbors among previously ordered locations. 
+ This ordered conditional independence structure not only reduces computational complexity for large datasets but also implicitly induces a specific structure in the precision matrix. This structure corresponds to  modified Cholesky decomposition, defined as
+$	\mathbf{\Sigma}^{-1} = \mathbf{U D^{-1} U'}$ where  $\mathbf{D} = \text{diag}(d_1, \dots, d_n)$ is a diagonal matrix with positive entries, and $\mathbf{U}$ is a unit upper triangular matrix. The assumed conditional independence leads to sparsity in $\mathbf{U}$, where each column has at most $m$ nonzero off-diagonal entries \citep{kidd2022bayesian}. These nonzero entries in column $i$ are denoted by  
+$\mathbf{u}_i = \mathbf{U}_{J_m(i), i}$,  
+representing the $J_m(i)$ indices in column $i$ of $\mathbf{U}$.
+Now, we can write  as a sequence of $n$ linear regression models as follows:
+\begin{equation}\label{eq3.5}
+	p\left( \left. \mathbf{Y}\right| \mathbf{\Sigma}\right)
+	=\prod_{i=1}^{n}p\left( \left. \mathbf{y}_i\right| \mathbf{y}_{1 \colon i-1}, \mathbf{\Sigma}\right) 
+	= \prod_{i=1}^{n} \mathcal{N}_N\left( \left. \mathbf{y}_i\right| \mathbf{X}_i \mathbf{u}_i, d_i \mathbf{I}_N \right)
+\end{equation}
+Here, $\mathbf{I}_N$ is the identity matrix
+ and the design matrix $\mathbf{X}_i$ consists
+of the observations at the $m$ neighbor locations of $\/s_i$, stored in the columns of $\/Y$ with
+indices $J_m(i)$. The Bayesian regression model corresponding to equation \eqref{eq3.5}, using independent NIG priors, is defined as follows:
+\begin{equation}\label{eq3.9}
+	\begin{split}
+		\left.\mathbf{u}_i\right|d_i, \boldsymbol{\theta} \stackrel{\text{ind}}{\sim} \mathcal{N}\left(0, d_i \mathbf{V}_i \right), \quad 
+		\left. d_i\right|\boldsymbol{\theta} \stackrel{\text{ind}}{\sim} \mathcal{IG}\left(\alpha_i, \beta_i \right), \quad 
+		i = 1, \dots, n.
+	\end{split}
+\end{equation}
+Here, $\boldsymbol{\theta}$ is the vector of hyperparameters including $m$, $\mathbf{V}_i$, $\alpha_i$, and $\beta_i$. The joint posterior distribution for the regression coefficients and variances is then computed as:
+\begin{equation}\label{eq3.10}
+	p(\mathbf{u}_1, \dots, \mathbf{u}_n, d_1, \dots, d_n \mid \mathbf{Y}, \boldsymbol{\theta}) \propto \prod_{i=1}^{n} \mathcal{N}(\mathbf{u}_i \mid \hat{\mathbf{u}}_i, d_i \mathbf{G}_i) 
+	\cdot \mathcal{IG}(d_i \mid \tilde{\alpha}_i, \tilde{\beta}_i)
+\end{equation}
+with corresponding parameters given by:
+\begin{align*}
+	\hat{\mathbf{u}}_i &= \mathbf{G}_i \mathbf{X}_i' \mathbf{y}_i, \quad 
+	\mathbf{G}_i = \left( \mathbf{X}_i' \mathbf{X}_i + \mathbf{V}_i^{-1} \right)^{-1}, \quad 
+	\tilde{\alpha}_i = \alpha_i + \frac{N}{2}, \\
+	\tilde{\beta}_i &= \beta_i + \frac{1}{2} \left( \mathbf{y}_i' \mathbf{y}_i - \hat{\mathbf{u}}_i' \mathbf{G}_i^{-1} \hat{\mathbf{u}}_i \right) 
+	= \beta_i + \frac{1}{2} \mathbf{y}_i' \left( \mathbf{I}_N + \mathbf{X}_i \mathbf{V}_i \mathbf{X}_i' \right)^{-1} \mathbf{y}_i.
+\end{align*}
+Using equation \eqref{eq3.10}, one can easily obtain posterior samples or summaries of the entries of $\mathbf{U}$ and $\mathbf{D}$ conditional on $\boldsymbol{\theta}$. Instead of directly specifying the parameters of the NIG distribution, we use a vector of hyperparameters defined as $\boldsymbol{\theta}=(\theta_1, \theta_2, \theta_3)'$ based on the behavior of the Mat\'ern covariance parameters.
+For the exponential covariance function with variance $\theta_1$ and range $2/\theta_2$, assuming $m=1$, parameters is computed as $d_i = \theta_1 \left(1 - \exp(-\theta_2 \|\mathbf{s}_i - \mathbf{s}_{J_1(i)}\|) \right)$, $\alpha_i = 6$ and $\beta_i = 5 d_i$,$\mathbf{V}_i = \text{diag}(v_{i1}, \dots, v_{im}), v_{ij} = \exp(-\theta_3 j)/d_i$. Regarding the choice of $m$, it is preferable to let $m$ be data-driven, based on the decay of prior elements in the matrix $\mathbf{U}$.  For computational simplicity, a uniform prior is commonly used: $P(\boldsymbol{\theta}|\mathbf{Y}) \propto p(\mathbf{Y}|\boldsymbol{\theta})$. Since the posterior distribution $P(\boldsymbol{\theta}|\mathbf{Y})$ is not analytically tractable, we use the adaptive Metropolis–Hastings  algorithm to sample from it. 
+Let $B = \{B_1, \dots, B_K\}$ be a partition of the index set $\{1, \dots, n\}$, define $U_k = \bigcup_{i \in B_k} J_i$, where $J_i$ denotes the ordered neighbor set of location $\mathbf{s}_i$. Suppose index $i$ belongs to block $B_k$. Define the  new neighbor set $\bar{J}_i$  as $\bar{J}_i = \{j \in U_k : j \leq i\}$ and  then apply Vacciha approximation \citep{mohammadian2025estimating}.
+ Simulation results indicate that posterior samples obtained from the grouping method leads  fast computation and higher statistical accuracy of the estimates.
+\section{ HSCL for Estimating  Spatial-Temporal Covariances}\label{sec3}
+ Suppose the Gaussian distributed data $\{Z(\/s_i,t),\ t=1, \ldots, T\}$ are given at
+irregular spatial locations $\/s_i,\ i=1, \ldots, n$ and equally-spaced integer
+times $t=1, \ldots, T$ with a covariance function $C(\/h,u)$ that can be parameterized by the vector $\/\theta=(\theta_1, \cdots , \theta_p)'$.
+ Ignoring constants, -2 [log of the likelihood of $\/\theta $ based on the observation vector $\/Z= (Z(\/s_1, 1) \cdots, Z(\/s_n, T))'$], is
+given by
+\begin{eqnarray}\label{logman1}
+L(\/\theta)=\/Z'\Sigma^{-1}\/Z+\log|\Sigma|,
+\end{eqnarray}
+where $\Sigma$ is the $nT\times nT$ covariance matrix of $\/Z$. The full likelihood (\ref{logman1}) involves  $nT\times nT$ inversion matrix and hence is computationally difficult.
+ Now suppose we consider all possible contrasts of the type
+$Y_{ij}(t)=Z(\/s_i,t)-Z(\/s_j,t)$
+for each $ t=1, 2, \cdots T$ and for all spatial sites  $\/s_i,  \/s_j$, which has a univariate
+stationary Gaussian process $\{ Y_{ij}(t)\}$ with mean zero and covariance $C(\/h,u)$ for fixed $\/h$. Assume  that the spectral density $2\gamma(\/h,\cdot ;\/\theta)$ exists. 
+ One possible version of CL can be based on the product of the  marginal distribution of all possible pairwise contrasts  $\{ Y_{ij}(t)\}$.
+Assuming independence between the differences, ignoring constants,  enables the negative composite log likelihood function can be written in the form
+\begin{eqnarray}\label{loglik}
+c\ell(\/\theta)=\sum_{i=1}^{n-1}\sum_{j>i}^{n}(\/Y_{ij}'\Sigma_{ij}^{-1}\/Y_{ij}+\log|\Sigma_{ij}|),
+\end{eqnarray}
+where $\Sigma_{ij}$ is the $T\times T$ covariance matrix of $\/Y_{ij}$. The maximum  CL
+estimate, $\hat{\/\theta}$, is found by maximizing $c\ell(\/\theta)$ over the allowable parameter
+space. Notice that the CL (\ref{loglik}) involves only $T$ dimensional densities and hence is computationally simpler than the full likelihood (\ref{logman1}).
+The computational burden can be further reduced if we apply the Whittle's idea.
+ \begin{eqnarray}\label{like}
+c\ell(\/\theta)=\sum_{i=1}^{n-1}\sum_{j>i}^{n}\sum_{k=0}^{T-1}\left(\frac{|J_{ij}(\tau_k)|^2}{2\gamma(\/h,\tau_k; \/\theta)}+\log \gamma(\/h,\tau_k; \/\theta)\right),
+\end{eqnarray}
+where $|J_{ij}(\tau_k)|^2$ and $2\gamma(\/h,\tau_k; \/\theta)$ are, respectively, the  periodogram and the spectral density function defined at frequencies $\tau_k, k=0, \cdots, T-1$.
+HSCL  estimates can then be obtained by minimizing
+(\ref{like}) with respect to $\/\theta$.
+Numerical optimization
+of $c\ell(\/\theta)$ is substantially simpler than the likelihood in the observation domain since
+the quadratic form, $\/Y_{ij}'\Sigma_{ij}^{-1}\/Y_{ij}$, and the determinant, $|\Sigma_{ij}|$, are not explicitly
+calculated. Also the parameters come in only through the spectral density,
+which for many types of classical time series has an explicit formula. The periodogram
+must be calculated, but it  can be calculated quite easily via the fast
+Fourier transform\citep{mosammam2016half, mosammam2025frequency}.
+
+\section{Simulation and Real Data Analysis}\label{sec4}   
+To evaluate the performance of the Vecchia  grouping  methods, we first simulated 20 independent replicates from a Gaussian process with a Mat\'ern covariance function with $\/\theta=(3,1,.25)$, $\/s_i\sim U(0,1)$ and simulations were conducted at 900 locations.
+To sample from the posterior distribution of the hyperparameters $\boldsymbol{\theta}$, we used the adaptive Metropolis–Hastings algorithm. Three Markov chains were run, each generating 30,000 posterior samples. After discarding the first 15,000 samples as burn-in, the remaining samples were thinned by a factor of 50, resulting in 900 independent posterior samples.  Simulation results indicate that posterior samples obtained from the proposed method produce narrower uncertainty intervals compared to ungrouped approaches, suggesting higher statistical accuracy of the estimates
+ (Figuer \ref{fig:covariance_comparison}).
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{cc}
+		\includegraphics[width=0.4\textwidth]{images/covGnew} &
+		\includegraphics[width=0.4\textwidth]{images/covkknew} \\
+		(a) & (b) \\
+	\end{tabular}
+	\caption{
+		(a) Grouping method	(b) Kidd and Katzfuss method.
+	}
+	\label{fig:covariance_comparison}
+\end{figure}
+
+\begin{table}
+	\centering
+	\caption{ Fits of the ST Gaussian process with   covariance model  (\ref{sss})  to Irish winds data}\label{tab_e512}
+	\begin{tabular}{cccccc}
+	\hline\noalign{\smallskip}
+Method&$\sigma^2$&$\alpha$&$a$&$c$&$\beta$\\
+\hline
+ WL&0.296(0.003)& 0.956(0.002)& 522.520(16.963) &  1.270(0.042)& 0.147(0.089)  \\
+       HSCL&0.306(0.010)& 1.003(0.002)& 522.520(17.886) &  1.151(0.088)& 0.000(0.094)   \\
+  \hline
+	\end{tabular}
+\end{table}
+Next we consider daily wind speeds data collected over 18 years, from 1961 to 1978, at 11 synoptic meteorological stations in Ireland.  We  fit  the HSCL to
+ the ST covariance function of  
+\begin{eqnarray}\label{sss}
+C(\/h,u)=\frac{\sigma^2}{({|\/h|}/{a})^\alpha+1}\exp\left\{-\frac{{|u|}/{c}}{(({|\/h|}/{a})^\alpha+1)^{\beta/2}}\right\},
+\end{eqnarray}
+where $a, c>0$ are space and time scaling parameters,  $\beta\in [0,1]$ is the separability parameter and $\alpha\in(0,2]$  governs the smoothness of purely spatial covariance function\citep{Gneiting2002}. The estimated parameters are summarized in Table \ref{tab_e512} and details will be presented in  presentation.
+\section*{Discussion and Conclusion}   
+First, we  addresses a Bayesian grouping-based  Vecchia’s approximation approach which significantly reduces computational burden in nonparametric estimation of a nonstationary spatial covariance.  Next, we propose HSCL   for the estimation of ST covariances which requires no matrix inversions and
+the estimators are shown to be consistent and asymptotically normal under increasing domain asymptotic. Examples are given using simulated and real data.
+\begin{thebibliography}{9}
+\bibitem[Besag, 1975]{besag1975statistical}
+Besag, J. (1975).
+\newblock Statistical analysis of non-lattice data.
+\newblock {\em The statistician}, pages 179--195.
+
+\bibitem[Bevilacqua et~al., 2012]{bevilacqua2012estimating}
+Bevilacqua, M., Gaetan, C., Mateu, J., and Porcu, E. (2012).
+\newblock Estimating space and space-time covariance functions for large data
+  sets: a weighted composite likelihood approach.
+\newblock {\em Journal of the American Statistical Association},
+  107(497):268--280.
+
+
+\bibitem[Cressie and Johannesson, 2008]{cressie2008fixed}
+Cressie, N. and Johannesson, G. (2008).
+\newblock Fixed rank kriging for very large spatial data sets.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 70(1):209--226.
+
+
+\bibitem[Datta et~al., 2016]{datta2016hierarchical}
+Datta, A., Banerjee, S., Finley, A.~O., and Gelfand, A.~E. (2016).
+\newblock Hierarchical nearest-neighbor gaussian process models for large
+  geostatistical datasets.
+\newblock {\em Journal of the American Statistical Association},
+  111(514):800--812.
+
+
+%\bibitem[Fuentes, 2007]{fuentes2007approximate}
+%Fuentes, M. (2007).
+%\newblock Approximate likelihood for large irregularly spaced spatial data.
+%\newblock {\em Journal of the American Statistical Association},
+%  102(477):321--331.
+%  
+ \bibitem[Ghasemi et~al., 2025]{mohammadian2025estimating}
+Ghasemi, F., Mosammam, A.~M., and Mateu, J. (2025).
+\newblock A Bayesian Approach and Vecchia Grouping for Nonparametric Estimation of Nonstationary Spatial Covariance in Big Data.
+\newblock {\em Journal of Statistical Sciences}, 20(1):1--29.
+
+ 
+  \bibitem[Gneiting, 2002]{Gneiting2002}
+Gneiting, T. (2002).
+\newblock Non-separable, stationary covariance functions for space-time data.
+\newblock {\em Journal of the American Statistical Association},
+  97(458):590--600.
+%\bibitem[Horrell and Stein, 2015]{horrell2015half}
+%Horrell, M.~T. and Stein, M.~L. (2015).
+%\newblock Half-spectral space-time covariance models.
+%\newblock {\em arXiv preprint arXiv:1505.01243}.
+%
+%\bibitem[Katzfuss and Guinness, 2021]{katzfuss2021general}
+%Katzfuss, M. and Guinness, J. (2021).
+%\newblock A general framework for vecchia approximations of gaussian processes.
+%\newblock {\em Statistical Science}, 36(1):124--141.
+
+
+\bibitem[Kidd and Katzfuss, 2022]{kidd2022bayesian}
+Kidd, B. and Katzfuss, M. (2022).
+\newblock Bayesian nonstationary and nonparametric covariance estimation for
+  large spatial data (with discussion).
+\newblock {\em Bayesian Analysis}, 17(1):291--351.
+
+
+\bibitem[Lindgren et~al., 2011]{lindgren2011explicit}
+Lindgren, F., Rue, H., and Lindstr{\"o}m, J. (2011).
+\newblock An explicit link between gaussian fields and gaussian markov random
+  fields: the stochastic partial differential equation approach.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 73(4):423--498.
+
+
+\bibitem[Lindsay, 1988]{lindsay1988composite}
+Lindsay, B.~G. (1988).
+\newblock Composite likelihood methods.
+\newblock {\em Contemporary mathematics}, 80(1):221--39.
+
+\bibitem[Mosammam, 2025]{mosammam2025frequency}
+Mosammam, A.~M. (2025).
+\newblock On the frequency domain composite likelihood methods for estimating
+  space-time covariance functions for large datasets.
+\newblock {\em Communications in Statistics-Simulation and Computation},
+  54(4):1146--1160.
+
+
+\bibitem[Mosammam, 2016]{mosammam2016half}
+Mosammam, A.~M. (2016).
+\newblock Half spectral composite likelihood approach for estimating
+  spatial-temporal covariance functions.
+\newblock {\em Spatial Statistics}, 16(1):19--34.
+
+\bibitem[Mosammam and Kent, 2016]{mosammam2014estimation}
+Mosammam, A.~M. and Kent, J.~T. (2016).
+\newblock Estimation and testing for covariance-spectral spatial-temporal
+  models.
+\newblock {\em Environmental and Ecological Statistics}, 23(1):43--64.
+
+
+\bibitem[Stein et~al., 2004]{stein2004approximating}
+Stein, M.~L., Chi, Z., and Welty, L.~J. (2004).
+\newblock Approximating likelihoods for large spatial data sets.
+\newblock {\em Journal of the Royal Statistical Society Series B: Statistical
+  Methodology}, 66(2):275--296.
+
+\bibitem[Varin, 2008]{varin2008composite}
+Varin, C. (2008).
+\newblock On composite marginal likelihoods.
+\newblock {\em AStA Advances in Statistical Analysis}, 92(1):1--28.
+
+
+
+
+\end{thebibliography}
+ \end{document}
+

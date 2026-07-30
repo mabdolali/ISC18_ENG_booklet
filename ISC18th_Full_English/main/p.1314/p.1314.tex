@@ -1,0 +1,330 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{E-Bayesian Estimation under Progressive Type II Censoring }
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{MirMostafaee and Ghasabani}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf  E-Bayesian Estimation for Exponential Distribution under Progressive Type II Censoring with DeGroot Loss Function}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+ S.M.T.K. MirMostafaee\footnote{{\bf Corresponding Author:} {\tt m.mirmostafaee@umz.ac.ir }},  Reza Ghasabani   \\
+Department of Statistics,
+University of Mazandaran, P.O. Box 47416-1467, Babolsar, Iran 
+%$^2$Second Author's Affiliation
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This paper investigates E-Bayesian estimation for the parameter of the exponential distribution under the DeGroot loss function based on progressively Type-II censored data. We consider two scenarios: (i) when the sample size is fixed, and (ii) when the sample size is random. A simulation study verifies that a random sample size may lead to improvement in terms of estimated risk.
+
+\noindent{\bf Keywords:} 
+DeGroot loss function, E-Bayesian estimation, Random sample size, Progressive Censoring, and Estimated risk. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F10$, $\rm 62N02$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+	%% \linenumbers
+The exponential distribution is known as an important lifetime distribution in modeling real-world phenomena.
+Let $X$ follow an exponential distribution with parameter $\xi$. Then, we write $X\sim Exp(\xi)$, and the probability density function (PDF), and cumulative distribution function   of $X$ are 
+$
+f(x;\xi)=\xi \,\exp(-\xi\, x),
+$
+and  
+$
+F(x;\xi)=1-\exp(-\xi\, x), 
+$
+respectively, where $x>0,$ and $\xi>0$. 
+%Many studies have worked on inferential problems regarding the one parameter exponential distribution, see for example, 
+%\cite{Ahmadi:et:al:2012},
+%\cite{Ahmadi:et:al:2016}, and \cite{MirMostafaee:Ghasabani:2025}.
+
+In reliability and life-testing experiments, censoring techniques are widely used to decrease experimental costs and shorten testing periods. Among these, progressive Type II censoring extends the classical Type II censoring by allowing the removal of surviving units during the experiment. 
+Assume that $n$ items are placed on test initially and the experiment is designed to observe $m$ failures, where $1\leq m\leq n$. After the first failure, $R_1$ surviving units are randomly withdrawn. Following the second failure, $R_2$ units are removed. This continues until the $m$th failure occurs, at which stage all remaining units are withdrawn, where $R_m=n-R_1-R_2-\cdots-R_{m-1}-m$. The vector $R=(R_1,R_2,\ldots,R_m)$ is the censoring scheme. The ordinary Type II censoring is obtained when $R=((m-1)^*0,n-m)$. 
+For a detailed treatment of the theoretical foundations of progressive Type II censoring, see \cite{Balakrishnan:Aggarwala:2000}. %Over the years, a substantial body of research has been devoted to statistical inference based on progressively Type II censored samples; see, among others, \cite{Ahmadi:et:al:2012}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In certain applications, maintaining a constant sample size is impossible due to the potential for missing observations for various reasons. 
+\cite{Srivastava:1973} provided several applications when the sample size is random. %Many studies have been accomplished assuming that the sample size is a discrete random number. 
+A series of early studies, including \cite{Raghunandanan:Patil:1972}, \cite{Buhrman:1973}, \cite{Consul:1984}, and \cite{Gupta:Gupta:1984}, laid the theoretical foundations for the distributions of order statistics in this setting. 
+In a recent study, \cite{Basiri:Asgharzadeh:2021} addressed the problem of optimizing the random sample size in progressive Type-II censoring under a cost constraint.
+
+A Bayesian solution to a statistical problem requires choosing a prior distribution and a loss function. In this paper, we focus on the DeGroot loss function (DLF), introduced by \cite{DeGroot:1970}, defined as
+%\begin{eqnarray}\label{deg}
+$	\displaystyle L(\xi,\delta)= \big(\frac{\xi-\delta}{\delta}\big)^2,$
+%\end{eqnarray}
+where $\delta$ denotes an estimator of $\xi$. While some practitioners assume that a single prior can be elicited, prior information is often vague in practice, so any prior is only an approximation, see \cite{Alhamaidah:et:al:2023}. One method to overcome this difficulty is the E-Bayesian approach of \cite{Han:1997},  see also \cite{Alhamaidah:et:al:2023} and \cite{Ghasabani:et:al:2026} for recent investigations. 
+
+In the remainder of this paper, we derive the E-Bayesian estimator for the exponential parameter under the DeGroot loss function based on progressively Type-II censored data. Two cases are examined: fixed and random sample sizes. A simulation study is also performed to compare and evaluate the estimators.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimation with a Fixed Sample Size $(N=n)$}
+Let ${\boldsymbol X}_{m:n}=(X_{1:m:n}, \ldots, X_{m:m:n})$ denote a progressively Type II censored sample of size $m$ from an exponential distribution  with parameter $\xi$, where  $n$ is fixed. The likelihood function of $\xi$ based on  the observed sample ${\boldsymbol x}_{m:n}=(x_1,\ldots,x_m)$ is  (see e.g. \cite{Balakrishnan:Aggarwala:2000})
+\begin{align}\label{Likee}
+	\mathcal{L}(\xi \mid {\boldsymbol x}_{m:n})
+	%&=
+	%C_n\prod_{i=1}^{m}
+	%\Big[e^{-\xi x_i}\Big]^{R_i}
+	%\xi e^{-\xi x_i}\notag
+	%\\
+	=C_n\xi^m	\exp\left\{-\xi t\right\}.
+\end{align}
+
+where
+$
+	C_n=n(n-R_1-1)(n-R_1-R_2-2)\cdots(n-R_1-R_2-\cdots-R_{m-1}-m+1)
+$, and $t=\sum_{i=1}^{m}(R_i+1)x_i$ is the observed value of $	T=\sum_{i=1}^{m}(R_i+1)X_{i:m:n}$.
+Maximizing the likelihood function with respect to $\xi$ yields the maximum likelihood (ML) estimator of $\xi$ as $	\widehat{\xi}_M=\frac{m}{T}$.
+
+For Bayesian estimation, we consider the following gamma prior
+\begin{equation}\label{prior}
+	\pi(\xi)=\frac{b^a}{\Gamma(a)} \xi^{a-1} {\rm e}^{-b\xi},\qquad \xi >0,\quad a>0,\, b>0.
+\end{equation}
+%A key advantage of the gamma prior distribution is that it yields simple closed-form expressions for both its mean and variance. As a result, the hyperparameters $a$ and $b$ can be conveniently specified using prior information about the mean and/or variance of $\xi$.
+Now, from (\ref{Likee}) and (\ref{prior}), the posterior density of $\xi$ given the data will become a gamma density with parameters $m+a$ and $b+t$, which is given as follows
+\begin{align*} 
+	\pi(\xi|{\boldsymbol x}_{m:n})
+	=\frac{(b+t)^{m+a}}{\Gamma(m+a)} \, \xi^{m+a-1} {\rm e}^{-\xi\, (b+t)}.
+\end{align*}
+ Now, under the DLF, the Bayes estimator of $\xi$ is obtained as
+\begin{align*} 
+	\widetilde{\xi}_B=\frac{E(\xi^2|{\boldsymbol X}_{m:n})}{E(\xi|{\boldsymbol X}_{m:n})}=\frac{m+a+1}{b+T}.
+\end{align*}
+
+%Next, we obtain the posterior risk of $\widetilde{\xi}_B$, denoted as $PR(\widetilde{\xi}_B)$. We have
+%		\begin{align}\nonumber\label{PR}
+%	 PR(\widetilde{\xi}_{B})&=\int_0^\infty  \big(\frac{\xi-\widetilde{\xi}_B}{\widetilde{\xi}_B}\big)^2  \pi(\xi|{\boldsymbol x}_{m:n}) \mathrm{d}\xi
+%		=\frac{1}{\widetilde{\xi}_B^2}\int_0^\infty  \bigg({\widetilde{\xi}_B}^2 + \xi^2 -2\, \widetilde{\xi}_B \, \xi\bigg)  \pi(\xi|{\boldsymbol x}_{m:n})  \mathrm{d}\xi
+%\\
+%		&=1+\frac{E(\xi^2|{\boldsymbol x}_{m:n})}{{\widetilde{\xi}_B}^2}-\frac{2\,E(\xi|{\boldsymbol x}_{m:n})}{\widetilde{\xi}_B}=\frac{1}{m+a+1}.
+%	\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{E-Bayesian Estimation}
+Let $\widetilde{\xi}_B$ be the  Bayes estimator of  $\xi$ obtained under the prior distribution \eqref{prior}, and  $\tilde{\pi}(a,b)$ represent the joint prior density of the hyperparameters $a$ and $b$. Then, following \cite{Han:1997}, the E-Bayesian estimator of $\xi$ is defined as
+\begin{equation}\label{ebayes}
+	\widetilde{\xi}_{EB}=\int\int_{\mathbb D} \widetilde{\xi}_B\,\,  \tilde{\pi}(a,b) \,{\rm d}a{\rm d}b,
+\end{equation}
+where $\mathbb{D}$ is the domain of $a$ and $b$.% Consequently, from  \eqref{Bayes} and (\ref{ebayes}), the E-Bayesian estimator for $\xi$ under the BSE loss function is %given by
+
+Following \cite{Han:1997}, the hyperparameters $a$ and $b$ in the prior for $\xi$ should be specified such that the prior density decreases in $\xi$. Differentiation of \eqref{prior} shows this would be satisfied if $b>0$ and $0<a<1$. However, larger values of $b$ can reduce robustness, see \cite{Berger:1985}; hence we impose $b \le c$. We therefore adopt the joint prior for $a$ and $b$ as follows:
+\begin{align} 
+	\tilde{\pi}(a,b)=\frac{1}{c},  \qquad \qquad \quad \ 0<a<1, \quad 0<b<c.\label{prior1}
+\end{align}
+
+	Now, the E-Bayesian estimator of $\xi$ under the DLF is obtained as 
+		\begin{align*}\nonumber
+	 \widetilde{\xi}_{EB}&=\int\int_{\mathbb{D}}\Bigg[\frac{m+a+1}{b+T}\Bigg]\frac{1}{c} \mathrm{d}a \mathrm{d}b 
+		=\frac{1}{c}\int_0^1(m+a+1) \mathrm{d}a\int_0^c\frac{1}{b+T} \mathrm{d}b
+	%	\\
+	%	&=\frac{1}{c}\Bigg[(n+1)\int_0^1 1 \mathrm{d}a\int_0^1a\mathrm{d}a\Bigg] \ln \frac{c+T}{T}
+		\\
+		&=\dfrac{2m+3}{2c} \ln \big(\frac{c+T}{T}\big).
+	\end{align*}
+
+\section{Estimation with a Random Sample Size }	
+In this section, we discuss parameter estimation when the sample size $N$ is random. Let ${\boldsymbol X}_{m:N}=(X_{1:m:N},\cdots,X_{m:m:N})$ be progressively Type II censored order statistics from an exponential distribution with parameter $\xi$, where $N$ is a discrete random variable supported on $\{m,m+1,\cdots\}$. We assume $N$ follows a truncated power series distribution starting at $m$ with known parameter $\theta$. Specifically, if $N^*$ has a power series distribution with PMF
+\begin{align*}
+P_\theta(N^*=n)=\frac{h(n)\theta^n}{g(\theta)}, \qquad n=0,1,\cdots,
+\end{align*}
+where $g(\theta)=\sum_{n=0}^\infty h(n)\theta^n$, then the PMF of $N$ is
+\begin{align}\label{pmf}
+P_\theta(N=n)=\frac{h(n)\theta^n}{P_\theta(N^*\geq m)\,g(\theta)}, \qquad n=m,m+1,\cdots.
+\end{align}
+Many well-known distributions such as the Poisson distribution belong to the class of power series distributions, see \cite{Mahmoudi:Mahmoodian:2015}.
+
+Let ${\boldsymbol x}_{m:N}=(x_1,\cdots,x_m)$ be the observed sample. The joint likelihood of $X_{1:m:N},\cdots,X_{m:m:N}$ and $N$ is \citep{Ghasabani:et:al:2026}
+\begin{equation}\label{like1N}
+\mathcal{L}(\xi; {\boldsymbol x}_{m:N}, n)=\mathcal{L}(\xi, {\boldsymbol x}_{m:N}\mid N=n)\,P_\theta(N=n),
+\end{equation}
+where $P_\theta(N=n)$ is given in (\ref{pmf}) and
+\begin{equation}\label{like2N}
+\mathcal{L}(\xi, {\boldsymbol x}_{m:N}\mid N=n)=C_n\,\xi^m\,{\rm e}^{-\xi t^*},
+\end{equation}
+with $t^*$ the observed value of $T^*=-\sum_{i=1}^{m}(R_i+1)X_{i:m:N}$ and $C_n$ as defined in Section 2. Substituting (\ref{pmf}) and (\ref{like2N}) into (\ref{like1N}) yields
+\begin{equation}\label{like3N}
+\mathcal{L}(\xi; {\boldsymbol x}_{m:N}, n)=
+\frac{h(n)\theta^n}{P_\theta(N^*\geq m)\,g(\theta)}\,C_n\,\xi^m\,{\rm e}^{-\xi t^*}.
+\end{equation}
+The ML estimator for $\xi$ is $\widehat{\xi}^*_M=m/T^*$, found by maximizing the likelihood function.
+From the prior (\ref{prior}) and the joint likelihood (\ref{like3N}), the posterior density of $\xi$ given ${\boldsymbol x}_{m:N}$ and $N=n$ is
+\begin{equation*}
+\pi^*(\xi | {\boldsymbol x}_{m:N}, n)=\frac{(b+t^*)^{m+a}}{\Gamma(m+a)}\,\xi^{m+a-1}\,{\rm e}^{-\xi(b+t^*)}.
+\end{equation*}
+Under the DLF, the Bayes estimator of $\xi$ is given by
+\begin{align}\label{Bayes1}
+	\widetilde{\xi}_B^*=\frac{E(\xi^2|{\boldsymbol X}_{m:N},N)}{E(\xi|{\boldsymbol X}_{m:N},N)}=\frac{m+a+1}{b+T^*}.
+\end{align}
+	Now, using (\ref{ebayes}), (\ref{prior1}) and (\ref{Bayes1}), the E-Bayesian estimator of $\xi$ under the DLF is obtained as 
+		\begin{align}\nonumber
+	 \widetilde{\xi}_{EB}^*=\int\int_{\mathbb{D}}\Bigg[\frac{m+a+1}{b+T^*}\Bigg]\frac{1}{c} \mathrm{d}a \mathrm{d}b 
+=\dfrac{2m+3}{2c} \ln \big(\frac{c+T^*}{T^*}\big).
+	\end{align}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Simulation Study}	
+This section presents a simulation study comparing the proposed point estimators. We take $m=10$ and 20, with $N$ following a truncated Poisson distribution starting at $m$ with parameter $\theta$. Two scenarios for \( N \) are examined:
+($i$) {Fixed case:} $ N = 15 $ for $ m = 10 $, and $ N = 30 $ for $ m = 20$. 
+($ii$) {Random case:} $ N $ is generated from the truncated Poisson distribution starting at $ n = 10, 20 $ with parameter $ \theta_0 $, chosen such that $ E_{\theta_0}(N) = 15 $ and $ 30 $, respectively. For  $ E_{\theta_0}(N) = 15 $, we have $ \theta_0 = 14.33724 $. Moreover, from \cite{Ghasabani:et:al:2026}, for $ E_{\theta_0}(N) = 30 $, we have $ \theta_0 = 29.69595 $. 
+We assume that the censoring scheme is $((m-1)^*0, N-m)$, which corresponds to ordinary Type II right censoring. We generate $X_{1:m:N},\ldots,X_{m:m:N}$ from $Exp(\xi)$ with $\xi=0.5,1$ and 2. For each replication, we compute ML, Bayesian, and E-Bayesian estimates under the DLF with $c=2,3,5$.
+For Bayesian estimation, following \cite{Ghasabani:et:al:2026}, we choose $a=0.5$, which is the prior mean of $a$, and $b=a/\xi$ so that $E(\xi|a,b)=a/b$ equals the true $\xi$. With $S=10000$ replications, the estimated risk (ER), and the estimated bias (bias for short) of an estimator $\hat{\xi}$ are
+\[
+ER(\hat{\xi})=\frac{1}{S}\sum_{i=1}^S \left(\frac{\hat{\xi}_i-\xi}{\hat{\xi}_i}\right)^2,\quad\quad\text{and}\quad\quad bias(\hat{\xi})=\frac{1}{S}\sum_{i=1}^S \left(\hat{\xi}_i-\xi\right),
+\]
+respectively, where $\hat{\xi}_i$ is the estimate from the $i$th replication. 
+Tables \ref{tab1-s}   reports the ERs and biases for all estimators. 
+
+\begin{table}[htp]
+\begin{center}
+\small
+\caption{ERs (first row) and biases (second row) of the ML, Bayesian and E-Bayesian estimators.}\label{tab1-s}
+\begin{tabular}{llllllllll}
+  \hline
+  &&   &&& $m=10$&&&  &\\
+\hline  
+  && $\xi=0.5$ &&& $\xi=1$&&& $\xi=2$&\\
+\cline{3-4}\cline{6-7}\cline{9-10}
+ &$N$& Fixed &Random&& Fixed& Random&& Fixed& Random\\
+\hline
+ &ML& 0.27500 &0.27479&& 0.10125&0.10147&& 1.40744& 1.41050\\
+ && 0.61266 &0.61221&& 0.11266& 0.11221&& $-0.88734$& $-0.88779$\\
+ &Bayes& 0.29107 &0.29087&& 0.08403& 0.08411&& 0.92038& 0.92253\\
+ && 0.63887 &0.63828&& 0.20464& 0.20406&& $-0.75918$& $-0.75974$\\
+ E-Bayes&$c=2$& 0.29269 &0.29248&& 0.07912& 0.07924&& 1.13316& 1.13555\\
+ && 0.64385 &0.64328&& 0.14385& 0.14328&& $-0.85615$& $-0.85672$\\
+ &$c=3$& 0.27220 &0.27200&& 0.07753& 0.07769&&1.28758& 1.29013\\
+ &&  0.58990 &0.58935&& 0.08990& 0.08935&& $-0.91010$& $-0.91065$\\
+ &$c=5$& 0.23509 &0.23491&& 0.08394& 0.08417&& 1.62293& 1.62579\\
+&& 0.50032 &0.49982&& 0.00032& $-0.00018$&& $-0.99968$& $-1.00018$ \\
+\hline
+\hline
+  &&   &&& $m=20$&&&  &\\
+  \hline
+  && $\xi=0.5$ &&& $\xi=1$&&& $\xi=2$&\\
+\cline{3-4}\cline{6-7}\cline{9-10}
+ &$N$& Fixed &Random&& Fixed& Random&& Fixed& Random\\
+\hline
+ &ML& 0.26309 &0.26273&& 0.05042& 0.04890&& 1.19777& 1.19153\\
+ &&0.55401 & 0.55316&& 0.05401& 0.05316&& $-0.94599$& $-0.94684$\\
+ &Bayes& 0.27313 &0.27283&& 0.04588&0.04457&& 0.95227& 0.94687\\
+ &&0.57351 & 0.57271&& 0.10244& 0.10158&& $-0.88247$& $-0.88335$\\
+ E-Bayes&$c=2$&0.27355 &0.27324&& 0.04432& 0.04300&& 1.07752& 1.07211\\
+ &&0.57455 & 0.57374&& 0.07455& 0.07374&& $-0.92545$& $-0.92626$\\
+ &$c=3$& 0.26225 &0.26194&& 0.04378& 0.04246&& 1.16469& 1.15928\\
+ &&0.54828 & 0.54752&& 0.04828& 0.04752&&$-0.95172$& $-0.95248$\\
+ &$c=5$& 0.24087 &0.24056&& 0.04569& 0.04437&& 1.34716& 1.34172\\
+&&0.50064 & 0.49996&& 0.00064& $-0.00004$&& $-0.99936$& $-1.00004$\\
+\hline
+ \end{tabular}
+\end{center}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+From Table \ref{tab1-s}, we observe that estimators based on a random sample size produce lower ERs than those based on a fixed sample size  for $m=10$ when $\xi=0.5$ and for $m=20$. In terms of bias, the random sample size estimators outperform the fixed ones except for $\xi=2$. Among the ML, Bayesian, and E-Bayesian estimators, 
+the E-Bayesian estimators with $c=5$ perform best for $\xi=0.5$ in terms of ER, while those with $c=3$ are best for $\xi=1$ in this respect. Regarding bias, 
+the E-Bayesian estimators with $c=5$ achieve the best bias performance for $\xi=0.5$ and $1$.  However, for $\xi=2$, the Bayesian estimators provide the best performance in both ER and bias. Both ER and bias are decreasing with respect to $m$ in most cases, as expected.
+\clearpage
+\section*{Discussion and Conclusion}   
+In this paper, we explored E-Bayesian inference for the exponential distribution parameter under the DeGroot loss function, based on progressively Type-II censored data.
+The results were obtained for two sampling scenarios: fixed and random sample sizes. The simulation results indicated that estimators based on a random sample size may offer an advantage in terms of estimated risk over those based on a fixed sample size. All computations were performed using the R software   \citep{R:Core:Team:2024}, with  packages {\sf nleqslv} \citep{Hasselman:2023}, and {\sf extraDistr} package \citep{Wolodzko:2023}.
+\section*{Acknowledgments}   
+AI tools were used solely for language editing purposes. The authors bear full responsibility for all scientific content, analyses, and conclusions presented herein.
+\begin{thebibliography}{9}
+%\bibitem[Ahmadi et al. (2016)]{Ahmadi:et:al:2016}
+%Ahmadi, J., Basiri, E. and MirMostafaee, S.M.T.K. (2016), Optimal random sample size based on Bayesian prediction of exponential lifetime and application to real data, {\it Journal of the Korean Statistical Society}, {45}(2), 221-237. % Informative sample size is random
+
+%\bibitem[Ahmadi et al. (2012)]{Ahmadi:et:al:2012}
+%Ahmadi, J., MirMostafaee, S.M.T.K. and Balakrishnan, N. (2012), Bayesian prediction of $k$-record values based on progressively censored data from exponential distribution,
+%{\it Journal of Statistical Computation and Simulation}, {82}(1), 51-62.
+
+\bibitem[Alhamaidah et al.(2023)]{Alhamaidah:et:al:2023}
+Alhamaidah, A., Naghizadeh Qomi, M. and  Kiapour, A. (2023), Comparison of E-Bayesian estimators in Burr XII model using E-PMSE based on record values, 
+{\it Statistics, Optimization \& Information Computing},  {11}(3), 709-718.
+
+\bibitem[Balakrishnan and Aggarwala(2000)]{Balakrishnan:Aggarwala:2000}
+Balakrishnan, N. and Aggarwala, R. (2000), {\it Progressive censoring: Theory, methods, and applications,}  Boston, Birkh\"auser.
+
+\bibitem[Basiri and Asgharzadeh(2021)]{Basiri:Asgharzadeh:2021}
+Basiri, E., and Asgharzadeh, A. (2021), Optimal random sample size in progressively Type-II censoring based on cost constraint for the proportional hazards family, 
+{\it Journal of Statistical Computation and Simulation},  {91}(15), 3154-3169.
+
+\bibitem[Berger(1985)]{Berger:1985}
+Berger, J.O. (1985), {\it Statistical decision theory and Bayesian analysis}, 2nd edn., New York, Springer-Verlag.
+
+
+\bibitem[Buhrman(1973)]{Buhrman:1973}
+Buhrman, J.M. (1973), On order statistics when the sample size has a binomial distribution, {\it Statistica Neerlandica}, { 27}(3), 125-126.
+
+
+\bibitem[Consul(1984)]{Consul:1984} 
+Consul, P.C. (1984), On the distributions of order statistics for a random sample size, {\it Statistica  Neerlandica}, {38}(4), 249-256.
+
+\bibitem[DeGroot(1970)]{DeGroot:1970}
+DeGroot, M.H. (1970), {\it Optimal statistical decisions}, McGraw-Hill Book Company.
+
+\bibitem[Ghasabani et al. (2026)]{Ghasabani:et:al:2026}
+Ghasabani, R., MirMostafaee, S.M.T.K., Naghizadeh Qomi, M. and  Basiri, E. (2026), E-Bayesian estimation in the proportional hazard rate family based on progressively Type II censored data with fixed and random sample sizes. {\it Journal of the Indian Society for Probability and Statistics}, 27(1), 61-107.
+
+\bibitem[Gupta and Gupta(1984)]{Gupta:Gupta:1984}
+Gupta D. and Gupta R.C. (1984), On the distribution of order statistics for a random sample size, {\it Statistica  Neerlandica}, {38}(1), 13-19.
+
+\bibitem[Han(1997)]{Han:1997}
+Han, M. (1997), The structure of hierarchical prior distribution and its applications, {\it Chinese Operations Research and Management Science},  {6}(3), 31-40.
+
+\bibitem[Hasselman(2023)]{Hasselman:2023} Hasselman, B.  (2023), nleqslv: Solve systems of nonlinear equations, R package   version 3.3.5, 
+\url{https://CRAN.R-project.org/package=nleqslv}.
+
+%\bibitem[Han(2019)]{Han:2019}
+%Han, M. (2019), E-Bayesian estimation and its E-MSE under the scaled squared error loss function, for exponential distribution as example.  \textit{Communications in Statistics-Simulation and Computation}, \textbf{48}(6), 1880-1890.
+
+%\bibitem[Han(2020a)]{Han:2020a}
+%Han, M. (2020a), E-Bayesian estimation and its E-posterior risk of the exponential distribution parameter based on complete and type I censored samples, {\it Communications in Statistics-Theory and Methods}, {49}(8), 1858-1872.
+
+%\bibitem[Han(2020b)]{Han:2020b}
+%Han, M. (2020b), E-Bayesian estimations of the reliability and its E-posterior risk under different loss functions, {\it Communications in Statistics-Simulation and Computation}, {49}(6), 1527-1545.
+\bibitem[Mahmoudi and Mahmoodian(2015)]{Mahmoudi:Mahmoodian:2015}
+Mahmoudi, E. and Mahmoodian, H. (2015), Normal power series class of distributions: Model, properties and applications, arXiv preprint, \url{https://arxiv.org/abs/1510.07180}.
+
+\bibitem[R Core Team(2024)]{R:Core:Team:2024}
+R Core Team (2024), {\it R: A language and environment for statistical computing}, R Foundation for Statistical Computing, Vienna, Austria.
+
+\bibitem[Raghunandanan and Patil(1972)]{Raghunandanan:Patil:1972}
+Raghunandanan, K. and Patil, S.A. (1972), On order statistics for random sample size, {\it Statistica Neerlandica}, { 26}(4), 121-126.
+
+\bibitem[Srivastava(1973)]{Srivastava:1973}
+Srivastava, R.C.  (1973), Estimation of probability density function based on random number of observations with applications, {\it International Statistical Review / Revue Internationale de Statistique}, {41}(1), 77-86.
+
+\bibitem[Wolodzko (2023)]{Wolodzko:2023}
+Wolodzko, T. (2023), extraDistr: Additional univariate and multivariate distributions, R package version 1.10.0, \url{https://CRAN.R-project.org/package=extraDistr}.
+  
+   \end{thebibliography}
+ \end{document}
+
+

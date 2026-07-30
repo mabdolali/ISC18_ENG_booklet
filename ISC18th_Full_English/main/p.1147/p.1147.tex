@@ -1,0 +1,190 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Least Angle Regression for HbA1c Prediction in Type 1 Diabetes}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Safari E,Esmaily H,Shabani N}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Least Angle Regression for Identifying Potential Predictors of HbA1c in Type 1 Diabetes: A Real-World Data Application}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Elham Safari$^1$, Habibollah Esmaily$^2$, Niloofar Shabani \footnote[3]{{\bf Corresponding Author: Niloofar Shabani.} {\tt shabaniniloo0@gmail.com }} \\
+$^1$Department of Biostatistics, School of Health, Mashhad University of Medical Sciences, Mashhad, Iran. Email: SafariE4002@mums.ac.ir \\
+$^2$Department of Biostatistics, School of Health, Mashhad University of Medical Sciences, Mashhad, Iran. Email: EsmailyH@mums.ac.ir \\
+$^3$Department of Epidemiology and Biostatistics, School of Public Health, Tehran University of Medical Sciences, Tehran, Iran. Email:shabaniniloo0@gmail.com
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Least Angle Regression (LARS) is an efficient variable selection method for high-dimensional data, offering computational advantages over traditional penalized regression approaches. This study applied LARS to predict short-term (six-month) and long-term (one-year) HbA1c levels in 271 patients with type 1 diabetes using real-world data from the Sina health information system in Mashhad, Iran. The optimal models were selected using Mallows' $C_p$ criterion at steps 13 and 20, respectively. Baseline HbA1c and diabetic microvascular complications were the strongest positive predictors, while dietary factors, including fruit and dairy consumption, showed protective effects. LARS provided a parsimonious, interpretable framework for identifying key potential predictors of glycemic control in type 1 diabetes using real-world clinical data.\\
+\noindent{\bf Keywords:} 
+Least Angle Regression(LARS), type 1 diabetes, HbA1c prediction, variable selection, and penalized regression. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J07$, $\rm 62P10$, $\rm 62H30$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}
+\section{Introduction}
+The increasing availability of electronic health records and laboratory measurements has generated high-dimensional clinical datasets that offer valuable opportunities for disease prediction and personalized medicine. However, conventional regression methods often perform poorly when numerous correlated predictors are analyzed simultaneously, resulting in unstable estimates and overfitting. Consequently, penalized regression methods have become increasingly popular for developing accurate and interpretable prediction models in biomedical research \cite{James2021,Desai2024}. Among these approaches, Least Angle Regression (LARS) is an efficient variable selection algorithm that identifies influential predictors while constructing the complete solution path of regression coefficients. Compared with conventional stepwise procedures, LARS is computationally efficient, performs well in the presence of multicollinearity, and provides an interpretable variable selection process, making it suitable for high-dimensional clinical data \cite{Efron2004}. Recent studies have demonstrated the usefulness of penalized regression methods in identifying clinically relevant predictors and improving prediction performance in biomedical applications, including diabetes research \cite{Derici2021,Casacchia2024}. Type 1 diabetes mellitus (T1DM) is a chronic autoimmune disease characterized by persistent hyperglycemia and lifelong insulin dependence. Glycated hemoglobin (HbA1c) is the gold-standard biomarker for evaluating long-term glycemic control and predicting diabetes-related complications. Because HbA1c is influenced by multiple demographic, clinical, and metabolic factors, identifying its key determinants is essential for improving diabetes management \cite{ADA_Standards_2024:2024,Rask-Madsen:2013,Schiborn2022}. Although machine learning methods have been widely applied in diabetes research, the use of Least Angle Regression for identifying predictors of HbA1c in patients with type 1 diabetes remains limited. Therefore, this study applies LARS to a real-world dataset to identify the most important determinants of short- and long-term HbA1c levels. The proposed approach provides an interpretable variable selection framework that may support personalized diabetes management and clinical decision-making.
+\section{Least Angle Regression}
+Least Angle Regression (LARS) is a variable selection algorithm introduced by \cite{Efron2004} that provides a complete piecewise linear solution path for regression problems. LARS shares computational advantages with both forward selection and the Lasso, while offering greater interpretability and efficiency in high-dimensional settings.
+
+%%%%%%%%%%%%%%%%%%%%%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{dfn}\label{df1}
+Let $\mathbf{X}$ be an $n \times p$ design matrix with standardized columns (zero mean, unit variance), and let $\mathbf{y}$ be an $n \times 1$ response vector centered to have a mean of zero. The LARS algorithm begins with all coefficients $\boldsymbol{\hat{\beta}} = \mathbf{0}$ and iteratively adds predictors to the active set based on their absolute correlation with the current residual.
+\end{dfn}
+
+\begin{alg}\label{alg1}
+The LARS algorithm proceeds as follows:
+\begin{itemize}
+    \item Step 1: Initialize $\boldsymbol{\hat{\beta}}^{(0)} = \mathbf{0}$ and the residual $\mathbf{r}_0 = \mathbf{y}$.
+    \item Step 2: Identify the predictor $\mathbf{x}_{j_1}$ most correlated with $\mathbf{r}_0$.
+    \item Step 3: Increase $\hat{\beta}_{j_1}$ from 0 toward its least squares value until another predictor $\mathbf{x}_{j_2}$ has the same absolute correlation with the current residual.
+    \item Step 4: Continue moving along the equiangular direction between $\mathbf{x}_{j_1}$ and $\mathbf{x}_{j_2}$ until a third predictor enters the active set.
+    \item Step 5: Repeat steps 3--4 until all predictors are included or a stopping criterion (e.g., Mallows' $C_p$) is met.
+\end{itemize}
+\end{alg}
+
+Let $\mathcal{A}$ denote the active set of selected predictors. The equiangular direction vector $\mathbf{u}_{\mathcal{A}}$ is defined as:
+\begin{equation}
+\mathbf{u}_{\mathcal{A}} = \mathbf{X}_{\mathcal{A}} \mathbf{w}_{\mathcal{A}}, \qquad 
+\mathbf{w}_{\mathcal{A}} = (\mathbf{1}_{\mathcal{A}}^T \mathbf{G}_{\mathcal{A}}^{-1} \mathbf{1}_{\mathcal{A}})^{-1/2} \mathbf{G}_{\mathcal{A}}^{-1} \mathbf{1}_{\mathcal{A}},
+\end{equation}
+where $\mathbf{G}_{\mathcal{A}} = \mathbf{X}_{\mathcal{A}}^T \mathbf{X}_{\mathcal{A}}$ and $\mathbf{1}_{\mathcal{A}}$ is a vector of ones of length $|\mathcal{A}|$.
+
+The LARS algorithm produces a sequence of coefficient estimates $\boldsymbol{\hat{\beta}}^{(k)}$ at each step $k$. Importantly, a simple modification of LARS yields the entire Lasso solution path. When a non-zero coefficient crosses zero, the Lasso-modified LARS removes that predictor from the active set.
+\section{Data and Application}
+\subsection{Study Design and Population}
+This historical cohort study used data from type 1 diabetes patients registered in the Sina system of comprehensive health centers in Mashhad (June 2016 – March 2021). Inclusion criteria were: (1) physician-confirmed type 1 diabetes, and (2) at least three valid HbA1c measurements (baseline, six months, one year). Of 8,422 registered patients, 2,336 had three or more measurements, and 271 met all inclusion criteria for final analysis.
+\subsection{Variables}
+Predictors included demographic characteristics (sex, occupation, education, residence, nationality), behavioral indicators (tobacco, fruit, vegetable, dairy, salt, oil, walking, work intensity, exercise), medical history (cardiovascular disease, kidney disease), and clinical parameters (dyslipidemia risk factors, diabetes-related complications including eye and kidney complications). Due to the high dimensionality, Least Angle Regression (LARS) was used for variable selection.
+\subsection{Statistical Analysis}
+All statistical analyses were performed in R using the lars package. A significance level of 0.05 was considered for all statistical tests.
+\subsection{LARS Model for Six-Months HbA1c Prediction}
+Least Angle Regression was used to predict HbA1c six months after treatment initiation, incorporating all demographic, behavioral, laboratory, anthropometric, clinical, and medical history variables. Based on Mallows’ Cp criterion, the optimal model was identified at step 13 (Figure \ref{fig1}, left), representing the best balance between predictive accuracy and model parsimony. Additional variables increased complexity without meaningful improvement, whereas fewer variables risked information loss.
+The significant predictors of six-month HbA1c are shown in Table \ref{tab1}. Baseline HbA1c, diabetic kidney and eye complications, fasting glucose, and two-hour postprandial glucose were the strongest positive predictors, indicating that unfavorable baseline metabolic status and pre-existing complications adversely affect short-term glycemic control. LDL, residence outside suburban Mashhad, suburban residence (versus cities with populations under one million), and primary education (versus illiteracy) were also positively associated with HbA1c. In contrast, higher fruit consumption, salt intake (versus no salt use), use of solid or animal fats (compared with liquid oils), and rural residence (versus cities with populations under one million) entered the model with negative coefficients, indicating protective effects on six-month HbA1c.
+\subsection{LARS Model for one year HbA1c Prediction}
+For one-year HbA1c prediction, the Cp criterion indicated an optimal model at step 20 (Figure \ref{fig1}, right), with selected variables presented in Table \ref{tab2}. The results showed that clinical, laboratory, demographic, and lifestyle factors jointly influenced long-term glycemic control. Positive predictors included baseline HbA1c, diabetic kidney, eye, and general complications, fasting and two-hour postprandial glucose, cardiovascular disease history, tobacco use, physically demanding work, total cholesterol, residence outside suburban Mashhad, suburban residence (versus cities under one million), and student status (versus unemployment). Conversely, higher dairy consumption, salt intake (versus no salt use), rural residence, older age, higher BMI, presence of dyslipidemia risk factors, and associate or bachelor's education (versus illiteracy) were associated with lower one-year HbA1c, indicating protective effects.
+\begin{table}[h]
+\centering
+\small
+\caption{LARS model variables and coefficients for six-month HbA1c.}
+\vspace{1em}
+\label{tab1}
+\begin{tabular}{|c|l|c|}
+  \hline
+  No. & Variable & Coefficient \\  \hline \hline
+  1 & Baseline HbA1c & 0.380 \\
+  2 & Fruit intake $<$ 2 servings/day & -0.107 \\
+  3 & Fruit intake rarely (reference) & 0 \\
+  4 & Occasional salt intake & -0.166 \\
+  5 & Rare/never salt intake (reference) & 0 \\
+  6 & Oil intake: solid/animal only & -0.078 \\
+  7 & Oil intake: liquid only (reference) & 0 \\
+  8 & Fasting blood glucose & 0.002 \\
+  9 & LDL & 0.001 \\
+  10 & 2-hour blood glucose & 0.001 \\
+  11 & Presence of diabetic eye complications & 0.838 \\
+  12 & No diabetic eye complications (reference) & 0 \\
+  13 & Presence of diabetic kidney complications & 1.164 \\
+  14 & No diabetic kidney complications (reference) & 0 \\
+  15 & Residence: Non-suburban Mashhad & 0.564 \\
+  16 & Residence: Suburban Mashhad & 0.395 \\
+  17 & Residence: Rural & -0.076 \\
+  18 & Residence: City $<$ 1M population (reference) & 0 \\
+  19 & Primary education & 0.077 \\
+  20 & Illiterate (reference) & 0 \\  \hline
+\end{tabular}
+\end{table}
+\begin{table}[h]
+\begin{center}
+\small
+\caption{LARS model variables and coefficients for one-year HbA1c.}\label{tab2}
+
+\begin{tabular}{|c|l|c|}
+  \hline
+  No. & Variable & Coefficient \\  \hline \hline
+  1 & Baseline HbA1c & 0.236 \\
+  2 & Age & -0.002 \\
+  3 & Body Mass Index (BMI) & -0.026 \\
+  4 & Tobacco use & 0.073 \\
+  5 & No tobacco use (reference) & 0 \\
+  6 & Dairy intake $\geq$ 2 servings/day & -0.059 \\
+  7 & Dairy intake rarely/never (reference) & 0 \\
+  8 & Occasional salt intake & -0.388 \\
+  9 & Rare/never salt intake (reference) & 0 \\
+  10 & Hard labor & 0.212 \\
+  11 & No hard labor (reference) & 0 \\
+  12 & History of cardiovascular disease & 0.081 \\
+  13 & No history of cardiovascular disease (reference) & 0 \\
+  14 & Presence of dyslipidemia risk factors & -0.258 \\
+  15 & No dyslipidemia risk factors (reference) & 0 \\
+  16 & Fasting blood glucose & 0.002 \\
+  17 & Cholesterol & 0.002 \\
+  18 & 2-hour blood glucose & 0.002 \\
+  19 & Presence of diabetes complications & 0.115 \\
+  20 & No diabetes complications (reference) & 0 \\
+  21 & Presence of diabetic eye complications & 1.225 \\
+  22 & No diabetic eye complications (reference) & 0 \\
+  23 & Presence of diabetic kidney complications & 1.823 \\
+  24 & No diabetic kidney complications (reference) & 0 \\
+  25 & Residence: Non-suburban Mashhad & 0.743 \\
+  26 & Residence: Suburban Mashhad & 0.679 \\
+  27 & Residence: Rural & -0.215 \\
+  28 & Residence: City $<$ 1M population (reference) & 0 \\
+  29 & Education: Associate/Bachelor degree & -0.629 \\
+  30 & Education: Illiterate (reference) & 0 \\
+  31 & Occupation: Student & 0.342 \\
+  32 & Occupation: Homemaker/Unemployed (reference) & 0 \\  \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=7cm,height=6cm]{Images/picture4.PNG}
+\includegraphics[width=7cm,height=6cm]{Images/picture5.PNG}
+\caption{\footnotesize{LARS Cp index plots: six-month (left) and one-year (right) models.}}\label{fig1}
+\end{center}
+\end{figure}
+\section{Discussion and conclusion}
+\subsection{Discussion}
+Penalized regression methods, such as Lasso and Ridge regression, introduce a penalty term that shrinks less important coefficients toward zero and performs variable selection. However, determining the optimal tuning parameter in these methods can be computationally intensive and may introduce selection bias if not carefully optimized \cite{Hastie:2005}.
+Least Angle Regression, proposed by \cite{Efron2004}, addresses some of these challenges by providing an efficient algorithm that incrementally selects predictors while adjusting coefficients continuously as new variables enter the model. This approach reduces variable selection time and potential estimation error compared to standard penalized regression techniques, while maintaining high predictive accuracy.
+In the LARS algorithm, Mallows' $C_p$ criterion serves as the stopping rule. The model corresponding to the minimum $C_p$ value is selected, providing an optimal balance between model complexity and prediction error \cite{Mallows:2000}. This approach ensures that the final model captures the most informative predictors while avoiding overfitting, making it particularly suitable for high-dimensional clinical datasets where the number of candidate predictors is large relative to the sample size. The present study examined predictors of short- and long-term HbA1c in patients with type 1 diabetes and developed LARS models for six-month and one-year follow-up using real-world data.
+Overall,the use of LARS enabled effective handling of high-dimensional data and identification of the most influential predictors without overfitting, offering a robust framework for clinical prediction.
+\subsection{Conclusion}
+Baseline HbA1c and microvascular complications are key potential predictors of glycemic control. LARS models identified these variables as important factors at six months and one year, providing an interpretable framework for clinical decision-making in type 1 diabetes.
+\begin{thebibliography}{9}
+\bibitem[ADA(2024)]{ADA_Standards_2024:2024}
+American Diabetes Association Professional Practice Committee. (2024), Glycemic targets: Standards of Care in Diabetes---2024, {\it Diabetes Care}, 47(Suppl. 1), S111--S125.
+\bibitem[Casacchia et al.(2024)]{Casacchia2024}
+Casacchia N. J., Lenoir K. M., Rigdon J., et al. (2024), Development, validation, and recalibration of a prediction model for prediabetes using electronic health records and NHANES data, {\it BMC Medical Informatics and Decision Making}, 24, 387.
+\bibitem[Derici Yıldırım and Çiftçi(2021)]{Derici2021}
+Derici Yıldırım D. and Çiftçi A. T. (2021), Determining the effective variables by penalized regression methods: An application on diabetes data set, {\it Mersin University Journal of Health Sciences}, 14(1), 66--78.
+\bibitem[Desai et al.(2024)]{Desai2024}
+Desai R. J., Franklin J. M., Lii J., et al. (2024), Comparing penalization methods for linear models using large observational health care databases, {\it Journal of the American Medical Informatics Association}, 31(7), 1514--1525.
+\bibitem[Efron et al.(2004)]{Efron2004}
+Efron B., Hastie T., Johnstone I. and Tibshirani R. (2004), Least angle regression, {\it The Annals of Statistics}, 32(2), 407--499.
+\bibitem[Hastie et al.(2005)]{Hastie:2005}
+Hastie T., Tibshirani R., Friedman J. and Franklin J. (2005), The elements of statistical learning: Data mining, inference and prediction, {\it The Mathematical Intelligencer}, 27(2), 83--85.
+\bibitem[James et al.(2021)]{James2021}
+James G., Witten D., Hastie T. and Tibshirani R. (2021), {\it An Introduction to Statistical Learning: With Applications in R}, 2nd ed., Springer.
+\bibitem[Mallows(2000)]{Mallows:2000}
+Mallows C. L. (2000), Some comments on $C_p$, {\it Technometrics}, 42(1), 87--94.
+\bibitem[Rask-Madsen and King(2013)]{Rask-Madsen:2013}
+Rask-Madsen C. and King G. L. (2013), Vascular complications of diabetes: Mechanisms of injury and protective factors, {\it Cell Metabolism}, 17(1), 20--33.
+\bibitem[Schiborn and Schulze(2022)]{Schiborn2022}
+Schiborn C. and Schulze M. B. (2022), Precision prognostics for the development of complications in diabetes, {\it Diabetologia}, 65(11), 1867--1882.
+\end{thebibliography}
+ \end{document}

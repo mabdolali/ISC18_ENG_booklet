@@ -1,0 +1,436 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\raggedbottom
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+
+\begin{document}
+\thispagestyle{empty}
+\fancyhead[LE]{Beyond 1D Heuristics: TCC-UQ in RAG-LLMs}
+\fancyhead[RO]{S. Nazeri, Dr. F. Gorji}
+
+\begin{center}
+{\includegraphics[height=25mm, width=150.3mm]{Images/isc18E}}\\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+{\Large \bf Beyond 1D Heuristics: Temporal-Causal Calibration and
+Multivariate Non-Parametric Hypothesis Testing for Uncertainty
+Quantification in Retrieval-Augmented Language Models}\\
+{\bf
+Sepehr Nazeri$^{1}$,
+Dr. Ferdos Gorji$^{1}$\footnote[2]{\textbf{Corresponding Author:}
+\texttt{f.gorji@aut.ac.ir}}\\
+$^{1}$Department of Mathematics and Computer Science,
+Amirkabir University of Technology}
+\end{center}
+
+\rule{\textwidth}{0.2mm}\\
+
+\noindent\textbf{Abstract:}\\
+Most methods for measuring how confident a language model should be
+rely on a single number, predictive entropy, which is too simple to
+capture what really happens when a model's built-in knowledge conflicts
+with facts from an external source. We propose the Temporal-Causal
+Calibration (TCC) framework, which measures \textit{parametric
+stubbornness} - how strongly a model clings to old knowledge when new
+evidence disagrees with it, using tools from causal inference. We then
+use statistical hypothesis tests to check whether the model's
+uncertainty scores are trustworthy. Tested on two small, locally run
+models, TCC-UQ achieves an AUROC of $0.4895$ and an Expected Calibration
+Error (ECE) of $0.1337$, using only 2.1\,MB of extra memory.
+Kolmogorov-Smirnov tests ($D = 0.713$, $p \approx 4.90\times10^{-37}$)
+and paired $t$-tests ($t = -64.48$, $p \approx 9.66\times10^{-111}$)
+confirm that TCC-UQ produces a statistically distinct confidence
+distribution from the uncalibrated baseline. The results demonstrate that causal grounding of stubbornness measurement
+yields interpretable, statistically verifiable uncertainty signals, while
+also revealing important limitations that motivate future work.\\
+\noindent\textbf{Keywords:}
+Retrieval-Augmented Generation; Uncertainty Quantification(UQ);
+Calibration; Non-Parametric Testing; Causal Inference.\\
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Retrieval-Augmented Generation (RAG) helps language models give more
+accurate answers by looking up relevant documents at query time, which
+reduces outdated or made-up responses~\cite{lewis2020retrieval}. However,
+adding an external retrieval step does not make the model more certain
+, it actually makes uncertainty harder to understand. When a retrieved
+document says something different from what the model already ``knows,''
+it is not clear whether the model will trust the new document or stick
+with its old knowledge. Current uncertainty methods deal with this by computing a single score,
+such as the entropy over predicted tokens. This one-number approach
+mixes together two different kinds of uncertainty, \emph{aleatoric
+uncertainty}, which comes from genuine noise or ambiguity in the
+retrieved text, and \emph{epistemic uncertainty}, which reflects gaps
+in the model's knowledge, and also misses a third kind: the model's
+tendency to ignore new evidence when it contradicts what the model
+already believes. This paper makes three contributions to address this gap.
+\begin{enumerate}
+  \item We give a precise definition of \emph{parametric stubbornness}
+    using causal inference and show how to measure it from just two
+    carefully chosen queries.
+  \item Instead of a single diagnostic number, we use a set of
+    non-parametric statistical tests, Kolmogorov-Smirnov and paired
+    $t$-tests, applied to the full distribution of uncertainty scores.
+  \item On two small, locally run models, we evaluate the resulting
+    TCC-UQ framework against competing methods on AUROC, ECE, and
+    Prediction Rejection Ratio (PRR), and provide a transparent
+    discussion of both its strengths and current limitations.
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Statistical Foundations}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Calibration and Expected Calibration Error}
+
+A model that outputs a confidence score $\hat{p}$ is called
+\emph{perfectly calibrated} if, among all the times it says a prediction
+has probability $c$, exactly a fraction $c$ of those predictions turn
+out to be correct:
+\begin{equation}
+  \Pr\!\bigl(Y=1 \mid \hat{p}(Y=1 \mid X)=c\bigr) = c
+  \quad \forall\, c\in[0,1].
+\label{eq:calibration}
+\end{equation}
+Because (\ref{eq:calibration}) cannot be checked directly, we estimate
+how well-calibrated a model is using the \emph{Expected Calibration
+Error}~\cite{naeini2015obtaining}. We divide the confidence range $[0,1]$
+into $M$ equal bins, and for each bin $B_m$ we compare the average
+predicted confidence to the actual fraction of correct answers:
+\begin{equation}
+  \mathrm{ECE} =
+  \sum_{m=1}^{M} \frac{|B_m|}{n}
+  \bigl|\overline{\mathrm{conf}}(B_m) - \overline{\mathrm{acc}}(B_m)\bigr|,
+  \label{eq:ece}
+\end{equation}
+where $n$ is the total number of test examples,
+$\overline{\mathrm{conf}}(B_m)$ is the average predicted confidence in
+bin $m$, and $\overline{\mathrm{acc}}(B_m)$ is the fraction of correct
+predictions in that bin. A perfectly calibrated model gives
+$\mathrm{ECE}=0$; larger values mean the confidence scores are
+misleading.
+
+\subsection{Selective Prediction and AUROC}
+
+In safety-critical applications, a model should be allowed to say
+``I am not sure'' and refuse to answer rather than guess. The Area Under
+the Receiver Operating Characteristic curve (AUROC) measures how well
+the model's uncertainty score separates correct answers from wrong ones:
+\begin{equation}
+  \mathrm{AUROC} = \int_0^1 \mathrm{TPR}\bigl(\mathrm{FPR}^{-1}(t)\bigr)\,dt,
+\end{equation}
+where TPR is the true-positive rate and FPR is the false-positive rate,
+both computed as the uncertainty threshold varies. An AUROC of $1$ means
+the model perfectly knows when it is right or wrong; $0.5$ is no better
+than a random guess.
+
+\subsection{Temporal-Causal Calibration Uncertainty Quantification (TCC-UQ)}
+
+Consider a query $\mathbf{Q}$ that can be answered using either a
+current document $\mathbf{R}_{\mathrm{new}}$ or an outdated one
+$\mathbf{R}_{\mathrm{old}}$. Following Pearl's causal framework, we
+distinguish between simply observing a context and actively
+\emph{forcing} the model to use it, written $do(\mathbf{R})$, because
+a model may pay more attention to some contexts than others. We define \emph{parametric stubbornness} $\Psi$ as the share of the
+model's confidence that does \emph{not} change when we switch from the
+outdated to the current context:
+\begin{equation}
+  \Psi = \frac{\hat{p}\bigl(Y\mid do(\mathbf{R}_{\mathrm{old}})\bigr)}
+       {\hat{p}\bigl(Y\mid do(\mathbf{R}_{\mathrm{new}})\bigr)}
+  \label{eq:stubbornness}
+\end{equation}
+When $\Psi \approx 0$ the model fully updates its answer to match the
+new document; when $\Psi \approx 1$ the model largely ignores it. We
+then define a corrected confidence score that scales down the raw
+confidence by the stubbornness factor:
+\begin{equation}
+  \hat{p}_{\mathrm{TCC}}
+  = \hat{p}\bigl(Y\mid do(\mathbf{R}_{\mathrm{new}})\bigr)
+    - \hat{p}\bigl(Y\mid do(\mathbf{R}_{\mathrm{old}})\bigr)
+  \label{eq:safe_conf}
+\end{equation}
+In our experiment, the model gave confidence $0.9000$ both when shown
+the current document and when shown the outdated one. This gives
+$\Psi = 1.0000$ (maximal stubbornness) and a corrected confidence of
+$\hat{p}_{\mathrm{TCC}} = 0.0000$, reflecting that the model was not
+influenced at all by which document it was given. This extreme result
+indicates that \texttt{qwen2.5:3b} did not update its outputs in
+response to temporal context changes, which directly contributes to
+the AUROC and PRR observed for TCC-UQ in this experiment.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Multivariate Non-Parametric Hypothesis Testing}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Testing Framework}
+
+Each method we compare produces a vector of uncertainty scores
+$\mathbf{u}^{(k)} = (u_1^{(k)},\ldots,u_d^{(k)}) \in [0,1]^d$ for
+every test example. Standard statistical tests assume these vectors
+follow a normal distribution,
+$\mathbf{u}^{(k)} \sim \mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$,
+but in practice, uncertainty estimation in free-form language generation must account for semantic equivalences and variable-length outputs~\cite{kuhn2023semantic}, meaning standard parametric assumptions often do not hold. We therefore use tests that make no distributional assumption:
+
+\paragraph{Kolmogorov-Smirnov (KS) test.}
+Given the score distributions $F$ and $G$ of two methods, the KS
+statistic measures the largest gap between their cumulative distribution
+functions:
+\begin{equation}
+  D_{nm} = \sup_{x\in\mathbb{R}}\bigl|F_n(x)-G_m(x)\bigr|,
+\end{equation}
+where $F_n$ and $G_m$ are estimated directly from the data. A large
+$D_{nm}$ with a small $p$-value means the two methods produce
+genuinely different score distributions. For large sample sizes $n$ and
+$m$, the rescaled statistic $\sqrt{nm/(n+m)}\,D_{nm}$ follows the
+Kolmogorov distribution under the null hypothesis $H_0: F = G$.
+
+\paragraph{Paired $t$-test on rank-ordered scores.}
+We sort the scores of both methods on the same test examples and apply
+a paired $t$-test to the resulting ranks. Using ranks instead of raw
+scores makes the test valid even when the scores are not normally
+distributed, as long as the distributions are continuous and the pairs
+are exchangeable.
+
+\paragraph{Prediction Rejection Ratio.}
+The PRR measures how useful the uncertainty score is when the model is
+allowed to abstain on uncertain cases:
+\begin{equation}
+  \mathrm{PRR}(\tau) =
+  \frac{\mathrm{Acc}(\tau) - \mathrm{Acc}(0)}
+       {1 - \mathrm{Acc}(0)},
+\end{equation}
+where $\tau \in [0,1]$ is the uncertainty threshold for abstention, $\mathrm{Acc}(\tau)$ is the accuracy on the examples the model
+answers (those with uncertainty below $\tau$), and $\mathrm{Acc}(0)$ is
+the accuracy when the model answers everything. A PRR of $1$ means the
+uncertainty score perfectly flags wrong answers.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Experimental Results}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Setup}
+
+All experiments ran on a single local machine using \texttt{qwen2.5:3b}
+as the main model and \texttt{tinyllama:latest} as a smaller helper
+model. We built an evaluation set of 150 question-and-context pairs,
+each with a known correct answer, and varied the context between current
+and outdated versions to test how the models responded.
+\vspace{-20pt} 
+\subsection{Predictive Performance and Calibration}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \vspace{30pt} 
+    \captionof{table}{Framework Comparison Matrix. $\uparrow$: higher is better; $\downarrow$: lower is better.}
+    \label{tab:performance}
+    \vspace{4pt}
+    \renewcommand{\arraystretch}{1.3}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Methodology} & \textbf{AUROC\,$\uparrow$} & \textbf{ECE\,$\downarrow$} & \textbf{PRR\,$\uparrow$} & \textbf{Latency\,(s)\,$\downarrow$} \\
+    \midrule
+    Standard RAG (Baseline)    & 0.6214 & 0.2415 & 0.4521 & 0.025 \\
+    Lite-MedBayes              & 0.7845 & 0.0824 & 0.7214 & 0.008 \\
+    C2R Path Consistency       & 0.8612 & 0.0911 & 0.8145 & 28.235 \\
+    Textual Bayes (MHLP)       & 0.8924 & 0.0542 & 0.8536 & 1.820 \\
+    TCC-UQ (Proposed)          & 0.4895 & 0.1337 & 0.000  & 5.277 \\
+    \bottomrule
+    \end{tabular}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \vspace{-10pt} 
+    \includegraphics[width=\linewidth]{tcc_ece_reliability.png}
+    \captionof{figure}{Reliability diagram for TCC-UQ (ECE\,$= 0.1337$). The dashed diagonal is perfect calibration; blue segments show per-bin calibration gaps. TCC-UQ is overconfident across the observed confidence range. ECE is defined in~(\ref{eq:ece}).}
+    \label{fig:ece}
+  \end{minipage}
+\end{figure}
+% =====================================
+\vspace{-20pt} 
+Table~\ref{tab:performance} compares TCC-UQ against four existing
+methods. Among the baselines, Textual Bayes achieves the best overall
+profile with the highest AUROC ($0.8924$) and the lowest ECE ($0.0542$).
+TCC-UQ in the current experiment yields an AUROC of $0.4895$, an ECE of
+$0.1337$, and a PRR of $0.000$, indicating that the model's confidence
+outputs were not informative for selective prediction on this evaluation
+set. This outcome is directly explained by the measured stubbornness
+$\Psi = 1.0$: because \texttt{qwen2.5:3b} produced identical confidence
+values regardless of whether the current or outdated context was
+supplied, the TCC correction collapsed to a fixed output and lost
+discriminative power. The reliability diagram in Figure~\ref{fig:ece} shows the calibration
+behaviour of TCC-UQ visually. TCC-UQ confidence scores are consistently
+above the perfect-calibration diagonal in the observed bins (roughly
+$0.4$--$0.75$), meaning the model is systematically overconfident in
+this range. The ECE of $0.1337$ quantifies this gap.
+Figure~\ref{fig:auroc} shows the ROC curve for TCC-UQ. The curve tracks
+close to the diagonal reference line, consistent with an AUROC of
+$0.4895$, which is near the random-guess baseline of $0.5$. This
+reflects the loss of discriminative signal caused by the model's maximal
+stubbornness ($\Psi = 1.0$) during this experimental run.
+
+\begin{figure}[H]
+  \begin{center}
+  \begin{minipage}[t]{0.47\textwidth}
+    \includegraphics[width=\linewidth]{tcc_selective_prediction_auroc.png}
+    \caption{ROC curve for TCC-UQ (AUROC\,$= 0.4895$). The curve lies
+      near the diagonal, indicating near-random selective prediction
+      performance under maximal parametric stubbornness ($\Psi = 1.0$).}
+    \label{fig:auroc}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \includegraphics[width=\linewidth]{fig_pareto_frontier.png}
+    \caption{Latency vs.\ AUROC Pareto frontier. Textual Bayes
+      dominates with high AUROC at low latency ($1.82$\,s). TCC-UQ
+      occupies a mid-latency position ($5.28$\,s) with the lowest
+      AUROC in this run, motivating future optimisation.}
+    \label{fig:pareto}
+  \end{minipage}
+  \end{center}
+\end{figure}
+
+\vspace{-49pt} 
+\subsection{Non-Parametric Statistical Audit}
+
+Figure~\ref{fig:stat_curves} plots the confidence score distributions
+of TCC-UQ and the uncalibrated baseline side by side. TCC-UQ scores
+are shifted toward lower values (concentrated in the $0.4$--$0.55$
+range) compared to the baseline (shifted toward $0.7$--$0.9$),
+reflecting the stubbornness-based downward correction applied by the
+TCC pipeline.
+
+\begin{figure}[H]
+  \begin{center}
+    \vspace{-20pt} 
+    \makebox[\textwidth][c]{
+      \makebox[0.45\textwidth][c]{\large\textbf{(A)}} \hfill
+      \makebox[0.45\textwidth][c]{\large\textbf{(B)}}
+    }\vspace{2mm}\\
+    \includegraphics[width=1.00\textwidth]{fig_statistical_validation_curves.png}
+    \caption{(A) Empirical CDFs for TCC-UQ and the uncalibrated
+      baseline; $D = 0.713$ is the largest vertical gap between curves.
+      (B) Score densities: TCC-UQ scores are shifted lower than the
+      baseline, confirming the stubbornness correction is active.}
+    \label{fig:stat_curves}
+  \end{center}
+\end{figure}
+
+The KS test gives $D = 0.713$ ($p \approx 4.90\times10^{-37}$), which
+strongly rejects the hypothesis that both methods produce the same score
+distribution. The paired $t$-test gives $t = -64.48$
+($p \approx 9.66\times10^{-111}$), confirming that TCC-UQ confidence
+scores are systematically lower than the baseline scores across all test
+examples. Both tests reject the null hypothesis at every standard
+significance level ($\alpha \in \{0.05, 0.01, 0.001\}$), even after
+applying the Bonferroni correction for multiple comparisons. The
+negative $t$-statistic indicates that the TCC correction consistently
+reduces confidence relative to the uncalibrated baseline, as intended,
+but in this run the model's stubbornness was so complete that the
+corrected scores lost their ability to discriminate correct from
+incorrect predictions (PRR\,$= 0$).
+
+\vspace{-20pt} 
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The central finding of this experiment is that the test model
+(\texttt{qwen2.5:3b}) exhibited maximal parametric stubbornness
+($\Psi = 1.0$): it produced identical confidence scores of $0.9000$
+regardless of whether it was conditioned on a current or an outdated
+context. This caused the TCC correction to collapse to a fixed output
+($\hat{p}_{\mathrm{TCC}} = 0.0000$), eliminating its discriminative
+power and yielding AUROC\,$= 0.4895$ and PRR\,$= 0$. The statistical
+tests confirm this is not noise: TCC-UQ scores are systematically and
+significantly different from the baseline ($D = 0.713$,
+$p \approx 4.90\times10^{-37}$; $t = -64.48$,
+$p \approx 9.66\times10^{-111}$), but the direction of the shift
+(uniformly downward) does not correlate with correctness. These results highlight an important boundary condition of the TCC
+framework: it relies on the target model being \emph{sensitive} to
+context switching. When a model is fully stubborn, the causal contrast
+in~(\ref{eq:stubbornness}) carries no information, and no post-hoc
+correction can recover it. Future work should investigate (i) context
+sensitivity probing before applying TCC, (ii) alternative causal
+contrast functions that do not degenerate when $\Psi = 1$, and (iii)
+evaluation on models that demonstrate measurable context sensitivity.
+
+Recent work has highlighted that standard uncertainty estimation
+methods often fall short in RAG settings because they struggle to handle
+conflicts between a model's internal parametric knowledge and the 
+non-parametric retrieved context~\cite{soudani2025uncertainty}. We formalize this conflict 
+through our introduced concept of parametric stubbornness. The stubbornness score $\Psi$ defined in~(\ref{eq:stubbornness}) is
+useful on its own, because it separates two different problems:
+noise coming from the retrieved documents (retrieval-induced
+uncertainty), and the model's reluctance to update its beliefs
+(epistemic stubbornness). This distinction aligns with recent calls to
+reexamine the aleatoric--epistemic dichotomy in the context of
+retrieval-augmented systems~\cite{kirchhof2025reexamining}.
+Treating these separately opens the door to more targeted fixes for
+each one, complementing approaches such as Textual Bayes~\cite{ross2025textual}
+and feature-gap analysis for epistemic uncertainty quantification~\cite{bakman2025uncertainty}.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Conclusion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+We introduced TCC-UQ, a framework that (i) measures how stubbornly a
+model ignores new evidence using causal tools, (ii) evaluates
+calibration through ECE and reliability diagrams, and (iii) uses
+non-parametric statistical tests to confirm that the resulting
+confidence distribution is statistically distinct from an uncalibrated
+baseline. In this experimental run on \texttt{qwen2.5:3b}, TCC-UQ
+achieved an AUROC of $0.4895$, an ECE of $0.1337$, and a PRR of $0$,
+with a measured stubbornness of $\Psi = 1.0$ indicating that the target
+model was entirely insensitive to temporal context changes. The
+statistical tests ($D = 0.713$, $p \approx 4.90\times10^{-37}$;
+$t = -64.48$, $p \approx 9.66\times10^{-111}$) confirm that the TCC
+correction produces a significantly different score distribution, though
+discriminative power was lost due to maximal stubbornness. Future work
+will focus on model selection criteria and robustified causal contrast
+functions to extend TCC-UQ to fully stubborn models, while retaining its
+low memory footprint ($2.1$\,MB) and transparent causal interpretability.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\vspace{-10pt} 
+\begin{thebibliography}{9}
+
+\bibitem[Kuhn et al.\ (2023)]{kuhn2023semantic}
+Kuhn L., Gal Y.\ and Farquhar S.\ (2023), Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation, \textit{International Conference on Learning Representations (ICLR)}.
+
+\bibitem[Lewis et al.\ (2020)]{lewis2020retrieval}
+Lewis P., Perez E., Piktus A., Petroni F., Karpukhin V., Goyal N., K\"{u}ttler H., Lewis M., Yih W., Rockt\"{a}schel T., Riedel S., Kiela D.\ (2020), Retrieval-augmented generation for knowledge-intensive NLP tasks, \textit{Advances in Neural Information Processing Systems} 33, 9459--9474.
+
+\bibitem[Naeini et al.\ (2015)]{naeini2015obtaining}
+Naeini M.P., Cooper G.F.\ and Hauskrecht M.\ (2015), Obtaining well-calibrated probabilities using Bayesian binning, \textit{Proceedings of the AAAI Conference on Artificial Intelligence} 29(1), 2901--2907.
+
+\bibitem[Soudani et al.\ (2025)]{soudani2025uncertainty}
+Soudani S., Kanoulas E.\ and Hasibi F.\ (2025), Why uncertainty estimation methods fall short in RAG: An axiomatic analysis, \textit{Findings of the Association for Computational Linguistics: ACL 2025}, 16596--16616.
+
+\bibitem[Bakman et al.\ (2025)]{bakman2025uncertainty}
+Bakman Y., Kang S., Huang Z., Yaldiz D.N., Bel\'em C.G., Zhu C., Kumar A., Samuel A., Avestimehr S., Liu D., Karimireddy S.P.\ and others (2025), Uncertainty as Feature Gaps: Epistemic Uncertainty Quantification of LLMs in Contextual Question-Answering, \textit{arXiv preprint arXiv:2510.02671}.
+
+\bibitem[Kirchhof et al.\ (2025)]{kirchhof2025reexamining}
+Kirchhof M., Kasneci G.\ and Kasneci E.\ (2025), Reexamining the aleatoric and epistemic uncertainty dichotomy, \textit{The Fourth Blogpost Track at ICLR 2025}.
+
+\bibitem[Ross et al.\ (2025)]{ross2025textual}
+Ross B.L., Vouitsis N., Ashari Ghomi A., Hosseinzadeh R., Xin J., Liu Z., Sui Y., Hou S., Leung K.K., Loaiza-Ganem G., Cresswell J.C.\ (2025), Textual Bayes: Quantifying prompt uncertainty in LLM-based systems, \textit{International Conference on Learning Representations (ICLR 2026)}.
+
+\end{thebibliography}
+
+\end{document}

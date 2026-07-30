@@ -1,0 +1,338 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Ordered Ranked Set Sampling for PSALT}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{N. Hakamipour}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Ordered Ranked Set Sampling for Progressive-Stress Accelerated Life Tests under Type-II Censoring}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Nooshin Hakamipour\footnote{{\bf Corresponding Author:} {\tt n.hakami@bzte.ac.ir }} \\
+Department of Mathematics, Buein Zahra Technical University, Buein Zahra, Qazvin, Iran.\\
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This paper investigates the performance of the ordered ranked set sampling scheme under progressive-stress accelerated life tests with type-II censoring. The lifetime of the item under use stress is assumed to follow a Weibull distribution, while the scale parameter is related to the applied stress through the inverse power law. Maximum likelihood estimators of the model parameters are derived under both ORSS and simple random sampling schemes. The finite-sample behavior of the proposed estimators is examined through simulation studies and numerical results. The findings indicate that ORSS yields more efficient estimation than SRS in terms of smaller absolute biases and mean squared errors.
+ 
+\noindent{\bf Keywords:} 
+Maximum Likelihood Estimation, Ordered Ranked Set Sampling, Progressive-Stress Accelerated Life Test, Type-II Censoring. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+In contemporary engineering and product development, ensuring the long-term performance and reliability of devices under normal operating conditions is a critical objective. However, advancements in manufacturing technologies have led to products with significantly extended lifespans, making traditional life testing—which relies on observing failures under standard usage—impractical and time-consuming. This challenge has necessitated the widespread adoption of Accelerated Life Testing (ALT) methodologies. ALT protocols subject products to intensified stress levels beyond those encountered in typical use, thereby inducing failures in a compressed timeframe. This allows for the rapid acquisition of essential data on failure times and the empirical modeling of the relationship between product life and applied stress variables.
+
+ALT encompasses various strategies for stress application. Constant-Stress ALT involves exposing units to a single, elevated stress level throughout the test. Step-Stress ALT increases stress incrementally, often removing units upon failure at higher levels. A particularly powerful variant is Progressive-Stress Accelerated Life Testing (PSALT), wherein the stress level applied to the remaining functioning units is progressively increased over time. PSALT is highly advantageous as it can effectively explore a wider spectrum of failure mechanisms activated by varying stress intensities within a single experimental framework, often yielding more robust acceleration models and reliable parameter estimates. For comprehensive reviews and detailed explanations of ALT and its variations, readers are referred to extensive literature \cite{Nooshin2018}, \cite{Nooshin2021}.
+
+A common characteristic of ALT data collection, including PSALT, is the potential for censored observations. Censoring occurs when complete failure time information for a unit is not obtained, either because the unit is removed from the test before failure, is lost, or the experiment is terminated prematurely. Censored data can significantly reduce the overall cost and duration of experiments. Among different censoring schemes, type-II censoring is frequently employed in life testing. In this scheme, the test is continued until a predetermined number of failures are observed, making the total number of failures fixed, while the total test duration becomes a random variable. Analyzing data under PSALT with type-II censoring presents unique statistical challenges due to the combined complexities of stress acceleration and incomplete failure information.
+
+The accurate estimation of lifetime distribution parameters, often modeled by the Weibull distribution due to its versatility in capturing various failure patterns (infant mortality, constant hazard, wear-out), is fundamental for reliability prediction. However, the efficiency of these estimations heavily relies on the sampling strategy employed. Simple Random Sampling (SRS), while a foundational technique, may not always be the most resource-efficient, especially when auxiliary information correlated with the product’s lifetime is available but costly or difficult to measure directly.
+
+To address these limitations and enhance the precision and cost-effectiveness of reliability assessments, advanced sampling techniques are increasingly being explored. Ranked Set Sampling (RSS), introduced by \cite{McIntyre1952} and further developed by \cite{Takahasi1968}, offers a way to improve estimation efficiency by utilizing easily obtainable ranking information of an auxiliary variable. A more sophisticated extension is Ordered Ranked Set Sampling (ORSS), which incorporates an additional ordering step based on the ranked units. This structured selection process can significantly reduce the variance of estimators compared to SRS, allowing for more accurate predictions with fewer tested units or achieving higher precision with the same sample size. The effectiveness of ORSS has been demonstrated across various fields and distributions.
+
+Despite the established benefits of ORSS in improving estimation efficiency, its application within the complex framework of Progressive-Stress Accelerated Life Tests (PSALT), particularly for products following a Weibull lifetime distribution and analyzed using type-II censored data, remains an underexplored area. While previous studies have investigated RSS and ORSS with different distributions (e.g., Rayleigh, Exponential) or censoring schemes, a comprehensive framework specifically tailored to the synergistic advantages of ORSS in the context of PSALT and Weibull models is lacking. This research gap represents a significant opportunity to develop more efficient and accurate methods for reliability assessment in demanding product development environments.
+
+This paper aims to bridge this gap by proposing and analyzing a novel statistical approach that integrates ORSS with PSALT for Weibull distributed lifetimes under type-II censoring. We will develop appropriate estimation and prediction strategies that leverage the enhanced sampling efficiency of ORSS to achieve superior reliability characterization compared to traditional SRS-based methods. Our work intends to provide engineers and reliability professionals with a more powerful toolkit for accelerated testing, enabling faster, more accurate, and cost-effective product reliability evaluations.
+
+\section{Model Description}
+
+%Due to its flexibility and wide applicability in reliability analysis and lifetime testing, the Weibull distribution is one of the most commonly used lifetime models. It can accommodate different hazard rate behaviors, including decreasing, constant, and increasing failure rates, which makes it suitable for modeling the lifetimes of many engineering products and components.
+
+The following assumptions are used throughout the paper in the framework of PSALT:
+\begin{itemize}
+\item[1.]
+At stress level $s$, due to its flexibility and wide applicability in reliability analysis and lifetime testing, the lifetimes of a unit follow a Weibull distribution with shape parameter $\eta>0$ and scale parameter $\theta>0$. The cumulative distribution function (CDF) of this distribution is given as:
+\begin{eqnarray*}
+\label{f1}
+F(x) & = & 1-e^{-(\frac{x}{\theta})^{\eta}}, \,\,\,\,\,\,\,\, x>0. 
+\end{eqnarray*}
+\item[2.]
+In this case, stress increases as time increases proportionally; that is, $s(x)=\kappa x$ where $\kappa$ is stress rate and is a positive constant.
+
+\item[3.]
+Stress $s$ by the time $x$ affects the scale parameter $\theta$ such that $\theta$ is a function of time $x$ i.e $\theta(x)$.
+
+\item[4.]
+In this study, life characteristic $\theta(x)$ and stress $s(x)$ are related by a standard inverse power law such that $\theta(x)=a[s(x)]^b$ where $a$ and $b$ are positive and unknown parameters of the equation.
+
+\item[5.]
+The changing stress is described using a linear cumulative exposure (CE) model; for additional details, refer to                    \cite{Nelson1982}.
+
+The CDF under progressive‐stress $s_i(x)$ in the linear CE model was expressed as:
+\begin{eqnarray*}
+G_i(x)=F_i(\Delta x), \,\,\,\,\,\,\,\,\,\, i=1,2,\dots,B,
+\end{eqnarray*}
+where 
+\begin{eqnarray*}
+\Delta x = \int_{0}^{x} \frac{1}{\theta_i(u)} du = \int_{0}^{x} \frac{1}{a(s_i(u))^b} du = \int_{0}^{x} \frac{1}{a \kappa_i^b u^b} du = \frac{\kappa_i^{-b} x^{1-b}}{a(1-b)},
+\end{eqnarray*}
+and $F (.)$ denotes the CDF of Weibull distribution under progressive‐stress $s_i(x)$ with scale parameter $\theta=1$. 
+
+\item[6.]
+The testing process starts by dividing the $N$ testable
+items into $B$ groups, each of which has $n$ items and is administered under PSALT.
+
+\item[7.]
+For $i=1,2, \dots, B$, the $n$ failure times in group $i$,
+indicated by $X_{i,1}, X_{i,2}, \dots, X_{i,n}$ (with realizations $x_{i,1}, x_{i,2}, \dots, x_{i,n}$, are statistically independent random variables.
+\end{itemize}
+
+Therefore, CDF of $X_{i,j}$, $i=1,2,\dots,B$ and $j=1,2,\dots,n$ , is given by
+\begin{eqnarray}
+\label{f5}
+G_{i}(x) & =&1-e^{-(\frac{\kappa_i^{-b} x^{1-b}}{ a (1-b)})^{\eta}}.
+%\\
+%g_{i}(x) & =& \, \frac{\kappa_i^{-b*\eta}}{a} x^{-b} e^{-\frac{\kappa_i^{-b} x^{1-b}}{ a (1-b)}}.
+\end{eqnarray}
+
+
+\section{Ranked Set Sampling under PSALT}
+In order to enhance the precision of statistical inference under limited experimental resources, we adopt a RSS design under PSALT. The proposed scheme allows one to exploit inexpensive ranking information prior to measurement and to observe the units under a multi-level stress structure. Consequently, the resulting data are more informative than those obtained under simple random sampling while remaining consistent with the PSALT setting. This sampling strategy is adopted because it improves measurement efficiency while preserving ranking information, which is particularly valuable in accelerated life testing settings.
+
+\begin{alg}\label{alg1}
+The following algorithm generates an RSS of size $N$ under PSALT with $B(>1)$ stress levels:
+
+\begin{itemize}
+\item
+Step 1. Fix the sample size $N$, the set size $n$, and the number of stress levels $B$, such that $N=Bn$.
+
+\item
+Step 2. Randomly select $Bn^2$ units from the target population and divide them into $Bn$ SRSs, each of size $n$.
+
+\item
+Step 3. Set $j=1$.
+
+\item
+Step 4. Partition the $N$ test units into $B$ groups, where each group contains $n$ units and is tested under one of the stress levels $s_i$, $i=1,2,\dots,B$.
+
+\item
+Step 5. In each group, rank the $n$ units without exact lifetime measurement.
+
+\item
+Step 6. In the $i$-th ranked set sample, $i=1,2,\dots,B$, measure the selected unit corresponding to the $j$-th order statistic, denoted by ${X_{i,jj}}$, $j=1,2,\dots,n$.
+
+\item
+Step 7. Increase $j$ by one. If $j=n+1$, stop the current cycle and proceed to Step 10. Otherwise, measure the next selected unit in each group, namely ${X_{i,j+1j+1}}$, $i=1,2,\dots,B$.
+ 
+\item
+Step 8. Repeat Steps 4 –7 until all ranked positions are exhausted.
+ 
+\item
+Step 9. The above procedure yields one cycle of RSS size $N$ under PSALT.
+
+\item
+Step 10. The resulting observations can be represented as:
+$
+\{ X_{i,jj}^c: \,\,\,\, i=1,2,\dots,B,\,\,\,\, j=1,2,\dots,n, \,\,\,\ c=1,2,\dots,k \},
+$
+where $c$ denotes the cycle number.
+
+\item
+Step 11. Repeating Steps 2–9 for $k$ cycles produces an RSS sample of size $kN$ under PSALT.
+\end{itemize}
+\end{alg}
+
+
+We consider a one‑cycle RSS obtained under the PSALT scheme from the target lifetime distribution with CDF 
+$G_i(x)$ given in (\ref{f5}). Let $X_{i,jj}$ denote the observed unit selected from the $i$-th stress group ($i=1,2,\dots,B$) at the $j$-th judgment rank ($j=1,2,\dots,n$). For each group $i$, the distribution of $X_{i,jj}$ corresponds to the distribution of the $j$-th order statistic from a simple random sample of size $n$. We denote its CDF and probability density function (PDF) by $G_{i,r:n}(x)$ and $g_{i,r:n}(x)$, respectively.
+
+Using the standard order‑statistics formulation, these functions are expressed as
+\begin{eqnarray}
+\label{f6}
+G_{i,r:n}(x) &= & \sum_{j=r}^{n}
+\binom{n}{j}
+\big[G_i(x)\big]^{j}
+\big[1 - G_i(x)\big]^{\,n-j},
+\\
+\label{f8}
+g_{i,r:n}(x) & = & \frac{n!}{(r-1)!(n-r)!}\,
+\big[G_i(x)\big]^{\,r-1}
+\big[1 - G_i(x)\big]^{\,n-r}
+g_i(x).
+\end{eqnarray}
+where $G_i(.)$ and $g_i(.)$ denote the CDF and PDF of the lifetime distribution at stress level $s_i$, as defined in Eq. (\ref{f5}). These expressions characterize the probabilistic behavior of the measured units within each cycle of the PSALT‑based RSS procedure.
+
+
+\section{Estimation Based on ORSS under PSALT with Type-II Censoring}
+
+Under the PS‑ALT with one‑cycle ORSS, type‑II censoring can be imposed in the following way. After constructing the one‑cycle RSS for each stress level $s_i$, represented by $x_{i,11}, x_{i,22}, \dots, x_{i,nn}$ the observed units are rearranged in ascending order of their failure times. Let the first $m$ lifetimes be observed failures and the remaining $(n-m)$ items be censored. Denote these ordered failure times for the $i$-th stress group as $Z_{i,1} \leq Z_{i,2} \leq \dots \leq Z_{i,m}$. The  data collected from this
+procedure are known as one-cycle type-II censored ORSS and are represented by
+$
+Z_{\mathrm{ORSS}}
+=
+\left\{
+Z_{1,1}, Z_{1,2}, \ldots, Z_{1,m};
+Z_{2,1}, Z_{2,2}, \ldots, Z_{2,m};
+\ldots;
+Z_{B,1}, Z_{B,2}, \ldots, Z_{B,m}
+\right\}.
+$
+
+Following the likelihood formulation for one-cycle ORSS with type-II censoring proposed in \cite{Balakrishnan2007}, the likelihood function can be written as
+\begin{equation}
+\label{f7}
+L \propto \prod_{i=1}^{B} \Big[ \sum_{s[j]} \prod_{r=1}^{m} g_{i,j_{i,r}}(z_{i,r}) \Big(1-G_{i,j_{i,m}}(z_{i,m}) \Big)^{n-m}  \Big]
+\end{equation}
+where $\sum_{s[j]}$ denote the total of all $n !$ permutations $(j_{i,1}, \dots, j_{i,n})$ of ($1,\dots,n$), and $\textbf{z}=(\textbf{z}_1,...,\textbf{z}_B)$, $\textbf{z}_i=(z_{i,1}, \dots, z_{i,m})$, $i=1, \dots,B$.
+
+To obtain the explicit form of the likelihood function, the PDF and CDF given in Eqs. (\ref{f6}) and (\ref{f8}) are substituted into the (\ref{f7}). This substitution yields the  likelihood function in terms of the model parameters $a$, $b$ and $\eta$.
+
+For computational convenience, we consider the corresponding log-likelihood function, denoted by $\ell(a,b,\eta)$. The maximum likelihood estimators (MLEs) of the unknown parameters are obtained by differentiating $\ell(a,b,\eta)$ with respect to $a$, $b$ and $\eta$, and equating the resulting score equations to zero. Since the resulting system of nonlinear equations does not admit closed-form solutions, the MLEs of $a$, $b$ and $\eta$ are obtained numerically using standard iterative optimization techniques. 
+
+
+
+
+%Likelihood function (\ref{f7}) can be rewritten as follows:
+%\begin{equation}
+%\label{f7}
+%L \propto \prod_{i=1}^{B} {\mbox Per} \textbf{U}_i,
+%\end{equation}
+%where ${\mbox Per} \textbf{U}_i = \sum_{s[j]} \prod_{r=1}^{n} a_{r,j_{i,r}}$ denotes the permanent of a square real matrix $\textbf{U}_i=(a_{j,r})$ of size $n\times n$.
+
+
+
+
+
+\section{Simulation Study}
+In this section, we evaluate the performance of the proposed estimation procedures through simulation studies. The theoretical results presented in the previous sections serve as the basis for the simulation design and the subsequent numerical investigation.
+
+Under the proposed procedure with two groups, ($B=2$), we generate $6$ SRS replications,($n=6$), each of size $12$, ($N=12$) and then split every SRS into two groups of size $6$, as shown in the third column of Table 1.  Within each SRS, the first and second groups are generated from the CDF in (\ref{f5}) with $\eta=0.8$, $a=0.2$ and $b=0.1$ under two stress levels, $\kappa_1=1$ and $\kappa_2=3$, respectively. We then apply the RSS technique to these SRS replications to obtain a one-cycle RSS sample, and subsequently order it to construct the ORSS. This construction process is reported in the last two columns of Table \ref{tab1}. Finally, we impose a type-II censoring scheme on the ORSS values, where $m \in {4,5,6}$ as listed in Table \ref{tab2}.
+
+Based on the generated SRS and ORSS under PSALT given in Table \ref{tab1}, Table \ref{tab2} presents the MLEs of $a$, $b$ and $\eta$, along with the corresponding absolute biases (AB) and mean squared errors (MSEs). Table \ref{tab2} shows that both the absolute biases and MSEs under ORSS are consistently smaller than those under SRS. This demonstrates the superior efficiency of the ORSS sampling scheme compared with SRS for PSALT under type-II censoring. These findings suggest that ORSS provides more accurate estimation than SRS in terms of both bias and MSE. In addition, the estimation accuracy improves as $m$ increases, since both the absolute biases and MSEs decrease.
+
+
+
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{One-cycle SRSs, RSSs, and ORSSs.}\label{tab1}
+\begin{tabular}{ccccccccccccc}
+  \hline
+ SN  & $i$ & \multicolumn{6}{c}{SRSs} & \multicolumn{2}{c}{RSS} & & \multicolumn{2}{c}{ORSS} 
+ \\
+\cline{9-10} \cline{12-13}
+ & & & & & & & & $i=1$ & $i=2$ && $i=1$ & $i=2$
+\\
+ \hline
+1 & 1 &  {\color{red}0.1413} & 0.8695 & 0.9524 & 1.2140 & 1.7604 & 1.9235 & 0.8695 & 0.2284 && 0.6334 & 0.2284
+\\
+ & 2 & {\color{red}0.2284} & 0.2950 & 0.6584 & 0.7440 & 1.0507 &  1.1059 & & &&  &  
+\\
+ \hline
+ 2 & 1 & 0.5373 & {\color{red}0.6334} & 0.8561 & 1.0479 & 1.0754 & 1.4027 & 0.6334 & 0.7529 && 0.8324 & 0.5507
+\\
+ & 2 &  0.3482 & {\color{red}0.7529} & 0.7534 & 0.7811 & 0.8177 & 0.8255 & & &  &  &
+ \\
+ \hline
+ 3 & 1 &  0.5356 & 0.9315 & {\color{red}1.2312} & 1.8401 & 2.0688 & 2.5120 & 1.2312 & 0.5507 & & 0.8695 & 0.7529
+\\
+ & 2 &  0.4249 & 0.4738 & {\color{red}0.5507} & 0.8169 & 0.8720 & 1.1208 &  &  &  &  &
+ \\
+ \hline
+ 4 & 1 & 0.5421 & 0.78519 & 0.8171 & {\color{red}0.8324} & 1.1578 & 1.3778 & 0.8324 & 0.9185 && 0.9636 & 0.9185
+\\
+ & 2 & 0.4372 & 0.6528 & 0.8251 & {\color{red}0.9185} & 0.9403 & 1.2665 & & &  &  &
+ \\
+ \hline
+ 5 & 1 &  0.4823 & 0.6058 & 0.6338 & 0.7251 & {\color{red}1.2471} & 1.4661 & 1.2471 & 1.0049 && 1.2313 & 0.9869
+\\
+ & 2 & 0.3991 & 0.6820 & 0.7494 & 0.7896 & {\color{red}1.0049} & 1.4061 & & &  & &
+ \\
+ \hline
+ 6 & 1 & 0.4985 & 0.5248 & 0.6148 & 0.8662 & 0.9141 & {\color{red}0.9636} & 0.9636 & 0.9869 & & 1.2471 & 1.0049
+\\
+ & 2 & 0.3367 & 0.4408 & 0.4792 & 0.6457 & 0.8253 & {\color{red}0.9869} & & &  & &
+\\
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{Efficiency Comparison of SRS and ORSS for PSALT Model Parameters}\label{tab2}
+\begin{tabular}{cccccccccc}
+  \hline
+  n  & m &  & \multicolumn{3}{c}{SRS} & & \multicolumn{3}{c}{ORSS} 
+ \\
+\cline{4-6} \cline{8-10}
+ &  &  & $a$ & $b$ & $\eta$ & & $a$ & $b$ & $\eta$
+\\
+ \hline
+ 6 & 4 & AB &  0.1218 & 0.2213 & 0.0976 && 0.1133 & 0.1847 & 0.0703
+ \\
+    &  & MSE & 0.0225 & 0.0834 & 0.0189 &&  0.0184 & 0.0689 & 0.0093
+    \\
+ \hline
+ 6 & 5 & AB & 0.1203 & 0.2188 & 0.0953 && 0.1012 & 0.1790 & 0.0643
+ \\
+    &  & MSE & 0.0218 & 0.0807 & 0.0133 && 0.0156 & 0.0624 & 0.0075
+    \\
+ \hline
+ 6 & 6 & AB & 0.1189 & 0.2163 & 0.0912 && 0.0935 & 0.1755 & 0.0611
+ \\
+    &  & MSE & 0.0197 & 0.0759 & 0.0101 && 0.0121 & 0.0572 & 0.0034
+\\
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%
+
+
+
+\section*{Discussion and Conclusion}   
+The ORSS method has garnered significant attention for its estimation effectiveness, a fact substantiated in this study. Our findings demonstrate that estimates derived using ORSS are superior to those from SRS. Specifically, the ORSS method, applied under PSALTs with type-II censoring, proved effective for items whose lifetimes follow a Weibull distribution with a scale parameter governed by an inverse power law under stress. Simulation studies using generated data further validated these theoretical results, confirming ORSS’s enhanced efficiency as a sampling technique over SRS.
+
+%\section*{Acknowledgments}   
+%If you wish to include acknowledgments, this section should appear before the references.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+\bibitem[Balakrishnan (2007)]{Balakrishnan2007}
+Balakrishnan N. (2007), Permanents, order statistics, outliers, and robustness, {\it Revista Matematica Complutense}, 20(1), 7-107.
+
+\bibitem[Hakamipour (2021)]{Nooshin2021}
+Hakamipour N. (2021), Comparison between constant-stress and step stress accelerated life tests under a cost constraint for progressive type-I censoring, {\it Sequential
+Analysis}, 40(1), 17-31.
+
+\bibitem[Hakamipour (2018)]{Nooshin2018}
+Hakamipour N. (2018), Optimal Plan for Step-Stress Accelerated Life Test with Two Stress Variables for Lognormal Data, {\it Iranian Journal of Science and
+Technology, Transactions A: Science}, 42, 2259-2271
+
+\bibitem[McIntyre (1952)]{McIntyre1952}
+McIntyre G. A. (1952), A method for unbiased selective sampling using ranked sets, {\it Australian Journal of Agricultural Researc}, 3(4), 385-390.
+
+\bibitem[Nelson (1982)]{Nelson1982}
+Nelson W. B. (1982), {\it Accelerated Testing: Statistical Models, Test Plans, and Data Analysis},  John Wiley \& Sons.
+
+\bibitem[Takahasi and Wakimoto (1968)]{Takahasi1968}
+Takahasi K. and Wakimoto K. (1968), On unbiased estimates of the populationmean based on the sample stratifed by means of ordering, {\it Annals of the Institute of Statistical Mathematics}, 20, 1-31.
+
+\end{thebibliography}
+ \end{document}
+

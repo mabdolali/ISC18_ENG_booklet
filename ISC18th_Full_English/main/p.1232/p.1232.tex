@@ -1,0 +1,197 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\begin{document}
+\thispagestyle{empty}
+
+\fancyhead[LE]{UMVUEs via $\mathscr{H}$-Sufficient Statistics}
+
+\fancyhead[RO]{Hazhir Homei, Alireza Hedayati, Maryam Kamali Alamdari}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+
+\vspace*{4cm}
+
+{\Large \bf Generalized $\mathscr{H}$-Sufficient Statistics and the Construction of UMVUEs: New Perspectives and Extensions}\\
+
+{\bf
+Hazhir Homei$^1$, Alireza Hedayati$^2$, Maryam Kamali Alamdari\footnote[3]{{\bf Corresponding Author: }{\tt Mar55yam.Kamali@gmail.com }}\\
+$^1$Faculty Member, Dept. of Mathematics, Statistics and Computer , University of Tabriz\\
+$^2$Faculty of Statistics, Mathematics and Computer, Allameh Tabataba'i University \\
+$^3$Faculty of Mathematics, Statistics and Computer, University of Tabriz }
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+
+
+\noindent{\bf Abstract:}\\
+This paper introduces the concept of an $\mathscr{H}$-sufficient statistic and explores its theoretical implications in the derivation of uniformly minimum variance unbiased estimators (UMVUEs). By leveraging this framework, we extend classical results associated with the Rao-Blackwell and Lehmann-Scheffé theorems, particularly in settings where a complete sufficient statistic is unavailable. The proposed approach not only clarifies several longstanding examples in statistical literature but also yields novel interpretations of optimality conditions. Furthermore, we establish connections between $\mathscr{H}$-sufficiency and Basu’s theorem, demonstrating how independence and uncorrelatedness criteria can be systematically utilized to identify optimal estimators. The results provide a unified and flexible methodology for handling incomplete minimal sufficient statistics in parametric inference.
+ 
+ 
+\noindent{\bf Keywords:} 
+Rao-Blackwell theorem, Lehmann-Scheffé theorem, $\mathscr{H}$-sufficient statistic, incomplete sufficient statistics, Basu’s theorem, UMVUE. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F10$, $\rm 62B05$, $\rm 62F99$. \\ 
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+\section{Introduction and Preliminaries}\label{sec:intro}
+
+The theory of unbiased estimation constitutes one of the cornerstones of classical statistical inference, with profound implications for both theoretical developments and practical applications. The foundations of this field were laid by pioneering works of Fisher (1920), who initiated systematic investigations into the accuracy of statistical observations. Over the decades, this area has been comprehensively treated in numerous authoritative texts including Rao (1973), Lehmann and Casella (1998), Casella and Berger (2002), Shao (2003), Roussas (1997), Mukhopadhyay (2000), Mood et al. (1974), and Rohatgi and Saleh (2015).
+
+The foundations of unbiased estimation in parametric models are traditionally anchored in two cornerstone results: the Rao--Blackwell theorem (RBT) and the Lehmann--Scheff\'{e} theorem (LST), established through the seminal works of Rao (1945), Blackwell (1947), and Lehmann and Scheff\'{e} (1950, 1955). These fundamental results establish a systematic pathway for improving arbitrary unbiased estimators by conditioning on sufficient statistics, ultimately yielding the uniformly minimum variance unbiased estimator (UMVUE) when a complete sufficient statistic is available. The concept of completeness, thoroughly discussed by Stigler (1972) and Bahadur (1957), plays a pivotal role in ensuring the uniqueness and optimality of such estimators.
+
+Despite their theoretical elegance and widespread applicability, practical statistical analyses frequently encounter models where minimal sufficient statistics fail to be complete. In such challenging settings, the classical machinery loses its optimality guarantees, prompting researchers to explore alternative frameworks and generalized notions of sufficiency. Early investigations by Lehmann (1983) on estimation with inadequate information highlighted the limitations of standard approaches. Subsequent works by Bondesson (1983) specifically addressed the problem of uniformly minimum variance unbiased estimation when no complete sufficient statistic exists, while Meeden (1987) examined estimation procedures using statistics that are not sufficient in the classical sense.
+
+The interplay between sufficiency, completeness, and ancillarity has been a subject of extensive research. Basu's theorem, which establishes a profound connection between these concepts, has found numerous applications as discussed by Boos and Hughes-Oliver (1997). The relationship between sufficiency and unbiased estimation has been further explored by Pe\~{n}a and Rohatgi (1994), who provided insightful comments on the limitations and possibilities within this framework.
+
+Recent investigations have highlighted the limitations of standard sufficiency in incomplete settings and proposed generalized notions that retain the variance-reduction property of conditioning. Notable contributions include the work of Nayak and Sinha (2012), who examined aspects of minimum variance unbiased estimation in the presence of ancillary statistics. Building upon these developments and addressing puzzles appearing in statistical inference as noted by Homei (2019, 2021), we revisit and extend the concept of an $\mathscr{H}$-sufficient statistic.
+
+Unlike classical sufficiency, which is parameter-agnostic and requires the conditional distribution of the data given the statistic to be independent of the parameter, $\mathscr{H}$-sufficiency is defined relative to a specific estimand. This targeted approach guarantees that the conditional expectation of any unbiased estimator depends on the data solely through a deterministic transformation of the statistic. The concept proves particularly advantageous when completeness is absent, as it preserves the core mechanism of variance reduction without requiring the stringent condition of full sufficiency. Recent examples by Galili and Meilison (2016) demonstrated cases where Rao--Blackwell improvements can be further enhanced, motivating the need for more flexible frameworks.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:defs} formalizes the notion of $\mathscr{H}$-sufficiency and establishes its basic properties. Section~\ref{sec:extensions} presents our main theoretical contributions, including generalized variance-reduction results and connections to ancillary structures. Section~\ref{sec:basu} reinterprets these findings through the lens of independence criteria, drawing parallels with Basu's theorem. Concluding remarks and directions for future research are provided in Section~\ref{sec:conc}.
+
+\section{Core Definitions and Structural Properties}\label{sec:defs}
+To set the stage, we recall the foundational definitions that underpin our analysis. Let $\mathcal{X}$ denote the sample space and $\{P_{\theta} : \theta \in \Theta\}$ a parametric family of probability measures. An estimator $\delta(X)$ is said to be unbiased for a scalar parameter $\mathfrak{a}(\theta)$ if $\mathbb{E}_{\theta}[\delta(X)] = \mathfrak{a}(\theta)$ for all $\theta \in \Theta$.
+
+\begin{dfn}[$\mathscr{H}$-Sufficiency]\label{def:Hsuff}
+A statistic $T(X)$ is called $\mathscr{H}$-sufficient for the estimand $\mathfrak{a}(\theta)$ if, for every unbiased estimator $\delta(X)$ of $\mathfrak{a}(\theta)$, there exists a measurable function $h_{\delta} : \mathcal{T} \to \mathbb{R}$ such that
+\begin{equation}
+    \mathbb{E}_{\theta}[\delta(X) \mid T] = h_{\delta}(T) \quad \text{almost surely under } P_{\theta}, \quad \forall \theta \in \Theta.
+\end{equation}
+Throughout this work, the term $\mathscr{H}$-sufficient implicitly refers to sufficiency relative to the estimator's own expectation.
+\end{dfn}
+
+Definition~\ref{def:Hsuff} highlights a crucial distinction from classical sufficiency: the conditioning property is tailored to the specific functional of interest rather than the entire parametric model. Consequently, an $\mathscr{H}$-sufficient statistic may possess a lower dimension than a classical sufficient statistic, offering a more parsimonious reduction when full sufficiency is unattainable or unnecessarily restrictive.
+
+\begin{dfn}[Completeness and First-Order Ancillarity]\label{def:comp_anc}
+A statistic $T(X)$ is \textit{complete} for the family $\mathcal{P}$ if $\mathbb{E}_{\theta}[g(T)] = 0$ for all $\theta \in \Theta$ implies $g(T) = 0$ almost surely. A statistic $V(X)$ is termed \textit{first-order ancillary} if its expectation $\mathbb{E}_{\theta}[V]$ does not depend on $\theta$.
+\end{dfn}
+
+The interplay between completeness and ancillarity has long been recognized as a cornerstone of optimal estimation theory. In the classical framework, the Lehmann--Scheffé theorem asserts that any unbiased estimator based on a complete sufficient statistic is the unique UMVUE. When completeness fails, however, uniqueness and optimality can no longer be guaranteed through standard conditioning alone. The introduction of $\mathscr{H}$-sufficiency addresses this gap by ensuring that the conditional expectation operator still produces a well-defined, improved estimator for the target parameter.
+
+\begin{thm}[Generalized Rao--Blackwell Improvement]\label{thm:genRB}
+Let $X_1, \dots, X_n$ be a random sample from $P_{\theta} \in \mathcal{P}$, and let $T(X)$ be $\mathscr{H}$-sufficient for $\mathfrak{a}(\theta)$. For any unbiased estimator $\delta(X)$ of $\mathfrak{a}(\theta)$, define $\eta(X) = \mathbb{E}[\delta(X) \mid T]$. Then:
+\begin{enumerate}[(i)]
+    \item $\eta(X)$ is unbiased for $\mathfrak{a}(\theta)$,
+    \item $\mathrm{Var}_{\theta}(\eta) \leq \mathrm{Var}_{\theta}(\delta)$ for all $\theta \in \Theta$,
+    \item Equality holds in (ii) if and only if $\delta(X) = \eta(X)$ almost surely.
+\end{enumerate}
+\end{thm}
+\begin{proof}
+The result follows directly from the law of total expectation and the conditional variance decomposition. The $\mathscr{H}$-sufficiency condition ensures that $\eta(X)$ is a well-defined function of $T$, preserving the standard Rao--Blackwell argument without requiring full sufficiency. \hfill $\Box$
+\end{proof}
+
+
+\section{Theoretical Extensions and Orthogonality Characterizations}\label{sec:extensions}
+The classical Lehmann--Scheff\'{e} framework relies heavily on completeness. When completeness is absent, an alternative characterization emerges through orthogonality conditions in the space of unbiased estimators. Let $\mathcal{U}_0$ denote the class of all unbiased estimators of zero, i.e., $\mathcal{U}_0 = \{ Z(X) : \mathbb{E}_{\theta}[Z] = 0, \forall \theta \in \Theta \}$. A fundamental result (often termed LST-II) states that an unbiased estimator $g(X)$ is the UMVUE of its expectation if and only if $\mathbb{E}_{\theta}[g(X)Z(X)] = 0$ for all $Z \in \mathcal{U}_0$ and all $\theta \in \Theta$.
+
+We now establish how $\mathscr{H}$-sufficiency naturally bridges the gap between the conditioning approach of the Rao--Blackwell theorem and the orthogonality criterion of LST-II.
+
+\begin{thm}[Characterization via $\mathscr{H}$-Sufficiency]\label{thm:H_orth}
+Let $H(X)$ be a complete $\mathscr{H}$-sufficient statistic for the estimand $\mathfrak{a}(\theta)$. An unbiased estimator $g(X)$ of $\mathfrak{a}(\theta)$ satisfies the orthogonality condition
+\begin{equation}
+    \mathbb{E}_{\theta}[g(X)Z(X)] = 0, \quad \forall Z \in \mathcal{U}_0, \; \forall \theta \in \Theta,
+\end{equation}
+if and only if $g(X)$ is almost surely a function of $H(X)$.
+\end{thm}
+\begin{proof}
+\textit{Necessity ($\Longleftarrow$):} If $g(X) = \phi(H(X))$, then by the definition of $\mathscr{H}$-sufficiency and the law of iterated expectations, $\mathbb{E}[g(X)Z(X)] = \mathbb{E}[\phi(H) \mathbb{E}(Z|H)]$. Since $\mathbb{E}(Z|H)$ is unbiased for zero and $H$ is complete $\mathscr{H}$-sufficient, it follows that $\mathbb{E}(Z|H) = 0$ a.s., yielding the result.
+\textit{Sufficiency ($\Longrightarrow$):} Suppose the orthogonality condition holds. By the uniqueness of the UMVUE, the estimator $\eta(X) = \mathbb{E}[g(X) \mid H(X)]$ must coincide with $g(X)$ almost surely. The $\mathscr{H}$-sufficiency of $H$ guarantees that $\eta(X)$ is a well-defined function of $H$, completing the proof. \hfill $\Box$
+\end{proof}
+
+The following result highlights a practical criterion for identifying optimal estimators when ancillary structures are present.
+
+\begin{thm}[Ancillary Conditioning and Optimality]\label{thm:anc_cond}
+Let $g(X)$ be an unbiased estimator of $\mathfrak{a}(\theta)$, and let $V(X)$ be a first-order ancillary statistic. If $\mathbb{E}[g(X) \mid V(X)] = \mathfrak{a}(\theta)$ almost surely, then $g(X)$ is the UMVUE of $\mathfrak{a}(\theta)$. Moreover, any measurable function of $g(X)$ retains the UMVUE property for its respective expectation.
+\end{thm}
+\begin{proof}
+Consider any perturbation of the form $g(X) + k(V(X))$, where $k(\cdot)$ is a measurable function with $\mathbb{E}[k(V)] = 0$. The conditional expectation $\mathbb{E}[g(X) + k(V) \mid g(X)]$ simplifies to $g(X)$ due to the first-order ancillarity of $V$ and the given condition. This implies that $g(X)$ is $\mathscr{H}$-sufficient and complete for its mean, thereby satisfying the criteria for the UMVUE. The extension to functions of $g(X)$ follows directly from the preservation of unbiasedness and variance minimization under measurable transformations. \hfill $\Box$
+\end{proof}
+
+\begin{rem}
+Theorem~\ref{thm:anc_cond} extends earlier findings by Nayak and Sinha (2012) by demonstrating that the optimality of $g(X)$ is not restricted to the estimator itself but propagates to any functional transformation. This property is particularly valuable in constructing optimal estimators for complex functionals of the underlying parameter.
+\end{rem}
+
+\section{Independence Criteria and a Reinterpretation of Basu's Theorem}\label{sec:basu}
+Basu's theorem establishes a profound link between completeness, sufficiency, and ancillarity. We now explore how these independence properties can be reframed to characterize optimal estimators without explicitly invoking completeness.
+
+\begin{dfn}[UEIAS Estimator]\label{def:ueias}
+An unbiased estimator $T(X)$ of $\mathfrak{a}(\theta)$ is said to be an \textit{Unbiased Estimator Independent of Ancillary Statistics (UEIAS)} if it is statistically independent of every non-degenerate ancillary statistic in the model.
+\end{dfn}
+
+\begin{thm}[Basu's Characterization of UMVUE]\label{thm:basu_ueias}
+Suppose $H(X)$ is a complete sufficient statistic for $\mathcal{P}$. Then any unbiased estimator $g(H)$ of $\mathfrak{a}(\theta)$ is the unique UEIAS estimator with probability one.
+\end{thm}
+\begin{proof}
+The result follows immediately from Basu's theorem, which guarantees that any complete sufficient statistic is independent of all ancillary statistics. Since $g(H)$ inherits this independence property and unbiasedness, it uniquely satisfies the UEIAS condition. \hfill $\Box$
+\end{proof}
+
+The independence criterion can be relaxed to uncorrelatedness when dealing with first-order ancillary structures. This leads to a broader class of optimal estimators.
+
+\begin{dfn}[UECAS Estimator]\label{def:uecas}
+An unbiased estimator $T(X)$ of $\mathfrak{a}(\theta)$ is termed an \textit{Unbiased Estimator Uncorrelated with First-Order Ancillary Statistics (UECAS)} if $\mathrm{Cov}_{\theta}(T(X), U(X)) = 0$ for every first-order ancillary statistic $U(X)$ and all $\theta \in \Theta$.
+\end{dfn}
+
+\begin{thm}[Uncorrelatedness and Optimality]\label{thm:uecas}
+Let $T(X)$ be an unbiased estimator of $\mathfrak{a}(\theta)$. Then $T(X)$ is the UMVUE if and only if it is uncorrelated with every zero-mean unbiased estimator, i.e., $\mathrm{Cov}_{\theta}(T(X), Z(X)) = 0$ for all $Z \in \mathcal{U}_0$.
+\end{thm}
+\begin{proof}
+This is a direct consequence of the orthogonality characterization in LST-II. The condition $\mathbb{E}[T(X)Z(X)] = 0$ for all zero-mean unbiased $Z$ is equivalent to zero covariance, which uniquely identifies the minimum variance estimator. \hfill $\Box$
+\end{proof}
+
+The following example illustrates the practical utility of $\mathscr{H}$-sufficiency in a non-regular setting where classical sufficient statistics are incomplete or unavailable.
+
+\begin{eg}[Uniform Shift Model]\label{ex:uniform}
+Let $X \sim \mathrm{Uniform}(\theta, \theta+1)$ with $\theta \in \mathbb{Z}$. The integer part statistic $T(X) = \lfloor X \rfloor$ is a complete $\mathscr{H}$-sufficient statistic for $\theta$. Since $T(X)$ captures all information relevant to the integer shift, it is independent of any ancillary component in the model. Consequently, $T(X)$ serves as a powerful, unique UMVUE for $\theta$.
+\end{eg}
+
+The interplay between independence and uncorrelatedness criteria is summarized in the comparative framework below, which outlines the applicability of different optimality conditions depending on the structural properties of the sufficient statistic.
+
+\begin{table}[htbp]
+\centering
+\caption{Optimality frameworks based on structural properties of sufficient statistics.}
+\label{tab:comparison}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model Property} & \textbf{Conditioning Approach} & \textbf{Independence/Orthogonality Approach} \\
+\midrule
+Complete sufficient statistic exists & Lehmann--Scheff\'{e} theorem & Basu's theorem (UEIAS) \\
+Only $\mathscr{H}$-sufficient statistic exists & Generalized Rao--Blackwell & LST-II / UECAS criterion \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion and Future Directions}\label{sec:conc}
+This paper has demonstrated that the framework of $\mathscr{H}$-sufficient statistics provides a robust alternative to classical sufficiency when completeness is absent. By decoupling the conditioning mechanism from global model sufficiency and aligning it with the specific estimand of interest, we retain the variance-reduction guarantees of the Rao--Blackwell theorem without requiring the stringent completeness condition. The equivalence established between $\mathscr{H}$-sufficiency and the orthogonality criterion of the Lehmann--Scheff\'{e} framework further clarifies the structural requirements for optimality in incomplete settings. Moreover, the reinterpretation of independence and uncorrelatedness conditions through UEIAS and UECAS criteria offers practical diagnostic tools for verifying estimator optimality. Future research may explore computational implementations of these criteria in high-dimensional models, as well as extensions to Bayesian and robust estimation paradigms where classical sufficiency is inherently limited.
+
+
+\begin{thebibliography}{99}
+\bibitem[Bahadur (1957)]{Bahadur:1957} Bahadur R.R. (1957), On Unbiased Estimates of Uniformly Minimum Variance, {\it Sankhy\={a}} 18, 211-224.
+\bibitem[Blackwell (1947)]{Blackwell:1947} Blackwell D. (1947), Conditional Expectation and Unbiased Sequential Estimation, {\it The Annals of Mathematical Statistics} 18, 105-110.
+\bibitem[Bondesson (1983)]{Bondesson:1983} Bondesson L. (1983), On Uniformly Minimum Variance Unbiased Estimation When No Complete Sufficient Statistic Exist, {\it Metrika} 30, 49-55.
+\bibitem[Boos and Hughes-Oliver (1997)]{Boos:1997} Boos D.D. and Hughes-Oliver J.M. (1997), Applications of Basu's Theorem, {\it The American Statistician} 52, 218-221.
+\bibitem[Casella and Berger (2002)]{Casella:2002} Casella G. and Berger R.L. (2002), {\it Statistical Inference} (2nd Ed), Pacific Grove, CA: Duxbury Press.
+\bibitem[Fisher (1920)]{Fisher:1920} Fisher R.A. (1920), A Mathematical Examination of the Methods of Determining the Accuracy of an Observation by the Mean Error, and by the Mean Square Error, {\it Monthly Notices Royal. Astron. Soc.} 80, 758-770.
+\bibitem[Galili and Meilison (2016)]{Galili:2016} Galili T. and Meilison I. (2016), An Example of an Improvable Rao--Blackwell Improvement, Inefficient Maximum Likelihood Estimator, and Unbiased Generalized Bayes Estimator, {\it The American Statistician} 70, 108-113.
+\bibitem[Homei (2019)]{Homei:2019b} Homei H. (2019), Some Puzzles Appearing in Statistical Inference, {\it Submitted for Publication}.
+\bibitem[Homei (2021)]{Homei:2021a} Homei H. (2021), A Note on Sufficient Statistics, {\it Submitted for Publication}.
+\bibitem[Lehmann (1983)]{Lehmann:1983a} Lehmann E.L. (1983), Estimation with Inadequate Information, {\it Journal of The American Statistical Association} 78, 624-627.
+\bibitem[Lehmann (1983)]{Lehmann:1983b} Lehmann E.L. (1983), {\it Theory of Point Estimation}, New York: Wiley.
+\bibitem[Lehmann and Casella (1998)]{Lehmann:1998} Lehmann E.L. and Casella G. (1998), {\it Theory of Point Estimation} (2nd Ed), New York: Springer.
+\bibitem[Lehmann and Scheff\'{e} (1950)]{Lehmann:1950} Lehmann E.L. and Scheff\'{e} H. (1950), Completeness, Similar Regions and Unbiased Estimation: Part I, {\it Sankhy\={a}} 10, 305-340.
+\bibitem[Lehmann and Scheff\'{e} (1955)]{Lehmann:1955} Lehmann E.L. and Scheff\'{e} H. (1955), Completeness, Similar Regions and Unbiased Estimation: Part II, {\it Sankhy\={a}} 10, 219-236.
+\bibitem[Meeden (1987)]{Meeden:1987} Meeden G. (1987), Estimation When Using A Statistic That Is Not Sufficient, {\it The American Statistician} 41, 135-136.
+\bibitem[Mood et al. (1974)]{Mood:1974} Mood A., Graybill F. and Boes D. (1974), {\it An Introduction to Probability Theory of Statistics}, New York: McGraw-Hill.
+\bibitem[Mukhopadhyay (2000)]{Mukhopadhyay:2000} Mukhopadhyay N. (2000), {\it Probability and Statistical Inference}, New York: Marcel Dekker.
+\bibitem[Nayak and Sinha (2012)]{Nayak:2012} Nayak T.K. and Sinha B. (2012), Some Aspects of Minimum Variance Unbiased Estimation in Presence of Ancillary Statistics, {\it Statistics and Probability Letters} 82, 1129-1135.
+\bibitem[Pe\~{n}a and Rohatgi (1994)]{Pena:1994} Pe\~{n}a E.A. and Rohatgi V. (1994), Some Comments about Sufficiency and Unbiased Estimation, {\it The American Statistician} 48, 242-243.
+\bibitem[Rao (1973)]{Rao:1973} Rao C.R. (1973), {\it Linear Statistical Inference and its Applications}, New York: Wiley.
+\bibitem[Rao (1945)]{Rao:1945} Rao C.R. (1945), Information and Accuracy Attainable in The Estimation of Statistical Parameters, {\it Bulletin of the Calcutta Mathematical Society} 37, 81-89.
+\bibitem[Rohatgi and Saleh (2015)]{Rohatgi:2015} Rohatgi V. and Saleh A.K.Md.E. (2015), {\it An Introduction to Probability and Statistics} (3rd ed), New York: Wiley.
+\bibitem[Roussas (1997)]{Roussas:1997} Roussas G.G. (1997), {\it A Course in Mathematical Statistics} (2nd ed), New York: Springer-Verlag.
+\bibitem[Shao (2003)]{Shao:2003} Shao J. (2003), {\it Mathematical Statistics} (2nd ed), New York: Springer-Verlag.
+\bibitem[Stigler (1972)]{Stigler:1972} Stigler S.M. (1972), Completeness and Unbiased Estimation, {\it The American Statistician} 26, 28-29.
+\bibitem[Vincent and Thompson (2017)]{Vincent:2017} Vincent K. and Thompson S. (2017), Estimating Population Size with Link--Tracing Sampling, {\it Journal of The American Statistical Association} 112, 1286-1295.
+\end{thebibliography}
+
+ \end{document}
+
+g

@@ -1,0 +1,10 @@
+{
+  "included": 112,
+  "blanks": 33,
+  "arabic_pages": 960,
+  "toc_pages": 10,
+  "full_pages": 970,
+  "method": "isc18_fancyhdr_continuous_setcounter",
+  "odd_starts_ok": true,
+  "output": "i:\\Booklet ENG\\ISC18th_Full_English\\Full-English.pdf"
+}

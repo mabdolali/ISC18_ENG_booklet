@@ -1,0 +1,18 @@
+{
+  "total": 113,
+  "by_status": {
+    "ok": 111,
+    "pdf_only": 1,
+    "no_tex": 1
+  },
+  "ok_with_title": 111,
+  "ok_with_abstract": 111,
+  "ok_with_keywords": 108,
+  "templates_discarded": 11,
+  "pdf_only": [
+    "p.1066"
+  ],
+  "no_tex": [
+    "p.1208"
+  ]
+}

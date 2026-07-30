@@ -1,0 +1,261 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath, amssymb}
+
+
+% تعریف محیط Lemma برای جلوگیری از خطا
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+	\thispagestyle{empty}
+	%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+	\fancyhead[LE]{A Robust FSVM Framework}
+	%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+	\fancyhead[RO]{Rashidi Alavijeh et al.}
+	\begin{center}
+		{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\ 
+		\vspace*{-1.8cm}
+		\vspace*{4cm}
+		%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+		{\Large \bf A Robust FSVM-GARCH Framework for Imbalanced Time Series Data}\\
+		%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+		{\bf
+			Najmeh Rashidi Alavijeh$^1$, Saeid Rezakhah\footnote[2]{{\bf Corresponding Author:} {\tt saeid.rezakhah@aut.ac.ir }}, Hamidreza Amindavar$^3$} \\
+		$^1${Department of Mathematics and Computer Science, Amirkabir University of Technology, Tehran, Iran} \\ 
+		$^2${Department of Mathematics and Computer Science, Amirkabir University of Technology, Tehran, Iran} \\ 
+		$^3${Department of Electrical Engineering, Amirkabir University of Technology, Tehran, Iran}
+	\end{center}
+	\rule{\textwidth}{0.2mm}\\
+	%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+	\noindent{\bf Abstract:}\\
+	This paper presents an enhanced fuzzy support vector machine (FSVM) framework tailored for financial time series classification. We address the persistent challenges of noise and class imbalance by introducing a novel integration of domain-based volatility information and adaptive fuzzy weighting. The key innovation lies in incorporating the Parkinson volatility estimator—a highly efficient and model-free variance measure—as the sole input feature, ensuring robustness in environments where high-frequency data are unavailable. Furthermore, we develop a weighted fuzzy membership mechanism (WFSVM) that assigns membership values based on inverse class frequency weighting and volatility-based distance metrics. This dual mechanism significantly enhances the classifier's performance, allowing it to outperform standard SVM and state-of-the-art imbalance-corrected models in volatility regime recognition, especially under skewed data distributions.
+	
+	\noindent{\bf Keywords:} 
+	Fuzzy Support Vector Machine (FSVM), Class Imbalance Learning (CIL), Parkinson Volatility Estimator, Volatility Clustering, Mahalanobis Distance\\
+	\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62H30$, $\rm 91G70$, $\rm 68T10$. \\ 
+	\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+	
+	%%%%%%%%%%%%%% Introduction %%%%%%%%%%%%%%
+	\section{Introduction}
+	\label{Introduction}
+	Classification of financial time series remains a critical task in econometrics and data mining, essential for risk management and investment decision-making. Support Vector Machines (SVM), introduced by Vapnik \cite{Vapnik1995}, have become a cornerstone technique due to their ability to handle high-dimensional data and minimize the upper bound of generalization error \cite{Boser1992}. Despite their success in cross-sectional analysis, standard SVMs often struggle with the unique characteristics of financial data, specifically noise, non-stationarity, and class imbalance. Financial markets are characterized by volatility clustering and heteroskedasticity, where the distribution of classes (e.g., high volatility vs. low volatility regimes) is often significantly skewed \cite{Andersen1998}.
+	
+	To mitigate the impact of noise and outliers, Fuzzy Support Vector Machines (FSVM) were proposed by Lin and Wang \cite{Lin2002}. FSVM assigns a fuzzy membership score to each sample, reducing the influence of outliers on the decision boundary. However, standard FSVM does not inherently address class imbalance. In financial contexts, minority classes often represent critical market events, making their accurate detection paramount. Recent approaches, such as Batuwita and Palade \cite{Batuwita2010} and Wu et al. \cite{Wu2017}, have integrated sampling techniques and penalty weights to balance classes. Furthermore, advancements in kernel functions and loss functions, such as the pinball loss and self-tuned schemes, have improved robustness \cite{Verma2023, Tanveer2024}.
+	
+	Another line of research combines machine learning with econometric models. For instance, Khemchandani et al. \cite{Khemchandani2009} demonstrated the efficacy of SVR in financial forecasting. Zhang and Wang \cite{Zhang2009} integrated fuzzy logic with GARCH models. While these hybrid models capture temporal dependencies, they often rely on traditional volatility proxies like squared returns, which are notoriously noisy \cite{Degiannakis2013}. This paper proposes a robust framework that bridges these gaps. We integrate GARCH modeling with a Weighted FSVM (WFSVM) but introduce a critical innovation: the use of the Parkinson volatility estimator \cite{Parkinson1980} as the primary feature. By coupling this efficient estimator with a Mahalanobis-distance-based fuzzy membership function, we create a classifier that is robust to noise, adaptive to class imbalance, and efficient in low-frequency data environments.
+	
+	%%%%%%%%%%%%%% Methodology %%%%%%%%%%%%%%
+	\section{Proposed Framework}
+	\label{methodology}
+	Our methodology consists of two primary phases: robust feature extraction using Parkinson volatility and classification via a Weighted Fuzzy SVM that incorporates class imbalance learning (CIL).
+	
+	\subsection{Volatility Estimation: GARCH and Parkinson}
+	Financial time series exhibit volatility clustering, where large changes tend to be followed by large changes. The GARCH(1,1) model is a standard tool for capturing this phenomenon:
+	\begin{equation}
+		h_t = w + \alpha Z_{t-1}^2 + \beta h_{t-1}, \quad Z_t = e_t\sqrt{h_t}, \quad e_t \sim IID(0,1)
+	\end{equation}
+	While $h_t$ captures the conditional variance, estimating it directly requires complex model fitting and assumptions. A more practical and efficient proxy for our classification task is the \textbf{Parkinson estimator}, which utilizes the high and low prices of the trading day \cite{Parkinson1980}:
+	\begin{equation}
+		\sigma_{park, t}^2 = \frac{1}{4\ln 2} \left[ \ln \left( \frac{H_t}{L_t} \right) \right]^2
+	\end{equation}
+	Theoretically, the Parkinson estimator is significantly more efficient (under a Brownian motion assumption) than the squared return proxy $\sigma_t^2 = r_t^2$ \cite{Molnar2016}. Unlike realized variance, which requires high-frequency data, the Parkinson estimator relies only on daily OHLC data, making it widely applicable \cite{Mapa2003}. In our framework, we construct the feature vector $x_i$ solely from this estimator:
+	\begin{equation}
+		x_i = [\sigma_{park, t}^2] \in \mathbb{R}^1
+	\end{equation}
+	This simplification focuses the model on the most informative volatility feature without introducing model-dependent biases.
+	
+	\subsection{Weighted Fuzzy SVM (WFSVM) for Imbalanced Data}
+	Standard SVM seeks an optimal hyperplane $f(x) = w^T x + b$ by solving the dual optimization problem with penalty parameter $C$. To handle noise, FSVM introduces a membership value $m_i$ that modulates the penalty term for misclassification $\zeta_i$ \cite{Lin2004}:
+	\begin{equation}
+		\min_{w,b,\zeta} \left[ \frac{1}{2} \|w\|^2 + C \sum_{i=1}^t m_i \zeta_i \right], \quad s.t. \quad y_i(w^T x_i + b) \geq 1 - \zeta_i
+	\end{equation}
+	
+	We propose a novel definition for $m_i$ that combines class-level balancing with sample-level relevance:
+	\begin{equation}
+		m_i = f(x_i) \pi_j
+	\end{equation}
+	where $\pi_j$ is the weight assigned to class $j$ to handle imbalance, and $f(x_i)$ represents the sample's membership within that class.
+	
+	\noindent\textbf{Class Imbalance Weighting ($\pi_j$):} \\
+	To counter the bias towards majority classes, we sort class sizes $n_{(1)} \leq n_{(2)} \leq \dots \leq n_{(K)}$. We assign the largest weight to the smallest class and vice-versa, inspired by inverse frequency weighting strategies \cite{Diez2015}:
+	\begin{equation}
+		\pi_{(j)} = \frac{n_{(K-j+1)}}{\sum_{k=1}^K n_k}, \quad j=1,\dots,K
+	\end{equation}
+	This ensures that the aggregate penalty contributed by each class is normalized, forcing the hyperplane to pay more attention to minority class samples.
+	
+	\noindent\textbf{Intra-Class Sample Weighting ($f(x_i)$):} \\
+	To handle noise within a class, we utilize the Mahalanobis distance \cite{Mohammadi2019}. Unlike Euclidean distance, Mahalanobis distance accounts for the covariance structure of the data, making it scale-invariant and more sensitive to statistical deviations. For a sample $x_i$ belonging to class $j$:
+	\begin{equation}
+		d_i = \frac{|\sigma_{park, t}^2 - \mu_j|}{\sigma_j}
+	\end{equation}
+	where $\mu_j$ and $\sigma_j$ are the mean and standard deviation of Parkinson variances in class $j$. We map this distance to a membership value using an exponential decay function:
+	\begin{equation}
+		f(x_i) = \exp\left( -\frac{d_i}{\beta} \right)
+	\end{equation}
+	Samples that deviate significantly from the class volatility profile (potential outliers) receive a lower membership $f(x_i)$, effectively shrinking their margin and reducing their influence on the decision boundary.
+	
+	\subsection{Theoretical Justification}
+	The selection of the Parkinson estimator within a fuzzy framework offers distinct theoretical advantages. By using an estimator with lower variance than squared returns, the feature space representation becomes more stable \cite{Patton2011}. Consequently, the computed Mahalanobis distance $d_i$ is less likely to be distorted by measurement noise. This stability ensures that the fuzzy membership function $m_i$ accurately reflects the true relevance of a sample to its class regime, rather than reacting to random price fluctuations.
+	
+	\begin{lemma}
+		[Adaptive Margin Shaping] 
+		Consider the WFSVM optimization problem with $m_i = \pi_j \exp(-d_i/\beta)$, where $d_i$ is the Mahalanobis distance of the Parkinson feature. The resulting decision boundary minimizes the impact of heteroskedastic noise and corrects for skewed class priors.
+	\end{lemma}
+	
+	\textit{Proof Sketch:} The term $\pi_j$ ensures that the sum of penalties for the minority class is comparable to that of the majority class, correcting the bias in the SVM optimization \cite{Wu2009a}. Simultaneously, the exponential decay term reduces the penalty coefficient $C m_i$ for samples with large $d_i$ (statistical outliers). This effectively creates a "soft" margin that rejects noise while tightly fitting representative samples of each volatility regime.
+	
+	\section{Experimental Setup and Results}
+	To validate the efficacy of the proposed WFSVM framework, we conducted extensive experiments on real-world financial data. The primary objectives were to assess the model's ability to classify volatility regimes and to compare its performance against established baselines.
+	
+	\noindent\textbf{Data Description:} \\
+	We utilized daily OHLC data for 20 major companies listed on the S\&P 500 index, spanning the period from 2018 to 2023. This dataset includes a diverse range of sectors (Technology, Healthcare, Finance, etc.) to ensure the generalizability of the results. The Parkinson volatility was calculated for each day, serving as the primary feature set.
+	
+	\noindent\textbf{Baseline Models:} \\
+	The proposed WFSVM was compared against: (1) Standard SVM (RBF kernel), (2) FPin-SVM (which uses intra-class distance for weighting), and (3) ISFFSVM (which employs adaptive feature weighting). All models were implemented in Python using the `scikit-learn` library. 
+	Hyperparameter optimization was performed using 5-fold cross-validation on the training set, searching over $C \in \{0.1, 1, 10, 100\}$ and $\gamma \in \{0.001, 0.01, 0.1, 1\}$. The dataset was split into training (70\%) and testing (30\%) sets using stratified sampling to maintain class distribution. To ensure reliability, results were averaged over 10 independent runs with different random seeds.
+	
+	\noindent\textbf{Results and Discussion:} \\
+	Table~\ref{tab:arch_results} presents the estimated GARCH parameters (mean $\mu$ and variance $\omega$) for the analyzed companies, which were used to define the underlying volatility regimes. As observed, companies exhibit significant heterogeneity in their volatility profiles \cite{Cifter2013}. For instance, Tesla shows high volatility variance compared to Berkshire Hathaway. This diversity validates the need for a robust classifier capable of handling non-stationary distributions.
+	
+    % Optimized Table: 4 columns layout (Corrected)
+\begin{table}[h!]
+	\centering
+	%\footnotesize
+	\small
+	\caption{Estimated ARCH parameters ($\mu, \omega$) for 20 companies.}
+	\begin{tabular}{|c|c|c||c|c|c|}
+		\hline
+		\textbf{Company} & \textbf{$\mu$} & \textbf{$\omega$} & \textbf{Company} & \textbf{$\mu$} & \textbf{$\omega$} \\ \hline
+		Apple Inc. & 2.193 & 27.001 & JPMorgan Chase & 0.963 & 8.467 \\ \hline
+		Microsoft & 1.515 & 5.618 & Visa Inc. & 1.074 & 5.830 \\ \hline
+		Alphabet & 0.993 & 3.526 & Johnson \& J. & 0.831 & 2.056 \\ \hline
+		Amazon & 1.604 & 14.759 & UnitedHealth & 1.476 & 20.179 \\ \hline
+		Tesla & 5.737 & 23.273 & P\&G & 1.032 & 44.918 \\ \hline
+		Berkshire & 0.513 & 1.219 & Mastercard & 0.677 & 6.519 \\ \hline
+		NVIDIA & 3.453 & 21.909 & Disney & 1.337 & 5.223 \\ \hline
+		Home Depot & 3.243 & 22.281 & Verizon & 1.120 & 3.935 \\ \hline
+		Netflix & 3.627 & 44.455 & Intel & 2.033 & 9.971 \\ \hline
+		Comcast & 2.153 & 13.341 & Meta & 1.929 & 6.327 \\ \hline
+	\end{tabular}
+	\label{tab:arch_results}
+\end{table}
+	The classification and regression performance of the models is summarized in Table~\ref{tab:svm-fsvm-comparison}. The proposed WFSVM framework consistently outperforms the baseline methods across all metrics (MSE, RMSE, MAE, $R^2$). Notably, WFSVM achieved an $R^2$ of 0.913, compared to 0.873 for standard SVM. This substantial improvement confirms the hypothesis that the combination of Parkinson volatility features and Mahalanobis-based fuzzy weighting significantly enhances generalization \cite{Clark2018}.
+	
+	When comparing WFSVM to other fuzzy variants, the reduction in MSE from 0.059 (ISFFSVM) to 0.053 (WFSVM) highlights the importance of the specific distance metric and class weighting strategy used in our approach \cite{Lio2007}. While FPin-SVM and ISFFSVM improve upon standard SVM, they often rely on geometric distances which can be misleading in the presence of heteroskedasticity. Our use of Mahalanobis distance on Parkinson features provides a statistically more robust measure of sample relevance.
+	
+	% Optimized Layout: Images side by side
+	\begin{figure}[htbp]
+		\centering
+		\begin{subfigure}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/download}
+			\caption{Before Balancing}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.48\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{"images/download (1)"}
+			\caption{After Balancing}
+		\end{subfigure}		
+		\caption{Mahalanobis distance visualization before and after class balancing.}
+		\label{fig:figures}
+	\end{figure}
+	
+	Figure~\ref{fig:figures} visualizes the effect of the proposed weighting mechanism. The left plot shows the raw distribution of samples, where the majority class dominates the feature space. The right plot illustrates the distribution after applying the inverse frequency weighting $\pi_j$ and Mahalanobis filtering. The balanced distribution facilitates the formation of a decision boundary that accurately separates minority class samples without being overwhelmed by the majority class noise.
+	
+	\begin{table}[h!]
+		\centering
+		\footnotesize
+		\caption{Performance comparison (Mean $\pm$ Std, 10 runs).}
+		\begin{tabular}{lcccc}
+			\hline
+			\textbf{Model} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \boldmath$R^2$ \\ \hline
+			SVM & $0.082 \pm 0.004$ & $0.286 \pm 0.007$ & $0.214 \pm 0.006$ & $0.873 \pm 0.005$ \\ 
+			FPin-SVM & $0.068 \pm 0.003$ & $0.261 \pm 0.006$ & $0.196 \pm 0.005$ & $0.889 \pm 0.004$ \\ 
+			ISFFSVM & $0.059 \pm 0.003$ & $0.243 \pm 0.005$ & $0.185 \pm 0.004$ & $0.902 \pm 0.004$ \\ 
+			\textbf{WFSVM (Ours)} & $\mathbf{0.053 \pm 0.002}$ & $\mathbf{0.230 \pm 0.004}$ & $\mathbf{0.172 \pm 0.003}$ & $\mathbf{0.913 \pm 0.003}$ \\ \hline
+		\end{tabular}
+		\label{tab:svm-fsvm-comparison}
+	\end{table}
+	
+	\section*{Conclusion}
+	This study proposes a robust WFSVM framework for imbalanced financial time series by integrating Parkinson volatility and Mahalanobis-distance-based fuzzy membership. By effectively addressing both class imbalance and noise, the proposed WFSVM model achieves superior generalization ($R^2=0.913$) compared to standard baselines, validating the efficacy of domain-based volatility features for financial classification.
+	
+% Reference List
+\begin{thebibliography}{9}
+	
+	\bibitem[Andersen and Bollerslev (1998)]{Andersen1998}
+	Andersen T.G. and Bollerslev T. (1998), Answering the Skeptics: Yes, Standard Volatility Models Do Provide Accurate Forecasts, Int. Econ. Rev., 39, 885--905.
+	
+	\bibitem[Batuwita and Palade (2010)]{Batuwita2010}
+	Batuwita R. and Palade V. (2010), FSVM-CIL: Fuzzy support Vector machines for class imbalance learning, IEEE Transactions on Fuzzy Systems, 19, 3.
+	
+	\bibitem[Boser et al. (1992)]{Boser1992}
+	Boser B.E., Guyan I.M. and Vapnik V.N. (1992), A training algorithm for Optimal classifiers, In proceedings of the fifth annual workshop on computational learning theory, 144-152.
+	
+	\bibitem[Cifter (2013)]{Cifter2013}
+	Cifter A. (2013), Forecasting electricity price volatility with the Markov-Switching GARCH model: Evidence from the Nordic electric Power market, Electric Power System Research, 102, 61-67.
+	
+	\bibitem[Clark and Baccar (2018)]{Clark2018}
+	Clark E. and Baccar S. (2018), Modeling credit spreads with time Volatility Skewness, and Kurtosis, Annals of Operations Research, 262 (2), 431-461.
+	
+	\bibitem[Degiannakis and Livada (2013)]{Degiannakis2013}
+	Degiannakis S. and Livada A. (2013), Realized Volatility or Price Range: Evidence from a Discrete Simulation of the Continuous Time Diffusion Process, Econ. Model., 30, 212--216.
+	
+	\bibitem[Diez-Pastor et al. (2015)]{Diez2015}
+	Diez-Pastor J.F., Rodriguez J.J., Garcia-Osorio C. and Kuncheva L.I. (2015), Random balance. Ensembles of variable priors classifiers for imbalanced data, Knowledge-Based Systems, 85, 96-111.
+	
+	\bibitem[Khemchandani et al. (2009)]{Khemchandani2009}
+	Khemchandani R., Jayadeva and Chandra S. (2009), Regularized least squares fuzzy support vector regression for financial time series forecasting, Expert Systems with Applications, 36(1), 132–138.
+	
+	\bibitem[Lin and Wang (2004)]{Lin2004}
+	Lin C.F. and Wang S.D. (2004), Training algorithms for fuzzy support vector machines with noisy data, Pattern Recognition Letters, 25 (14), 1647-1656.
+	
+	\bibitem[Lin and Wang (2002)]{Lin2002}
+	Lin C.F. and Wang S.D. (2002), Fuzzy support vector machines, {\it IEEE Transactions on Neural Networks}, 13(2), 464-471.
+	
+	\bibitem[Lio and Chen (2007)]{Lio2007}
+	Lio Y.H. and Chen Y.T. (2007), Face recognition using total margin-based adaptive fuzzy support vector machines, IEEE Trans. Neural Netw., 18 (1), 178-192.
+	
+	\bibitem[Mapa (2003)]{Mapa2003}
+	Mapa D. (2003), A Range-Based GARCH Model for Forecasting Volatility, Philipp. Rev. Econ., 60, 73--90.
+	
+	\bibitem[Mohammadi and Sarmad (2019)]{Mohammadi2019}
+	Mohammadi M. and Sarmad M. (2019), Robustified distance based fuzzy membership function for support vector machine classification, {\it Iranian Journal of Fuzzy Systems}, 16(6), 191-204.
+	
+	\bibitem[Molnar (2016)]{Molnar2016}
+	Molnar P. (2016), High-low range in GARCH models of stock return volatility, Appl. Econ., 48, 4977--4991.
+	
+	\bibitem[Parkinson (1980)]{Parkinson1980}
+	Parkinson M. (1980), The Extreme Value Method for Estimating the Variance of the Rate of Return, J. Bus., 53, 61--65.
+	
+	\bibitem[Patton (2011)]{Patton2011}
+	Patton A.J. (2011), Volatility Forecast Comparison using Imperfect Volatility Proxies, J. Econom., 160, 246--256.
+	
+	\bibitem[Tanveer et al. (2024)]{Tanveer2024}
+	Tanveer M., Khosravi A. and Nahavandi S. (2024), An improved self-tuned fuzzy SVM for imbalanced data, Expert Systems with Applications, 226, 119753.
+	
+	\bibitem[Verma et al. (2023)]{Verma2023}
+	Verma R.N., Mishra P. and Kumar A. (2023), Fuzzy SVM with pinball loss function for robust learning in noisy data, Applied Soft Computing, 134, 110024.
+	
+	\bibitem[Vapnik (1995)]{Vapnik1995}
+	Vapnik V.N. (1995), {\it The nature of statistical learning theory}, Springer-Verlag New York.
+	
+	\bibitem[Wu et al. (2009a)]{Wu2009a}
+	Wu Q. et al. (2009), Fuzzy support vector regression machine with penalizing Gaussian noise, Expert Systems with Applications, 36(6), 11225–11232.
+	
+	\bibitem[Wu et al. (2017)]{Wu2017}
+	Wu Y., Shen L. and Zhang S. (2017), Fuzzy multiclass support vector machines for unbalanced data, In 2017 29th Chinese Control And Decision Conference (CCDC), 2227-2231, IEEE.
+	
+	\bibitem[Zhang and Wang (2009)]{Zhang2009}
+	Zhang H. and Wang S. (2009), A fuzzy GARCH model applied to a stock market scenario using a heuristic approach, Expert Systems with Applications, 36(4), 7337–7344.
+	
+\end{thebibliography}
+	
+\end{document}

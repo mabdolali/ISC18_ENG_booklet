@@ -1,0 +1,53 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[pagebackref=false,colorlinks,linkcolor=blue,citecolor=magenta]{hyperref}
+\usepackage[papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm]{geometry}
+
+% Booklet scaffold for ISC18 English full papers.
+% Front-matter (cover, preface, committees) can be copied/adapted from ISC16th_Full_English.
+% Paper list and includes are auto-generated from Papers (2).zip metadata.
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,graphicx,xcolor,tikz}
+\usepackage{fancyhdr,booktabs,multirow,tabularx,caption,subcaption,float}
+\usepackage{natbib,docmute,subfiles}
+\usepackage{perpage}
+\MakePerPage{footnote}
+
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyheadoffset[RE,LO]{0\textwidth}
+\fancyhead[RE,LO]{\thepage}
+
+\renewcommand{\arraystretch}{0.8}
+\setlength{\extrarowheight}{1.5pt}
+\footnotesize
+\allowdisplaybreaks
+
+\begin{document}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+% ---------------------------------------------------------------------------
+% Front matter placeholders (replace with conference cover / preface as needed)
+% ---------------------------------------------------------------------------
+\begin{center}
+{\Large\bf 18th Iranian Statistical Conference}\\[0.5em]
+{\large Full Papers Booklet (English)}\\[1em]
+\end{center}
+\newpage
+
+\begin{center}
+\huge\bf Table of Contents
+\end{center}
+\vspace{4mm}
+\pagenumbering{roman}
+\input{paper-toc}
+
+% ---------------------------------------------------------------------------
+% Full papers
+% ---------------------------------------------------------------------------
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{paper-includes}
+
+\end{document}

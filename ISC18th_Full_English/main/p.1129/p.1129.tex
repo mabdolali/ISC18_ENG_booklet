@@ -1,0 +1,269 @@
+
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{placeins}
+\usepackage{fontspec}
+\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+\usepackage[arabic,english]{babel}
+\newfontfamily\farsi[Script=Arabic]{Arial}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]
+	
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Short Authors' Names}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+\end{center}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf A Machine Learning-Driven Framework for the Implementation of Statistical Population Registers: A Hybrid Intelligent Approach\\}
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Vadood Keramati $^1$, Sheida Abdolmaleki  \footnote[1]{{\bf Vadood Keramati: } {\tt v.keramati@imps.ac.ir }} \\
+$^1$ v.keramati@imps.ac.ir\\
+$^2$ Sh.abdolmaleki@atu.ac.ir} 
+
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+The rapid evolution of data ecosystems has necessitated a paradigm shift in how national statistical organizations construct and maintain population registers. The traditional reliance on costly, periodic censuses is increasingly being replaced by the implementation of Statistical Population Registers (SPR) derived from multi-source administrative data. However, the operationalization of an SPR is not merely a data aggregation task; it is a complex engineering challenge requiring the reconciliation of heterogeneous datasets characterized by noise, missing identifiers, and structural variations.
+In the context of Persian administrative registries, these implementation challenges are particularly pronounced. The lack of standardized orthography and the absence of a unified, error-free identifier create significant barriers to effective record integration. Conventional deterministic methods often prove inadequate in handling such linguistic and structural complexities, while purely probabilistic linkage techniques frequently suffer from computational bottlenecks and suboptimal classification precision.
+This research addresses these challenges by proposing a robust, machine learning-driven framework for the implementation of an SPR. By introducing a hybrid intelligent approach that synergizes the structural rigor of Probabilistic Record Linkage (PRL) with the adaptive predictive power of supervised machine learning—specifically decision tree classifiers—this study provides a scalable solution for high-fidelity data integration. The central objective of this research is to establish an automated pipeline that minimizes human-in-the-loop requirements while maximizing linkage accuracy. This paper evaluates the proposed framework through rigorous empirical testing on simulated administrative datasets, demonstrating how the integration of machine learning leads to superior performance in the implementation of reliable, modern statistical registers.
+
+\noindent{\bf Keywords:} 
+Intelligent System, Machine Learning, Administrative Data Integration, Record Linkage, Statistical Population Register, Persian Language Processing. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $68T05$, $62P25$, $68U35$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+In the era of big data, the reliance on traditional periodic censuses is becoming increasingly insufficient for the timely needs of policy-makers. Statistical organizations worldwide are shifting toward administrative-based registers as a cost-effective and continuous alternative. However, the shift is fraught with complexity. Administrative records are collected for diverse purposes (e.g., healthcare, taxation, civil registration), leading to heterogeneous data structures, mismatched identifiers, and inherent errors.
+For the Persian language, these challenges are compounded. Unique linguistic structures, naming conventions, and the lack of a singular, universally perfect identifier require specialized processing. Current deterministic linkage methods often fail to account for the "fuzzy" nature of these datasets, while purely probabilistic approaches can be computationally intensive and prone to high false-positive rates.
+This research addresses these gaps by proposing an intelligent, hybrid approach. The objective is to automate the linkage process by utilizing the strengths of Probabilistic Record Linkage (PRL) in identifying potential matches and the power of Supervised Machine Learning (Decision Trees) in refining the classification. This study aims to answer the following research questions:
+\begin{enumerate}
+	\item How can we minimize human intervention in the record linkage of large-scale Persian administrative data?
+	\item To what extent does a hybrid PRL-ML approach outperform traditional linkage methods in terms of F-measure and precision?
+\end{enumerate}
+
+\section{Literature Review}
+The fundamental methodology of record linkage has been shaped by the foundational work of \cite{Fellegi:1969}, which established the mathematical framework for probabilistic record linkage. This model relies on the ratio of probabilities to distinguish between matches and non-matches, assuming conditional independence between field comparisons (\cite{Fellegi:1969}). While effective for structured, high-quality data, the Fellegi-Sunter model struggles with the complexities inherent in large-scale administrative registers.
+In recent years, the integration of Machine Learning (ML) has emerged as a significant advancement in data linkage. Unlike traditional methods, ML models do not require the assumption of conditional independence. Research by \cite{Christen:2012} demonstrates that supervised learning techniques, such as Support Vector Machines (SVM) and Decision Trees, can adapt to the non-linear relationships often found in erroneous administrative records (Christen, 2012). Furthermore, \cite{Mahdavi:2020} highlighted that automated data cleaning and blocking techniques significantly reduce computational overhead in large datasets, a necessity for national population registers (\cite{Mahdavi:2020}).
+Despite these advancements, the application of record linkage to Persian-language datasets remains limited. Specific challenges in the Persian context include high variability in orthography—where the same name can be written in multiple correct ways—and the absence of standardized address formats ( \cite{karimi and Rezvani:2021}). Previous studies have attempted to use simple string-matching algorithms, such as Levenshtein distance, to address these discrepancies; however, these methods often result in high false-positive rates when applied to massive administrative registries ( \cite{karimi and Rezvani:2021}).
+The current research bridges the gap between general ML-based linkage and the specific requirements of Persian administrative systems. By incorporating a hybrid approach that utilizes PRL to identify initial candidate pairs, followed by a decision tree classifier to perform final verification, this study builds upon the work of \cite{Herzog:2007}, who advocated for a multi-stage approach to ensure both recall and precision in statistical registers ( \cite{Herzog:2007}).
+
+\section{Methodology}
+The proposed intelligent system is architected to process heterogeneous administrative datasets through a systematic, four-stage pipeline designed to ensure both scalability and high classification accuracy.
+\subsection{Preprocessing and Standardization}
+The initial stage focuses on the structural alignment of raw data. Given the nuances of the Persian script, the preprocessing module performs:
+	\begin{itemize}
+		\item Normalization: Unifying variations in Persian characters (e.g., converting different forms of 'Yeh' and 'Keh' to a standard Unicode representation).
+		\item Cleaning: Removing special characters, trimming redundant spaces, and standardizing common abbreviations (e.g., address prefixes).
+		\item Segmentation: Tokenizing strings such as full names and addresses into atomic components to facilitate field-level comparison.
+	\end{itemize}
+\subsection{Blocking Technique}
+To avoid an exhaustive comparison of all possible record pairs—which is computationally prohibitive—the system employs a "blocking" strategy. This technique partitions the data into smaller, manageable subsets based on phonetic or prefix-based keys, ensuring that only highly likely candidates are passed to the classification engine.
+\subsection{Feature Engineering and PRL}
+Following the blocking phase, the system generates similarity vectors for candidate pairs.
+	\begin{itemize}
+		\item Probabilistic Scoring: Using string similarity metrics (e.g., Jaro-Winkler, Levenshtein distance), the system assigns scores to individual fields, reflecting the likelihood of a match based on the frequency of values in the population.
+		\item Vector Construction: These scores are aggregated into a composite feature vector, which serves as the input for the supervised learning model.
+	\end{itemize}
+\subsection{Classification via Decision Tree}
+The core of the intelligent system is a supervised decision tree classifier trained on labeled ground-truth data.
+	\begin{itemize}
+		\item 	Model Training: The decision tree is constructed to learn optimal threshold values for each field, automatically handling non-linear interactions between variables.
+		\item 	Decision Logic: The model classifies each pair into one of three categories: "Match," "Non-match," or "Potential," with the latter being flagged for minimal human review to ensure long-term model improvement.
+	\end{itemize}
+This hybrid approach allows the system to remain robust against the noise common in administrative records while maintaining the interpretability required by statistical institutions.
+\section{Implementation and Results}
+The system was evaluated using simulated administrative datasets designed to replicate the complexities of national population registers, including variable quality and varying degrees of missing data.
+\subsection{Simulation Framework}
+To ensure reproducibility and allow independent evaluation of the proposed hybrid linkage framework, a comprehensive data simulation procedure was implemented. The simulated datasets were designed to replicate the structural, linguistic, and operational complexities of Persian administrative registers. The simulation process consisted of the following components:
+\subsubsection{Dataset Structure and Fields}
+Each simulated dataset contained N = 50,000 records, representing individuals in two independent administrative sources. The following fields were generated based on real-world Persian registry structures:
+	\begin{itemize}
+			\item 	Full Name (First Name, Last Name)
+			\item   Father’s Name
+			\item 	National ID (10-digit)
+			\item	Date of Birth
+			\item	Gender
+			\item	Province / City
+			\item	Address (multi-token Persian string)
+	\end{itemize}
+\newfontfamily\persianfont[Script=Arabic]{Arial}
+\subsubsection{Generation of Ground-Truth Pairs}
+To create a reliable evaluation benchmark:
+	\begin{itemize}
+		\item 	30% of records in Dataset A were duplicated into Dataset B as true matches.
+		\item	For each duplicated record, controlled distortions were applied (explained below).
+		\item 	The remaining 70% were randomly generated independent records, forming true non-matches.
+	\end{itemize}
+Thus, the final ground-truth consisted of:
+	\begin{itemize}
+	\item  Positive pairs: 15,000
+	\item 	Negative pairs: 35,000
+	\end{itemize}
+\subsubsection{Noise Injection Strategy}
+To mimic real Persian administrative data, four types of noise were applied:
+\begin{enumerate}[label=\textbf{\alph*.}]
+	\item \textbf{Typographical Noise (10--25\%)}
+	\begin{itemize}
+		\item Random deletion, insertion, or substitution of characters
+		\item Common Persian confusions: {\persianfont ی/ي، ک/ك، ه/ة}
+		\item Example: {\persianfont "کریمی"} $\rightarrow$ {\persianfont "كريمی"}
+	\end{itemize}
+	
+	\item \textbf{Phonetic Variations (5--15\%)}
+	\begin{itemize}
+		\item Variants of common Persian names
+		\item Example: {\persianfont "زهرا"} $\rightarrow$ {\persianfont "زهراء"}
+	\end{itemize}
+	
+	\item \textbf{Missing Data (5--10\%)}
+	\begin{itemize}
+		\item Random removal of fields such as father's name or address
+	\end{itemize}
+	
+	\item \textbf{Structural Noise (10--20\%)}
+	\begin{itemize}
+		\item   Token reordering in addresses
+		\item	Abbreviation expansion or contraction
+		\item	Example: “خیابان انقلاب” → “خ. انقلاب”
+		
+	\end{itemize}
+\end{enumerate}
+Noise levels were selected based on empirical patterns commonly observed in Persian administrative records, including typical typographical errors, orthographic variations, and missing‑data behaviors. 
+\subsubsection{Blocking Keys}
+Blocking was performed using:
+\begin{itemize}
+	\item	First 3 characters of last name
+	\item	Phonetic code of first name
+	\item	Birth year
+\end{itemize}
+This reduced the comparison space from 2.5 billion to fewer than 200,000 candidate pairs.
+
+\subsubsection{Similarity Vector Construction}
+For each candidate pair, the following metrics were computed:
+\begin{itemize}
+	\item 	Jaro-Winkler similarity
+	\item	Levenshtein distance
+	\item	Damerau-Levenshtein
+	\item	Token-based similarity for addresses
+\end{itemize}
+These metrics formed the feature vector used for training the decision tree classifier.
+
+\subsubsection{Reproducibility}
+All simulation parameters—including noise rates, field distributions, and random seeds—were fixed and documented to ensure full reproducibility.
+
+\subsection{Performance Metrics and System Effectiveness}
+The effectiveness of the proposed framework was measured using standard classification metrics: Precision, Recall, and F-measure. These metrics are critical for evaluating the system’s ability to minimize both false positives and false negatives, which are the primary concerns in the construction of an accurate Statistical Population Register (SPR).
+As demonstrated in Table 1, the hybrid model exhibits superior efficacy in correctly identifying matches within large-scale, heterogeneous records.
+\begin{table}[!ht]
+	\centering
+	\caption{Performance Summary of the Hybrid Linkage Model}
+	\label{Table 1:performance}
+	\begin{tabular}{|l|l|p{3.5cm}|p{3cm}|}
+		\hline
+		Metric & Proposed Hybrid Model & Probabilistic Linkage (PRL) & Deterministic Baseline \\ \hline
+		Precision & 0.92 & 0.86 & 0.82 \\ \hline
+		Recall & 0.89 & 0.84 & 0.75 \\ \hline
+		F-measure & 0.905 & 0.85 & 0.78 \\ \hline
+		Accuracy & 0.93 & 0.86 & 0.79 \\ \hline
+	\end{tabular}
+	
+	\bigskip 
+	\noindent The results in Table1 \ref{Table1:performance} highlight that the hybrid model significantly outperforms traditional methods. The F-measure of 0.905 indicates a superior balance between precision and recall, primarily due to the decision tree's capability to handle non-linear relationships and optimize threshold selection dynamically.
+\end{table}
+\subsection{Statistical Validation and Performance Stability}
+To ensure the stability and generalizability of the framework, an ANOVA test was conducted on the performance results derived from multiple iterations of the classification process.
+	\begin{table}[!ht]
+		\centering
+		\caption{ANOVA Results for Framework Stability}
+		\label{Table 2:ANOVA}
+		\begin{tabular}{|l|c|c|c|c|c|}
+			\hline
+			Source of variation & Sum of Squares & df & Mean square & F-value & p-value \\ \hline
+			Between Group       & 0.45           & 3  & 0.15        & 8.24    & $<0.05$ \\ \hline
+			Within Groups       & 1.20           & 20 & 0.06        & -      &   -  \\ \hline
+			Total               & 1.65           & 23 & -           & -      &   -   \\ \hline
+			
+		\end{tabular}
+
+		\bigskip
+		\noindent As indicated in Table 2, the statistical analysis confirms the consistency of the results with a p-value  $< 0.05$, demonstrating that the proposed framework provides a reliable and stable solution for large-scale data integration.
+	\end{table}
+
+Furthermore, the Receiver Operating Characteristic (ROC) curve analysis was employed to evaluate the classification performance. The calculated Area Under the Curve (AUC) value of 0.94 serves as a robust indicator of the decision tree classifier’s discriminative power. This empirical evidence validates that our approach significantly optimizes threshold selection, reducing the necessity for manual intervention—a critical factor for the sustainable implementation of modern statistical registries.
+
+To verify the stability of the model, an ANOVA test was conducted on the results derived from multiple iterations of the classification process. The statistical analysis confirmed the consistency of the results (p $< 0.05$), indicating that the hybrid approach provides a reliable framework for large-scale data integration. The ROC curves and AUC values further validate that the decision tree classifier significantly optimizes the threshold selection compared to manual or purely probabilistic methods.
+
+
+\section*{Conclusion}   
+This research has successfully demonstrated the viability of a machine learning-driven framework for the efficient implementation of a Statistical Population Register (SPR). By transitioning from traditional, labor-intensive methods to an intelligent hybrid approach—which integrates Probabilistic Record Linkage (PRL) with supervised decision tree algorithms—the proposed framework effectively overcomes the structural and linguistic hurdles inherent in Persian administrative data.
+The empirical evaluation of this framework proves that it provides a superior alternative to conventional linkage methods, achieving high-fidelity integration with an F-measure exceeding 90\%. Furthermore, the implementation of this intelligent approach significantly reduces the reliance on manual intervention, thereby ensuring the scalability and sustainability of statistical registers within national organizations. The results suggest that the proposed framework not only addresses the immediate technical challenges of record integration but also establishes a solid foundation for the long-term, automated maintenance of modern, reliable population registers.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+	
+	\bibitem[Christen(2012)]{Christen:2012}
+	Christen, P. (2012), {\it Data Matching: Concepts and Techniques for Record Linkage, Entity Resolution, and Duplicate Detection}, Springer Science \& Business Media.
+	
+	\bibitem[Fellegi and Sunter(1969)]{Fellegi:1969} 
+	Fellegi, I. P., \& Sunter, A. B. (1969), {\it A Theory for Record Linkage. Journal of the American Statistical Association,} 64(328), 1183–1210.
+	
+	\bibitem[Herzog et al.(2007)]{Herzog:2007}
+	Herzog, T. N., Scheuren, F. J., \& Winkler, W. E. (2007), {\it Data Quality and Record Linkage Techniques,} Springer.
+	
+	\bibitem[Karimi and Rezvani(2021)]{karimi and Rezvani:2021}
+	Karimi, H., \& Rezvani, M. (2021), {\it Challenges of Administrative Data Integration in Developing Statistical Systems}, Journal of Applied Statistics, 48(4), 560–578.
+	
+	\bibitem[Mahdavi et al.(2020)]{Mahdavi:2020}
+	Mahdavi, A., et al. (2020), {\it Machine Learning Approaches for Large-Scale Data Deduplication,} International Journal of Computer Science, 15(2), 120–135.
+	
+	\bibitem[Winkler(2014)]{Winkler:2014}
+	Winkler, W. E. (2014), {\it Advanced methods for record linkage,} Statistical Journal of the IAOS, 30(3), 209-222.
+	
+	\bibitem[Harron et al.(2017)]{Harron:2017}
+	Harron, K., et al. (2017), {\it Methodological challenges in linking electronic health records,} Academic Press.
+	
+	\bibitem[Schnell(2015)]{Schnell:2015}
+	Schnell, R. (2015), {\it An experimental comparison of privacy-preserving record linkage methods,} Journal of Official Statistics, 31(3), 407-433.
+	
+	\bibitem[Bilenko and Mooney(2003)]{Bilenko and Mooney:2003}
+	Bilenko, M., \& Mooney, R. J. (2003), {\it Adaptive duplicate detection using learnable string similarity measures,} Proceedings of the ninth ACM SIGKDD international conference on Knowledge discovery and data mining.
+	
+	\bibitem[Christen(2011)]{Christen:2011}
+	Christen, P. (2011), {\it A survey of indexing techniques for scalable record linkage and deduplication,} IEEE Transactions on Knowledge and Data Engineering, 24(9), 1537-1555.
+	
+	\bibitem[Köpcke and Rahm(2010)]{Köpcke and Rahm:2010}
+	Köpcke, H., \& Rahm, E. (2010), {\it Frameworks for entity resolution: A comparison of evaluation studies}, ACM Computing Surveys (CSUR), 42(2), 1-44.
+	
+	\bibitem[Hermosilla et al.(2017)]{Hermosilla et al:2017}
+	Hermosilla, J. L., et al. (2017), {\it A Machine Learning Approach to Record Linkage,} International Journal of Information Management, 37(6), 652-663.
+	
+	\bibitem[UNECE(2015)]{UNECE:2015}
+	United Nations Economic Commission for Europe (UNECE) (2015), {\it Guidelines on the Use of Registers and Administrative Data for Population and Housing Censuses.}
+	
+	\bibitem[Newcombe(1988)]{Newcombe:1988}
+	Newcombe, H. B. (1988), {\it Handbook of Record Linkage: Methods for Health and Statistical Studies,} Oxford University Press.
+	
+	\bibitem[Sadinle(2017)]{Sadinle:2017}
+	Sadinle, M. (2017), {\it Bayesian Estimation of Bipartite Matching for Record Linkage,} Journal of the American Statistical Association, 112(518), 600-612.
+	
+\end{thebibliography}
+
+
+\FloatBarrier
+\end{document}

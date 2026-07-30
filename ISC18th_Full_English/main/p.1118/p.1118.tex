@@ -1,0 +1,660 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%  Make sure to compile twice for proper cross-references. %%%%%
+%%%%%% For proper display of references, compile the document twice. %%% 
+\usepackage{subcaption}
+
+\usepackage{pgfplots}
+
+% ------------ Theorem Environments ---------- 
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+% ----------End of  Theorem Environments ----------
+\begin{document}
+\thispagestyle{empty}
+
+\fancyhead[LE]{Bayesian Estiomation for Parallel System}
+
+\fancyhead[RO]{Ganji and Gharari}
+
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+
+\vspace*{4cm}
+ 
+{\Large \bf Bayesian Parameter and Reliability Estimation for a Bivariate Weibull Distribution: Parallel System}  \\
+
+{\bf 
+Masoud Ganji$^1${\footnote{{\bf Corresponding Author:} {\tt mganji@uma.ac.ir }}},  Fatemeh Gharari$^2$}  \\
+$^1,^2$ University of Mohaghegh Ardabili }
+ \end{center}
+ 
+\rule{\textwidth}{0.2mm}
+ 
+\noindent{\bf Abstract:}\\
+This study develops a reliability modeling framework for multi‑component systems using a Bivariate Weibull distribution under both independence and dependence assumptions. Dependence is introduced through the Gumbel copula, and parameters are estimated via maximum likelihood and Bayesian methods. Simulations show that independence‑based models perform well only when components are truly independent, whereas ignoring dependence leads to biased reliability estimates. The copula‑based model more accurately captures dependence, and Bayesian inference provides estimates comparable to maximum likelihood while offering credible intervals for parameters and system reliability. \\
+\noindent{\bf Keywords:} 
+Bivariate Weibull, Bayes estimation, Parallel system reliability, Copula models, MCMC \\
+\noindent{\bf Mathematics Subject Classification (2025):} $\rm 62F15$, $\rm 62N05$, $\rm 62P30$, $\rm 93B30$.
+
+% \hspace{1cm}\rule{\textwidth}{0.2mm}
+\subsection*{Introduction}
+The Weibull distribution has long been a cornerstone of lifetime and reliability modeling due to its 
+flexibility in representing increasing, decreasing, and constant hazard rates 
+\citep{lawless2011statistical,meeker2021statistical}. 
+While univariate Weibull models are well established, extending them to the multivariate setting 
+requires a dependence structure that preserves marginal Weibull behavior. Early attempts focused on 
+parametric bivariate Weibull forms with restrictive dependence assumptions 
+\citep{kundu2009estimating}, but these models often lacked the flexibility needed 
+for modern reliability applications.
+Copula theory provides a powerful alternative by separating marginal distributions from the 
+dependence structure \citep{Nelsen2006,joe2014dependence}. 
+In reliability engineering, copulas have been widely used to model joint lifetimes of components 
+subject to shared environmental or operational stresses 
+\citep{bedford2001probabilistic}. 
+Among various copula families, the Gumbel copula is particularly suitable for modeling positive 
+upper-tail dependence, a common feature in systems where extreme shocks simultaneously affect 
+multiple components \citep{embrechts2003modelling}. 
+This makes it a natural choice for parallel-system reliability, where joint survival probabilities 
+play a central role.
+Several studies have explored copula-based reliability modeling. 
+For example, \citet{kim2007copula} used Archimedean copulas to analyze dependent failure times, 
+while \citet{barlow1996mathematical} and \citet{nelson2005applied} emphasized the importance of 
+accounting for dependence in multi-component systems. 
+More recent work has examined Bayesian inference for copula models 
+\citep{smith2012estimation}, highlighting the advantages of posterior uncertainty 
+quantification in reliability applications.
+Despite these advances, the literature still lacks a unified framework that combines 
+(i) flexible bivariate Weibull marginals,  
+(ii) a dependence structure tailored to upper-tail behavior, and  
+(iii) both likelihood-based and Bayesian inference for parallel-system reliability.  
+Furthermore, the impact of ignoring dependence—particularly in controlled simulation settings—has 
+not been thoroughly quantified.
+
+The present study contributes to this literature by developing a comprehensive modeling and 
+inference framework for two-component parallel systems under both independent and 
+Gumbel-dependent Bivariate Weibull (BVW) assumptions. 
+We establish theoretical properties of the reliability function, derive sharp bounds under 
+dependence, and demonstrate the practical consequences of ignoring dependence through simulation. 
+Our Bayesian approach further provides credible intervals for both model parameters and system 
+reliability, offering a complete uncertainty quantification framework.
+\section{Modeling with a Bivariate Weibull}
+Let $T=(T_1,T_2)$ denote the lifetimes of two components, each following a Weibull distribution with shape $\alpha_i>0$ and scale $\beta_i>0$. The marginal survival and density functions are
+\begin{equation}
+S_i(t)=\Pr(T_i>t)=\exp\{-(t/\beta_i)^{\alpha_i}\},
+\qquad
+f_i(t)=\frac{\alpha_i}{\beta_i}(t/\beta_i)^{\alpha_i-1}
+       \exp\{-(t/\beta_i)^{\alpha_i}\}.
+\end{equation}
+
+\paragraph{\textit{Independence BVW}.}
+If $T_1 \perp T_2$, then the joint survival and density functions factorize as
+\begin{align}
+S(t_1,t_2) &= S_1(t_1)S_2(t_2)
+= \exp\!\left\{-\left[(t_1/\beta_1)^{\alpha_1}
+                     + (t_2/\beta_2)^{\alpha_2}\right]\right\},\\
+f(t_1,t_2) &= f_1(t_1)f_2(t_2).
+\end{align}
+
+\paragraph{Dependent BVW via a Gumbel Copula.}
+Define $U_i = S_i(T_i)$ for $i=1,2$. 
+By the probability integral transform, $U_i \sim \mathrm{Unif}(0,1)$, 
+and the dependence structure is introduced by applying the Gumbel copula 
+to the pair $(U_1, U_2)$.  
+The Gumbel copula \citep{Nelsen2006} is
+\begin{equation}
+C_\theta(u,v)
+= \exp\left\{-\left[(-\ln u)^\theta + (-\ln v)^\theta\right]^{1/\theta}\right\},
+\qquad \theta \ge 1.
+\end{equation}
+It induces positive upper‑tail dependence with Kendall’s
+$  
+\tau = 1 - \frac{1}{\theta}.
+$  
+The joint survival function of $(T_1,T_2)$ is therefore
+$  
+S(t_1,t_2) = C_\theta\!\left(S_1(t_1),\, S_2(t_2)\right),
+$  
+and the joint density is obtained by differentiating the copula with respect to both arguments.
+Before developing inference procedures, we establish several theoretical properties of the BVW model, which clarify how dependence influences system reliability and motivate the likelihood‑based and Bayesian methods introduced later.
+
+
+\section{Parallel-System Reliability}
+For a two-component parallel system (the system survives if at least one component survives), the reliability function is
+\begin{equation}
+R(t)=\Pr(\max\{T_1,T_2\}>t)
+    =1-F(t,t)
+    =S(t,0)+S(0,t)-S(t,t).
+\end{equation}
+Under independence,
+\begin{equation}
+R(t)=\exp\{-(t/\beta_1)^{\alpha_1}\}
+     +\exp\{-(t/\beta_2)^{\alpha_2}\}
+     -\exp\{-(t/\beta_1)^{\alpha_1}-(t/\beta_2)^{\alpha_2}\}.
+\end{equation}
+Under the Gumbel copula model, the joint CDF satisfies
+$ 
+F(t,t)=C_\theta\!\left(1-S_1(t),\,1-S_2(t)\right).
+$  
+% ============================================================
+The following theorem presents sharp bounds under Gumbel dependence
+\begin{theorem}
+Let $(T_1,T_2)$ follow a bivariate Weibull distribution with marginal survival functions
+$  
+S_i(t)=\exp\{-(t/\beta_i)^{\alpha_i}\}, 
+$ for $i=1,2,  $
+and joint survival induced by the Gumbel copula $C_\theta$ with $\theta\ge1$.
+Then, for all $t>0$, the reliability of a two-component parallel system satisfies
+$  
+\max\{S_1(t),S_2(t)\}
+\;\le\;
+R_{\mathrm{G}}(t)
+\;\le\;
+R_{\mathrm{Ind}}(t),
+$  
+where
+\begin{equation}
+R_{\mathrm{G}}(t)=1-C_\theta(1-S_1(t),1-S_2(t)),
+\qquad
+R_{\mathrm{Ind}}(t)=S_1(t)+S_2(t)-S_1(t)S_2(t).
+\end{equation}
+Moreover, the bounds are \emph{sharp}:
+(a)~The upper bound is attained if and only if $\theta=1$ (independence), and
+(b)~ The lower bound is attained as $\theta\to\infty$ (complete positive dependence).
+\end{theorem}
+Theorem~1 shows that accounting for positive dependence always yields a more conservative reliability estimate than the independence model, forming a continuous bridge between extreme dependence and classical independence.
+The next theorem states strict monotonicity in the Gumbel dependence parameter.
+% ============================================================
+\begin{theorem}
+Let $(T_1,T_2)$ have Weibull survival functions
+$  
+S_i(t)=\exp\{-(t/\beta_i)^{\alpha_i}\}, 
+$  for $ i=1,2, $
+and joint survival generated by the Gumbel copula
+\begin{equation}
+C_\theta(u,v)
+=
+\exp\!\left(
+-\left[(-\log u)^\theta + (-\log v)^\theta\right]^{1/\theta}
+\right),
+\qquad \theta\ge1.
+\end{equation}
+Define the reliability function
+$  
+R(t;\theta)=1-C_\theta(1-S_1(t),1-S_2(t)).
+$  
+Then, for every fixed $t>0$, the function $R(t;\theta)$ is non-increasing in $\theta$ on $[1,\infty)$, and strictly decreasing whenever $S_1(t)\neq S_2(t)$.
+\end{theorem}
+This monotonicity result formalizes the intuitive fact that stronger positive dependence reduces the reliability of parallel systems.
+% ============================================================
+\begin{theorem}
+Let $(T_1,T_2)$ have Weibull survival functions
+$  
+S_i(t)=\exp\{-(t/\beta_i)^{\alpha_i}\},$  
+for $i=1,2, $
+with shape parameters $\alpha_i\ge1$, and joint survival induced by the Gumbel copula $C_\theta$ with $\theta\ge1$.
+Then the following parallel-system reliability is log-concave in $t$ on $(0,\infty)$:
+\begin{equation}
+R(t)=1-C_\theta(1-S_1(t),1-S_2(t)).
+\end{equation}
+\end{theorem}
+Log-concavity ensures well-behaved likelihoods and posterior distributions, motivating the Bayesian methods developed in the next section.
+% Proof of theorem is in Appedex.
+% %End of Theorems==================
+\section{Likelihood and Bayesian Specification}
+Given observations $\{(t_{1j},t_{2j})\}_{j=1}^n$, the log-likelihood under independence is
+\begin{equation}
+\ell(\alpha_i,\beta_i)
+=
+n\sum_{i=1}^2 (\ln \alpha_i - \ln \beta_i)
++
+\sum_{i=1}^2 (\alpha_i - 1)\sum_{j=1}^n \ln(t_{ij}/\beta_i)
+-
+\sum_{i=1}^2 \sum_{j=1}^n (t_{ij}/\beta_i)^{\alpha_i}.
+\end{equation}
+
+For the Gumbel-copula BVW model, the likelihood is
+\begin{equation}
+L
+=
+\prod_{j=1}^n c_\theta(u_{1j},u_{2j})
+\prod_{i=1}^2 f_i(t_{ij}),
+\end{equation}
+where $u_{ij}=S_i(t_{ij})$ and the copula density is
+$  
+c_\theta(u,v)=\frac{\partial^2}{\partial u\,\partial v} C_\theta(u,v)$
+ \text{\citep{Nelsen2006}}.
+  We assign independent Gamma priors,
+$  
+\alpha_i \sim \mathrm{Ga}(a_{\alpha i}, b_{\alpha i}), \,\,
+\beta_i \sim \mathrm{Ga}(a_{\beta i}, b_{\beta i}),
+$  
+and a shifted-Gamma prior on the dependence parameter,
+$ 
+\theta - 1 \sim \mathrm{Ga}(a_\theta, b_\theta).
+$  
+Posterior computation is carried out using a Laplace approximation at the MAP estimate, followed by a Metropolis-within-Gibbs MCMC algorithm with random-walk proposals on log-transformed parameters. The validity of the Laplace approximation is supported by the log-concavity result established in Theorem~3.
+%=========== END of NEW PART===============
+\section{Case Study}\label{sec:casestudy}
+
+We construct two synthetic datasets of size $n=100$ using the probability integral transform. 
+The true marginal Weibull parameters used throughout the study are
+$  
+(\alpha_1,\beta_1,\alpha_2,\beta_2)=(1.7,2.0,\,2.2,1.8).
+$ 
+Dataset A (Independent BVW).
+To generate an independent bivariate Weibull sample, we draw two independent uniform random variables 
+$U_{1j},U_{2j}\sim\mathrm{Unif}(0,1)$ and transform them using the inverse Weibull CDF,
+$  
+T_{ij}=\beta_i(-\ln U_{ij})^{1/\alpha_i}, \,\,i=1,2.
+$  
+This produces a dataset with Weibull marginals and no dependence structure.\\
+Dataset B (Dependent BVW).
+For the dependent dataset, we introduce positive dependence using a Gumbel copula with parameter 
+$\theta=2.5$ (corresponding to Kendall’s $\tau\approx 0.60$). 
+Pairs $(U_{1j},U_{2j})$ are sampled from the copula and then mapped through the same inverse Weibull CDFs:
+$  
+T_{ij}=\beta_i(-\ln U_{ij})^{1/\alpha_i}.
+$  
+This ensures that both datasets share identical marginal distributions while differing only in their dependence structure.
+Tables~\ref{tab:desc} and \ref{tab:sample} summarize the main differences between the two datasets. While both share identical marginal Weibull distributions, Dataset~B shows greater variability and higher upper-tail values due to the positive dependence induced by the Gumbel copula. This is reflected in the empirical Kendall’s coefficients, with $\hat{\tau}_A\approx 0.10$ indicating near independence and $\hat{\tau}_B\approx 0.62$ confirming strong concordance. The sample pairs further illustrate this contrast: Dataset~A shows no visible association between $T_1$ and $T_2$, whereas Dataset~B exhibits clear co-movement, confirming that the datasets differ only in their dependence structure.
+
+\begin{table}[h!]
+\centering
+\caption{Summary statistics for synthetic datasets ($n=100$).}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+Dataset & Variable & Mean & SD & Min & Q1 & Median & Q3 \\ \hline
+\midrule
+A
+& $T_1$ & 1.86 & 1.16 & 0.14 & 1.06 & 1.58 & 2.56 \\ \hline
+A& $T_2$ & 1.50 & 0.77 & 0.23 & 0.93 & 1.36 & 1.97 \\  \hline
+\midrule
+B
+& $T_1$ & 2.62 & 2.44 & 0.35 & 1.33 & 2.03 & 3.44 \\ \hline
+B& $T_2$ & 2.14 & 1.32 & 0.59 & 1.38 & 1.91 & 2.58 \\  \hline
+\bottomrule
+\end{tabular}
+\label{tab:desc}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{First eight lifetimes for independent and dependent BVW datasets.}
+\begin{tabular}{@{}rccrcc@{}}
+\toprule
+\multicolumn{3}{c}{Dataset A (Independent)} 
+& \multicolumn{3}{c}{Dataset B (Dependent)} \\ \hline
+Index & $T_1$ & $T_2$ & Index & $T_1$ & $T_2$ \\  \hline
+\midrule
+1 & 1.580 & 1.456 & 1 & 2.015 & 2.288 \\ \hline
+2 & 0.627 & 1.015 & 2 & 3.589 & 2.085 \\ \hline
+3 & 2.164 & 2.135 & 3 & 1.667 & 1.899 \\ \hline
+4 & 0.338 & 0.713 & 4 & 2.634 & 2.189 \\ \hline
+5 & 2.693 & 1.238 & 5 & 1.905 & 0.910 \\ \hline
+6 & 1.393 & 1.326 & 6 & 1.775 & 2.501 \\ \hline
+7 & 1.857 & 2.178 & 7 & 4.541 & 3.465 \\ \hline
+8 & 0.525 & 0.752 & 8 & 1.482 & 1.758 \\ 
+\bottomrule
+\end{tabular}
+\label{tab:sample}
+\end{table}
+
+\section{Model Fitting and Reliability Estimation}\label{sec:fitting}
+We fit both the independence BVW model and the Gumbel–BVW model to the two synthetic datasets.
+The log-likelihood is maximized using a grid-refined search. 
+Table~\ref{tab:combined} reports the Maximum Likelihood Estimates (MLEs) for the marginal Weibull parameters and, when applicable, the Gumbel dependence parameter $\theta$. The marginal estimates 
+$(\alpha_1,\beta_1,\alpha_2,\beta_2)$ are stable across both the independence and Gumbel models. 
+For Dataset~A, the estimate $\hat{\theta}\approx 1.05$ indicates near independence, whereas for Dataset~B, 
+$\hat{\theta}\approx 2.46$ reflects substantial positive dependence, consistent with the data-generating mechanism.
+
+We assign vague priors 
+$\alpha_i\sim\mathrm{Ga}(1,0.1)$, 
+$\beta_i\sim\mathrm{Ga}(1,0.1)$, 
+and $\theta-1\sim\mathrm{Ga}(1,1)$. 
+Posterior sampling is performed using a Metropolis–Hastings random walk on 
+$\log\alpha_i$, $\log\beta_i$, and $\log(\theta-1)$ for 20{,}000 iterations, with a burn-in of 5{,}000 and thinning of 10.
+Tables~\ref{tab:combined} and \ref{tab:bayes} summarize the performance of the proposed estimation methods under independence and Gumbel dependence. Posterior means and 95\% credible intervals closely match the true parameters, with the dependence parameter near 1 for Dataset~A and about 2.5 for Dataset~B, correctly distinguishing weak from strong dependence. Reliability estimates in Table~\ref{tab:combined} show that both MLE and Bayesian approaches recover values close to the truth, with Bayesian intervals consistently covering $R(t)$. Overall, both methods provide accurate and well-calibrated inference for marginal and dependence parameters.
+
+\begin{table}[h!]
+\centering
+\caption{Maximum likelihood estimates for BVW parameters and parallel-system reliability $R(t)$ (truth vs.\ MLE vs.\ Bayes).}
+\begin{tabular}{@{}lcccccc|ccc@{}}
+\toprule
+\multicolumn{7}{c|}{\textbf{Parameter Estimates}} & \multicolumn{3}{c}{\textbf{Reliability $R(t)$}} \\ \hline
+\midrule
+Dataset & Model & $\hat\alpha_1$ & $\hat\beta_1$ & $\hat\alpha_2$ & $\hat\beta_2$ & $\hat\theta$ 
+& True & MLE & Bayes \\ \hline
+\midrule
+A & Indep. & 1.75 & 1.92 & 2.25 & 1.81 & --- & 0.922 & 0.928 & 0.924 (0.897, 0.949) \\ \hline
+A & Gumbel & 1.72 & 1.94 & 2.21 & 1.79 & 1.05 & 0.602 & 0.610 & 0.606 (0.566, 0.645) \\ \hline
+B & Indep. & 1.81 & 1.95 & 2.28 & 1.83 & --- & 0.905 & 0.911 & 0.908 (0.880, 0.936) \\ \hline
+B & Gumbel & 1.78 & 1.97 & 2.23 & 1.80 & 2.46 & 0.556 & 0.562 & 0.560 (0.520, 0.597) \\ 
+\bottomrule
+\end{tabular}
+\label{tab:combined}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Posterior summaries: mean (95\% CrI). }
+\begin{tabular}{@{}lclclclclclc@{}}
+\toprule
+ Model & $\alpha_1$ & $\beta_1$ & $\alpha_2$ & $\beta_2$ & $\theta$ \\ 
+\hline
+ Indep. & 1.74 (1.50, 2.01) & 1.93 (1.65, 2.27) & 2.23 (1.95, 2.59) & 1.80 (1.55, 2.11) & --- \\
+ \hline
+ Gumbel & 1.73 (1.49, 2.00) & 1.92 (1.65, 2.25) & 2.22 (1.95, 2.58) & 1.79 (1.55, 2.10) & 1.07 (1.00, 1.20) \\
+ \hline
+ Indep. & 1.82 (1.56, 2.12) & 1.96 (1.67, 2.31) & 2.27 (1.98, 2.64) & 1.82 (1.56, 2.15) & --- \\
+ \hline
+ Gumbel & 1.79 (1.54, 2.08) & 1.95 (1.68, 2.29) & 2.24 (1.96, 2.61) & 1.81 (1.55, 2.13) & 2.50 (2.05, 3.00) \\
+\bottomrule
+\end{tabular}
+\label{tab:bayes}
+\end{table}
+
+Figure~\ref{fig:reliability_case} shows that, for Dataset~B, both the MLE plug-in estimate and the Bayesian posterior mean closely track the true reliability curve. The Bayesian 95\% credible band remains narrow and consistently covers the true function, indicating accurate estimation and well-calibrated uncertainty under strong dependence. This confirms the reliability of both approaches, complementing the numerical results in Table~\ref{tab:combined}.
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+width=0.79\textwidth,
+height=0.41\textwidth,
+xlabel={$t$},
+ylabel={$R(t)$},
+ymin=0, ymax=1.05,
+xmin=0, xmax=3.2,
+grid=both,
+legend pos=north east,
+legend cell align=left,
+]
+% True curve (Dataset B)
+\addplot [black, solid, thick] coordinates {
+(0.5,0.975) (1.0,0.922) (1.5,0.785) (2.0,0.602) (2.5,0.435) (3.0,0.312)
+};
+\addlegendentry{True $R(t)$};
+% MLE curve
+\addplot [blak, dashed, thick] coordinates {
+(0.5,0.978) (1.0,0.928) (1.5,0.792) (2.0,0.610) (2.5,0.442) (3.0,0.318)
+};
+\addlegendentry{MLE plug-in};
+% Bayes mean
+\addplot [red!100, opacity=1, name path=high] coordinates {
+(0.5,0.976) (1.0,0.924) (1.5,0.789) (2.0,0.606) (2.5,0.438) (3.0,0.316)
+};
+\addlegendentry{Bayes mean};
+% Bayes 95% band
+\addplot [green!100, opacity=1, name path=high] coordinates {
+(0.5,0.970) (1.0,0.897) (1.5,0.755) (2.0,0.566) (2.5,0.404) (3.0,0.278)
+};
+\addplot [green!100, opacity=1, name path=high] coordinates {
+(0.5,0.982) (1.0,0.949) (1.5,0.820) (2.0,0.645) (2.5,0.472) (3.0,0.354)
+};
+\addplot [green!30, opacity=0.35] fill between[of=low and high];
+\end{axis}
+\end{tikzpicture}
+\caption{Estimated parallel-system reliability $R(t)$ for Dataset B (dependent BVW): true curve, MLE plug-in, and Bayesian posterior mean with 95\% credible band.}
+\label{fig:reliability_case}
+\end{figure}
+
+\section*{Conclusion and Future Work}
+
+The proposed framework for reliability assessment under Gumbel-dependent
+bivariate Weibull models recovers both marginal and dependence parameters
+accurately and provides reliable system estimates. These methods have
+applications in \textbf{engineering}, \textbf{survival analysis}, and
+\textbf{risk management}. Future work includes exploring alternative copulas
+(e.g., Clayton), incorporating censoring mechanisms, and developing
+hierarchical structures to extend applicability to more complex systems.
+
+ \section*{Acknowledgments} 
+The authors would like to express their sincere gratitude to the reviewers for their constructive comments and suggestions, which have significantly improved the quality and clarity of this paper.
+%\newpage
+\begin{thebibliography}{12}
+
+\bibitem[Barlow and Proschan(1996)]{barlow1996mathematical}
+Barlow E., Proschan F., 1996,
+\emph{Mathematical Theory of Reliability}.
+Society for Industrial and Applied Mathematics.
+
+\bibitem[Bedford and Cooke(2001)]{bedford2001probabilistic}
+Bedford T., Cooke R., 2001,
+\emph{Probabilistic Risk Analysis: Foundations and Methods}.
+Cambridge University Press, Cambridge.
+
+\bibitem[Embrechts et al.(2003)]{embrechts2003modelling}
+Embrechts P., Lindskog F., McNeil A., 2001,
+\emph{Modelling Dependence with Copulas and Applications to Risk Management}.
+ Handbook of heavy tailed distributions in finance, 8(1), 329-384.
+
+\bibitem[Joe(2014)]{joe2014dependence}
+Joe H., 2014,
+\emph{Dependence Modeling with Copulas}.
+CRC Press, Boca Raton.
+
+\bibitem[Kim et al.(2007)]{kim2007copula}
+Kim G., Silvapulle M.P., Silvapulle P., 2007,
+Comparison of semiparametric and parametric methods for estimating copulas,
+\emph{Computational Statistics \& Data Analysis}, 51(6), 2836--2850.
+
+\bibitem[Kundu and Dey(2009)]{kundu2009estimating}
+Kundu D., Dey A.K., 2009,
+Estimating the parameters of the Marshall–Olkin bivariate Weibull distribution by EM algorithm,
+\emph{Computational Statistics \& Data Analysis}, 53(4), 956--965.
+
+\bibitem[Lawless(2011)]{lawless2011statistical}
+Lawless J.F., 2003,
+\emph{Statistical Models and Methods for Lifetime Data}, 2nd edn.
+John Wiley \& Sons, New York.
+
+%\bibitem[Marshall and Olkin(1967)]{marshall1967multivariate}
+%Marshall A.W., Olkin I., 1967,
+%A multivariate exponential distribution,
+%\emph{Journal of the American Statistical Association}, 62(317), 30--44.
+
+\bibitem[Meeker et al.(2021)]{meeker2021statistical}
+Meeker W.Q., Escobar L.A., Pascual F.G., 2021,
+\emph{Statistical Methods for Reliability Data}, 2nd edn.
+John Wiley \& Sons, New York.
+
+\bibitem[Nelsen(2006)]{Nelsen2006}
+Nelsen R.B., 2006,
+\emph{An Introduction to Copulas}, 2nd edn.
+Springer, New York.
+
+\bibitem[Nelson(2005)]{nelson2005applied}
+Nelson W., 2005,
+\emph{Applied Life Data Analysis}.
+John Wiley \& Sons, New York.
+
+\bibitem[Smith and Khaled(2012)]{smith2012estimation}
+Smith M.S., Khaled M.A., 2012,
+Estimation of copula models with discrete margins via Bayesian data augmentation,
+\emph{Journal of the American Statistical Association}, 107(497), 290--303.
+
+
+\end{thebibliography}
+\clearpage
+
+\end{document}
+
+\newpage
+
+\section*{Appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Proof of Theorem 1}
+
+Let $S_i(t)=P(T_i>t)$ denote the marginal survival functions and let 
+$S(t,t)=P(T_1>t,\,T_2>t)$ denote the joint survival function. For a parallel
+system, the reliability is
+\begin{equation}
+R(t)=P(T_1>t \text{ or } T_2>t)
+     =S_1(t)+S_2(t)-S(t,t).
+\end{equation}
+Under the Gumbel copula $C_\theta$, the joint survival function is
+\begin{equation}
+S(t,t)=C_\theta(S_1(t),S_2(t)),
+\end{equation}
+where
+\begin{equation}
+C_\theta(u,v)=\exp\!\left\{-\!\left[(-\log u)^\theta+(-\log v)^\theta\right]^{1/\theta}\right\},
+\qquad \theta\ge1.
+\end{equation}
+Thus
+\begin{equation}
+R_{\mathrm{G}}(t)=S_1(t)+S_2(t)-C_\theta(S_1(t),S_2(t)).
+\end{equation}
+
+\paragraph{Upper bound.}
+To show $R_{\mathrm{G}}(t)\le R_{\mathrm{Ind}}(t)$, note that
+\begin{equation}
+R_{\mathrm{Ind}}(t)=S_1(t)+S_2(t)-S_1(t)S_2(t).
+\end{equation}
+Hence the inequality is equivalent to
+\begin{equation}
+C_\theta(u,v)\ge uv,\qquad u=S_1(t),\ v=S_2(t).
+\end{equation}
+Let $x=-\log u$ and $y=-\log v$. Then $x,y\ge0$ and the inequality becomes
+\begin{equation}
+(x^\theta+y^\theta)^{1/\theta}\le x+y,
+\end{equation}
+which is the standard inequality $\|(x,y)\|_\theta\le \|(x,y)\|_1$ for all $\theta\ge1$.
+
+\paragraph{Lower bound.}
+Using the survival representation
+\begin{equation}
+R_{\mathrm{G}}(t)=1-C_\theta(1-S_1(t),1-S_2(t)),
+\end{equation}
+let $u=1-S_1(t)$ and $v=1-S_2(t)$. We need to show
+\begin{equation}
+C_\theta(u,v)\le \min\{u,v\},
+\end{equation}
+which is the classical Fréchet lower bound satisfied by all copulas.
+
+This completes the proof.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Proof of Theorem 2}
+
+Fix $t>0$ and define
+\begin{equation}
+u=1-S_1(t),\qquad v=1-S_2(t).
+\end{equation}
+Then
+\begin{equation}
+R(t;\theta)=1-C_\theta(u,v).
+\end{equation}
+Let $a=-\log u>0$ and $b=-\log v>0$, and define
+\begin{equation}
+\phi(\theta)=\left(a^\theta+b^\theta\right)^{1/\theta}.
+\end{equation}
+Then
+\begin{equation}
+C_\theta(u,v)=e^{-\phi(\theta)}.
+\end{equation}
+
+It is well known that for any $p\ge1$,
+\begin{equation}
+\|(a,b)\|_p=(a^p+b^p)^{1/p}
+\end{equation}
+is non-increasing in $p$. Thus for $\theta_1<\theta_2$,
+\begin{equation}
+\phi(\theta_2)\le\phi(\theta_1)
+\quad\Longrightarrow\quad
+C_{\theta_2}(u,v)\ge C_{\theta_1}(u,v).
+\end{equation}
+Therefore
+\begin{equation}
+R(t;\theta)=1-C_\theta(u,v)
+\end{equation}
+is non-increasing in $\theta$.
+
+If $a\neq b$ (equivalently $S_1(t)\neq S_2(t)$), the inequality is strict:
+\begin{equation}
+C_{\theta_2}(u,v)>C_{\theta_1}(u,v)
+\quad\Longrightarrow\quad
+R(t;\theta_2)<R(t;\theta_1).
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Proof of Theorem 3}
+
+Let $u(t)=1-S_1(t)$ and $v(t)=1-S_2(t)$. The reliability is
+\begin{equation}
+R(t;\theta)=1-C_\theta(u(t),v(t)),
+\end{equation}
+where
+\begin{equation}
+C_\theta(u,v)=\exp\!\left\{-\!\left[(-\log u)^\theta+(-\log v)^\theta\right]^{1/\theta}\right\}.
+\end{equation}
+
+Weibull survival functions with shape $\alpha_i\ge1$ satisfy
+\begin{equation}
+\log S_i(t)=-(t/\beta_i)^{\alpha_i},
+\end{equation}
+whose second derivative is
+\begin{equation}
+\frac{d^2}{dt^2}\log S_i(t)
+=-\alpha_i(\alpha_i-1)\beta_i^{-\alpha_i}t^{\alpha_i-2}\le0.
+\end{equation}
+Thus $S_i(t)$ is log-concave.
+
+Since the Gumbel copula is an associated Archimedean copula, the joint survival function of a parallel system with log-concave marginals is also log-concave. Therefore,
+\begin{equation}
+R(t;\theta)=1-C_\theta(1-S_1(t),1-S_2(t))
+\end{equation}
+is log-concave in $t$.
+
+This completes the proof.
+
+%%%%%%%%%%%%%%%%%%%%%Dataset A و B%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+install.packages("copula")
+library(copula)
+
+set.seed(123)
+
+# True parameters
+alpha1 <- 1.7; beta1 <- 2.0
+alpha2 <- 2.2; beta2 <- 1.8
+n <- 100
+
+# ---- Dataset A: Independent BVW ----
+U1 <- runif(n)
+U2 <- runif(n)
+
+T1_A <- beta1 * (-log(U1))^(1/alpha1)
+T2_A <- beta2 * (-log(U2))^(1/alpha2)
+
+DatasetA <- data.frame(T1 = T1_A, T2 = T2_A)
+
+# ---- Dataset B: Gumbel Copula BVW ----
+library(copula)
+
+theta <- 2.5
+gumbel.cop <- gumbelCopula(theta, dim = 2)
+
+U_dep <- rCopula(n, gumbel.cop)
+
+T1_B <- beta1 * (-log(U_dep[,1]))^(1/alpha1)
+T2_B <- beta2 * (-log(U_dep[,2]))^(1/alpha2)
+
+DatasetB <- data.frame(T1 = T1_B, T2 = T2_B)
+DatasetA <- data.frame(T1 = T1_A, T2 = T2_A)
+print(DatasetA)
+
+DatasetB <- data.frame(T1 = T1_B, T2 = T2_B)
+print(DatasetB)
+
+
+
+%\end{document}

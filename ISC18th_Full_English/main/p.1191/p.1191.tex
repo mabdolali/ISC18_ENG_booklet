@@ -1,0 +1,252 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{natbib}
+
+\usepackage{booktabs}
+\begin{document}
+\thispagestyle{empty}
+
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Social Network Analysis}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Sheida Abdolmaleki}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Analysis of social network Facebook comments using ML, Deep Learning, and lexicon-based}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Sheida Abdolmaleki $^1$, Vadood Keramati  \footnote[1]{{\bf Sheida Abdolmaleki:} {\tt Sh\_abdolmaleki@atu.ac.ir  }} \\
+$^1$ Sh\_abdolmaleki@atu.ac.ir\\
+$^2$ v.keramati@imps.ac.ir}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Customer satisfaction is the most important tool for understanding how our application works. Facebook is one of the most popular applications in the world that most people use. Hence, analyzing the comments in the application is useful for knowing its performance. 
+The analysis was conducted using a series of specialized functions commonly employed in these methods to evaluate people’s opinions and sentiments toward the program. The opinions and sentiments are classified into 4 classes (natural, positive, negative, and empty). In the end, the results of the two methods were compared to determine which method performed better for data analysis.
+
+\noindent{\bf Keywords:} 
+Sentiment Analysis, Machine learning, Deep learning, Lexicon-based  \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The deep integration of social media into everyday life has created a new pattern in human interactions. This process, often described as the digitalization of modern society, has made it essential for researchers in different fields to study its structural effects and consequences. For this reason, researchers attempt to identify existing problems and report them to system administrators and developers. This helps improve the system and increases user satisfaction, which may attract more users to the platform.
+To address attitudes, Natural Language Processing (NLP) has become a popular approach for analyzing people’s opinions because it can extract meaningful information from large amounts of textual data (\cite{Go:2009}). 
+Sentiment Analysis is one of the NLP techniques that identifies and classifies the emotional polarity of text into categories such as positive, negative, or neutral. Sentiment analysis is widely used as a technique that combines methods from both machine learning (ML) and natural language processing (\cite{Yadav:2023}). 
+For this purpose, we try to understand people’s emotions and opinions by using Facebook’s comments dataset. Overall, the dataset provides a comprehensive collection of public comments and captures different aspects of each recorded comment, including the time it was posted and the user ID. The dataset contains approximately 4 million rows and 8 columns. For this research, only the most recent 1 million rows of the dataset were utilized. The complete dataset spans the period from 2009 to 2023.
+Various methodologies were used to assess the sentiment of the comments. A lexicon-based method using Text Blob to calculate polarity was implemented as a first step. A machine learning approach based on TF‑IDF feature extraction then converted the textual data into numerical form for sentiment classification by training a machine learning model with it. Finally, a Transformer-based model was also used not only to learn deeper contextual relationships within text but also to improve the overall performance of sentiment prediction.
+
+\section{Literature Review}
+\begin{itemize}[label=\textbullet]
+	\item \textbf{lexicon-based approach:} 
+	The Senti Word Net (\cite{Esuli:2006}) is a lexical resource that adds sentiment-related information to the WordNet. It tags the syn sets with three scores- positive, negative, and objective score– between 0.0 and 1.0, which can be used as features for classification. Also, a set of predefined positive and negative sentiment lexicons, such as that formed by Hu and Liu (\cite{Hu and Liu:2004}), can be used. Given a piece of text, the occurrence of one or more of these words can be used in the form of a feature vector (\cite{Singhal:2016}). 
+	\item \textbf{Classical Machine Learning (ML) approach: }
+	Nowadays, as the world’s population grows, the volume of data generated rise enormous boosts. Collecting, classifying, or analyzing this data in real-time is relatively time-consuming and, in some cases, almost impossible. However, it affects and changes our daily lives due to the development of machine learning technology. Today, this technology has been used in several areas for several years and affects and changes our daily lives. Logistic regression is a machine learning algorithm that needs labeled data to classify the data (\cite{Turcanik:1998}).
+	\item \textbf{Deep learning approach:}
+	The neural network was eliminated due to limited capacity (neural networks with one or two layers). After decades, deep learning has been improving in many application domains like NLP (\cite{Zhang:2018}).
+	
+\end{itemize}
+A multi-faceted approach to sentiment analysis was adopted in this study whereby we combined the lexicon-based, machine learning, and deep learning approaches to sentiment analysis. The lexicon-based method formed a comprehensible benchmarking tool to determine the polarity of sentiments. The machine learning methods were used to model the linguistic patterns through feature engineering while the deep learning method allowed us to take advantage of the context semantics and latent structures. The evaluation of all the three techniques gave us insight into the balance between the computational efficiency, interpretability, and accuracy of the techniques in analyzing the dataset.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Methodology %%%%%%%%%%%%%%%%%%%%%%%
+\section{Methodology}
+In this section, we analyzed sentiments in Facebook comments. The methodology consists of five primary steps: data description, text preprocessing, manual annotation and gold Standard creation, implementation of sentiment classification model, model evaluation, and performance metrics.
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.8\textwidth]{Picture1} 
+	\caption{Roadmap of the proposed methodology}
+	\label{fig:my_image} 
+\end{figure}
+
+\begin{table}[!ht]
+	\centering
+	\caption{Summary of approaches}
+	\label{Table 1:Camparing the approahes}
+	\begin{tabular}{|l|l|p{3.5cm}|p{3cm}|}
+		\hline
+		Methods          & Data Require & Complexity & Accuracy \\ \hline
+		Lexicon-based    & Low          & Simple     & Low to Medium \\ \hline
+		Machine learning & Medium       & Moderate   & Medium to Good \\ \hline
+		Deep learning    & High         & Complex    & Very Good \\ \hline
+
+	\end{tabular}
+\end{table}
+\subsection{Data Description: }
+Facebook comments were collected for 14 years (2009-2023). The data set consists of 4 million observations and 8 distinct variables. In relation to the structure of data, the text review column (comments) is an unstructured text, and other columns, such as User ID, review rate, review likes, and review time, are structured.
+Considering the size of the dataset, that’s why calculations take time, so to decrease the time, we selected a subsample of the corpus that contained one million observations and all variables.
+
+\subsection{Text Preprocessing:}
+Since social media is an informal platform for discourse, the corpus we collected also contained a lot of noise, such as slang, irregular punctuation, and non-textual information. As a result, this data underwent text cleaning and normalization to enhance feature extraction by the model.
+Eliminating emoji, links, and marks from comments to clarify the text to model.
+The date column has been corrected too; its correct form is as follows:
+Year-month-day hour- minute-second 
+
+\subsection{Manual Annotation and Gold Standard Creation:}
+To establish a reliable ground truth for model evaluation, a representative subset of the collected Facebook comments was randomly sampled for manual annotation. This ‘Gold Standard’ dataset was labeled by human experts into sentiment categories (Positive, Negative, and Neutral). The manually labeled data served two primary purposes: first, to provide a high-quality training set for the supervised Machine Learning models (e.g., Logistic Regression), and second, to act as a benchmark for calculating performance metrics such as Accuracy, Precision, Recall, and F1-score across all implemented sentiment analysis approaches.
+Due to how many observations we need to, we use the Cochran sampling formula, that it consistent Error rate equal to 3\%, Z0.95, and p is the proportion of the population (generally taken as 0.5).
+\begin{align}
+	n_0 &= \frac{Z^2 p(1 - p)}{E^2} \\
+	n &= \frac{N n_0}{N + n_0 + 1}
+\end{align}
+
+\subsection{Implementation of sentiment classification models:}
+In a sentiment context, a lot of methods can be conducted so that we can compare the methods and choose the best method that fits the dataset and has good efficiency.
+
+\subsubsection{Lexicon-based approach $->$ TextBlob method:}
+Early studies in sentiment analysis mainly relied on lexicon-based approaches, which rely on predefined dictionaries to define the sentiment of a comment or text. Polarity criteria assign the value of text in the interval [-1,1] and classify text into three categories: negative, positive, and neutral. TextBlob is considered one of the lexicon-based approaches. This model is computationally efficient, simple to implement, and does not require any training dataset, but its limitation can be low accuracy, cannot understand the context and sarcasm very well (\cite{Singhal:2016}). There are several issues with this approach, for instance, most of the time, the presence of more positive words does not necessarily mean it is a positive comment, so sometimes it is impossible to recognize sentiment using a lexicon-based approach (\cite{Gudivada:2015}).
+Despite these limitations, the TextBlob method is useful as a simple baseline approach and serves as a good starting point for sentiment analysis modeling. 
+
+\subsubsection{Machine Learning $->$ logistic Regression:}
+Machine Learning (ML) techniques for sentiment classification gain interest because of their capabilities to model (\cite{Boiy:2008}). The ML approach trains a model to automatically learn sentiment patterns from labeled data or Gold Standard Creation.
+TF-IDF (Term Frequency–Inverse Document Frequency) is a statistical method used in NLP and information retrieval to evaluate how important a word is to a document in relation to a larger collection of documents. TF-IDF combines two components:
+TF means Term Frequency, which measures how often a word appears in a document.
+\begin{equation}
+	\text{TF (t, d)} = \frac{\text{Number of times term } t \text{ appears in document } d}{\text{Total number of terms in document}}
+\end{equation}
+
+IDF means Inverse Document Frequency, Which Reduces the weight of common words across multiple documents while increasing the weight of rare words.
+
+\begin{equation}
+	\text{IDF (t, D)} = \log \frac{\text{Total number of documents in corpus } D}{\text{Number of documents containing term } t}
+\end{equation}
+
+And finally, we have:
+\begin{equation}
+	\text{TF-IDF (t, d, D)} = \text{TF (t, d)} \times \text{IDF (t, D)}
+\end{equation}
+
+Consequently, Term Frequency--Inverse Document Frequency aids Logistic regression to classify the comments or text into three categories.
+
+\subsubsection{Deep Learning $->$ transformers:}
+Neural networks have recently become a very popular topic of research in the field of NLP, especially in sentiment analysis. Once a suitable neural network architecture is designed for the problem at hand, a solution to the classification problem can be obtained using deep learning models(\cite{Singhal:2016}). A strength of the deep learning models is no demand for carefully optimized hand-crafted features. Instead of the features, they take word embeddings as input, which contain context information, and the intermediate layers of the neural network learn the features during the training phase itself. This means that a necessity, which is at the base of the traditional classification models, is no longer required for the functioning of deep learning models (\cite{Singhal:2016}).
+
+\subsection{Model Evaluation and Performance Metrics:}
+We show experimental results on the gold dataset (training model):
+
+% --- جدول اول: TEXTBLOB ---
+\begin{table}[h]
+	\centering
+	\caption{TEXTBLOB Classification Report}
+	\begin{tabular}{lcccc}
+		\toprule
+		& precision & recall & F1-score & support \\
+		\midrule
+		NEGATIVE & 0.53 & 0.69 & 0.60 & 13 \\
+		NEUTRAL  & 0.97 & 0.82 & 0.89 & 158 \\
+		POSITIVE & 0.57 & 0.97 & 0.72 & 29 \\
+		\midrule
+		ACCURACY & & & 0.83 & 200 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+% --- جدول دوم: LOGISTIC REGRESSION ---
+\begin{table}[h]
+	\centering
+	\caption{LOGISTIC REGRESSION Classification Report}
+	\begin{tabular}{lcccc}
+		\toprule
+		& precision & recall & F1-score & support \\
+		\midrule
+		NEGATIVE & 1.00 & 0.23 & 0.38 & 13 \\
+		NEUTRAL  & 0.89 & 1.00 & 0.94 & 158 \\
+		POSITIVE & 1.00 & 0.66 & 0.79 & 29 \\
+		\midrule
+		ACCURACY & & & 0.90 & 200 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\clearpage 
+\begin{table}[h]
+	\centering
+	\caption{TRANSFORMERS Classification Report}
+	\begin{tabular}{lcccc}
+		\toprule
+		& precision & recall & F1-score & support \\
+		\midrule
+		NEGATIVE & 0.23 & 0.92 & 0.36 & 13 \\
+		NEUTRAL  & 0.97 & 0.38 & 0.55 & 158 \\
+		POSITIVE & 0.33 & 0.97 & 0.49 & 29 \\
+		\midrule
+		ACCURACY & & & 0.50 & 200 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+Regarding the evaluation results, logistic regression has consistently outperformed its rivals:
+Because:
+\begin{enumerate}
+	\item In each class, precision is high, which means the model could find the correct sentiment, according to the response variable (manual\_label).
+	\item The recall metric is high, too, which means the model is discerning.
+	\item F1-score, the most important metric, shows that the model could have outperformed and been reliable.
+\end{enumerate}
+
+
+\section*{Conclusion}   
+Using labeled data due to modeling could be affected on evaluation result and could improve the reliability of the result. According to our paper, logistic regression is suggested as a good model because it is able to approximate each class correctly.
+
+
+
+
+\clearpage 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{thebibliography}{99}
+	
+	\bibitem[Go et al.(2009)]{Go:2009}
+	Go, A., Bhayani, R., \& Huang, L. (2009), {\it Twitter Sentiment Classification using Distant Supervision,} CS224N Project Report, Stanford.
+	
+	\bibitem[Yadav(2023)]{Yadav:2023}
+	Yadav, J. (2023), {\it Sentiment Analysis on social media.}
+	
+	\bibitem[Singhal and Bhattacharyya(2016)]{Singhal:2016}
+	Singhal, P., and Bhattacharyya, P. (2016), {\it Sentiment Analysis and Deep Learning: A Survey.}
+	
+	\bibitem[Turčaník(1998)]{Turcanik:1998}
+	Turčaník, M. (1998), {\it Network User Behavior Analysis by Machine Learning Methods.}
+	
+	\bibitem[Zhang et al.(2018)]{Zhang:2018}
+	Zhang, L., Wang, S., and Bing, L. (2018), {\it Deep Learning for Sentiment Analysis: A Survey,} Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery, 8(4).
+	
+	\bibitem[Gudivada(2015)]{Gudivada:2015}
+	Gudivada, V. N. (2015), {\it Big Data Driven Natural Language Processing Research and Applications (chapter 9),} book.
+	
+	\bibitem[Boiy and Moens(2008)]{Boiy:2008}
+	Boiy, E., and Marie-Francine, M. (2008), {\it A Machine Learning Approach to Sentiment Analysis in Multilingual Web Texts,} Information Retrieval, 12(5), 526-558.
+	
+	\bibitem[Riswawan(2024)]{Riswawan:2024}
+	Riswawan, A. (2024), {\it Implementing TF-IDF and Logistic Regression for Sentiment Analysis of YouTube Comments on the iPhone 16.}
+	
+	\bibitem[Pramodini et al.(2025)]{Pramodini:2025}
+	Pramodini, K., Aakarshitha, J., Karthik, J. V., Sathvik, J., Mahesh, K., and Ramya Sree, E. (2025), {\it Analysis of Social Network Ads Results using Machine Learning.}
+	
+	\bibitem[Yasaminzadeh(2020)]{Yasaminzadeh:2020}
+	Yasaminzadeh, G. (2020), {\it Extracting important social features to measure user influence on Twitter (conference).}
+	
+	\bibitem[Hu and Liu (2004)]{Hu and Liu:2004}
+	Minqing Hu and Bing Liu. (2004), {\it Mining and Summarizing Customer Reviews}
+	
+	\bibitem[Andrea Esuli and Fabrizio Sebastiani (2006)]{Esuli:2006}
+	Andrea Esuli and Fabrizio Sebastiani.(2006), {\it SENTIWORDNET: APublicly Available Lexical Resource for Opinion Mining}
+	
+\end{thebibliography}
+ \end{document}
+

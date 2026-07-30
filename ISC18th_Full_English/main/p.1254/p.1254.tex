@@ -1,0 +1,236 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{The Critical Role of Feature Engineering in Time-Series Prediction}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Pak and Kaviani}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf The Critical Role of Feature Engineering in Time-Series Prediction: A Case Study on Air Pollution Forecasting}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+
+
+%{\bf
+%Abbas Pak \footnote[1]{{\bf Corresponding Author:} {\tt abbas.pak1982@gmail.com }}, Mohammad Javad Nematollahi $^2$  \\
+%$^1$Department of Computer Sciences, Shahrekord University, Shahrekord, Iran \\
+%$^2$Department of Geology, Faculty of Sciences, Urmia University, Urmia, Iran.}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Feature engineering plays a crucial role in improving the predictive performance of machine learning models for time-series forecasting. This study investigates the impact of engineered temporal features on air pollution prediction using a dataset containing atmospheric pollutants and meteorological variables. A comprehensive feature engineering framework was developed, including lag variables, rolling statistics, cyclical time encodings, and pollutant–weather interaction features.
+The effectiveness of the proposed features was evaluated using the Random Forest and Light Gradient Boosting Machine (LightGBM) models. Forecasting performance was compared before and after feature engineering for multiple pollutants, including  CO, O3, NO2, and SO2. Results showed substantial improvements across all prediction tasks, demonstrating the ability of the derived features to capture temporal dependencies, seasonal patterns, and nonlinear environmental interactions.
+The results highlight the pivotal role of feature engineering in time-series forecasting and demonstrate that substantial accuracy improvements can be achieved without modifying the underlying learning algorithm. 
+
+ 
+\noindent{\bf Keywords:} 
+Time-series Forecasting, Feature engineering, Random Forest, and Light Gradient Boosting Machine. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 92B20$, $\rm 62M20$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%This study provides practical guidance for environmental data scientists and machine learning practitioners seeking to improve forecasting performance through systematic feature construction strategies.
+%%%%%%%%%%%%%%
+\section{Introduction}
+Time-series forecasting is a fundamental task in many scientific and engineering domains, including environmental monitoring, energy management, finance, transportation, and public health. Accurate forecasting models enable decision-makers to anticipate future events, optimize resource allocation, and implement proactive control strategies. In recent years, machine learning and deep learning approaches have demonstrated remarkable success in time-series prediction due to their ability to model complex nonlinear relationships and temporal dependencies within sequential data. Among the numerous application domains of time-series forecasting, air quality prediction has received considerable attention because of the adverse impacts of air pollution on human health, ecosystems, and economic activities (\cite{LZ13}). Reliable forecasts of pollutants such as carbon monoxide (CO), ozone (O3), nitrogen dioxide (NO2), sulfur dioxide (SO2), and particulate matter (PM2.5 and PM10) are essential for environmental management and early warning systems. Consequently, a wide range of machine learning techniques have been developed for air pollution forecasting (see \cite{LZ3}, \cite{LZ1}).
+
+Although substantial research has focused on developing increasingly sophisticated prediction algorithms, the quality of the input representation remains a critical determinant of forecasting performance. Raw time-series observations often fail to explicitly capture temporal persistence, seasonality, local trends, and interactions among variables. Feature engineering addresses this limitation by transforming raw observations into informative predictors that expose hidden temporal structures and domain-specific knowledge to learning algorithms. Recent studies have shown that incorporating engineered temporal features can significantly improve forecasting accuracy in environmental and other time-series applications (see \cite{LZ34}, \cite{LZ4}). 
+For air pollution forecasting, feature engineering is particularly important because pollutant concentrations exhibit strong autocorrelation, seasonal variability, and complex interactions with meteorological conditions. Features such as lagged observations, rolling statistics, cyclical calendar representations, and variable interaction terms can provide valuable information about pollutant persistence, trend evolution, and atmospheric dynamics that may not be directly observable from the original variables alone.
+
+In this study, we examine the importance of feature engineering for time-series prediction using a real-world air pollution dataset containing atmospheric pollutant measurements and meteorological variables. First, a comprehensive feature engineering framework is developed, including lag features, rolling statistical descriptors, cyclical temporal encodings, and interaction variables to effectively capture temporal dependencies and nonlinear relationships. Then, the predictive performances of Random Forest (RF) and Light Gradient Boosting Machine (LightGBM) models are evaluated before and after feature engineering across multiple pollutants, including CO, O3, NO2, and SO2. The findings demonstrate that carefully designed temporal features can dramatically enhance forecasting accuracy and highlight feature engineering as a key component of effective time-series prediction systems.
+
+
+%{\color{red}Future work will extend the proposed framework to multivariate and multi-output forecasting models, allowing the joint modeling of pollutant dynamics and their interactions with meteorological variables, which may further improve prediction accuracy.}
+
+\section{Materials and Methods}
+\subsection{Data Description}
+
+This study employs a real-world air quality dataset containing measurements of major atmospheric pollutants and meteorological variables. The dataset includes concentrations of carbon monoxide (CO), ozone (O3), nitrogen dioxide (NO2), sulfur dioxide (SO2), particulate matter with aerodynamic diameters below 10 (PM10), and particulate matter with aerodynamic diameters below 2.5 (PM2.5). In addition, several meteorological parameters, including temperature, dew point, relative humidity, wind speed, and atmospheric pressure, are incorporated. The timestamp associated with each observation was used to preserve the chronological order of the data and to derive temporal features. In this study, each pollutant was considered separately as the prediction target, while the remaining variables served as explanatory features.
+
+\subsection{Data Preprocessing}
+Prior to model development, the timestamp variable was converted to a standard datetime format and the dataset was sorted chronologically. Since only a small number of observations contained missing values, these records were excluded from the analysis rather than being imputed. This decision minimized the risk of introducing interpolation bias while having a negligible effect on the overall dataset. Subsequently, feature engineering procedures were applied to generate additional informative predictors from the original measurements. Since lagged and rolling-window calculations produce undefined values at the beginning of the series, records containing missing values generated during feature construction were removed before model training.
+\subsection{Feature Engineering Framework}
+The primary objective of this study is to investigate the contribution of feature engineering to time-series forecasting accuracy. To this end, a comprehensive feature engineering framework was developed consisting of four categories of derived features (see Figure \ref{fig1}).
+\subsubsection{Lag and Rolling Statistical Features} 
+Lag variables capture temporal persistence by incorporating historical observations into the prediction process. To determine the appropriate lag features, the autocorrelation function (ACF) was examined for each target pollutant (not reported here). The ACF plots consistently showed statistically significant positive autocorrelations up to approximately lag 15. Based on this analysis, lag features  were generated using previous observations at 1, 2, 3, 7, 10, and 15 time steps to capture the short-term temporal dependence while avoiding the inclusion of less informative long-lag observations. In addition, selected pollutant variables were represented using short-term and weekly lag features to capture delayed interactions among atmospheric pollutants. Rolling statistics were employed to characterize local trends and variability within the time series. For rolling windows of 5, 10, and 15 observations, the statistical descriptors including rolling mean, rolling standard deviation, rolling minimum, and rolling maximum were computed. 
+These features provide information regarding local pollutant dynamics and short-term temporal behavior.
+
+%For the target pollutant, lag features were generated using previous observations at 1, 2, 3, 7, 10, and 15 time steps; $X_{t}^{lag(k)} = X_{t-k}$ where $X_{t}$ denotes the pollutant concentration at time (t) and (k) represents the lag interval. 
+
+
+%\subsubsection{Rolling Statistical Features} 
+
+\subsubsection{Cyclical Temporal and Interaction Features} 
+Environmental variables often exhibit seasonal and periodic patterns. To represent these recurring temporal behaviors, calendar-based attributes including month, day of year, day of week, and week of year were extracted from the timestamp. To preserve the cyclical nature of temporal variables, sine and cosine transformations were applied:
+\begin{equation*}
+\sin(x)=\sin\left(\frac{2\pi x}{P}\right), \cos(x)=\cos\left(\frac{2\pi x}{P}\right)
+\end{equation*}
+where $P$ denotes the period of the corresponding temporal cycle. This transformation ensures that adjacent periods, such as December and January, are represented as neighboring points in the feature space.
+
+To capture nonlinear relationships between meteorological variables, interaction features were constructed. Specifically, the interaction between temperature and relative humidity was computed as $I_{Temp,Hum}=Temperature \times Humidity$. 
+Such interaction terms enable the model to learn combined atmospheric effects that may influence pollutant concentrations.
+\subsection{Prediction Models}  
+The predictive performance of the engineered features was evaluated using the RF and LightGBM. Hyperparameter optimization for these ML models was conducted using RandomizedSearchCV. The optimal hyperparameter values are not reported due to space limitations.
+
+%LightGBM is a tree-based ensemble learning algorithm that employs gradient boosting and histogram-based decision tree construction to achieve high computational efficiency and predictive accuracy. Given a set of input features $X$, the final prediction is expressed as $\hat{y}=\sum_{m=1}^{M} f_m(X)$ where $f_m$ represents the $m$-th decision tree and $M$ denotes the total number of trees in the ensemble. These models were selected because of its ability to model nonlinear relationships, handle high-dimensional feature spaces, and automatically identify informative predictors.
+
+
+%\begin{table}[h]
+%\centering
+%\small
+%{\color{red}
+%\caption{Hyperparameters of the ML models.}\label{tab1}
+%\label{tab:architectures}
+
+%\begin{tabular}{|c||c|p{10cm}|}
+%\hline
+%Model & \multicolumn{2}{c|}{Hyperparameters Description} \\
+%\hline  \hline
+
+%RF & Before Feature engineering&\text{n\_estimators: 300, max\_depth: 10, min\_samples\_split: 6, min\_samples\_leaf: 4} \\
+
+
+ %& After Feature engineering&\text{n\_estimators: 300, max\_depth: 20, min\_samples\_split: 5, min\_samples\_leaf: 4} \\
+
+ %\hline
+%LGBM &Before Feature engineering&\text{n\_estimators: 300, max\_depth:5, learning\_rate:0.05, num\_leaves:31} \\
+
+%         &After Feature engineering&\text{max\_iter: 1000, l1\_ratio: 1.0, alpha: 0.01}\\
+%\hline
+%}
+%\end{tabular}
+%\end{table}
+
+
+\subsection{Experimental Design and Evaluation Metrics}  
+To quantify the impact of feature engineering, two experimental scenarios were considered:
+\begin{itemize}
+    \item Baseline Models: RF and LightGBM trained using the original variables only.
+    \item Feature-Engineered Model: RF and LightGBM trained using both original and engineered features.
+\end{itemize}
+The comparison was conducted independently for multiple pollutants, including CO, O3, NO2, and SO2. Model performance was evaluated using the root mean squared error (RMSE) and coefficient of determination $R^{2}$. The improvement in forecasting performance obtained after feature engineering was used to assess the importance of feature construction in time-series prediction.
+
+
+\begin{figure}[ht]
+\begin{center}
+%\includegraphics[width=7cm,height=6cm]{Images/Fig2.eps}
+\includegraphics[width=15cm,height=6cm]{Images/Fig1_new_new.eps}\\
+\vspace{-0.2cm}
+\caption{\footnotesize{Workflow of the proposed feature engineering framework.}}\label{fig1}
+\end{center}
+\end{figure}
+
+
+\section{Results and Discussion}
+\subsection{Effect of Feature Engineering on Prediction Performance}
+Table \ref{tab1} presents the predictive performance of RF and LightGBM models before and after applying the proposed feature engineering (FE) framework. The results clearly demonstrate that feature engineering substantially improves forecasting accuracy for all investigated pollutants. For CO prediction, the RF model achieved an improvement in $R^{2}$ from 0.3539 to 0.8077, while LightGBM improved from 0.2892 to 0.8113. Similarly, for O3, the $R^{2}$ increased from 0.6413 to 0.9015 for RF and from 0.6391 to 0.9708 for LightGBM. The most remarkable improvement was observed for NO2, where the LightGBM model achieved an $R^{2}$ value of 0.9775 after feature engineering, compared with only 0.4226 before feature generation. For SO2, the $R^{2}$ increased from 0.3919 to 0.7210 using RF and from 0.4042 to 0.8510 using LightGBM.
+A similar trend can be observed for RMSE values. Across all pollutants, feature engineering significantly reduced prediction errors. For example, the RMSE of the LightGBM model decreased from 8.1468 to 4.1974 for CO, from 20.9663 to 5.9685 for O3, from 11.3249 to 2.2349 for NO2, and from 10.0599 to 4.3532 for SO2. These reductions indicate that the engineered features enabled the models to better represent the underlying temporal dynamics of pollutant concentrations.
+Overall, the results demonstrate that the improvement obtained through feature engineering is considerably larger than the performance differences between the two machine learning algorithms. This finding suggests that feature representation plays a more critical role in forecasting accuracy than the selection of a particular tree-based learning model.
+\subsection{Feature Importance Analysis} 
+To better understand the source of the performance improvements, feature importance analysis was conducted using the Random Forest model. Figure \ref{fig2} illustrates the ten most influential predictors for each pollutant. A consistent pattern emerges across all pollutants. The most influential predictors are predominantly rolling mean features, particularly those computed over short-term windows. For all four target pollutants (CO, O3, NO2, and SO2), the 3-step rolling mean is ranked as the most important feature, indicating that recent local trends provide the strongest predictive information. Rolling mean features computed over longer windows (e.g., 7 and 14 steps) also contribute substantially, although their importance generally decreases as the window size increases. Lag features consistently appear among the most important predictors. For example, CO\_lag\_1, O3\_lag\_1, O3\_lag\_2, SO2\_lag\_1, and SO2\_lag\_2 rank among the top predictors for their respective target pollutants. This finding reflects the strong temporal dependence of atmospheric pollutant concentrations and confirms that recent observations contain valuable information for short-term forecasting. In addition, several cross-pollutant variables are identified as important predictors. For example, NO2 concentration contributes to CO prediction, whereas lagged O3
+ variables are among the most influential features for predicting NO2. These results suggest that pollutant concentrations are affected not only by their own historical behavior but also by interactions among different atmospheric pollutants, highlighting the benefit of incorporating cross-pollutant information into forecasting models.
+
+
+%A consistent pattern emerges across all pollutants. The most important variables are predominantly rolling statistical features, particularly the rolling mean, rolling minimum, and rolling maximum computed over short-term windows. For CO prediction, the three most influential predictors are CO\_roll\_mean\_3, CO\_roll\_min\_3, and CO\_roll\_max\_3. Similar observations are evident for O3, NO2, and SO2, where the corresponding 3-day rolling statistics occupy the highest ranks. Lag features also appear among the most important predictors for all pollutants. For example, CO\_lag\_1, O3\_lag\_1, O3\_lag\_2, SO2\_lag\_1, and SO2\_lag\_2 contribute significantly to prediction accuracy. This observation confirms the presence of strong autocorrelation in atmospheric pollutant time series and highlights the importance of incorporating historical observations into forecasting models. Interestingly, several cross-pollutant variables were identified as influential predictors. For example, NO2 concentrations appear among the important features for CO prediction, while O3 lag variables contribute substantially to NO2 forecasting. These findings suggest that atmospheric pollutants are interconnected through complex chemical and physical processes, and that exploiting these interdependencies can improve forecasting performance.
+
+These results provide strong evidence that feature engineering is a critical component of time-series forecasting. 
+From a practical perspective, the results imply that substantial forecasting improvements can be achieved through feature construction alone, without increasing model complexity. Consequently, researchers and practitioners should consider feature engineering as a fundamental step in time-series modeling pipelines rather than treating it as a secondary preprocessing task. 
+In summary, the proposed feature engineering framework successfully captures temporal persistence, local trends, seasonal patterns, and pollutant interactions, leading to substantial gains in predictive performance. The findings highlight the pivotal role of feature engineering in extracting meaningful information from environmental time-series data and improving forecasting accuracy.
+
+%The dominance of rolling features indicates that recent local trends and short-term fluctuations contain substantial predictive information. Air pollutant concentrations typically exhibit temporal continuity, meaning that current concentrations are strongly influenced by recent historical values. Rolling statistics effectively summarize these recent behaviors and provide a compact representation of local temporal patterns.
+
+%Although advanced machine learning algorithms are often credited for performance gains, the present study demonstrates that carefully designed temporal features can dramatically enhance predictive accuracy without modifying the underlying learning architecture.
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{Comparative assessment of model performance before and after Feature engineering.}\label{tab1}
+\begin{tabular}{|c|cc|cc|cc|cc|}
+  \hline
+                 & \multicolumn{4}{c|}{RF} & \multicolumn{4}{c|}{LightGBM}  \\
+  \cline{2-9}
+                & \multicolumn{2}{c|}{Before FE} & \multicolumn{2}{c|}{After FE} & \multicolumn{2}{c|}{Before FE} & \multicolumn{2}{c|}{After FE} \\
+  \cline{2-9}
+  Pollutants    & RMSE & $R^{2}$ & RMSE & $R^{2}$ & RMSE & $R^{2}$ & RMSE & $R^{2}$ \\ 
+  \hline \hline
+  CO            &7.7672 & 0.3539& 5.0212&0.7292 &8.1468 &0.2892 & 4.5694&0.7758 \\
+  O3            &20.9838 &0.6413 & 12.6467& 0.8684&20.9663 &0.6391 &12.1904 &0.8777 \\
+  NO2           &10.8226 & 0.4688&7.3497 &0.7564 &11.3249 &0.4226 &6.6174&0.8026 \\
+  SO2           & 9.4895& 0.3919& 6.9472&0.6394&10.0599 & 0.4042&6.7671 &0.6578 \\
+  \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Figure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{figure}[ht]
+\begin{center}
+%\includegraphics[width=7cm,height=6cm]{Images/Fig2.eps}
+\includegraphics[width=15cm,height=8cm]{Images/fig2_new.eps}\\
+\vspace{-0.2cm}
+\caption{\footnotesize{Ranking of the most important features contributing to pollutant prediction.}}\label{fig2}
+\end{center}
+\end{figure}
+
+
+
+\section*{Conclusion}   
+
+This study investigated the role of feature engineering in improving the accuracy of time-series forecasting models. A comprehensive feature engineering framework was developed by incorporating lag features, rolling statistical descriptors, cyclical temporal encodings, and interaction variables derived from atmospheric and meteorological measurements. The effectiveness of the proposed framework was evaluated using Random Forest and LightGBM models across multiple air pollutants, including CO, O3, NO2, and SO2. The experimental results demonstrated that feature engineering substantially enhanced predictive performance for all pollutants and both machine learning algorithms. The findings indicated that the predictive information contained within appropriately designed temporal features can exceed that provided by the original measurements alone.
+Overall, the findings emphasize that feature engineering is not merely a preprocessing step but a fundamental component of effective time-series forecasting. The proposed framework provides a simple yet powerful approach for enhancing predictive accuracy without increasing model complexity and can be readily applied to a broad range of environmental and other sequential prediction problems. Future research may investigate the integration of automated feature engineering techniques, advanced feature selection methods, and deep learning architectures to further explore the relationship between feature representation and forecasting performance in complex time-series systems. Moreover, the proposed framework can be extended to multivariate and multi-output forecasting models, allowing the joint modeling of pollutant dynamics and their interactions with meteorological variables, which may further improve prediction accuracy.
+
+
+
+%\section{How to Cite References}
+%References must be cited in the text. \cite{Craik:2005}, \cite{Feller:1972}, \cite{Genest:Rivest:1993}, and \cite{LZ15} are %some examples of English references.
+
+%\section*{Acknowledgments}   
+%The authors gratefully acknowledge Dr. Abdullah Kaviani Rad and Dr. Mohammad Javad Nematollahi for providing the air %pollution dataset utilized in this research. His valuable support and cooperation significantly contributed to the successful %completion of this study.
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+
+\bibitem[Méndez et al. (2023)]{LZ1}
+Méndez, M., Merayo, M.G. and Núñez, M. (2023), Machine learning algorithms to forecast air quality: a survey. {\it Artif Intell Rev}, 56, 10031–10066.
+
+
+\bibitem[Neumann et al. (2023)]{LZ34}
+Neumann, O., Turowski, M., Mikut, R., Hagenmeyer, V.,  Ludwig, N. (2023),
+Using Weather Data in Energy Time Series Forecasting: The Benefit of Input Data Transformations.
+{\it Energy Informatics}, 6, 44.
+
+\bibitem[Pak et al. (2025)]{LZ3}
+Pak, A., Rad, A.K., Nematollahi, M.J., and Mahmoudi, M., (2025), Application of the Lasso regularisation technique in mitigating overfitting in air quality prediction models. {\it Sci Rep} 15, 547. 
+
+\bibitem[Rad et al. (2025)]{LZ13}
+Rad, A.K., Nematollahi, M.J., Pak, A., and Mahmoudi, M., (2025), Predictive modeling of air quality in the Tehran megacity via deep learning techniques. {\it Sci Rep}, 15, 1367 (2025).
+
+\bibitem[Rezaei et al. (2024)]{LZ4}
+Rezaei, R., Naderalvojoud, B.,  Güllü, G. (2023),
+A Comparative Study of Deep Learning Models on Tropospheric Ozone Forecasting Using Feature Engineering Approach.
+{\it Atmosphere}, 14(2), 239.
+
+
+
+
+\end{thebibliography}
+ \end{document}
+

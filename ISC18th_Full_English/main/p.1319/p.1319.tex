@@ -1,0 +1,282 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Optimal plan under Type-II Censoring...}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Ghafouri and Basiri}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Optimal plan under Type-II Censoring   Schemes in Multi-component Stress-Strength Reliability based on its Estimate and Cost}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Somayeh Ghafouri$^1$, Elham Basiri  \footnote[2]{{\bf Corresponding Author:} {\tt somayyeh.ghafoori@gmail.com }} \\
+$^1$Department of Mathematics, Faculty of Science, Arak University, Arak, 384817758,\ Iran.  \\
+$^2$Department of Mathematics and Applications, Kosar University of Bojnord, Bojnord,\ Iran.}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+In this paper, we consider a cut point $M^*$ for  number of failure times in the stress component of a  multi-component stress-strength system based on  progressively Type-II censoring  assumed  as  a truncated geometry  distribution while the number of failure times in strength component is assumed  fixed. The optimal schemes and the cut points   can be considered and the most important is  determination them so that the total cost of the test  and  the  estimation of multi-component stress-strength reliability have been reached to minimum  and maximum, respectively. A simulation study is carried out to check which different censoring schemes and cut points   have the best performance in terms of the total cost  and the estimation of  multi-component stress-strength reliability. At the end,  a real example  is given to illustrate the  proposed method.\\
+\noindent{\bf Keywords:} 
+Multi-component stress-strength reliability,   Type-II  right censoring, Truncated geometry distribution. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62N01$, $\rm 62N05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{\bf Introduction and Preliminaries}\label{section1}
+In medical, engineering and industrial applications, due to time and cost restrictions in lifetime data, censoring arises when exact lifetimes are only partially known. There are various types of censoring such as Type-I and II right censoring, doubly Type-II censoring, random censoring and progressive Type-I and Type-II censoring, etc. On the other hand, in reliability literature, the stress-strength model described as the reliability of a unit or a system in terms of the stress random variable $X$ and strength random variable $Y$ . The system fails if the stress is greater than the strength, and the probability $R = P(X < Y )$ is the reliability of the system (\cite{Kotz2003}).
+
+A system that consists of more than one component is called a multi-component system. The multi-component stress-strength reliability is defined as the probability that at least $s$ out of $k$ independent and identically distributed ($i.i.d$) strength components survive a common random stress. This model was first introduced by \cite{BhattacharyyaJohnson1974} and has since been extensively studied due to its wide applicability in fields such as civil engineering, aerospace, and manufacturing \cite{Rao2013}.
+
+A combination of Type-II right censoring and multi-component stress-strength reliability can be descibed as follows. Let $k$ random variables $Z_1,Z_2,\ldots,Z_k$ be $i.i.d$  random variables with continuous cdf $F_{Z_j}(z_j)$ which are subjected to a common random stress $T$, an independent random variable with continuous cdf $F_T (t)$.
+
+In recent years, several authors have investigated stress-strength reliability under progressive censoring schemes. For instance, \cite{Asgharzadeh2017} studied estimation of $R=P(X<Y)$ under  Type-II right  censoring for the Weibull distribution. 
+\cite{Jha2020} considered the problem of estimating multi-component stress-strength (MSS) reliability under progressive Type II censoring when stress and strength variables follow unit Gompertoz distributions with common scale parameter. They estimated MSS reliability under frequentist and Bayesian approaches.
+\cite{El-Desokey2026} developed a reliability framework for multi-component stress–strength systems by modeling stress and strength using the Burr–Hatke distribution under progressive Type II censoring. Maximum likelihood estimators were derived and the stress–strength reliability function, along with their asymptotic confidence intervals.\\
+The novelty of this work lies in assuming that the number of failure times in the strength component is random variable from the truncated geometric distribution. 
+\section{\bf Main Results}\label{section2}
+Let $Z_{i1:n_1}\leq \ldots \leq Z_{ik:n_1},\ \ i = 1,\ldots,m,$  denote a Type-II right  censored sample from the exponential distribution with parameter $\lambda_1$, i.e.  $f(z_{ij})=\lambda_1\exp(-\lambda_1 z_{ij});\    \   \lambda_1>0\ \ j=1,\ldots,k,$  under  the Type-II right censoring as well as let $T_{1:n_2}\leq,\ldots,\leq T_{m:n_2}$ be another such sample taken from the exponential distribution with parameter $\lambda_2$
+under the Type-II right censoring.  Then the reliability of a multi-component stress-strength model is written as \\
+$G_{s,k} = P$(at least s   of the  $(Z_1,\ldots , Z_k)$  exceed $T$)=
+$\sum_{p=s}^{k} {k\choose p}\int_{-\infty}^{+\infty}\left[ 1-F_Z(t)\right]^p\left[F_Z(t)\right]^{k-p} f_T(t)\,d{t}$.
+
+
+Here, let $k$  be fixed and $M$ (the number of failures in stress model) be  distributed as the truncated geometric distribution at points  $M^*$ and $0$ 
+\begin{eqnarray}\label{M1}
+P(M=m)=\frac{\theta (1-\theta)^m}{P(1\leq M\leq M^*)}=\frac{\theta (1-\theta)^m}{(1-\theta-(1-\theta)^{M^*+1})};\ m=1,2,\cdots, M^*
+\end{eqnarray}
+
+Then, the likelihood function of $\lambda_1$, $\lambda_2$ and $\theta$   expressed as
+\begin{eqnarray}\label{M2}
+L(\lambda_1,\lambda_2,\theta)=f(Z_{i1},\ldots, Z_{ik})=\sum_{m=1}^{M^*} f(z_{ij}|M=m)P(M=m),
+\end{eqnarray}
+
+in which, we know that
+\begin{eqnarray}\label{M3}\nonumber
+f(z_{ij}|M=m)&=&C_1\prod_{i=1}^{m}\left[C_2 \prod_{j=1}^{k} f(Z_{ij})(1-F(Z_{ik})^{(n_1-k)}\right ] \\ &&\times  f(t_i) \left[1-F(t_m)\right]^{(n_2-m)}, \ \  \ C_1=\frac{n_2!}{(n_2-m)!},\ \   C_2=\frac{n_1!}{(n_1-k)!}.
+\end{eqnarray}
+
+%\par In the last few years, many researchers investigated the estimation of the multi-component stress-strength reliability (MSSR) system using different distributions based on complete  and censored sample data.
+
+In this paper, we first estimate the multi-component stress-strength reliability function by estimating the three parameters $\lambda_1$, $\lambda_2$ and $\theta$. Then, we examine the designs that maximize the estimated multi-component reliability function, which is a function of $\hat{\lambda_1}$, $\hat{\lambda_2}$ and $\hat{\theta}$ as well as  minimizing the  introduced cost function.
+
+Then, the likelihood function of $\lambda_1$, $\lambda_2$ and $\theta$ is given by
+\begin{eqnarray}\label{M5}\\ \nonumber 
+L(\lambda_1, \lambda_2, \theta)&=& \frac{\theta}{(1-\theta-(1-\theta)^{M^*+1})}\sum_{m=1}^{M^*}C_1(1-\theta)^{m} C_2^m \lambda_1^{km}\\   \nonumber &&\times e^{\left(-\lambda_1\left[\sum_{i=1}^m \sum_{j=1}^k z_{ij}+(n_1-k)\sum_{i=1}^m z_{ik}\right]\right)} \lambda_2^{m}
+ e^{\left(-\lambda_2\left[\sum_{i=1}^m t_i+m t_m(n_2-m)\right] \right)}.
+\end{eqnarray}
+After simplification, calculating the first partial derivatives of \eqref{M5} with respect to  $\lambda_1$, $\lambda_2$ and $\theta$ along with equating to zero,  the likelihood equations do not have explicit solutions. Therefore, we  use  the numerical   solution to solve them. After getting maximum likelihood  estimators  $\widehat{\lambda_1}$, $\widehat{\lambda_2}$  and $\widehat{\theta}$ from likelihood equations, we  substitute them in 
+\begin{eqnarray}\label{M7}\nonumber
+G_{s,k}&=&The\  probability\  of\  stress-strength= P(at\  least\  s\    of\  the\ Z_j> T; {j=1,2,\cdots, k})\\ \nonumber &=& \sum_{p=s}^{k} {k\choose p}\int_{0}^{+\infty}\left[ 1-F_Z(t)\right]^p\left[F_Z(t)\right]^{k-p} f_T(t)\,d{t}\\ \nonumber &=& \sum_{p=s}^{k} {k\choose p}\int_{0}^{+\infty} e^{-\lambda_1 t p} \left[1-e^{-\lambda_1 t}\right]^{k-p}\lambda_2 e^{-\lambda_2 t}\,d{t}\\ \nonumber &=& 
+ \sum_{p=s}^{k} {k\choose p}\int_{0}^{+\infty} \lambda_2 e^{-(\lambda_2+\lambda_1 p)t} \left[1-e^{-\lambda_1 t}\right]^{k-p}\,d{t},\\
+\end{eqnarray}
+and we can  get $\widehat{G_{s,k}}$ which is a function of $M^*$, $\widehat{\lambda_1}$, $\widehat{\lambda_2}$ and $\widehat{\theta}$. Then, the $\widehat{G_{s,k}}$ can be calculated. The total  cost function can be rewritten as (see \cite{BasiriBeigi2020})
+\begin{eqnarray}\label{M8} 
+E(T_C)=C_0+C_t E(T_{m:n_2})+C_un_2,
+\end{eqnarray}
+which $C_0$  is the cost of setting up a test and other related costs as well as  $C_t$ and $C_u$ are  time-dependent cost on test and cost per unit under test, respectively. Also,  $T_{m:n_2}$ is  $m^{\rm th}$ (last)  order statistic of   $(T_{1:n_2},\ldots, T_{m:n_2})$ from  Type-II right censored sample taken under the exponential distribution with parameter  $\lambda_2$ parameter.
+
+In order to compute $E(T_{m:n_2})$, let $f(t_i)=\lambda_2 e^{-\lambda_2 t_i};\ \lambda_2>0$, by appropriate transformations (see \cite{DavidNagaraja2003}), 
+%consider the following transformations:
+%\begin{eqnarray}
+%\left \{ \begin{array}{l}\nonumber
+%Z_1=n_2T_{1:n_2}\lambda_2\\
+%Z_2= \left(n_2-1\right)\left(T_{2:n_2}-T_{1:n_2}\right)\lambda_2\\
+%Z_3=\left(n_2-2\right)\left(T_{3:n_2}-T_{2:n_2}\right)\lambda_2\\
+%\ldots\ \ \ \ \ldots \\ \ldots \ \ \ \ \ldots\\
+%Z_m=\left(n_2-m+1\right) \left(T_{m:n_2}-T_{(m-1):n_2}\right)\lambda_2.\\\end{array} \right.
+%\end{eqnarray}
+%Then, the following inverse transformations can be written as
+%\begin{eqnarray}
+%\left \{ \begin{array}{l}\nonumber
+% T_{1:n_2}=\frac{Z_1}{\lambda_2 n_2}\\
+% T_{2:n_2}=\frac{Z_1}{\lambda_2 n_2}+\left(\frac{Z_2}{\lambda_2(n_2-1)}\right)\\
+ %T_{3:n2}=\frac{Z_1}{\lambda_2 n_2}+\left(\frac{Z_2}{\lambda_2(n_2-1)}\right)+\left(\frac{Z_3}{\lambda_2(n_2-2)}\right)\\
+%\ldots\ \ \ \ \ldots \\ \ldots \ \ \ \ \ldots\\
+% T_{m:n_2}=\frac{Z_1}{\lambda_2 n_2}+\left(\frac{Z_2}{ \lambda_2(n_2-1)}\right)+\cdots+\left(\frac{Z_m}{\lambda_2(n_2-m+1)}\right).\\\end{array} \right.
+%\end{eqnarray}
+we can easily see that $T_{i:n_2}=\sum_{j=1}^{i} \frac{z_j}{\lambda_2\left(n_2-j+1\right)} $ and $Z_i; i=1,2,\cdots,m$ are all independent and identically distributed as standard exponential. \\Therefore,
+$$ E(T_{i:n_2})=\sum_{j=1}^{i}\frac{1}{\lambda_2\left(n_2-j+1\right)}.$$ As a result,  
+\begin{eqnarray}\label{M9}\nonumber 
+  E(T_C|M=m)=C_0+C_t\sum_{j=1}^{m}\frac{1}{ \lambda_2\left(n_2-j+1\right)}+C_uE(n_2|M=m).\\
+\end{eqnarray}
+%We know  that $P(M=m)=\frac{\theta (1-\theta)^m}{\left(1-\theta-(1-\theta)^{M^*+1}\right)};\  m=1,2,\cdots, M^*$. Then, 
+%\begin{eqnarray}\label{M10} \nonumber
+%E_M\left[E(T_{m:n_2}|M=m)\right]=\frac{1}{\lambda_2}\sum_{m=1}^{M^*} \sum_{j=1}^m\frac{\theta(1-\theta)^m}{\left(n_2-j+1\right)}\frac{1}{(1-\theta-(1-\theta)^{M^*+1})},\\
+%\end{eqnarray}
+%and 
+%\begin{eqnarray}\label{M11}\nonumber
+%E_M\left[E(n_2|M=m)\right]&=&\sum_{m=1}^{M^*}\frac{m\theta(1-\theta)^m}{(1-\theta-(1-\theta)^{M^*+1})} +\sum_{m=1}^{M^*}\frac{(n_2-m)\theta(1-\theta)^m}{(1-\theta-(1-\theta)^{M^*+1})}.\\
+%\end{eqnarray}
+%From equations  \eqref{M9}, \eqref{M10} and \eqref{M11}, final cost function will be
+Finally,  by double expectation theorem, 
+\begin{eqnarray}\label{M12}\nonumber
+Cost=E_M\left[E(T_C|M=m)\right]=C_0+\frac{C_t}{\lambda_2}\sum_{m=1}^{M^*} \sum_{j=1}^m\frac{\theta(1-\theta)^m}{\left(n_2-j+1\right)}\frac{1}{(1-\theta-(1-\theta)^{M^*+1})}  +\\ \nonumber \left[\sum_{m=1}^{M^*}\frac{m\theta(1-\theta)^m}{(1-\theta-(1-\theta)^{M^*+1})}    +\sum_{m=1}^{M^*}\frac{(n_2-m)\theta(1-\theta)^m}{(1-\theta-(1-\theta)^{M^*+1})}\right]C_u.\\
+\end{eqnarray}
+The optimal censoring plan in Type-II right censoring and optimal $M^*$ based on  minimum of final cost function \eqref{M12} and maximum   of $\widehat{G_{s,k}}$ calculated by  \eqref{M7} is considered.
+\section{\bf Simulation Study}\label{section3}
+In this section, the results of previous section  are presented. We consider $C_0=20;\  C_t=3; \  C_u=12$. Based on  $3$ different schemes of   Type-II right  censored sample with size $m$ taken from the exponential distribution with $\lambda_2$ and $3$ other schemes of Type-II right  censored  sample with size $k$ taken from the exponential distribution with $\lambda_1$,  which censored sample  is optimal in terms of   minimizing  cost function and   maximizing of $\widehat{G_{s,k}}$.
+\begin{alg}\label{alg1}
+ This algorithm has the following steps:
+\begin{itemize}
+\item
+Step 1:  
+   First, for given primary and arbitrary  values of the parameter  $\lambda_2$ from the exponential distribution  a Type-II right censored sample with sample size $m$ is generated.\\
+\item 
+Step 2:
+Again,  for given primary and arbitrary  values of the parameter  $\lambda_1$ from the exponential distribution, a Type-II right  censored sample with different sample sizes of $k$ is generated.\\
+\item
+Step 3: 
+Using "optim" in R,  compute the  maximum likelihood estimates of $\lambda_1$, $\lambda_2$ and $\theta$.\\
+\item 
+Step 4:   
+ By substitution of $\widehat{\lambda_1}$, $\widehat{\lambda_2}$ and $\widehat{\theta}$  get  $\widehat{G_{s,k}}$.\\
+\item
+Step 5: 
+After calculation of the  $\widehat{G_{s,k}}$, acquire  the  objective function $Obj=\frac{\widehat{G_{s,k}}}{Cost}$ (see page 236 from \cite{PakdamanAhmadi2019} ).\\
+\item 
+Step 6:
+Replicate the above processes 1000 times and report  the  best $M^*$  that has minimum   objective function for different quantities of $l$, $s$ for  some Type-II   censored samples.\\
+\end{itemize}
+\end{alg}
+\section{Tables and Figures}
+This section contains  Tables \ref{Tab1} to  \ref{Tab3}.
+\begin{table}[h]
+\caption{Various Type-II  right censored samples  with size   $m=1,\ldots,M^*$.
+}\label{Tab1}
+\centering
+\begin{tabular}{cccc}\hline\hline
+Case of $F$&\\ \hline\hline
+1F&$n_2-m=2$\\
+2F&$n_2-m=5$\\
+3F&$n_2-m=10$\\
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[h]
+\caption{Various Type-II right censored samples with size $k, \ \ k=7,10,15$. 
+}\label{Tab2}
+\centering
+\begin{tabular}{cccc}\hline\hline
+Case of $G$&\\ \hline\hline
+1G&$n_1-k=n_1-7=16$\\
+2G&$n_1-k=n_1-10=7$\\
+3G&$n_1-k=n_1-15=19$\\
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[h]\tiny
+\caption{ the  best $M^*$  along with minimum quantity of the objective function for   $3$    Type-II  censored samples with sizes $m$ (stress distribution) and $k$   (strength distribution) for different  $s$, $\lambda_1=0.5$; $\lambda_2=7$,  $C_0=20$, $C_t=3$ and  $C_u=12$ for $B=1000$ replications.}\label{Tab3}
+\centering
+\begin{tabular}{ccccccc}\hline\hline
+Case G&&1F&2F&3F&\\
+\hline\hline
+G1&$s=3$ & $5.841 \times 10^{-5}$ ($M^*=3$) &$6.927 \times10^{-5}$ ($M^*=3$)& $7.545 \times 10^{-5}$ ($M^*=3$)\\
+&$s=4$ &$4.164 \times 10^{-5}$ ($M^*=3$) &$4.939 \times 10^{-5}$ ($M^*=3$)&$5.379  \times 10^{-5}$ ($M^*=3$)\\
+&$s=6$&$1.753 \times 10^{-5}$ ($M^*=3$)&$2.079 \times 10^{-5}$ ($M^*=3$)&$2.264 \times 10^{-5}$ ($M^*=3$)\\
+&$s=7$ &$8.194 \times 10^{-6}$ ($M^*=3$) &$9.718 \times 10^{-6}$ ($M^*=3$)&$1.058 \times 10^{-6}$ ($M^*=3$)\\
+&&&&&&\\ \hline\hline
+G2 &$s=4$ &$ 5.109 \times 10^{-5}$ ($M^*=3$) &$6.059 \times 10^{-5}$ ($M^*=3$)& $6.600 \times 10^{-5}$ ($M^*=3$)\\
+&$s=5$ &$4.616 \times 10^{-5}$ ($M^*=3$) &$5.474 \times 10^{-5}$ ($M^*=3$)&$5.963 \times  10^{-5}$ ($M^*=3$)\\
+&$s=9$&$1.208 \times 10^{-5}$ ($M^*=3$) &$1.432\times 10^{-5}$ ($M^*=3$)&$1.560 \times 10^{-5}$($M^*=3$)\\
+&$s=10$ &$5.770 \times 10^{-6}$ ($M^*=3$) &$6.843 \times 10^{-6}$ ($M^*=3$)&$7.454 \times 10^{-6}$ ($M^*=3$)\\
+&&&&&&\\ \hline\hline
+G3 &$s=3$ &  $5.390  \times 10^{-5}$ ($M^*=3$) &$6.393\times 10^{-5}$ ($M^*=3$)& $6.963 \times 10^{-5}$ ($M^*=3$)\\
+&$s=6$ & $5.646 \times 10^{-5}$ ($M^*=3$) &$5.510 \times 10^{-5}$ ($M^*=3$)&$6.001 \times  10^{-5}$ ($M^*=3$)\\
+&$s=9$&$3.736 \times  10^{-5}$ ($M^*=3$) &$4.431 \times  10^{-5}$ ($M^*=3$)&$4.826 \times  10^{-5}$ ($M^*=3$)\\
+&$s=12$ &$1.691 \times  10^{-5}$ ($M^*=3$) &$2.000 \times  10^{-5}$ ($M^*=3$)&$2.184 \times 10^{-5}$ ($M^*=3$)\\
+&$s=15$ &$3.865 \times  10^{-6}$ ($M^*=3$) &$4.584 \times  10^{-6}$ ($M^*=3$)&$4.993 \times  10^{-6}$ ($M^*=3$)\\
+\hline\hline
+\end{tabular}
+\end{table}
+The results obtained from Table \ref{Tab3} are as follows: \\
+ {\bf(1)} In Table \ref{Tab3} for $\lambda_1=0.5$; $\lambda_2=7$, as $s$  increases in all schemes, the objective function
+$Obj$ decreases.Then, in order to increase the objective function, it is better to choose small values for  $s$.\\
+  {\bf(2)}  From  Table \ref{Tab3}, in  all schemes, under $\lambda_1=0.5$; $\lambda_2=7$,  for  $s=k$,  it can be seen  the largest reduction in the objective function. So, in order to decrease the value of the objective function, it is better to choose $s=k$.\\
+ {\bf(3)} In   Table \ref{Tab3}, it can be roughly said that  under different Type-II right censoring schemes, the  $M^*$ remains minimum and fixed for different $s$'s.
+\section*{Discussion and Conclusion} 
+In this paper, we introduced the concept of determining an optimal value for $M^*$, the cut point of  the number of failure times in the stress component of a  multi-component stress-strength system based on  Type-II censoring  assumed  as truncated geometry  distribution while the number of failure times in strength component is assumed  fixed. Also,  the optimal scheme  along with cut points can be considered and are  determined in such a way that the total cost of the test  and  the  estimation of multi-component stress-strength reliability have been reached to minimum  and maximum, respectively. A simulation study  results that in order to control $M^*$, different $s$'s  for special censoring schemes can be applied. This method can be generalized to some other censoring types such as progressive Type-II censoring schemes etc.
+% \section*{Acknowledgments}
+% authors would like to thank the referees for their careful reading and their useful comments which led to this considerably improved version.
+%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{thebibliography}{9}
+
+\bibitem[Asgharzadeh et al. (2017)]{Asgharzadeh2017}
+Asgharzadeh, A., Valiollahi, R. and  Raqab, M. Z. (2017).
+\newblock{Estimation of $P(X<Y)$ for Weibull Distribution under Progressive Type-II Censoring.}
+\newblock \emph{Communications in Statistics - Simulation and Computation}, \textbf{46(6)}, 4477--4496.
+
+%\bibitem[Balakrishnan and  Aggarwala (2000)]{BalaAggarwala2000}
+%Balakrishnan, N. and  Aggarwala, R. (2000).
+%\newblock{Progressive Censoring: Theory, Methods and Applications.}
+%\newblock \emph{Boston: Birkhauser}.
+
+
+%\bibitem[Balakrishnan and  Cramer (2014)]{BalaCramer2014}
+%Balakrishnan, N. and  Cramer, E. (2014).
+%\newblock{The Art of Progressive Censoring: Applications to Reliability and Quality.}
+%\newblock \emph{New York: Birkhauser}.
+
+%\bibitem[Balakrishnan and  Sandhu (1995)]{BalaSandhu1995}
+%  Balakrishnan, N. and  Sandhu, R. A. (1995).
+%\newblock{A Simple Simulation Algorithm for Generating Progressive Type-II Censored Samples.}
+%\newblock \emph{The American Statistician}, \textbf{49(2)}, 229--230.
+
+\bibitem[Basiri and Beigi (2020)]{BasiriBeigi2020}
+Basiri, B. and Beigi, S. (2020)
+\newblock \emph{The optimal scheme in type II progressive censoring with random removals for the Rayleigh distribution based on two-sample Bayesian prediction and cost function.} \newblock \emph{Journal of advanced Mathematical Modeling}, \textbf{10(12)}, 135--157.
+
+\bibitem[Bhattacharyya and  Johnson (1974)]{BhattacharyyaJohnson1974}
+ Bhattacharyya, G. K. and  Johnson, R. A. (1974).
+\newblock{Estimation of Reliability in a Multicomponent Stress-Strength Model.}
+\newblock \emph{Journal of the American Statistical Association}, \textbf{69(348)}, 966--970.
+
+\bibitem[David and  Nagaraja (2003)]{DavidNagaraja2003}
+David, H. N. and  Nagaraja, H. N. (2003).
+\newblock{Order Statistics.}
+\newblock \emph{Third Ed., John Wiley \& Sons: Hoboken, NJ.}
+
+\bibitem[El-Desokey et al. (2026)]{El-Desokey2026}
+El-Desokey, R., El-Awady, M. M., Ahmad, H. H. and  El-Gohary, A. (2026).
+\newblock{Multicomponent Stress–Strength Reliability Inference under Progressive Type-II Censoring: A One-Parameter Model with Applications to Power Systems and Earthquake Data.}
+\newblock \emph{AIMS Mathematics}, \textbf{11(3)}, 8031--8064.
+
+\bibitem[Jha et al. (2020)]{Jha2020}
+Jha, M. K., Dey, S., Alotaibi, R. M. and Tripathi, Y. M. (2020).
+\newblock{Reliability Estimation of a Multicomponent Stress‐Strength Model for Unit Gompertz Distribution under Progressive Type II Censoring.}
+\newblock \emph{Quality and Reliability Engineering International}, \textbf{36(3)}, 965--987.
+
+\bibitem[Kotz et al. (2003)]{Kotz2003}
+Kotz, S., Lumelskii, Y. and  Pensky, M. (2003). 
+\newblock{The Stress-Strength Model and its Generalizations: Theory and Applications.}
+\newblock \emph{World Scientific: Singapore}.
+
+\bibitem[Pakdaman and Ahmadi (2015)]{PakdamanAhmadi2019}
+ Pakdaman, Z. and  Ahmadi, J. (2019).
+\newblock{Switching Time of the Standby Component to the k-out-of-n:G System in the Sress–Strength Setup.}
+\newblock \emph{Metrika}, \textbf{82(2)}, 225--248.
+
+\bibitem[Rao (2013)]{Rao2013}
+ Rao, G. S. (2013).
+\newblock{Estimation of Reliability in Multicomponent Stress-Strength Model for Inverse Rayleigh Distribution.}
+\newblock \emph{International Journal of Reliability and Applications}, \textbf{14(1)}, 1--12.
+
+%\bibitem[Raghunandanan  and Patil (1972)]{RaghunandananPatil}
+% Raghunandanan, K. and Patil,  S. A. (1972).
+%\newblock{On Order Statistics for Random Sample size.}
+%\newblock \emph{Statistica Neerlandica}, \textbf{26(4)}, 121--126.
+
+\end{thebibliography}
+ \end{document}
+

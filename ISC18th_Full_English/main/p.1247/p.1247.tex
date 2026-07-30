@@ -1,0 +1,322 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Hybrid Control Chart Based on CUSUM and DMA}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Moradi-Tavalleai and Salehi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\large \bf  A Hybrid Control Chart Based on CUSUM and Double Moving Average}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Nader Moradi-Tavalleai\footnote[1]{{\bf Corresponding Author:} {\tt n\_moradi\_stu@birjandut.ac.ir}} , Ebrahim Salehi $^2$ \\
+$^{1,2}$ Department of Industrial Engineering, Birjand University of Technology,
+salehi@birjandut.ac.ir}
+\end{center}
+\rule{\textwidth}{0.4mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Quality assurance in industries is not possible without continuous monitoring and rapid detection of unwanted shifts in the process mean. In this paper, a new hybrid control chart, as DMA-CUSUM, is designed which is a combination of the Double Moving Average  and CUSUM control charts. The performance of the proposed control chart is evaluated against the Double Moving Average and Moving Average-Cusum control charts using two criteria: the average run length  and the median run length. The findings indicate that the proposed control chart performs superiorly in detecting small-to-moderate shifts in the process mean, particularly by choosing the appropriate width.
+
+\noindent{\bf Keywords:} Statistical quality control, Double moving average, CUSUM chart, Average run length, Median run length, Monte Carlo simulations.
+
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62P30$. 
+
+\noindent\rule{\textwidth}{0.25mm}
+%%%%%%%%%%%%%%
+\vspace{-1.6cm}
+\section{Introduction}
+\vspace{-0.3cm}
+Statistical process control charts have long been considered a key tool by researchers for the timely detection of undesirable changes in manufacturing and industrial processes. Among these, the ability of control charts to detect small shifts in the process mean has always been a fundamental challenge for quality control practitioners.  \cite{shewhart1931} revolutionized the monitoring of industrial processes by introducing the first control chart. However, the Shewhart control chart was primarily effective in detecting large shifts and lacked sufficient sensitivity to small  changes.
+For this reason, \cite{page1954} proposed the cumulative sum (CUSUM) control chart. By accumulating past and current information, this chart is capable of rapidly detecting small shifts in the process mean. Accordingly, the CUSUM chart is recognized as one of the most effective tools for monitoring small shifts.
+In a study, \cite{khoo2004} introduced the moving average (MA) control chart, and subsequently,  \cite{khoo2008} introduced the double moving average (DMA) control chart. In this control chart, applying averaging twice increases sensitivity to small shifts in the process mean. As demonstrated by  \cite{saengsura2023}, the DMA chart exhibits improved performance in detecting small shifts compared to the MA control chart. Nevertheless, existing control charts alone cannot provide optimal performance against small shifts, and this limitation has driven researchers toward designing hybrid control charts. One of the most well-known hybrid control charts is the Shewhart-CUSUM chart, proposed by  \cite{karimi2019}. In a similar vein,  \cite{rahman2023} introduced the CUSUM-DEWMA hybrid control chart by combining CUSUM and double exponentially weighted moving average (DEWMA), which performed well in detecting small and moderate shifts.
+Thus, control charts have evolved from single control charts to hybrid control charts to enable broader coverage of shifts in the process mean.
+%%%%%%%%OBJECTIVE%%%%%%%%
+\\
+A review of previous studies indicates that although many hybrid control charts have been developed, the hybrid control chart based on DMA and CUSUM has received less attention. Accordingly, this paper addresses the design of a hybrid control chart based on DMA and CUSUM. The structure of the paper is organized as follows: After reviewing existing control charts in Section 2, the proposed control chart is introduced in the same section. Section 3 is devoted to evaluating the performance of the proposed control chart compared to other control charts, DMA and MA-CUSUM. Finally, Section 4 concludes the findings of the research.
+\vspace{-0.90cm}
+\section{Control Charts}
+\vspace{-0.25cm}
+The moving average control chart, which is a subset of weighted average control charts, is specifically designed for monitoring subgroup data. Suppose that the subgroup means are obtained as $\bar{X}_1, \bar{X}_2, \dots$, where $\bar{X}_i$ is the mean of the $i$-th subgroup and $n$ is the subgroup size. The MA statistic with width $w$, at the $i$-th stage (provided that $i \ge w$), is defined from the means of $w$ subgroups as follows:
+\begin{equation}
+MA_i = \frac{1}{w} \sum_{j=i-w+1}^{i} \bar{X}_j.
+\label{ma}
+\end{equation}
+Now, the DMA statistic is obtained by applying the MA statistic twice to the subgroup means, such that at the $i$-th time, it is calculated from the mean of the current and past MA values with width $w$. Therefore, we have:
+\begin{equation}   
+\text{DMA}_{i} =
+\begin{cases} 
+\dfrac{MA_i + MA_{i-1} + \dots + MA_{i-w+1}}{i}, \qquad \qquad i \le w ; \\
+\dfrac{MA_i + MA_{i-1} + \dots + MA_{i-w+1}}{w}, \qquad \qquad w < i < 2w - 1;\\
+\dfrac{MA_i + MA_{i-1} + \dots + MA_{i-w+1}}{w}, \qquad \qquad i \ge 2w-1.
+\end{cases}
+\label{dma}
+\end{equation}
+After introducing the MA and DMA statistics, we now present the CUSUM control chart. This control chart is designed based on the sum of deviations from the target value and is defined by the following two statistics. The initial values of these statistics are set to zero i.e. $C_0^+ = C_0^- = 0$, (\cite{page1954}):
+\begin{equation}
+\begin{aligned}
+C_i^+ &= \max\{0,  \bar{X}_i - \mu_0 - K_1 + \; C_{i-1}^+  \}, \\
+C_i^- &= \min\{0,  \bar{X}_i - \mu_0 + K_1 +\; C_{i-1}^-  \},
+\end{aligned}
+\label{cusum}
+\end{equation}
+where $K_1 = k_1 \frac{\sigma_0}{\sqrt{n}}$ is the  reference value coefficient, $\mu_0$ is the in-control process mean, $\sigma_0$ is the process standard deviation, $n$ is the subgroup size, and $k_1$ is the control constant.
+
+Next, by combining the aforementioned statistics, the MA-CUSUM hybrid control chart is presented, followed by a description of the proposed control chart.
+\vspace{-0.6cm}
+\subsection{MA-CUSUM Control Chart}
+\vspace{-0.25cm}
+In this subsection, we combine the MA and CUSUM control charts, denoted by MMC. In this hybrid control chart, the $MA_i$ statistic from Equation \eqref{ma} replaces $\bar{X}_i$ in the CUSUM control chart. Therefore, the statistic of this control chart is defined as follows:
+\begin{equation}
+\begin{aligned}
+MMC_i^+ = \max\{0,  MA_i - \mu_0 - K_2 + \; MMC_{i-1}^+ \},\\
+MMC_i^- = \min\{0, MA_i - \mu_0 + K_2  +\; MMC_{i-1}^- \},
+\end{aligned}
+\label{ma-cusum}
+\end{equation}
+where $K_2$ is the reference value, which is calculated as follows:
+\begin{equation*}
+K_2 = k_2 \sqrt{\operatorname{Var}(MA_i)} = 
+\begin{cases}
+\dfrac{k_2 \sigma_0}{\sqrt{i}}, \qquad \qquad  i < w ;\\
+\dfrac{k_2 \sigma_0}{\sqrt{w}}, \qquad \qquad  i \ge w.
+\end{cases}
+\end{equation*}
+The control limit $H_{MA_i}$ depends on the coefficient $h_{MA}$, and the control limits of this chart are defined as follows:
+\begin{equation*}
+H_{MA_i} = h_{MA} \sqrt{\operatorname{Var}(MA_i)} = 
+\begin{cases}
+\dfrac{h_{MA} \sigma_0}{\sqrt{i}},  \qquad \qquad i < w ;\\[10pt]
+\dfrac{h_{MA} \sigma_0}{\sqrt{w}},  \qquad  \qquad i \ge w.
+\end{cases}
+\end{equation*}
+where $\mu_0$ is the process mean, $\sigma_0$ is the process standard deviation, $w$ is the moving average width, $k_2$ is the reference value coefficient, and $h_{MA}$ is the control limit constant. Any value of $MMC_i^+$ that exceeds the control limit $H_{MA_i}$ indicates an increase in the process mean, and if $MMC_i^-$ falls below $H_{MA_i}$, it indicates a decrease in the process mean.
+\vspace{-0.6cm}
+\subsection{DMA-CUSUM Control Chart}
+\vspace{-0.2cm}
+The proposed control chart is a hybrid of the DMA and CUSUM control charts. In this control chart, the $DMA_i$ statistic from Equation \eqref{dma} is considered as a replacement for $\bar{X}_i$ in Equation \eqref{cusum}. Thus, the statistics of this proposed control chart are defined as follows:
+\begin{equation*}
+MDMC_i^+ = \max\{0,  DMA_i - \mu_0 - K_3 +\; MDMC_{i-1}^+ \};
+\end{equation*}
+\begin{equation*}
+MDMC_i^- = \min\{0,  DMA_i - \mu_0 + K_3 + \; MDMC_{i-1}^- \},
+\end{equation*}
+where the statistics $MDMC_i^+$ and $MDMC_i^-$ respectively represent the upper and lower statistics of this proposed control chart, and $K_3$ is the reference value, which is calculated as follows:
+\begin{equation*}
+K_3 = k_3 \sqrt{\operatorname{Var}(DMA_i)} = 
+\begin{cases}
+k_3 \sqrt{\dfrac{\sigma^2_0}{n i^2} \displaystyle\sum_{j=1}^{i} \dfrac{1}{j}}, \qquad \qquad \qquad \qquad \qquad \qquad i \le w; \\[20pt]
+k_3 \sqrt{\dfrac{\sigma^2_0}{n w^2} \left( \displaystyle\sum_{j=i-w+1}^{w-1} \dfrac{1}{j} + \dfrac{i-w+1}{w} \right)},  \qquad w < i < 2w-1; \\[20pt]
+k_3 \sqrt{\dfrac{\sigma^2_0}{n w^2}} = \dfrac{k_3 \sqrt{\sigma^2_0}}{w \sqrt{n}},\qquad \qquad \qquad \qquad \qquad i \ge 2w-1,
+\end{cases}
+\end{equation*}
+ where $k_3$ is the reference value coefficient. The control limits $H_{DMA_i}$ depend on the coefficient $h_{DMA}$, and the control limits of this chart are defined as follows:
+\begin{equation*}
+H_{DMA_i} = h_{DMA} \sqrt{\operatorname{Var}(DMA_i)},
+\end{equation*}
+the value of $\operatorname{Var}(DMA_i)$ is calculated according to the study by \cite{khoo2008}, where $h_{DMA}$ is the constant of the DMA-CUSUM control chart.
+\vspace{-0.6cm}
+\section{Performance Evaluation of Control Charts}
+\vspace{-0.2cm}
+The most common criterion for evaluating control charts is the ARL (\cite{Montgomery2013}). In this paper, in addition to ARL, the MRL criterion is also used to evaluate and compare the DMA, MA-CUSUM, and DMA-CUSUM control charts. Monte Carlo simulations  were performed for the control charts based on standard normal, Laplace with parameters (0,1), exponential with parameter (1), and gamma with parameters (4,1) distributions. Tables \ref{tab:combined_arl_mrl_w4_w5} through \ref{tab:laplace_arl_mrl_w4_w5} and Figure \ref{fig:arl} present the simulation results for widths $w = 4, 5$ and $ARL_0 = 370$.
+
+As you can see, Table \ref{tab:combined_arl_mrl_w4_w5} shows that in the in-control state ($\delta = 0$), the ARL values for all three charts are 370. For example, when $w=4$, the ARL values for DMA, MA-CUSUM, and DMA-CUSUM are 366.23, 369.42, and 366.54, respectively, which confirms the correct calibration of the H and k parameters. When a shift is applied to the process mean, the DMA-CUSUM chart has the smallest ARL and MRL values in most cases. For instance, under the normal distribution with $\delta = 0.5$ and $w=4$, the ARL values for DMA-CUSUM, MA-CUSUM, and DMA are 23.48, 28.25, and 49.02, respectively, indicating the superiority of the proposed control chart over the other charts. Also, for the MRL criterion for the same value of parameters, the median run length for DMA-CUSUM is 17, for MA-CUSUM is 22, and for DMA is 35, further confirming the superiority of the proposed chart.
+
+The results for the exponential, gamma, and Laplace distributions (Tables \ref{tab:exp_arl_mrl_w4_w5}, \ref{tab:gamma_arl_mrl_w4_w5}, and \ref{tab:laplace_arl_mrl_w4_w5}) follow the same pattern. For the heavy-tailed Laplace distribution, the performance differences are more pronounced, as for $\delta = 0.5$ and $w=4$, the ARL for DMA-CUSUM is 25.39, for MA-CUSUM is 29.72, and for DMA is 93.25, demonstrating better performance compared to the DMA control chart. Furthermore, under the gamma distribution, the DMA-CUSUM chart has the smallest ARL=$71.36$ for a shift of $\delta = 0.25$, compared to   ARL=75.65 for the MA-CUSUM control chart and ARL=94.30 for the DMA control chart.
+As observed in Figure \ref{fig:arl}, the ARL curves for all three charts show a decreasing trend as $\delta$ increases, but the curve corresponding to DMA-CUSUM is always at the lowest level and its decreasing slope is steeper than the other two charts. This characteristic is evident for moderate shifts and indicates the high performance of this control chart in the rapid detection of small and moderate shifts.
+
+Overall, based on the ARL and MRL criteria across all investigated distributions and both values of $w$, the DMA-CUSUM chart exhibits superior performance compared to the other two charts. This chart detects process shifts more quickly, especially when dealing with non-normal distributions and small-to-moderate shifts, and is therefore recommended as an efficient option for monitoring processes.
+
+
+\begin{table}[!b]
+\centering
+\small
+\caption{ARL and MRL values of control charts for the standard normal distribution with  $ARL_0 = 370$ and $w=4,5$}
+\scalebox{1.00}{
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|cc|cc|cc|cc|cc|cc|}
+\hline
+ & \multicolumn{6}{c|}{$w=4$} & \multicolumn{6}{c|}{$w=5$} \\
+\cline{2-13}
+$\delta$ & \multicolumn{2}{c|}{DMA } & \multicolumn{2}{c|}{MA-CUSUM } & \multicolumn{2}{c|}{DMA-CUSUM } & \multicolumn{2}{c|}{DMA } & \multicolumn{2}{c|}{MA-CUSUM } & \multicolumn{2}{c|}{DMA-CUSUM } \\
+ & \multicolumn{2}{c|}{$L=4.60$} & \multicolumn{2}{c|}{$K_2=0.75,\ H=9.10$} & \multicolumn{2}{c|}{$K_3=0.75,\ H=8.53$} & \multicolumn{2}{c|}{$L=5.001$} & \multicolumn{2}{c|}{$K_2=0.79,\ H=10.63$} & \multicolumn{2}{c|}{$K_3=0.79,\ H=10.25$} \\
+\cline{2-13} 
+ & ARL & MRL & ARL & MRL & ARL & MRL & ARL & MRL & ARL & MRL & ARL & MRL \\
+\hline
+$-1.00$ & $11.27$ & $8.00$ & $9.15$ & $8.00$ & ${\bf 7.38}$ & ${\bf 5.00}$ & $10.79$ & $8.00$ & $8.86$ & $8.00$ & ${\bf 6.50}$ & ${\bf 5.00}$ \\
+$-0.75$ & $20.61$ & $15.00$ & $14.06$ & $12.00$ & ${\bf 11.46}$ & ${\bf 9.00}$ & $18.59$ & $14.00$ & $14.65$ & $12.00$ & ${\bf 10.34}$ & ${\bf 6.00}$ \\
+$-0.50$ & $47.77$ & $34.00$ & $28.32$ & $22.00$ & ${\bf 23.96}$ & ${\bf 17.00}$ & $42.87$ & $31.00$ & $31.89$ & $24.00$ & ${\bf 23.10}$ & ${\bf 11.00}$ \\
+$-0.30$ & $119.45$ & $84.00$ & $70.80$ & $52.00$ & ${\bf 62.01}$ & ${\bf 40.00}$ & $109.77$ & $77.00$ & $84.91$ & $60.00$ & ${\bf 67.28}$ & ${\bf 33.00}$ \\
+$-0.25$ & $153.30$ & $105.00$ & $95.98$ & $69.00$ & ${\bf 87.15}$ & ${\bf 53.00}$ & $138.27$ & $98.00$ & $113.73$ & $80.00$ & ${\bf 94.52}$ & ${\bf 47.00}$ \\
+$-0.15$ & $247.26$ & $169.00$ & $188.40$ & $132.00$ & ${\bf 175.92}$ & ${\bf 109.00}$ & $231.59$ & $160.00$ & $211.59$ & $145.00$ & ${\bf 185.39}$ & ${\bf 90.00}$ \\
+$-0.10$ & $300.66$ & $207.00$ & $261.21$ & $182.00$ & ${\bf 249.95}$ & ${\bf 152.00}$ & $296.11$ & $203.00$ & $278.11$ & $193.00$ & ${\bf 261.11}$ & ${\bf 133.00}$ \\
+$-0.05$ & $345.79$ & $245.00$ & $334.30$ & $236.00$ & ${\bf 324.46}$ & ${\bf 201.00}$ & $349.32$ & $238.00$ & $343.70$ & $238.00$ & ${\bf 333.07}$ & ${\bf 166.50}$ \\
+$0.00$ & $366.23$ & $254.00$ & $369.42$ & $259.00$ & ${\bf 366.54}$ & ${\bf 225.00}$ & $368.33$ & $255.50$ & $375.30$ & $259.00$ & ${\bf 363.95}$ & ${\bf 185.00}$ \\
+$0.05$ & $352.28$ & $242.00$ & $333.13$ & $234.00$ & ${\bf 331.84}$ & ${\bf 207.00}$ & $347.52$ & $245.00$ & $350.52$ & $242.50$ & ${\bf 333.50}$ & ${\bf 175.00}$ \\
+$0.10$ & $306.03$ & $215.00$ & $261.25$ & $179.00$ & ${\bf 249.48}$ & ${\bf 154.00}$ & $300.18$ & $208.00$ & $279.68$ & $194.00$ & ${\bf 261.40}$ & ${\bf 134.00}$ \\
+$0.15$ & $244.15$ & $170.00$ & $188.30$ & $135.00$ & ${\bf 173.89}$ & ${\bf 108.00}$ & $238.48$ & $163.00$ & $214.02$ & $147.00$ & ${\bf 183.24}$ & ${\bf 88.00}$ \\
+$0.25$ & $153.54$ & $107.00$ & $95.73$ & $68.00$ & ${\bf 84.60}$ & ${\bf 52.00}$ & $140.98$ & $98.00$ & $113.72$ & $79.00$ & ${\bf 95.07}$ & ${\bf 46.00}$ \\
+$0.30$ & $121.84$ & $85.00$ & $71.36$ & $52.00$ & ${\bf 63.35}$ & ${\bf 41.00}$ & $109.59$ & $77.00$ & $84.70$ & $59.00$ & ${\bf 68.05}$ & ${\bf 34.00}$ \\
+$0.50$ & $49.02$ & $35.00$ & $28.25$ & $22.00$ & ${\bf 23.48}$ & ${\bf 17.00}$ & $43.65$ & $32.00$ & $31.96$ & $24.00$ & ${\bf 23.07}$ & ${\bf 11.00}$ \\
+$0.75$ & $20.39$ & $15.00$ & $14.00$ & $12.00$ & ${\bf 11.39}$ & ${\bf 9.00}$ & $18.64$ & $14.00$ & $14.45$ & $11.00$ & ${\bf 9.99}$ & ${\bf 6.00}$ \\
+$1.00$ & $11.43$ & $9.00$ & $9.19$ & $8.00$ & ${\bf 7.49}$ & ${\bf 5.00}$ & $10.70$ & $8.00$ & $8.84$ & $8.00$ & ${\bf 6.45}$ & ${\bf 5.00}$ \\
+\hline
+\end{tabular}}}
+\label{tab:combined_arl_mrl_w4_w5}
+\end{table}
+
+
+
+
+\begin{table}[!b]
+\centering
+\small
+\caption{ARL and MRL values of control charts for the exponential distribution with  $ARL_0 = 370$ and $w=4,5$}
+\scalebox{0.73}{
+\begin{tabular}{|c|cc|cc|cc|cc|cc|cc|}
+\hline
+ & \multicolumn{6}{c|}{$w=4$} & \multicolumn{6}{c|}{$w=5$} \\
+\cline{2-13}
+$\delta$ & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} \\
+ & \multicolumn{2}{c|}{$L=5.60$} & \multicolumn{2}{c|}{$K_2=0.775,\ H=10.09$} & \multicolumn{2}{c|}{$K_3=0.775,\ H=8.87$} & \multicolumn{2}{c|}{$L=5.79$} & \multicolumn{2}{c|}{$K_2=0.693,\ H=12.38$} & \multicolumn{2}{c|}{$K_3=0.693,\ H=11.39$} \\
+\cline{2-13} 
+ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ \\
+\hline
+$0.00$ & $366.60$ & $256$ & $369.63$ & $261$ & ${\bf 369.99}$ & ${\bf 247}$ & $369.76$ & $256$ & $369.81$ & $259$ & ${\bf 368.10}$ & ${\bf 231}$ \\
+$0.05$ & $265.36$ & $184$ & $242.31$ & $166$ & ${\bf 237.15}$ & ${\bf 156}$ & $249.94$ & $176$ & $242.37$ & $168$ & ${\bf 233.90}$ & ${\bf 145}$ \\
+$0.10$ & $187.31$ & $132$ & $165.35$ & $117$ & ${\bf 156.10}$ & ${\bf 100}$ & $177.83$ & $122$ & $164.48$ & $114.5$ & ${\bf 152.43}$ & ${\bf 95}$ \\
+$0.15$ & $139.11$ & $98$ & $115.99$ & $82$ & ${\bf 109.80}$ & ${\bf 73}$ & $132.97$ & $92$ & $113.79$ & $78$ & ${\bf 108.97}$ & ${\bf 68}$ \\
+$0.25$ & $83.73$ & $59$ & $67.56$ & $47$ & ${\bf 61.21}$ & ${\bf 40}$ & $79.77$ & $57$ & $64.18$ & $46$ & ${\bf 58.19}$ & ${\bf 37}$ \\
+$0.30$ & $69.22$ & $49$ & $53.91$ & $39$ & ${\bf 49.50}$ & ${\bf 33}$ & $63.33$ & $45$ & $51.83$ & $37$ & ${\bf 46.43}$ & ${\bf 30}$ \\
+$0.50$ & $35.31$ & $25$ & $26.56$ & $20$ & ${\bf 24.02}$ & ${\bf 17}$ & $33.20$ & $24$ & $26.33$ & $20$ & ${\bf 23.32}$ & ${\bf 16}$ \\
+$0.75$ & $20.15$ & $15$ & $16.06$ & $12$ & ${\bf 14.55}$ & ${\bf 11}$ & $19.32$ & $14$ & $15.96$ & $13$ & ${\bf 13.95}$ & ${\bf 8}$ \\
+$1.00$ & $13.98$ & $10$ & $11.33$ & $9$ & ${\bf 10.37}$ & ${\bf 8}$ & $13.42$ & $10$ & $11.56$ & $10$ & ${\bf 10.17}$ & ${\bf 7}$ \\
+\hline
+\end{tabular}
+}
+\label{tab:exp_arl_mrl_w4_w5}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{ARL and MRL values of control charts for the gamma distribution with  $ARL_0 = 370$ and $w=4,5$}
+\scalebox{0.76}{
+\begin{tabular}{|c|cc|cc|cc|cc|cc|cc|}
+\hline
+ & \multicolumn{6}{c|}{$w=4$} & \multicolumn{6}{c|}{$w=5$} \\
+\cline{2-13}
+$\delta$ & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} \\
+ & \multicolumn{2}{c|}{$L=4.97$} & \multicolumn{2}{c|}{$K_2=0.68,\ H=9.64$} & \multicolumn{2}{c|}{$K_3=0.68,\ H=9.06$} & \multicolumn{2}{c|}{$L=5.28$} & \multicolumn{2}{c|}{$K_2=0.75,\ H=8.42$} & \multicolumn{2}{c|}{$K_3=0.75,\ H=7.81$} \\
+\cline{2-13} 
+ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ \\
+\hline
+$0.00$ & $367.41$ & $285$ & $368.30$ & $275.5$ & ${\bf 370.88}$ & ${\bf 268}$ & $370.02$ & $289$ & $368.94$ & $272$ & ${\bf 367.28}$ & ${\bf 239}$ \\
+$0.05$ & $282.87$ & $205$ & $274.35$ & $198$ & ${\bf 279.70}$ & ${\bf 186}$ & $283.32$ & $201$ & $266.78$ & $193$ & ${\bf 270.70}$ & ${\bf 166}$ \\
+$0.10$ & $208.34$ & $145$ & $195.94$ & $136$ & ${\bf 194.16}$ & ${\bf 124}$ & $205.17$ & $145$ & $194.54$ & $136$ & ${\bf 193.37}$ & ${\bf 107}$ \\
+$0.15$ & $158.44$ & $111$ & $140.69$ & $99$ & ${\bf 134.16}$ & ${\bf 84}$ & $155.59$ & $108$ & $139.60$ & $97$ & ${\bf 134.35}$ & ${\bf 76}$ \\
+$0.25$ & $94.30$ & $65$ & $75.65$ & $54$ & ${\bf 71.36}$ & ${\bf 46}$ & $90.15$ & $65$ & $75.43$ & $53$ & ${\bf 69.72}$ & ${\bf 39}$ \\
+$0.30$ & $74.44$ & $52$ & $58.30$ & $42.5$ & ${\bf 55.12}$ & ${\bf 37}$ & $70.87$ & $49$ & $59.57$ & $42$ & ${\bf 52.55}$ & ${\bf 30}$ \\
+$0.50$ & $36.47$ & $26$ & $27.21$ & $21$ & ${\bf 24.22}$ & ${\bf 17}$ & $34.13$ & $25$ & $26.82$ & $20$ & ${\bf 22.85}$ & ${\bf 14}$ \\
+$0.75$ & $18.72$ & $14$ & $14.73$ & $12$ & ${\bf 13.07}$ & ${\bf 10}$ & $17.88$ & $13$ & $14.64$ & $12$ & ${\bf 12.21}$ & ${\bf 7}$ \\
+$1.00$ & $12.04$ & $9$ & $10.17$ & $9$ & ${\bf 9.07}$ & ${\bf 6}$ & $11.89$ & $9$ & $9.76$ & $8$ & ${\bf 8.21}$ & ${\bf 6}$ \\
+\hline
+\end{tabular}}
+\label{tab:gamma_arl_mrl_w4_w5}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{ARL and MRL values of control charts for the Laplace distribution with  $ARL_0 = 370$ and $w=4,5$}
+\scalebox{0.73}{
+\begin{tabular}{|c|cc|cc|cc|cc|cc|cc|}
+\hline
+ & \multicolumn{6}{c|}{$w=4$} & \multicolumn{6}{c|}{$w=5$} \\
+\cline{2-13}
+$\delta$ & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} & \multicolumn{2}{c|}{DMA} & \multicolumn{2}{c|}{MA-CUSUM} & \multicolumn{2}{c|}{DMA-CUSUM} \\
+ & \multicolumn{2}{c|}{$L=5.23$} & \multicolumn{2}{c|}{$K_2=0.62,\ H=11.73$} & \multicolumn{2}{c|}{$K_3=0.62,\ H=11.08$} & \multicolumn{2}{c|}{$L=5.50$} & \multicolumn{2}{c|}{$K_2=0.75,\ H=11.62$} & \multicolumn{2}{c|}{$K_3=0.75,\ H=11.16$} \\
+\cline{2-13} 
+ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ & $ARL$ & $MRL$ \\
+\hline
+$-1.00$ & $17.51$ & $13$ & $10.22$ & $9$ & ${\bf 7.93}$ & ${\bf 6}$ & $13.64$ & $10$ & $9.91$ & $9$ & ${\bf 7.38}$ & ${\bf 6}$ \\
+$-0.75$ & $37.76$ & $27$ & $15.28$ & $14$ & ${\bf 12.65}$ & ${\bf 11}$ & $27.29$ & $20$ & $15.09$ & $13$ & ${\bf 11.28}$ & ${\bf 7}$ \\
+$-0.50$ & $91.21$ & $64$ & $29.86$ & $25$ & ${\bf 25.36}$ & ${\bf 21}$ & $68.01$ & $48$ & $30.09$ & $24$ & ${\bf 23.43}$ & ${\bf 17}$ \\
+$-0.30$ & $197.17$ & $139$ & $74.66$ & $56$ & ${\bf 66.33}$ & ${\bf 46}$ & $164.03$ & $116$ & $78.07$ & $57$ & ${\bf 67.14}$ & ${\bf 44}$ \\
+$-0.25$ & $231.85$ & $163$ & $103.00$ & $74$ & ${\bf 93.01}$ & ${\bf 64}$ & $202.99$ & $141$ & $104.49$ & $75$ & ${\bf 94.79}$ & ${\bf 59}$ \\
+$-0.15$ & $313.60$ & $228$ & $204.00$ & $142$ & ${\bf 196.45}$ & ${\bf 127}$ & $289.33$ & $209$ & $210.14$ & $147$ & ${\bf 205.71}$ & ${\bf 125}$ \\
+$-0.10$ & $346.48$ & $256$ & $274.91$ & $197$ & ${\bf 272.71}$ & ${\bf 185}$ & $325.17$ & $238$ & $279.44$ & $199$ & ${\bf 272.30}$ & ${\bf 171}$ \\
+$-0.05$ & $366.97$ & $276$ & $346.67$ & $261$ & ${\bf 337.21}$ & ${\bf 242}$ & $354.58$ & $266$ & $347.52$ & $261$ & ${\bf 349.79}$ & ${\bf 240}$ \\
+$0.00$ & $371.58$ & $282$ & $370.22$ & $286$ & ${\bf 369.48}$ & ${\bf 263}$ & $368.30$ & $276$ & $370.39$ & $273$ & ${\bf 370.29}$ & ${\bf 262}$ \\
+$0.05$ & $360.79$ & $271$ & $341.77$ & $257$ & ${\bf 338.42}$ & ${\bf 239}$ & $353.89$ & $265$ & $342.46$ & $256$ & ${\bf 350.48}$ & ${\bf 243}$ \\
+$0.10$ & $343.17$ & $258$ & $275.31$ & $197$ & ${\bf 275.07}$ & ${\bf 185}$ & $329.29$ & $243$ & $280.75$ & $202$ & ${\bf 281.85}$ & ${\bf 183}$ \\
+$0.15$ & $317.06$ & $231$ & $204.46$ & $145$ & ${\bf 194.40}$ & ${\bf 128}$ & $289.75$ & $209$ & $209.69$ & $145.5$ & ${\bf 202.50}$ & ${\bf 125}$ \\
+$0.25$ & $238.48$ & $170$ & $101.89$ & $74$ & ${\bf 94.11}$ & ${\bf 64}$ & $202.27$ & $143$ & $104.86$ & $75$ & ${\bf 96.00}$ & ${\bf 59}$ \\
+$0.30$ & $198.16$ & $139$ & $75.67$ & $57$ & ${\bf 66.69}$ & ${\bf 47}$ & $163.41$ & $116$ & $78.38$ & $57$ & ${\bf 67.69}$ & ${\bf 43}$ \\
+$0.50$ & $93.25$ & $66$ & $29.72$ & $24$ & ${\bf 25.39}$ & ${\bf 21}$ & $68.07$ & $49$ & $29.40$ & $24$ & ${\bf 24.16}$ & ${\bf 18}$ \\
+$0.75$ & $37.32$ & $27$ & $15.32$ & $14$ & ${\bf 12.69}$ & ${\bf 11}$ & $27.02$ & $20$ & $14.95$ & $13$ & ${\bf 11.25}$ & ${\bf 7}$ \\
+$1.00$ & $17.50$ & $13$ & $10.16$ & $9$ & ${\bf 7.98}$ & ${\bf 6}$ & $13.44$ & $10$ & $9.94$ & $9$ & ${\bf 7.45}$ & ${\bf 6}$ \\
+\hline
+\end{tabular}
+}
+\label{tab:laplace_arl_mrl_w4_w5}
+\end{table}
+
+\begin{figure}[!b]
+\centering
+\includegraphics[width=15.5cm]{Images/fig1.jpg}
+\caption{Comparison of ARL curves of control charts under different distributions}
+\label{fig:arl}
+\end{figure}
+
+
+\section{Conclusion}
+In this paper, a new hybrid control chart based on the combination of DMA  and CUSUM  has been proposed. This proposed control chart is designed for detecting small and moderate shifts in the process mean. The performance of this proposed control chart was evaluated in comparison with the DMA and MA-CUSUM control charts under different distributions using the ARL and MRL criteria. The results show that the proposed control chart outperforms the other two control charts in detecting small-to-moderate shifts, and this superiority is observed across all investigated distributions. Furthermore, the choice  width $w=5$ yields better results compared to $w=4$.
+
+
+
+\begin{thebibliography}{8}
+{\small
+\setlength{\parskip}{0pt} 
+\setlength{\itemsep}{-2pt}
+\bibitem[Karimi et al. (2019)]{karimi2019}
+Karimi F., Noorossana R. and Saghaei A. (2019), A new combined Shewhart-CUSUM scheme for monitoring process mean, {\it International Journal of Advanced Manufacturing Technology}, 101(1), 567--582.
+%%
+\bibitem[Khoo (2004)]{khoo2004}
+Khoo M. B. C. (2004), A moving average control chart for monitoring the fraction non-conforming, {\it Quality and Reliability Engineering International}, 20(6), 617--635.
+%%
+\bibitem[Khoo and Wong (2008)]{khoo2008}
+Khoo M. B. C. and Wong V. H. (2008), A double moving average control chart, {\it Communications in Statistics - Simulation and Computation}, 37(8), 1696--1708.
+%%
+\bibitem[Montgomery (2013)]{Montgomery2013}
+Montgomery D. C. (2013), {\it Introduction to Statistical Quality Control}, 7th ed., John Wiley \& Sons, Incorporated.
+%%
+\bibitem[Page (1954)]{page1954}
+Page E. S. (1954), Continuous inspection scheme, {\it Biometrika}, 41(1--2), 100--115.
+%%
+\bibitem[Rahman et al. (2023)]{rahman2023}
+Rahman M. M., Hossain M. P. and Ahmed S. (2023), Mixed CUSUM-DEWMA control chart: An enhanced approach for early detection of small and moderate mean shifts, {\it Applied Stochastic Models in Business and Industry}, 39(4), 512--533.
+%%
+\bibitem[Saengsura et al. (2023)]{saengsura2023}
+Saengsura N., Sukparungsee S. and Areepong Y. (2023), New designing detecting mean shifts with symmetrically and asymmetrically distributed observations, {\it Applied Science and Engineering Progress}, 16(4), 125--136.
+%%
+\bibitem[Shewhart (1931)]{shewhart1931}
+Shewhart W. A. (1931), {\it Economic control of quality of manufactured product}, D. Van Nostrand Company, Inc.
+%%
+\bibitem[Zaman et al. (2015)]{zaman2015}
+Zaman B., Riaz M., Abbas N. and Does R. J. M. M. (2015), Mixed cumulative sum-exponentially weighted moving average control charts: An efficient way of monitoring process location, {\it Quality and Reliability Engineering International}, 31(8), 1407--1421.}
+\end{thebibliography}
+ \end{document}
+

@@ -1,0 +1,224 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Estimating the Stress-Strength Parameter Using Dirichlet Process Mixture Models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Haji Joudaki}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Estimating the Stress-Strength Parameter Using a Dirichlet Process Mixture Model with Burr XII Kernels}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Bahram Haji Joudaki  \footnote{{\bf Corresponding Author: } {\tt Joudaki.b@lu.ac.ir }} \\
+Department of Statistics, Lorestan University, Khorramabad, Iran }
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+In this article, a new model is presented for modeling the distribution of stress and strength variables in a system. In this model, it is assumed that the distributions of the stress and strength variables are independent of one another, and a mixture of Dirichlet processes with Burr XII kernels is used to model the distribution of each of these variables. Prior distributions are selected for the parameters present in these models. The posterior distributions of the parameters have a complex form; therefore, Gibbs sampling is employed to generate samples from these distributions. The Dirichletprocess package in R software is used to implement Gibbs algorithms in the mentioned mixture models. Under this new model, the stress-strength parameter is estimated. To evaluate the performance of the proposed model, a real datasets is utilized. The results obtained demonstrate satisfactory performance of the proposed model.
+ 
+\noindent{\bf Keywords:} 
+ Burr XII, Dirichlet process, Gibbs algorithm, Mixture model, Stress-Strength.
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F15$, $\rm 62G05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Consider a system that is in operation. Various stresses may be applied to this system. The system resists these stresses. If the strength of the system is greater than the applied stress, the system will continue to function; otherwise, the system will fail. Let the random variables \(X_1\) and \(X_2\) denote the values of the stress applied to the system and the system strength, respectively. In this context, the stress-strength parameter is defined as the probability \(R = P(X_1 < X_2)\), which is the probability that the strength exceeds the stress. In fact, this parameter indicates the reliability or efficiency of the system. The stress-strength parameter is one of the critical parameters in analyzing and evaluating the performance of complex systems. This parameter generally refers to the ability of a system to perform its desired function under specified conditions and over a given period. Estimation of the stress-strength parameter has been the subject of much research by statisticians, including references such as \cite{Ahmad:1997},   \cite{Raqab:2008}, \cite{Kundu:2009}, and \cite{Rao:2013}.
+
+Previous research on stress-strength reliability primarily assumes independent unimodal distributions for stress ($X_1$) and strength ($X_2$). In reality, these may follow mixture distributions, such as when stress originates from multiple sources. The conventional initial step—fitting and selecting from multiple parametric distributions—is often laborious and risks model misspecification when the true distribution is complex.To overcome this difficulty, nonparametric and semi-parametric methods have been developed. One powerful approach is to use Dirichlet Process Mixture Models (DPMMs). The Dirichlet Process (DP), introduced by \cite{Ferguson:1973}, is a Bayesian nonparametric prior over distributions. It provides a flexible framework for modeling unknown distributions without assuming a specific parametric form. \cite{Antoniak:1974} later extended this to mixture models, leading to DPMMs, which are widely used for density estimation and clustering. 
+DPMMs have been successfully applied in various fields, including survival analysis, reliability engineering, and biomedical studies. For example, \cite{Kottas:2006a},  and \cite{Hanson:2006} have used DPMMs for lifetime data analysis. More recently, \cite{HajiJoudaki:2022} applied a DPMM with a Burr XII kernel for survival analysis. 
+In this article, we propose a new method for estimating the stress-strength reliability parameter \(R\) using a DPMM with a Burr XII kernel. The Burr XII distribution is a popular choice in reliability and survival analysis due to its flexibility in modeling various hazard rate shapes. By embedding it within a DPMM framework, we can model the stress and strength variables without restrictive parametric assumptions, allowing for automatic adaptation to the data's underlying distribution, whether it is unimodal, multimodal, or otherwise complex. The Bayesian nonparametric approach provides full posterior inference, including point estimates and credible intervals for \(R\), while incorporating uncertainty about the underlying distributions.
+
+The remainder of this article is organized as follows. In Section 2, we introduce the proposed model in detail, including the DPMM specification with Burr XII kernel, prior distributions, and the derivation of the stress-strength parameter estimator. Section 3 discusses the model fitting procedure using Gibbs sampling.  Section 4 applies the method to a real dataset on lung cancer survival times. Finally, Section 5 provides a discussion and conclusion.
+
+\section{Model Introduction}
+  Assume that the distributions of stress \(X_1\) and strength \(X_2\) are independent and given by \(f_{X_1}(x_1)\) and \(f_{X_2}(x_2)\), respectively. Then the reliability of the system \(R\) is defined as:
+\begin{align}\label{eq1}
+R &= P(X_1 < X_2) = \int_0^\infty \int_0^{x_2} f_{X_1,X_2}(x_1, x_2) dx_1 dx_2 
+&= \int_0^\infty \int_0^{x_2} f_{X_1}(x_1) f_{X_2}(x_2) dx_1 dx_2\\ \nonumber
+ &\hspace*{2.4cm}= \int_0^\infty F_{X_1}(x_2) f_{X_2}(x_2) dx_2
+\end{align}
+
+Based on the discussions in the previous section, the distribution of \(X_m\) for \(m = 1, 2\) is modeled using a Dirichlet Process Mixture Model (DPMM) with a Burr XII kernel as follows:
+\begin{equation}\label{eq2}
+F_{X_m}(x_m; G_m) = \int_{\Theta} K_m(x_m|\theta_m) dG_m(\theta_m); \quad m = 1, 2,
+\end{equation}
+where \(K_m(x_m|\theta_m)=1-\left(1 + \left(\frac{x_m}{\beta_m}\right)^{\alpha_m}\right)^{-\lambda_m}\) is the cumulative distribution function of the Burr XII distribution with parameters \(\theta_m = (\alpha_m, \beta_m, \lambda_m)\), and \(\alpha_m > 0, \beta_m > 0, \lambda_m > 0\). Also, \(G_m(\theta_m)\) has a DP prior with parameters \(\nu_m\) and \(G_{0m}\), denoted as
+$
+G_m \sim DP\bigl(\nu_m, G_{0m}\bigr); \quad m = 1, 2.
+$
+  The probability density function corresponding to  \eqref{eq2} is as follows:
+\begin{equation}\label{eq3}
+f_{X_m}(x_m; G_m) = \int_{\Theta} k_m(x_m|\theta_m) dG_m(\theta_m); \quad m = 1, 2,
+\end{equation}
+where $k_m(x_m|\theta_m)$ is 
+\begin{equation}\label{eq4}
+k_m(x_m|\theta_m) = \alpha_m \lambda_m x_m^{\alpha_m-1} \beta_m^{-\alpha_m} \left(1 + \left(\frac{x_m}{\beta_m}\right)^{\alpha_m}\right)^{-\lambda_m-1}.
+\end{equation}
+
+According to \cite{HajiJoudaki:2022}, the prior distribution for the parameters of the Burr XII distribution is selected as:
+$
+\alpha_m \sim U(0, \phi_m), \quad \beta_m \sim IG(b_m, \delta_m), \quad \lambda_m \sim IG(a_m, \gamma_m); \quad m = 1, 2.
+$
+The prior distributions for the hyperparameters are chosen as:
+\[
+\phi_m \sim \text{Par}(a_{\phi_m}, b_{\phi_m}), \quad \delta_m \sim G(a_{\delta_m}, b_{\delta_m}), \quad \gamma_m \sim G(a_{\gamma_m}, b_{\gamma_m}); \quad a_{\gamma_m} = a_{\delta_m} = 1, \quad m = 1, 2.
+\]
+Here \(G\), \(IG\), \(U\), and Par denote the Gamma, Inverse Gamma, Uniform, and Pareto distributions, respectively. If \(a_m = b_m = a_{\phi_m} = 2\), then \(\text{var}(\lambda_m) = \text{var}(\beta_m) = \infty\), making these priors non-informative. Further details on estimating the hyperparameters \(b_{\phi_m}\), \(b_{\delta_m}\), \(b_{\gamma_m}\)  can be found in \cite{HajiJoudaki:2022}.
+Following \cite{Sethuraman:1994} representation of the Dirichlet Process, we have:
+\begin{equation}\label{eq5}
+G_m(\alpha_m, \beta_m, \lambda_m) = \sum_{j_m=1}^{\infty} \omega_{j_m} I_{(\alpha_{j_m}, \beta_{j_m}, \lambda_{j_m})}(\alpha_m, \beta_m, \lambda_m); \quad m = 1, 2,
+\end{equation}
+
+where \(\omega_{j_m}\) are the weights computed via the stick-breaking process, and \(I\) is the indicator function.
+ Substituting \eqref{eq5} into \eqref{eq2} and \eqref{eq3} yields:
+\begin{equation}\label{eq6}
+F_{X_m}(x_m; G_m) = \sum_{j_m=1}^{\infty} \omega_{j_m} \left\{1 - \left(1 + \frac{x_m}{\beta_{j_m}}\right)^{\alpha_{j_m}}\right\}^{-\lambda_{j_m}}; \quad m = 1, 2,
+\end{equation}
+\begin{equation}\label{eq7}
+f_{X_m}(x_m; G_m) = \sum_{j_m=1}^{\infty} \omega_{j_m} \left\{\alpha_{j_m} \lambda_{j_m} x_m^{\alpha_{j_m}-1} \beta_{j_m}^{-\alpha_{j_m}} \left(1 + \left(\frac{x_m}{\beta_{j_m}}\right)^{\alpha_{j_m}}\right)^{-\lambda_{j_m}-1}\right\}; \quad m = 1, 2.
+\end{equation}
+Now, substituting \eqref{eq6} and \eqref{eq7} into \eqref{eq1}, we will have:
+\[
+\begin{aligned}
+R &= \sum_{j_1=1}^{\infty} \sum_{j_2=1}^{\infty} \omega_{j_1} \omega_{j_2} \int_0^\infty \alpha_{j_1} \lambda_{j_1} x_1^{\alpha_{j_1}-1} \beta_{j_1}^{-\alpha_{j_1}} \left(1 + \left(\frac{x_1}{\beta_{j_1}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}-1} \\
+&\quad \times \left\{1 - \left(1 + \left(\frac{x_1}{\beta_{j_1}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}} \right\} dx_1. \tag{7}
+\end{aligned}
+\]
+Since \(\int_0^\infty f_{X_1}(x_1) dx_1 = 1\) and \(\sum \omega_{j_1} = 1\), we can simplify \(R\) to:
+\begin{align}\label{eq8}
+R = 1 - \sum_{j_1=1}^{\infty} \sum_{j_2=1}^{\infty} \omega_{j_1} \omega_{j_2} \int_0^\infty \alpha_{j_2} \lambda_{j_2} x_2^{\alpha_{j_2}-1} \beta_{j_2}^{-\alpha_{j_2}} \left(1 + \left(\frac{x_2}{\beta_{j_2}}\right)^{\alpha_{j_2}}\right)^{-\lambda_{j_2}-1} \left(1 + \left(\frac{x_2}{\beta_{j_1}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}} dx_2.
+\end{align}
+
+Let \(I\) denote the integral in \eqref{eq8}. Using the change of variable \(u = (x_2/\beta_{j_2})^{\alpha_{j_2}}\), the integral becomes:
+\begin{equation}\label{eq9}
+I = \lambda_{j_2} \int_0^\infty (1 + u)^{-\lambda_{j_2}-1} \left(1 + \left(\frac{\beta_{j_2}}{\beta_{j_1}} u^{1/\alpha_{j_2}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}} du.
+\end{equation}
+In general, this integral does not have an analytical solution except under special conditions. For example, if \(\alpha_{j_1} = \alpha_{j_2}\) and \(\beta_{j_1} = \beta_{j_2}\), then \(I = \frac{\lambda_{j_2}}{\lambda_{j_2} + \lambda_{j_1}}\), and:
+\begin{equation}\label{eq10}
+R = 1 - \sum_{j_1=1}^{\infty} \sum_{j_2=1}^{\infty} \omega_{j_1} \omega_{j_2} \frac{\lambda_{j_2}}{\lambda_{j_2} + \lambda_{j_1}}.
+\end{equation}
+However, in the general case (without assuming equality of parameters), the integral in \eqref{eq9} must be approximated numerically. Using Monte Carlo method, we generate \(N\) random samples \(x_{2l}^{(j_2)}\) from the \(\text{Burr}(\alpha_{j_2}, \beta_{j_2}, \lambda_{j_2})\) distribution, and approximate \(I\) as:
+\begin{equation}\label{eq11}
+\hat{I} \approx \frac{1}{N} \sum_{l=1}^{N} \left(1 + \left(\frac{x_{2l}^{(j_2)}}{\beta_{j_1}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}}.
+\end{equation}
+
+By substituting the recent formula into \eqref{eq8} and considering finite sums, we obtain:
+\begin{equation}\label{eq13}
+R_{J_1, J_2}^{N} \approx 1 - \frac{1}{N} \sum_{j_1=1}^{J_1} \sum_{j_2=1}^{J_2} \sum_{l=1}^{N} \omega_{j_1} \omega_{j_2} \left(1 + \left(\frac{x_{2l}^{(j_2)}}{\beta_{j_1}}\right)^{\alpha_{j_1}}\right)^{-\lambda_{j_1}}.
+\end{equation}
+ 
+ This estimator is consistent, meaning that as the values of  $J_1$, $J_2$, and $N$ increase, the value of $R_{J_1, J_2}^{N}$ converges toward $R$.
+ 
+\section{Model Fitting}
+To compute the stress-strength parameter \(R\) under the proposed model, two independent DPMM models with Weibull kernel must be fitted to the stress and strength datasets. The hierarchical representation of the model is:
+
+\begin{alig*}
+&x_{i,m} | \alpha_{i,m}, \beta_{i,m}, \lambda_{i,m} &\stackrel{\text{i.i.d.}}{\sim} k(x_{i,m} | \alpha_{i,m}, \beta_{i,m}, \lambda_{i,m}); \quad i=1,\dots,n_m, \quad m=1,2,\\
+&(\alpha_{i,m}, \beta_{i,m}, \lambda_{i,m}) | G_m &\sim G_m; \quad i=1,\dots,n_m, \quad m=1,2,\\
+&G_m | \phi_m, \delta_m, \gamma_m &\sim DP(\nu_m, G_{0m}(\cdot | \phi_m, \delta_m, \gamma_m)); \quad m=1,2,\\
+&g_{0m}(\alpha_m, \beta_m, \lambda_m | \phi_m, \delta_m, \gamma_m) &= \pi(\alpha_m | \phi_m) \pi(\beta_m | \delta_m) \pi(\lambda_m | \gamma_m); \quad m=1,2,\\
+&\alpha_m | \phi_m &\sim U(0, \phi_m), \quad \beta_m | \delta_m \sim IG(a_m, \delta_m), \quad \lambda_m | \gamma_m \sim IG(d_m, \gamma_m); \quad a_m = d_m = 2, \quad m=1,2,\\
+&\phi_m &\sim \text{Par}(a_{\phi_m}, b_{\phi_m}), \quad \delta_m \sim G(a_{\delta_m}, b_{\delta_m}), \quad \gamma_m \sim G(a_{\gamma_m}, b_{\gamma_m}); \quad a_{\delta_m}=a_{\gamma_m}=1, \quad a_{\phi_m}=2, \quad m=1,2,\\
+&\nu_m &\sim G(a_{\nu}, b_{\nu}); \quad m=1,2.
+\end{alig*}
+
+The proposed model's hierarchy indicates that parameters \((\alpha_{i,m},\beta_{i,m},\lambda_{i,m})\) are associated with the ith dataset, and \(\{(\alpha_{i,m},\beta_{i,m},\lambda_{i,m}); i=1,2,\ldots,n_{m}\}\) comprises the parameter set corresponding to $n_{m}$ datasets. If we designate \(n_{m}^{*}\) as the count of distinct vectors in the recent set, then the set of distinct vectors will be \(\{(\alpha^{*}_{j,m},\beta^{*}_{j,m},\lambda^{*}_{j,m}); j=1,2,\ldots,n_{m}^{*}\}\). Indeed, $n_{m}^{*}$ represents the number of clusters, and the parameters \((\alpha^{*}_{j,m},\beta^{*}_{j,m},\lambda^{*}_{j,m})\) correspond to cluster \(j\). The clustering state of specified data is determined by the relationship between the values \((\alpha_{i,m},\beta_{i,m},\lambda_{i,m})\) and \((\alpha^{*}_{j,m},\beta^{*}_{j,m},\lambda^{*}_{j,m})\).
+Let's consider the vector \(L_{m} = (L_{1,m},\ldots,L_{n_{m},m})\) representing the clustering state of \(n_{m}\) data points. This vector is commonly referred to as the configuration vector. The data point i is assigned to the cluster j, denoted as \(L_{i,m}=j\), if and only if the relation \((\alpha_{i,m},\beta_{i,m},\lambda_{i,m}) = (\alpha^{*}_{j,m},\beta^{*}_{j,m},\lambda^{*}_{j,m})\) is satisfied. 
+The process of updating parameters is performed using the Gibbs sampling algorithm.  During the implementation of the Gibbs sampling algorithm, the following five steps are iteratively executed:
+
+\begin{alg}\label{alg}
+Gibbs sampling algorithm:
+\begin{itemize}
+\item Step 1: Update the components of the configuration vector, i.e, \(L_{m} = (L_{1,m},\ldots,L_{n_{m},m})\)
+\item Step 2: Update the cluster parameters based on the data within each cluster, i.e,\\\(\{(\alpha^{*}_{j,m},\beta^{*}_{j,m},\lambda^{*}_{j,m}); j=1,2,\ldots,n_{m}^{*}\}\).
+\item Step 3: Update the hyperparameters $\phi_{m}$, $\delta_{m}$, and $\gamma_{m}$.
+\item Step 4: Update the parameter $\nu_{m}$.
+\item Step 5: Update mixture model weights, i.e,\(\{\omega_{j}; j=1,2,\ldots,n_{m}^{*}\}\).
+\end{itemize}
+\end{alg}
+
+One of the biggest challenges in fitting Bayesian models—especially DPM models—is the computationally intensive nature of Gibbs sampling algorithms, which often require long runtimes. \cite{Ross-Markwick} introduced a valuable package for fitting DPMMs within the R software, known as the Dirichletprocess package.  In \cite{neal2000}, eight algorithms for implementing MCMC in DPMMs are presented, among which algorithm number 8 stands out as particularly important and widely applicable. The Dirichletprocess package provides the choice to employ algorithms 4 and 8 from \citep{neal2000}. In this article, we specifically utilize algorithm number 8. 
+
+Using theDirichletprocess package, Gibbs sampling algorithms are applied independently to the stress and strength variable datasets to obtain posterior samples of the parameters. Based on these samples, at each step of the Gibbs algorithm, the value of \( R \) is estimated according to Equation \eqref{eq13}.The mean of these estimates is reported as the Bayesian estimate of parameter \( R \). Additionally, the interval between the \%2.5 and \%97.5 percentiles of the \( R \) values is considered as the \%95 Bayesian credibility interval for parameter \( R \).
+
+\section{Analysis of a Real Dataset}
+In this section, a real dataset is analyzed. This dataset is from the \texttt{Survival} package in the R software. The data pertain to lung cancer patients treated with two different methods. First, patients were randomly divided into two groups; then one group was treated with the conventional method and the other with a new method. The survival times of these two groups of patients are denoted by variables \(X\) and \(Y\), respectively. Some survival times are right-censored and are excluded from the analysis. One can interpret the superiority probability of each treatment method relative to the other via \(R = P(X < Y)\). If \(R > 0.5\), the new treatment method is better than the conventional one. If \(R < 0.5\), the conventional method is better. If \(R = 0.5\), the two methods have approximately the same performance. Table \ref{tab:5} shows the results of estimating \(R\) under different hyperparameter choices \((a_\nu, b_\nu)\) for the prior distribution of the precision parameter \(\nu\). The presented results indicate that the point and interval estimates of \(R\) are insensitive to the choice of hyperparameters. The estimated value of \(R\) is approximately 0.45 under different hyperparameter choices. Therefore, it can be inferred that the new treatment method performs better than the conventional method in treating lung cancer. This conclusion is also confirmed by the credible interval values, which are entirely below 0.5.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Results for the calculation of the point estimate \(\hat{R}\) and confidence interval (CI) for parameter \(R\) under different hyperparameter values \((a_{\nu}, b_{\nu})\) of the prior distribution of the precision parameter \(\nu\).}
+\label{tab:5}
+\begin{tabular}{|ccc|}
+\toprule
+\hline
+Prior Distribution \(\Gamma(a_{\nu}, b_{\nu})\) & \(\hat{R}\) & CI \\
+\midrule
+\hline
+\(\Gamma(1, 0.01)\) & 0.4541 & (0.183, 0.902) \\
+\(\Gamma(2, 0.25)\) & 0.4533 & (0.198, 0.801) \\
+\(\Gamma(2, 4)\) & 0.4559 & (0.350, 0.972) \\
+\(\Gamma(1, 1)\) & 0.4547 & (0.383, 0.934) \\
+\(\Gamma(3, 0.05)\) & 0.4566 & (0.410, 0.901) \\
+\bottomrule
+\hline
+\end{tabular}
+\end{table}
+
+\section{Discussion and Conclusion}
+In this article, a new method is proposed for estimating the stress-strength parameter. The performance of the new method is evaluated by analyzing simulated and real datasets. The results presented in this article show that the proposed model has good potential for estimating the stress-strength parameter. The advantage of the new method over existing methods is that in the new method, there is no need to separately examine the distribution of the stress and strength variables. Also, if the data for the stress and strength variables are multimodal, the new method is capable of covering the distribution of such data.
+
+\section*{Acknowledgments}   
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Ahmad et al. (1997)]{Ahmad:1997}
+Ahmad K.E., Fakhry M.E. and Jaheen Z.F. (1997), Empirical Bayes estimation of \(P(Y < X)\) and characterizations of the Burr-type X model, {\it Journal of Statistical Planning and Inference}, 64, 297--308.
+
+\bibitem[Antoniak (1974)]{Antoniak:1974}
+Antoniak C.E. (1974), Mixtures of Dirichlet Processes with Applications to Nonparametric Problems, {\it The Annals of Statistics}, 2, 1152--1174.
+
+\bibitem[Ferguson (1973)]{Ferguson:1973}
+Ferguson T.S. (1973), Bayesian Analysis of Some Nonparametric Problems, {\it The Annals of Statistics}, 1(2), 209--230.
+
+\bibitem[Haji Joudaki et al. (2022)]{HajiJoudaki:2022}
+Haji Joudaki B., Hashemi R. and Khazaei S. (2022), Survival Analysis Using Dirichlet Process Mixture Model with Three-Parameter Burr XII Distribution as Kernel, {\it Communications in Statistics- Simulation and Computation}, 1--19.
+
+\bibitem[Hanson (2006)]{Hanson:2006}
+Hanson T. (2006), Modeling Censored Lifetime Data Using a Mixture of Gammas Baseline, {\it Bayesian Analysis}, 1(3), 575--594.
+
+\bibitem[Kottas (2006a)]{Kottas:2006a}
+Kottas A. (2006), Nonparametric Bayesian Survival Analysis Using Mixtures of Weibull Distributions, {\it Statistical Planning and Inference}, 136(3), 578--596.
+
+\bibitem[Kundu and Raqab (2009)]{Kundu:2009}
+Kundu D. and Raqab M.Z. (2009), Estimation of \(R = P(Y < X)\) for three parameter Weibull distribution, {\it Stat. Probab. Lett}, 79, 1839--1846.
+
+\bibitem[Lio and Tsai (2012)]{Lio:2012}
+Lio Y.L. and Tsai T.R. (2012), Estimation of \(\delta = P(X < Y)\) for Burr XII distribution based on the progressively first failure-censored samples, {\it J. Appl. Stat}, 39, 309--322.
+
+\bibitem[Neal(2000)]{neal2000}
+Neal, R.M. (2000). Markov Chain Sampling Methods for Dirichlet Process Mixture Models. \textit{Journal of Computational and Graphical Statistics}, \textbf{9}(2), 249--265.
+
+\bibitem[Rao (2013)]{Rao:2013}
+Rao G.S. (2013), Estimation of reliability in multicomponent stress-strength based on inverse exponential distribution, {\it International Journal of Statistics and Economics}, 10(1), 28--37.
+
+\bibitem[Raqab et al. (2008)]{Raqab:2008}
+Raqab M.Z., Madi M.T. and Kundu D. (2008), Estimation of \(R = P(Y < X)\) for the 3-parameter generalized exponential distribution, {\it Commun. Stat.}, 37, 2854--2864.
+
+\bibitem[Ross and Markwick(2018)]{Ross-Markwick}
+Ross, G.J. and Markwick, D. (2018). Dirichlet process: An R Package for Fitting Complex Bayesian Nonparametric Models.
+\bibitem[Sethuraman (1994)]{Sethuraman:1994}
+Sethuraman J. (1994), A constructive definition of Dirichlet priors, {\it Statistica Sinica}, 4, 639--650.
+
+\end{thebibliography}
+\end{document}

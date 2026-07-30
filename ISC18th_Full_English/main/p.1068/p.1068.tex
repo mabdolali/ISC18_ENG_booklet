@@ -1,0 +1,250 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Bayesian Matrix-Variate Gaussian Methods}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Nasirzadeh et al.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Bayesian Inference for Matrix-Variate Gaussian Distributions: Theory, Computation, and Applications}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Fariba Nasirzadeh \footnote[1]{{\bf Corresponding Author:} {\tt nasirzadeh@farsedc.ir}}, Roya Nasirzadeh$^2$, Zohreh Shishebor$^3$ , Heydar Ali Mardani-Fard$^4$  \\
+$^1$Fars Electricity Distribution Company, Shiraz, Iran \\
+$^2$Department of Statistics, Faculty of Science, Fasa University, Fasa, Iran\\
+$^3$Department of Statistics, College of Science, Shiraz University, Shiraz, Iran \\
+$^4$Department of Mathematics, Yasouj University, Yasouj, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+We develop a fully Bayesian framework for matrix-variate Gaussian distributions with Kronecker-structured covariance $\Psi \otimes \Sigma$, including conjugate priors, Gibbs sampling full conditionals, and sparsity-inducing extensions for high dimensions. The inherent scaling identifiability issue $(\Psi \otimes \Sigma) = (c\Psi) \otimes (c^{-1}\Sigma)$ is addressed via the constraint $\operatorname{tr}(\Sigma)=p$, though simulations reveal asymmetry when $p \neq q$. Increasing sample size from $n=30$ to $n=100$ reduces relative Frobenius error by 55\% for dimensions $p,q \leq 10$.
+
+\noindent{\bf Keywords:} 
+Bayesian inference, Gibbs sampling, Kronecker covariance, Matrix-variate Gaussian.
+\noindent{\bf Mathematics Subject Classification (2010):} 62F15, 62H12, 62J07. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Random matrices arise across neuroimaging (subject $\times$ region), genomics (genes $\times$ time), finance (assets $\times$ days), and environmental monitoring (locations $\times$ time). The matrix-variate Gaussian distribution captures both row-wise and column-wise dependencies via a separable Kronecker product covariance: $\text{vec}(X) \sim \mathcal{N}_{pq}(\text{vec}(M), \Psi \otimes \Sigma)$, with density
+\begin{equation*}
+f(X \mid M, \Sigma, \Psi) = \frac{\exp\left(-\frac{1}{2} \mathrm{tr}\left[ \Sigma^{-1} (X - M) \Psi^{-1} (X - M)^\top \right]\right)}{(2\pi)^{pq/2} |\Sigma|^{q/2} |\Psi|^{p/2}}.
+\end{equation*}
+The Kronecker structure reduces parameters from $\mathcal{O}(p^2q^2)$ to $\mathcal{O}(p^2+q^2)$, essential when $pq \gg n$ \cite{stegle2011}. Recent advances include warped matrix-variate Gaussian processes for multi-step prediction \cite{takano2025}, theoretical treatments of matrix-valued Gaussian processes \cite{Diaz2022}, and foundational distributional properties \cite{Barratt2018}.
+
+\noindent While frequentist MLE via the flip-flop algorithm \cite{Dutilleul1999} provides only point estimates and fails when $p,q > n$, Bayesian methods address these via full posteriors and regularization. The conjugate prior framework was pioneered by \cite{Dawid1981} and \cite{Brown1993}, with extensions to deep matrix-variate Gaussian processes \cite{park2018}. For high dimensions, sparsity-inducing priors \cite{Wang2012} and tensor decompositions \cite{Petersen2019} have proven effective.
+
+This paper provides a unified Bayesian treatment of matrix-variate Gaussian models. Section 2 develops conjugate priors and Gibbs sampling. Section 3 extends to sparsity-inducing priors (Bayesian graphical lasso, spike-and-slab). Section 4 discusses variational Bayes for scalability and presents simulation studies examining sample size, dimensionality, and identifiability constraints. Finally, the discussion and suggestions for future work are presented.
+
+\section{Conjugate Bayesian Inference}
+\label{sec:prior}
+Due to the exponential family nature of the matrix-variate Gaussian distribution, a conjugate prior exists. Following \cite{Dawid1981} and \cite{Brown1993}, we specify:
+\begin{equation}
+M \mid \Sigma, \Psi \sim \mathcal{MN}_{p \times q}(M_0, \Sigma_0, \Psi_0), \quad 
+\Sigma^{-1} \sim \mathcal{W}_p(\nu_\Sigma, V_\Sigma), \quad 
+\Psi^{-1} \sim \mathcal{W}_q(\nu_\Psi, V_\Psi), \label{eq:conj_prior}
+\end{equation}
+where $\mathcal{W}_d(\nu, V)$ is the Wishart distribution with $\nu > d-1$ degrees of freedom and scale $V$. Hyperparameters include prior mean $M_0$, row/column scale matrices $\Sigma_0, \Psi_0$, degrees of freedom $\nu_\Sigma, \nu_\Psi$, and Wishart scales $V_\Sigma, V_\Psi$, all specified by the analyst.
+
+Conjugacy implies the posterior belongs to the same family. For i.i.d. observations $X_1, \ldots, X_n \sim \mathcal{MN}_{p \times q}(M, \Sigma, \Psi)$, define $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$ and
+\begin{equation*}
+S_{\Sigma}(M) = \sum_{i=1}^n (X_i - M) \Psi^{-1} (X_i - M)^\top, \qquad 
+S_{\Psi}(M) = \sum_{i=1}^n (X_i - M)^\top \Sigma^{-1} (X_i - M).
+\end{equation*}
+Although $M$ appears in both $S_{\Sigma}(M)$ and $S_{\Psi}(M)$, preventing a simple factorization of the joint posterior, each parameter's full conditional remains conjugate. This naturally motivates a Gibbs sampling strategy.
+
+\noindent The full conditionals for Gibbs sampling are given below.
+
+\begin{thm}\label{thm:fullcond}
+Under the prior specified in \eqref{eq:conj_prior}, the full conditional distributions are:
+\begin{align}
+M \mid \Sigma, \Psi, X &\sim \mathcal{MN}_{p \times q}\left( \widetilde{M}, \widetilde{\Sigma}, \widetilde{\Psi} \right), \label{eq:condM}\\
+\Sigma^{-1} \mid M, \Psi, X &\sim \mathcal{W}_p\left( nq + \nu_\Sigma, \left[ V_\Sigma^{-1} + \sum_{i=1}^n (X_i - M) \Psi^{-1} (X_i - M)^\top \right]^{-1} \right), \label{eq:condSigma}\\
+\Psi^{-1} \mid M, \Sigma, X &\sim \mathcal{W}_q\left( np + \nu_\Psi, \left[ V_\Psi^{-1} + \sum_{i=1}^n (X_i - M)^\top \Sigma^{-1} (X_i - M) \right]^{-1} \right), \label{eq:condPsi}
+\end{align}
+where 
+\begin{equation*}
+\widetilde{\Sigma} = \left( \Sigma_0^{-1} + n \Sigma^{-1} \right)^{-1}, \quad 
+\widetilde{\Psi} = \left( \Psi_0^{-1} + n \Psi^{-1} \right)^{-1}, \quad 
+\widetilde{M} = \widetilde{\Sigma} \left( \Sigma_0^{-1} M_0 \widetilde{\Psi}^{-1} + \Sigma^{-1} \sum_{i=1}^n X_i \Psi^{-1} \right) \widetilde{\Psi}. \nonumber
+\end{equation*}
+\end{thm}
+\noindent These conditional distributions yield a straightforward Gibbs sampling scheme: at each iteration, sample $M$ from \eqref{eq:condM}, then $\Sigma^{-1}$ from \eqref{eq:condSigma}, and finally $\Psi^{-1}$ from \eqref{eq:condPsi}. Due to the Gaussian-Wishart structure, convergence is typically fast.
+
+\noindent  Hyperparameter selection significantly impacts posterior inference. For weakly informative priors, we recommend:
+\begin{itemize}
+    \item $M_0 = 0_{p \times q}$, $\Sigma_0 = c I_p$, $\Psi_0 = c I_q$ with a large $c$ (e.g., $c = 100$);
+    \item $\nu_\Sigma = p+2$, $\nu_\Psi = q+2$ (minimum for finite prior means), and $V_\Sigma = I_p$, $V_\Psi = I_q$.
+\end{itemize}
+Alternatively, empirical Bayes via marginal maximum likelihood (EM algorithm) can estimate hyperparameters.
+
+Posterior summaries are obtained directly from the Gibbs samples. For predicting a new observation $X_{\text{new}}$, the posterior predictive density is given by:
+\begin{equation*}
+p(X_{\text{new}} \mid X) = \iint p(X_{\text{new}} \mid M, \Sigma, \Psi) \, p(M, \Sigma, \Psi \mid X) \, dM \, d\Sigma \, d\Psi,
+\end{equation*}
+which can be approximated by Monte Carlo averaging over the saved posterior samples. Under the conjugate prior, the posterior predictive distribution is matrix-variate $t$, allowing for closed-form predictive densities when desired.
+
+\section{Sparsity-Inducing Priors for High Dimensions}
+
+The conjugate Wishart prior alone is insufficient for regularization when $p$ or $q$ exceeds $n$. We therefore introduce sparsity-inducing priors on the precision matrices $\Omega_\Sigma = \Sigma^{-1}$ and $\Omega_\Psi = \Psi^{-1}$.
+
+\noindent  Following \cite{Wang2012} and \cite{Petersen2019}, we place Laplace priors on the off-diagonal elements of the precision matrices:
+\begin{align*}
+p(\Omega_\Sigma \mid \lambda_\Sigma) &\propto \prod_{i<j} \frac{\lambda_\Sigma}{2} \exp(-\lambda_\Sigma |\omega_{ij,\Sigma}|) \cdot \prod_{i=1}^p \frac{\lambda_\Sigma}{2} \exp\left(-\frac{\lambda_\Sigma}{2} \omega_{ii,\Sigma}\right) \mathbf{1}_{\Omega_\Sigma \in \mathcal{P}^+_p},\\
+p(\Omega_\Psi \mid \lambda_\Psi) &\propto \prod_{i<j} \frac{\lambda_\Psi}{2} \exp(-\lambda_\Psi |\omega_{ij,\Psi}|) \cdot \prod_{i=1}^q \frac{\lambda_\Psi}{2} \exp\left(-\frac{\lambda_\Psi}{2} \omega_{ii,\Psi}\right) \mathbf{1}_{\Omega_\Psi \in \mathcal{P}^+_q},
+\end{align*}
+where $\mathcal{P}^+_d$ denotes the set of $d \times d$ positive definite matrices. The tuning parameters $\lambda_\Sigma, \lambda_\Psi$ control the degree of sparsity. For full Bayesian inference, we assign gamma hyperpriors: $\lambda_\Sigma \sim \text{Gamma}(a_\lambda, b_\lambda)$, and similarly for $\lambda_\Psi$.
+
+Posterior sampling employs block Gibbs updates with double Metropolis-Hastings or the Bayesian graphical lasso algorithm \cite{Wang2012}, which augments the model with latent scale parameters to represent the Laplace distribution as a scale mixture of normals:
+\begin{equation*}
+\frac{\lambda}{2} e^{-\lambda |\beta|} = \int_0^\infty \frac{1}{\sqrt{2\pi \tau^2}} e^{-\beta^2/(2\tau^2)} \frac{\lambda^2}{2} e^{-\lambda^2 \tau^2/2} \, d\tau^2.
+\end{equation*}
+
+For explicit model selection, spike-and-slab priors offer a more flexible approach. For $i < j$,
+\begin{align*}
+\omega_{ij,\Sigma} \mid \gamma_{ij,\Sigma} &\sim (1-\gamma_{ij,\Sigma}) \delta_0 + \gamma_{ij,\Sigma} \mathcal{N}(0, \tau^2_\Sigma),\\
+\gamma_{ij,\Sigma} \mid \pi_\Sigma &\sim \text{Bernoulli}(\pi_\Sigma), \quad \pi_\Sigma \sim \text{Beta}(a_\pi, b_\pi),
+\end{align*}
+where $\delta_0$ is a point mass at zero and $\tau^2_\Sigma$ is chosen large. Diagonal elements are constrained positive, typically with exponential priors. This prior enables posterior inference on which partial correlations are non-zero, providing a Bayesian analogue of covariance selection, though the positive definiteness constraint must be enforced separately.
+
+For many applications, the covariance exhibits low-rank plus sparse structure (e.g., factor models). We decompose:
+\begin{equation*}
+\Sigma = \Sigma_L + \Sigma_S + \sigma^2 I_p, \quad \Psi = \Psi_L + \Psi_S + \tau^2 I_q,
+\end{equation*}
+with $\Sigma_L$ low-rank, $\Sigma_S$ sparse, and $\sigma^2 I_p$ diagonal. Bayesian inference employs multiplicative gamma process priors for the low-rank component \cite{Bhattacharya2015} and horseshoe priors for the sparse component.
+
+\section{Computational Strategies and Simulation Studies}
+Algorithm \ref{alg:gibbs} summarizes the Gibbs sampler for the conjugate model.
+
+\begin{alg}\label{alg:gibbs}
+\textbf{Gibbs Sampler for Matrix-Variate Gaussian Model}
+\begin{itemize}
+    \item Initialize $M^{(0)} = \bar{X}$, $\Sigma^{(0)} = I_p$, $\Psi^{(0)} = I_q$.
+    \item For $t = 1, \ldots, T$:
+    \begin{itemize}
+        \item[1.] Sample $M^{(t)} \mid \Sigma^{(t-1)}, \Psi^{(t-1)}, X$ from \eqref{eq:condM}.
+        \item[2.] Compute $S_\Sigma = \sum_{i=1}^n (X_i - M^{(t)}) (\Psi^{(t-1)})^{-1} (X_i - M^{(t)})^\top$.
+        \item[3.] Sample $\Sigma^{(t)} \sim \mathcal{W}_p^{-1}\left( nq + \nu_\Sigma, (V_\Sigma^{-1} + S_\Sigma)^{-1} \right)$.
+        \item[4.] Compute $S_\Psi = \sum_{i=1}^n (X_i - M^{(t)})^\top (\Sigma^{(t)})^{-1} (X_i - M^{(t)})$.
+        \item[5.] Sample $\Psi^{(t)} \sim \mathcal{W}_q^{-1}\left( np + \nu_\Psi, (V_\Psi^{-1} + S_\Psi)^{-1} \right)$.
+    \end{itemize}
+    \item Discard first $B$ iterations as burn-in.
+\end{itemize}
+\end{alg}
+
+\noindent Gibbs sampling becomes slow for large $p$ and $q$ (e.g., $p,q > 100$). Variational Bayes (VB) provides a deterministic approximation. We posit a mean-field factorization:
+\begin{equation*}
+q(M, \Sigma, \Psi) = q_M(M) \, q_\Sigma(\Sigma) \, q_\Psi(\Psi).
+\end{equation*}
+The VB algorithm iteratively updates each factor by minimizing the Kullback-Leibler divergence $\mathrm{KL}(q \| p(\cdot \mid X))$, yielding:
+\begin{align*}
+\log q_M(M) &= \mathbb{E}_{q_\Sigma q_\Psi}[\log p(X \mid M, \Sigma, \Psi) + \log p(M \mid \Sigma, \Psi)] + \text{const},\\
+\log q_\Sigma(\Sigma^{-1}) &= \mathbb{E}_{q_M q_\Psi}[\log p(X \mid M, \Sigma, \Psi) + \log p(\Sigma^{-1})] + \text{const},
+\end{align*}
+and similarly for $\Psi$. The updates become:
+\begin{eqnarray*}
+q_M(M) = \mathcal{MN}(\widehat{M}, \widehat{\Sigma}, \widehat{\Psi}),\ \ \ 
+q_\Sigma(\Sigma^{-1}) = \mathcal{W}_p(\widehat{\nu}_\Sigma, \widehat{V}_\Sigma),\ \ \ 
+q_\Psi(\Psi^{-1}) = \mathcal{W}_q(\widehat{\nu}_\Psi, \widehat{V}_\Psi),
+\end{eqnarray*}
+with parameters updated via coordinate ascent. VB converges in tens of iterations, each requiring $\mathcal{O}(p^3 + q^3)$ operations, making it suitable for moderate dimensions ($p,q \sim 200$).
+
+We conducted simulation studies to evaluate the finite-sample performance of the proposed Bayesian Gibbs sampler for matrix-variate Gaussian estimation. Our primary objectives were to assess: (i) the effect of sample size on estimation accuracy, (ii) the impact of row and column dimensions, and (iii) the sensitivity to the identifiability constraint required for the Kronecker product decomposition.
+
+Data were generated from the matrix-variate Gaussian distribution $\mathcal{MN}_{p \times q}(0, \Sigma, \Psi)$ with zero mean matrix to isolate covariance estimation. For all simulations, we used the weakly informative prior specification described in Section~\ref{sec:prior}:
+\begin{equation*}
+M_0 = 0_{p \times q}, \quad \Sigma_0 = 100 I_p, \quad \Psi_0 = 100 I_q, \ \ \ \ \nu_\Sigma = p+2, \quad V_\Sigma = I_p, \quad \nu_\Psi = q+2, \quad V_\Psi = I_q.
+\end{equation*}
+The Gibbs sampler was run for 15,000 iterations with the first 5,000 discarded as burn-in. To resolve the scaling indeterminacy inherent in the Kronecker product ($\Psi \otimes \Sigma = c\Psi \otimes c^{-1}\Sigma$ for any $c>0$), we imposed the identifiability constraint $\operatorname{tr}(\Sigma) = p$, rescaling both covariance matrices after each iteration.
+
+\noindent We examined five representative configurations:
+\begin{itemize}
+    \item \textbf{Small symmetric:} $p=5$, $q=5$, $n=30$;
+    \item \textbf{Asymmetric (rows $<$ columns):} $p=5$, $q=10$, $n=30$;
+    \item \textbf{Asymmetric (rows $>$ columns):} $p=10$, $q=5$, $n=30$;
+    \item \textbf{Moderate symmetric:} $p=10$, $q=10$, $n=30$;
+    \item \textbf{Large sample:} $p=10$, $q=10$, $n=100$.
+\end{itemize}
+
+\noindent For simplicity and to establish baseline performance, we set the true covariance matrices to identity: $\Sigma = I_p$ and $\Psi = I_q$. Estimation accuracy was measured using the relative Frobenius norm error:
+\begin{equation*}
+\text{Error}(\hat{\Sigma}) = \frac{\|\hat{\Sigma} - \Sigma\|_F}{\|\Sigma\|_F}, \qquad
+\text{Error}(\hat{\Psi}) = \frac{\|\hat{\Psi} - \Psi\|_F}{\|\Psi\|_F},
+\end{equation*}
+where $\hat{\Sigma}$ and $\hat{\Psi}$ are posterior means, and $\|\cdot\|_F$ denotes the Frobenius norm.
+
+\noindent  Table~\ref{tab:corrected} presents the estimation errors for all five configurations.
+
+\begin{table}[h]
+\centering
+\caption{Estimation errors after applying the identifiability constraint tr($\Sigma$)=$p$}
+\label{tab:corrected}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Configuration} & \textbf{$p$} & \textbf{$q$} & \textbf{$n$} & \textbf{$\Sigma$ Error} \\
+\hline
+Small symmetric & 5 & 5 & 30 & 0.211 \\
+Asymmetric (rows $<$ cols) & 5 & 10 & 30 & 0.155 \\
+Asymmetric (rows $>$ cols) & 10 & 5 & 30 & 0.274 \\
+Moderate symmetric & 10 & 10 & 30 & 0.212 \\
+Large sample & 10 & 10 & 100 & 0.096 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent  The sampler demonstrates desirable asymptotic behavior: increasing the sample size from $n=30$ to $n=100$ reduced the estimation error by 55\% (from 0.212 to 0.096). All errors are below 0.28, indicating reliable performance for dimensions $p,q \leq 10$ with sample size $n \geq 30$. The small symmetric configuration ($p=q=5$, $n=30$) achieved an error of 0.211, while the moderate symmetric configuration ($p=q=10$, $n=30$) produced a nearly identical error of 0.212, suggesting that doubling the dimension from 5 to 10 does not substantially degrade performance when the sample size is fixed.
+
+\noindent We observe mild asymmetry in the results: the error for the configuration with fewer rows than columns ($p=5,q=10$) is 0.155, while the error for the transposed configuration ($p=10,q=5$) is 0.274. Under perfect symmetry, these values should be identical, as the model treats rows and columns symmetrically.
+
+\noindent This asymmetry suggests that the trace constraint $\operatorname{tr}(\Sigma)=p$ does not fully resolve the Kronecker product scaling indeterminacy. The constraint fixes the scale of $\Sigma$ but leaves the relative scaling between $\Sigma$ and $\Psi$ partially unidentified, particularly when $p \neq q$. As a result, the Gibbs sampler may experience different mixing behavior depending on which dimension is larger.
+
+\noindent Alternative constraints may yield perfect symmetry. For instance, fixing $\Sigma_{11}=1$ (i.e., setting the first diagonal element of $\Sigma$ to unity) provides a direct scale anchor. Another approach is to impose $\|\Sigma\|_F = \sqrt{p}$, which normalizes the Frobenius norm. We leave a systematic comparison of identifiability constraints for future research.
+
+\section*{Discussion and Conclusion}
+We developed a Bayesian framework for matrix-variate Gaussian distributions with Kronecker covariance. The trace constraint resolves scaling indeterminacy but introduces asymmetry when $p \neq q$ (errors 0.155 vs 0.274). Simulations show increasing $n$ reduces error for $p,q \leq 10$. Future work includes non-Gaussian extensions, and comparison of alternative identifiability constraints.
+
+\begin{thebibliography}{9}
+\bibitem[Barratt (2018)]{Barratt2018}
+Barratt S. (2018), A matrix Gaussian distribution, {\it arXiv preprint} arXiv:1804.11010.
+
+\bibitem[Bhattacharya and Dunson (2015)]{Bhattacharya2015}
+Bhattacharya A. and Dunson D.B. (2015), Simplex factor models for multivariate unordered categorical data, {\it Journal of the American Statistical Association} 107(497), 362-377.
+
+\bibitem[Brown et al. (1993)]{Brown1993}
+Brown P.J., Le N.D. and Zidek J.V. (1993), Inference for a covariance matrix, {\it Aspects of Uncertainty}, 77-92.
+
+\bibitem[Dawid (1981)]{Dawid1981}
+Dawid A.P. (1981), Some matrix-variate distribution theory: Notational considerations and a Bayesian application, {\it Biometrika} 68(1), 265-274.
+
+\bibitem[Diaz et al. (2022)]{Diaz2022}
+Diaz M., Jaramillo A. and Pardo J.C. (2022), Fluctuations for matrix-valued Gaussian processes, {\it Annales de l'Institut Henri Poincar\'e (B) Probabilit\'es et statistiques} 58(4), 2216-2249.
+
+\bibitem[Dutilleul (1999)]{Dutilleul1999}
+Dutilleul P. (1999), The MLE algorithm for the matrix normal distribution, {\it Journal of Statistical Computation and Simulation} 64(2), 105-123.
+
+\bibitem[Park et al. (2018)]{park2018}
+Park Y.J., Tagade P.M., Samsung R. and Choi H.L. (2018), Deep matrix-variate Gaussian processes, {\it RN} 50(0).
+
+\bibitem[Petersen et al. (2019)]{Petersen2019}
+Petersen A., Zhang C. and Kokoszka P. (2019), Modeling matrix time series via a tensor decomposition, {\it Journal of the American Statistical Association} 114(528), 1780-1792.
+
+\bibitem[Stegle et al. (2011)]{stegle2011}
+Stegle O., Lippert C., Mooij J.M., Lawrence N. and Borgwardt K. (2011), Efficient inference in matrix-variate Gaussian models with iid observation noise, {\it Advances in Neural Information Processing Systems} 24.
+
+\bibitem[Takano and Jimbo (2025)]{takano2025}
+Takano S. and Jimbo T. (2025), Warped matrix-variate Gaussian processes with structured kernels for multi-step-ahead driving behaviour prediction, {\it SICE Journal of Control, Measurement, and System Integration} 18(1), 2455222.
+
+\bibitem[Wang (2012)]{Wang2012}
+Wang H. (2012), Bayesian graphical lasso models and efficient posterior sampling, {\it Bayesian Analysis} 7(4), 867-886.
+
+\end{thebibliography}
+
+\end{document}

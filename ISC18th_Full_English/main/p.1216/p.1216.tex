@@ -1,0 +1,180 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Misclassification Probabilities and Measurement Error in Multilevel Models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Ahangari, M., Golalizadeh, M., Rezaei Ghahroodi, Z.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Multilevel Analysis of Misclassified Binary Outcomes: Validation-Data-Based Approach Adjusting for Covariate Measurement Error }\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+ Maryam Ahangari\footnote{Corresponding author: {\tt maryam.ahangari@gmail.com}} $^1$, Mousa Golalizadeh$^1$, Zahra Rezaei Ghahroodi$^2$\\
+\small $^1$Department of Statistics, Tarbiat Modares University  \\
+%\small $^1$ Department of Statistics,  University of Mazandaran  \\
+\small $^2$School of Mathematics, Statistics and Computer Science, University of Tehran }
+%\fancyhead[LE] {Misclassification Probabilities and Measurement Error in Multilevel Models}
+%\fancyhead[RO] {Ahangari, M., Golalizadeh, M., Rezaei Ghahroodi, Z.}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Longitudinal designs inherently involve correlated repeated measurements nested within individuals. In such frameworks, time-varying covariates and discrete response variables are frequently subject to error due to methodological constraints or prohibitive costs. Naive estimation strategies that ignore errors in either the covariates or the response, systematically yield biased parameter estimates, affecting the validity of statistical inference and reducing asymptotic efficiency. To address this, we propose a joint modeling framework that simultaneously adjusts for misclassification in correlated binary responses and measurement error in continuous covariates. Our methodology leverages validation data to reliably estimate the misclassification mechanism and employs multivariate Gauss-Hermite quadrature to approximate the intractable integrals within the marginal likelihood function. Simulation studies are conducted to evaluate the finite-sample performance of the proposed estimator. 
+ 
+\noindent{\bf Keywords:} 
+Measurement Error, Internal Validation Data, Multivariate Gauss-Hermite Quadrature, Random Effects Logistic Regression Model, Misclassification. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J12$, $\rm 62F10$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Generalized linear mixed models (GLMMs) have become a standard tool for analyzing correlated, longitudinal, and hierarchical data. However, the presence of measurement error in continuous covariates and misclassification in discrete variables can lead to biased estimates and invalid statistical inferences (\cite{CR6} and \cite{Cui:Yi:2025}). Common approaches to correct for covariate measurement error within the GLMM framework include likelihood-based methods (\cite{Xie:2017}). In this framework, \cite{Ahangari:2023} examined and corrected covariate measurement error in multilevel models using the multivariate Gauss-Hermite quadrature method to tackle numerical integration challenges. A fundamental complication in statistical inference procedures is the issue of response variable misclassification. As stated by \cite{Yi:2017}, this error in discrete variables can arise from factors such as high measurement costs and the tendency to misreport on sensitive questions. Ignoring this error leads to flawed inferences. In this regard, bayesian approaches have been developed by researchers such as \cite{Naranjo:2019} for ordinal responses. Furthermore, validation data-based approaches have been employed by \cite{Tang:2015}.
+On the other hand, the simultaneous occurrence of “covariate measurement error” and “response misclassification” is highly prevalent in epidemiological studies. Ignoring these two sources of error can lead to miscalculated statistical power and misleading results (\cite{Yi:2017}). To simultaneously handle these two errors, approaches such as weighted estimation methods (\cite{Shu:Yi:2019}), and Markov Chain Monte Carlo (MCMC) techniques in longitudinal data (\cite{Roy:2016}) have been proposed.
+In this paper, we address the simultaneous occurrence of misclassification in binary responses and measurement error in continuous covariates. We propose an approximation-based multivariate Gauss-Hermite quadrature approach that facilitates the computation of intractable integrals within the likelihood function. Our modeling framework focuses on parameter estimation in the presence of non-differential misclassification of responses and classical additive covariate measurement error, utilizing accessible internal validation data. The remainder of this paper is organized as follows. Section 2 outlines the generalized linear mixed models formulated for binary outcomes subject to misclassification and continuous covariates subject to measurement error. In Section 3, we describe the procedure for evaluating the likelihood function when internal validation data are available to estimate nuisance parameters. Within this section, a corrected likelihood-based framework is introduced. In Section 4, the performance of the proposed bias-correction method is evaluated through a simulation-based sensitivity analysis. 
+ \section{Misclassification and Measurement Error in Multilevel Models with Binary Response Data, Essentials and Notations}
+  %%%%%-------------------------------------------------------------------------------%%%%%
+Consider a study including $m$ subjects in which subject $i$ $(1\leq i \leq m)$ is evaluated on $n_i$ occasions. Let $Y_i=(Y_{i1},\cdots,Y_{in_i})^T$ be a vector of binary outcomes, with $Y_{ij}$ as the response variable for subject $i$ at the $j$th occasion $(j=1,\cdots,n_i)$. Suppose $Y_i$ is a misclassification-prone response variable that follows a generalized linear mixed model with random intercept for each individual. The vector of model covariates $X_i=(X_{i1}^T,\cdots,X_{in_i}^T)^T$ and  $Z_i=(Z_{i1}^T,\cdots,Z_{in_i}^T)^T$ are assumed to be time-varying. Let also $X_{ij}$ be the vector of true covariates which are prone to error and not directly observed, and $Z_{ij}$ be the vector of error-free covariates. In addition, let $X_{ij}^{\star}$ and $Y_{ij}^{\star} $ be the surrogate measurements of $X_{ij}$ and $Y_{ij}$, respectively, that are present in the default of $X_{ij}$ and $Y_{ij}$. Note that the notations used here are similar with those utilized in the literature of \cite{Yi:2017}.
+ %%%%%-------------------------------------------------------------------------------%%%%%%
+  \subsection{Addressing the Outcome Process}
+  %%%%%-------------------------------------------------------------------------------%%%%%%
+A two-level logistic model for $Y_{ij}$ can be defined by including random effects as unobserved heterogeneity among the individuals in the linear predictor, as follows:
+  %%%%%-------------------------------------------------------------------------------%%%%%%
+\begin{eqnarray}\label{a1}
+\begin{array}{l}
+ logit [P(Y_{ij}=1|x_{ij},z_{ij},\tau_{i})]=\beta _{0}+\beta_{x}x_{ij}+\beta_{z}z_{ij}+\tau_i, \ \ \ \\ \ \ \ \ \ \ \ \ i=1,\cdots,m,\ \ j=1,\cdots,n_i.
+ \end{array}
+  \end{eqnarray}
+Based upon the outcome model (\ref{a1}), it should be pointed out that $\beta=(\beta_{0}, \beta _{x},\beta_{z})^T$ is the vector of fixed parameters. We assume that the random effects $\tau _i$, $ (i=1,\cdots,m)$ are independent from each other, and also independent of covariates $X_{ij}$ and $Z_{ij}$. In this article, it is assumed that $\boldsymbol{\tau _i} \sim N(0,\sigma_{\tau} ^2)$, as the distribution of random effects, where $\sigma_{\tau} ^2$ is unknown and has been taken to be constant for all subjects.
+%%%%%-------------------------------------------------------------------------------%%%%%%
+  \subsection{The Measurement Error Model}
+  %%%%%-------------------------------------------------------------------------------%%%%%%
+ Let $X_{ij}$ denote the unobserved true covariate value for individual $i$ at occasion $j$ and let $X_{ij}^{\star}$ represent its observed, available, yet potentially error-prone covariate. In the present paper, to account for measurement error, we adopt a classical measurement error model to characterize the relationship between $X_{ij}$ and $X_{ij}^{\star}$. Under this framework, $X_{ij}^{\star}$ serves as a surrogate version of $X_{ij}$, i.e. the true latent variable is measured with an additive error, which is conventionally assumed to have a constant variance, i.e.
+$\boldsymbol{X_{ij}^{\star}|x_{ij}=x_{ij}+e_{ij}}$, 
+where $\boldsymbol{e_{ij}}$ is the error term such that $E(e_{ij}|x_{ij})=0$ and $Var(e_{ij}|x_{ij})=\sigma _e ^2$, when $X_{ij}^{\star}$ and $X_{ij}$ are scalar. It is concluded that $E(X_{ij}^{\star}|x_{ij})=x_{ij}$, so $X_{ij}^{\star}$ is unbiased for the unobserved $x_{ij}$. We also consider that the measurement error in $X_{ij}^{\star}$ is non-differential.
+In the following, it is assumed that we have homoscedastic measurement error, which refers to the case where the variance of $X_{ij}^{\star}$ given $x_{ij}$ is constant. With random covariate $X_i$ subject to error, we assume distributional assumption on error-prone covariate $X_i$, i.e. structural approach in which covariate $X_i$ has a normal distribution with mean $\mu _x$ and variance $\Sigma _x$, and is independent of $\tau _i$. We choose a fully structural case for the falliable covariate.
+  The measurement error in the multivariate case, also has a normal distribution with the structure $\boldsymbol{e_i} \sim N(0_{n_i},\sigma_e^2 I_{n_i}).$
+\subsection{Model for Misclassification Probabilities}\label{misprob}
+Suppose that $Y_{ij}$ is subject to misclassification, and $Y_{ij}^{\star}$ is an observed value of $Y_{ij}$. Particularly, let
+\begin{eqnarray}\label{c1}
+P(Y_{ij}^{\star}=1|Y_{{ij}}=0,X_{ij}^{\star},Z_{ij},\tau_{i})=P(Y_{ij}^{\star}=1|Y_{ij}=0)=\gamma_{01}\\
+P(Y_{ij}^{\star}=0|Y_{ij}=1,X_{ij}^{\star},Z_{ij},\tau_{i})=P(Y_{ij}^{\star}=0|Y_{ij}=1)=\gamma_{10},
+\end{eqnarray}
+denote the simple case of misclassification probabilities. The probability $1-\gamma _{10}$ is often called the sensitivity of the measurement $Y_{ij}^{\star}$, and $1-\gamma _{01}$ is called the specificity. In this framework, $\gamma _{01}$ and $\gamma _{10}$ are considered to be unrecognized, nonnegative classification error probabilities that are constant and 
+independent of other covariates in the model. 
+This notification is widely referred to as `non-differential misclassification', i.e. classification error probabilities are constant and independent of other covariates in the model. If this assumption is violated in practice, the proposed estimators may be subject to bias. 
+Next, we proceed to improve the model via correcting for the covariate measurement error along with response classification error. 
+%%%%%%%%%---------------------------------------------------------------------%%%%%
+		\section{Likelihood Inference with Misclassified Responses and Mismeasured Covariates}
+%%%%%%%%%---------------------------------------------------------------------%%%%%
+This section outlines the derivation of the observed-data likelihood function, assuming parametric models are specified for the underlying processes. The general framework for internal validation data, indexed by $\mathcal{\nu}$, is randomly selecting a subsample from the main study subjects, indexed by $\mathcal{M}$. When $i \in \mathcal{\nu}$, measurements of $\{Y_{ij},Y_{ij}^{\star},X_{ij},X_{ij}^{\star},Z_{ij}\}$ are obtainable, while when $i \in \mathcal{M}\setminus \mathcal{\nu}$, we can only have access to the measurements of $\{Y_{ij}^{\star},X_{ij}^{\star},Z_{ij}\}$, still according to various follow-ups. In addition, let $m$ and $m_v$ be the size of $\mathcal{M}$ and $\mathcal{\nu}$, respectively. Statistial inference about $\theta$ (the vector of associated parameters together with misclassification rates) is driven by the observed-data likelihood function. Let $\mu _{ij}=P(Y_{ij}=1|X_{ij},Z_{ij})$ be the mean of the respons variable and $\mu _{ij} ^{\star}=P(Y_{ij}^{\star}=1|X_{ij}^{\star},Z_{ji})$ be the mean according to the observed data. Specifically, the information provided by the main study and the validation subsample is formulated as:
+\begin{eqnarray}\label{likeli1}
+\begin{array}{l}
+L(\theta;y^{\star},x^{\star},z)=\{\prod_{i \in \mathcal{\nu}}f(y_i,y_i^{\star}|x_i^{\star},z_i,\tau_i)\}\{\prod _{i \in \mathcal{M}\setminus \mathcal{\nu}}f(y_i^{\star}|x_i^{\star},z_i,\tau _i)\}\\
+\qquad \qquad \qquad = \{\prod_{i \in \mathcal{\nu}} \int _\mathcal{R} \prod_{j=1}^{n_i}\mu _{ij} ^{y_{ij}}(1-\mu _{ij}) ^{1-y_{ij}}\{a_1(y_{ij}^{\star},x_{ij}^{\star})\}^{y_{ij}}\{a_0(y_{ij}^{\star},x_{ij}^{\star})\}^{1-y_{ij}}\\
+\qquad \qquad \qquad \times f(y_{ij}|x_{ij}^{\star},z_{ij},\tau_i;\beta)f(\tau_i;\sigma _{\tau}^2)d\tau _i\} \\
+\qquad \qquad \qquad \times \{\prod _{i \in \mathcal{M}\setminus \mathcal{\nu}}\int_{\mathcal{R}}\int_{\mathcal{R}^{n_i}}\prod_{j=1}^{n_i}f(y_{ij}^{\star}|x_{ij},z_{ij},\tau _i;\beta)f(x_{ij}^{\star}|x_{ij};\sigma_e^2)f(x_{i};\mu_x,\sigma_{xj}^2)f(\tau _i;\sigma _{\tau}^2)dx_{ij}d\tau _i \}.
+\end{array}
+\end{eqnarray}
+ where for $k=0$ and 1, $a_k(y_{ij}^{\star},x_{ij}^{\star})=P(Y_{ij}^{\star}=y_{ij}^{\star}|Y_{ij}=k,X_{ij}^{\star},Z_{ij})$, which is given by
+ \begin{eqnarray*}
+a_0(y_{ij}^{\star},x_{ij}^{\star})=\gamma_{01}(X_{ij}^{\star},Z_{ij})^{y_{ij}^{\star}}\{1-\gamma_{01}(X_{ij}^{\star},Z_{ij})\}^{1-y_{ij}^{\star}};\\
+ a_1(y_{ij}^{\star},x_{ij}^{\star})=\gamma_{10}(X_{ij}^{\star},Z_{ij})^{1-y_{ij}^{\star}}\{1-\gamma_{10}(X_{ij}^{\star},Z_{ij})\}^{y_{ij}^{\star}}.
+ \end{eqnarray*}
+ A practical limitation of the proposed method is its reliance on internal validation data. The accuracy of our estimators is sensitive to the size and quality of this validation sample. A very small validation sample may result in unstable bandwidth selection and increased variance in the parameter estimates. Therefore, obtaining a sufficiently large and representative validation subset is essential for the reliable application of this approach.
+ Due to the computational challenges associated with simultaneously estimating the error parameters and $\beta$, we propose a two-stage estimation procedure. In the first stage, the nuisance parameters $\gamma_{01}$ and $\gamma_{10}$ are estimated via maximum likelihood, relying exclusively on the validation subsample. In the second stage, the estimates for $\beta$ and $\sigma _e^2$​ are obtained by solving equation (\ref{likeli1}), substituting the nuisance parameters $\gamma_{01}$ and $\gamma_{10}$ with their corresponding first-stage estimates.\\
+ To approximate the $(n_i+1)$ dimensional integrals in (\ref{likeli1}), a multivariate structure of the Gauss-Hermite quadrature technique (MGHQ) is required to simultaneously integrate over the latent covariates $X_{ij}$ across $n_i$ occasions and the random effects $\tau _i$. Since $X_{ij}$ and $\tau _i$ are independent, their joint density can be expressed as the product of their marginal distributions, forming a multivariate normal distribution. Consequently, quadrature weights and nodes are derived based on the mean vector and covariance matrix of this joint distribution, $f(x_{i}, \tau _i;\sigma _{xj}^2,\sigma _{\tau}^2)$.  Therefore, the integrals in Equation (\ref{likeli1}) are approximated by evaluating the integrand at a specified collection of MGHQ nodes and applying the corresponding weights
+\begin{eqnarray*}
+\{x_{kj}=(x_{{k_1}j}^{(1)},x_{{k_2}j}^{(2)},\cdots,x_{k_{(n_i+1)}j}^{(n_i +1)})': 1\leq k_1 \leq q_1;1 \leq k_2 \leq q_2;\cdots ;1 \leq k_{(n_i+1)} \leq q_{(n_i+1)}\}\\
+\{\tau_k=(\tau_{k_1}^{(1)},\tau_{k_2}^{(2)},\cdots,\tau_{k_{(n_i+1)}}^{(n_i+1)})':1\leq k_1 \leq q_1;1 \leq k_2 \leq q_2;\cdots ;1 \leq k_{(n_i+1)} \leq q_{(n_i+1)}\}\\
+\{g_k=(g_{k_1}^{(1)},g_{k_2}^{(2)},\cdots ,g_{k_{(n_i+1)}}^{(n_i+1)})':1\leq k_1 \leq q_1;1 \leq k_2 \leq q_2;\cdots ;1 \leq k_{(n_i+1)} \leq q_{(n_i+1)}\}.
+\end{eqnarray*}
+Within this framework, $k$ serves as a composite index for $k_1,k_2,\cdots,k_{(n_i+1)}$. These indices indicate the different collections of quadrature nodes required for the approximation of the $(n_i+1)$ integrals. For more details, researchers can refer to \cite{Ahangari:2023}. Following \cite{CR6}, asymptotic theory indicates that the pseudo-maximum likelihood estimator is consistent given an adequate proportion of validation data. Furthermore, this study utilizes a quasi-Newton optimization approach for the maximization step of the MGHQ-approximated likelihood function to derive the parameter estimates.
+While the current framework assumes a random-intercept-only structure, extending the model to include random slopes or more general correlation structures is theoretically straightforward. However, such an extension introduces significant computational challenges. The reliance on multivariate Gauss-Hermite quadrature implies that increasing the dimension of the random effects will exponentially increase the computational burden due to the curse of dimensionality.
+\section{Simulations and Inferences}
+In this section, simulation studies are conducted to evaluate the impact of binary response misclassification and covariate measurement error on parameter estimation. To demonstrate the effectiveness of the proposed approach, we compare the estimates obtained from our corrected model with those from a naive model that ignores both sources of error. 
+We simulate a model relating a binary response to two continuous covariates, assuming the subject-specific random effects are normally distributed, such that $\tau _i \sim N(0,\sigma _{\tau}^2 )$. The simulated design consists of $m$=2000 subjects, each with $n_i=3$ repeated measurements. A randomly selected subsample of $m_v=500$ subjects is assigned to the internal validation set, leaving the remaining 1500 subjects with only main study observations.
+%%%%%------------------------------------------%%%%%
+		\subsection{Simulation Results}
+%%%%%------------------------------------------%%%%%
+This section presents the simulation results evaluating the performance of the two aforementioned methods. Parameter estimation results for the Naive and Corrected approaches are detailed in Tables \ref{tab1} and \ref{tab2}, respectively. From a computational perspective, the proposed estimation procedure demonstrated stable convergence. In our simulation studies, the quasi-Newton optimization successfully converged in over $95 \%$ of the replications. To ensure numerical stability, the algorithm was initialized using parameter estimates obtained from a naive model that ignores misclassification. On a standard computing environment, fitting the proposed model for a dataset with $n_i=3$ repeated measures takes approximately 3 minutes per simulation. While the algorithm scales linearly with the number of clusters, the computational time increases substantially if higher-dimensional random effects are considered, due to the nature of the multivariate Gauss-Hermite quadrature.
+As shown in Table \ref{tab2}, under a minor measurement error scenario ($\sigma_e^2=0.5$), it is evident that accounting for covariate measurement error and response misclassification substantially reduces bias in the fixed effect estimates compared to the Naive model. Furthermore, the Corrected approach consistently yields smaller Root Mean Square Errors (RMSEs) and improved $95 \%$ Coverage Probabilities (CPs). In this scenario, the estimated measurement error variance remained statistically significant at the $95 \%$ confidence level.
+Computationally, the Corrected approach achieves accurate parameter adjustments even with a small number of quadrature points; increasing the number of nodes from 3 to 10, produced negligible changes in the estimates. Model selection criteria further support the proposed method, with the Corrected approach demonstrating a superior fit and minimized information loss (AIC = -13023.24) compared to the Naive approach (AIC = -3198.778). Additionally, the Total Variation Distance (TVD), which was used to quantify the discrepancy between true and estimated parameters across simulations, was markedly lower for the proposed Corrected model.
+These simulations were conducted using a classical additive measurement error model with a structural setting for the fallible covariate and varying misclassification probabilities. The findings clearly illustrate that neglecting measurement error or misclassification severely attenuates the estimates of regression coefficients. Parameter estimates proved highly sensitive to the magnitude of the measurement error variance, and failing to address misclassification yielded highly detrimental effects. Ultimately, these results underscore the critical necessity of implementing an error-corrected methodology when analyzing data, affected by classification errors in binary responses and measurement error in covariates. While simulation studies confirm the validity and computational efficiency of the proposed corrected approach, the current study is limited by the absence of real data application, due to the strict 8-page limit and extensive space to present the mathematical framework. This real-data application will be the centerpiece of our future study.\\
+It is worth noting that while standard correction methods are well-established, they are not directly applicable to our complex setting, which simultaneously features response misclassification, covariate measurement error, and a multilevel structure. A straightforward alternative is the ‘validation-data only’ approach, which fits the model using solely the validation sample. While this method circumvents the bias introduced by the errors, it discards a significant portion of the data (the main sample). Consequently, as our simulation results suggest, the proposed corrected approach is superior in terms of statistical efficiency and precision, as it effectively leverages the full available data.
+%%%%%------------------------------------------%%%%%
+\begin{table}[h]
+\caption{\footnotesize{Parameter estimation (Est), absolute of bias (Bias), standard error (SE), root of mean squared error (RMSE), and coverage probability (CP) of the parameter estimates with $n_i=3$ replicates and 1000 simulation runs for the Naive  approach.}\label{tab1}} 
+\centering
+ \begin{tabular}{ccccccc}
+\hline 
+Parameter &True Value &  Est & Bias & SE & RMSE & CP
+\\\hline
+$\beta_{0}$&0.02 & 0.0112 & 0.0087& 0.0557 & 0.0564&0.85  \\
+$\beta_{x}$&0.6&0.4341&0.1659&0.0419&0.1711&0.92 \\ 
+$\beta_{z}$&0.5&0.3694&0.1306&0.0197&0.1320&0.89\\
+$\sigma_{\tau}^2$&2.4&1.3084&1.0916&0.2255&1.1146&0.90\\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.5cm}
+%%%%%------------------------------------------%%%%%
+%%%%%------------------------------------------%%%%%
+\begin{table}[h]
+\caption{\footnotesize{Parameter estimation (Est), absolute of bias (Bias), standard error (SE), root of mean squared error (RMSE), and coverage probability (CP) of the parameter estimates with $n_i=3$ replicates and 1000 simulation runs for the Corrected approach.}
+\label{tab2}} 
+\centering
+ \begin{tabular}{ccccccc}
+\hline 
+Parameter &True Value &  Est & Bias & SE & RMSE & CP
+\\\hline
+$\beta_{0}$&0.02 & 0.0201&0.0001&0.0557&0.0557&0.94  \\
+$\beta_{x}$&0.6&0.5872&0.0128&0.0834&0.0844&0.96 \\ 
+$\beta_{z}$&0.5&0.4869&0.0131&0.0483&0.0500&0.91\\
+$\sigma_{\tau}^2$&2.4&2.2574&0.1425&0.4589&0.4805&0.91\\
+$\sigma_e^2$&0.5&0.6556&0.1557&0.0292&0.1584&0.90\\
+$\gamma_{01}$&0.05&0.0465&0.0034&0.0232&0.0234&0.96\\
+$\gamma_{10}$&0.05&0.0425&0.0075&0.0213&0.0226&0.93\\
+\hline
+\end{tabular}
+\end{table}
+\vspace{-0.5cm}
+\section*{Discussion and Conclusion}   
+This paper introduces a likelihood inference method utilizing internal validation data and multivariate Gauss-Hermite quadrature for logistic random-effects models. By simultaneously addressing classical covariate measurement errors and non-differential binary response misclassification, our corrected approach effectively eliminates bias and provides highly consistent estimators compared to naive models.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Ahangari et al. (2023)]{Ahangari:2023}
+Ahangari M., Golalizadeh M. and Rezaei Ghahroodi Z. (2023), Maximum approximated likelihood estimation in generalized linear multilevel model for nominal response with covariates subject to measurement error, {\it Journal of Sciences, Islamic Republic of Iran}, 34(4): 333-348.
+\bibitem[Carroll et al. (2006)]{CR6}
+Carroll, R. J., Ruppert, D., Stefanski, L. A. and Crainiceanu, C. M. (2006), {\it Measurement error in nonlinear models: A modern perspective}, New York, Chapman and Hall.
+
+\bibitem[Cui and Yi (2025)]{Cui:Yi:2025}
+Cui, J. and Yi, G.Y. (2025), Multivariate regression with measurement error: Bias analysis and estimation, {\it Journal of Nonparametric Statistics}, 37(4), 1257-1297.
+\bibitem[Naranjo et al. (2019)]{Naranjo:2019}
+Naranjo, L., Martín, J. and Pérez, C. J. (2019), Bayesian analysis of ordinal response regression models with misclassification, {\it Statistical Methods in Medical Research}, 28(6), 1774-1786.
+\bibitem[Roy (2016)]{Roy:2016}
+Roy, J. (2016), Markov chain Monte Carlo methods for clustered categorical data subject to misclassification, {\it Communications in Statistics - Simulation and Computation}, 45(7), 2410-2425.  
+\bibitem[Shu and Yi (2019)]{Shu:Yi:2019}
+Shu, D. and Yi, G. Y. (2019), Weighted estimating equations for longitudinal data with measurement error and misclassification,  {\it Statistical Methods in Medical Research}, 28(4), 1011-1029. 
+\bibitem[Tang et al. (2015)]{Tang:2015}
+Tang, L., Lyles, R. H., King, C. C., Celentano, D. D. and Lo, Y. (2015), Binary regression with differentially misclassified response and exposure variables, {\it Statistics in Medicine}, 34(9), 1605-1620. 
+\bibitem[Xie et al. (2017)]{Xie:2017}
+Xie, X., Xue, X. and Strickler, H.D. (2017), Generalized linear mixed model for binary outcomes when covariates are subject to measurement errors and detection limits, {\it Statistics in Medicine}, 37, 119-136. 
+\bibitem[Yi (2017)]{Yi:2017}
+Yi, G. Y. (2017), {\it Statistical analysis with measurement error or misclassification: Strategy, method and application}, New York, Springer. 
+\end{thebibliography}
+ \end{document}
+

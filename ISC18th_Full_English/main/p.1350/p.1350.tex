@@ -1,0 +1,642 @@
+%\documentclass{article} 
+%usepackage{amssymb,amsmath,latexsym,undertilde,mathtools,graphicx,color,epsfig,pdflscape,caption,float,soul,multirow,booktabs,subcaption,doi,hyperref}
+%\addtolength{\oddsidemargin}{-.5in}
+%\addtolength{\evensidemargin}{-.5in}
+%\addtolength{\textwidth}{1in}
+%\addtolength{\topmargin}{-.5in}
+%\addtolength{\textheight}{1 in}
+%\renewcommand{\baselinestretch}{1}
+%\pagestyle{myheadings} \thispagestyle{empty}
+%\topmargin 0pt \headheight 20pt \headsep 24.66pt
+%\newcommand\Tstrut{\rule{0pt}{2.6ex}} % = `top' strut
+%\newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}} % = `bottom' strut
+%\makeatletter
+%\def\@bibitem#1{\item[]%
+%\if@filesw\immediate\write\@auxout{\string \bibcite {#1}{\the\value{\@listctr }}}\fi\ignorespaces}
+%\makeatletter
+%\begin{document}
+%%==================================================Title=====================================================
+%{\noindent\LARGE\bf 
+%%Iterative Weighted Least Square Approach for Mixture of Linear Regression 
+%Ridge Shrinkage Estimators in Finite Mixture of Generalized Estimating Equations
+%}
+%\\ \\
+%%=================================================Authors====================================================
+%{\large\bf S. Nezamdoust$^a$, F. Eskandari$^b$}\\
+%%==================================================Place=====================================================
+%\begin{description}
+%\item $^{a,b}$
+%Department of Statistics, Faculty of Mathematical Sciences and Computer, Allameh Tabataba’i University, Tehran, Iran.\\
+%\end{description}
+%\noindent 
+%$^a$ Email: sa.nezamdoust@gmail.com,\\
+%$^b$ Email: askandari@atu.ac.ir, {Corresponding author},\\
+%\newpage
+%{\noindent\LARGE\bf 
+%Ridge Shrinkage Estimators in Finite Mixture of Generalized Estimating Equations.
+%}
+%\\ \\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[11pt]{article}
+\usepackage[margin=.72in]{geometry}
+\usepackage{epsfig}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3.5cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% \columnseprule0.1pt \topmargin -0.5in \oddsidemargin0pt
+\parskip 0.25\baselineskip
+%\parindent 1pt
+\usepackage{amsthm,amsmath,natbib}
+\usepackage{amssymb, amsmath,fancyhdr,mathrsfs, graphicx}
+\usepackage{epsfig}
+\parindent 0.25 in
+\label{sec.sub.gdn}
+
+\usepackage{dsfont}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{ctable}
+%\usepackage{enumitem}
+\usepackage{bigints}
+\usepackage{changepage}
+\usepackage{booktabs,caption}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+\hypersetup{colorlinks=true, urlcolor=darkblue, linkcolor=darkblue, citecolor=darkblue}
+
+\renewcommand{\baselinestretch}{1.5}
+\newcommand{\threenumi}{\alph{a}}
+\newcommand{\threenumii}{\alph{enumii}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+%\setcounter{footnote}{2}
+\newcommand{\threenumiii}{\alpha{enumiii}}
+\newcommand{\threenumiv}{\alph{enumiv}}
+\newcommand{\threenumv}{\alph{enumv}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}} 
+\SetKwInput{KwInput}{Input} % Set the Input 
+\SetKwInput{KwOutput}{Output} % set the Output
+
+\newtheorem{Table}{Table}
+\newtheorem{Theorem}{Theorem}[section]
+\newtheorem{Definition}[Theorem]{Definition}
+\newtheorem{Property}[Theorem]{Property}
+\newtheorem{Pro}[Theorem]{Problem}
+\newtheorem{Proposition}[Theorem]{Proposition}
+\newtheorem{Corollary}[Theorem]{Corollary}
+\newtheorem{Lemma}[Theorem]{Lemma}
+\newtheorem{Example}[Theorem]{Example}
+\newtheorem{Remark}[Theorem]{Remark}
+
+\newcommand{\R}{\textcolor{red}}
+ \newcommand{\RD}{\textcolor{black}}
+ \begin{document}
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{small}
+\title{\bf \Large   Shrinkage Estimations of Semi-parametric Models for High-Dimensional Data in Finite Mixture Models}
+
+
+\author{Soghra Rahimi\footnote{Corresponding author: \url{rahimi.soghra70@yahoo.com};~\url{rahimi_s@atu.ac.ir}}~and~Farzad Eskandari\footnote{Corresponding author: \url{ffeskandari@yahoo.com};~\url{askandari@atu.ac.ir}}\\
+{\it  Department of Statistics, Allameh Tabataba'i University, Tehran, Iran. }}
+\date\today
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}	
+\qquad This paper proposes a novel enhancement to semi-parametric models by integrating shrinkage to improve the predictive accuracy and performance of Ridge and ecpc models. By employing the EM algorithm, updated parameter estimates are derived, demonstrating significant error reductions in metrics such as Mean Squared Error (MSE), Sum of Squared Errors (SSE), and Geometric Mean Squared Error (GMSE). Extensive simulation studies reveal consistent improvements in model performance, with shrinkage enhancing accuracy and robustness across various scenarios. The findings highlight the potential of shrinkage in refining semi-parametric models, offering a more accurate framework for statistical predictions. This study paves the way for future research into applying shrinkage techniques to diverse data types and model structures, setting a benchmark for model optimization in statistical analysis.
+\end{abstract}
+\end {small}
+
+{\bf Keywords}: Semi-parametric models, finite mixture models, high-dimensional data, shrinkage estimations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+%\qquad Choosing the variable and estimating the coefficients in the regression model is the most basic part in modeling. So far, various criteria and methods have been presented for variable selection, the most famous of which are Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC). Contrary to the widespread use of these criteria in the field of variable selection, their use causes instability in variable selection. This is because if we use these criteria, we can only make two decisions about each regression coefficient. One way to overcome this problem is to use penalty functions for variable selection. On the other hand, the estimation methods of the least square or rigid regression method, as well as the method of selecting the leading variable, do not show significant performance when faced with data that have different characteristics. Instability, low prediction accuracy, and incorrect selection of variables are examples of models unreliable when using these methods. In addition, these models unreliable are aggravated when the correlation between predictor variables is high.\\
+\qquad Shrinkage estimations have been regarded as a way to reduce these damages when the correlation between predictor variables is high. In this regard, the efficiency of shrinkage estimators for the squared loss function increases. In these methods, regression coefficients are estimated by applying restrictions on the variation range. Such a limitation reduces the variance of the estimator, but is unbiased, as a result, the mean square error has decreased. In general, to solve such problems,we use penalty function. \cite{Tibshirani1996} introduced the penalty function called least absolute shrinkage and selection operator (LASSO), Such a solution is attractive when the number of covariate groups is large, but lacks flexibility and fails to adapt locally in other settings and \hbox{\cite{Fan-Li2001}} introduced the smoothly clipped absolute deviation (SCAD) penalty function. In the presence of these penalty functions, variable selection and parameter estimation are performed simultaneously. They stated the characteristics of a good penalty function are (1) bias, (2) tightness and (3) continuity. SCAD has a type of oracle property. and unlike all-subset selection methods, they can be used in reasonably high-dimensional problems. In this article we design a different method.\\
+In recent years, structured data has undergone fundamental changes in variety and dimension in recent years. These changes have been incorporated into studies, resulting in data that, in terms of variety and dimensions, is incompatible with the conventional methods used in various articles. Consequently, numerous studies have been conducted on high-dimensional data or different types of data, which have significantly grown under the title of big data. It is necessary to propose new structures for these studies to generate valid results.\\
+The finite mixture model (FMM) is a statistical model that assumes the presence of unobserved groups, known as latent classes, within a general population. Each latent class can be examined using its own regression model, such as linear models or generalized linear models. \\
+In the analysis of high-dimensional data, when the number of covariates is very large, there is often at least one covariate with a non-parametric coefficient. The need for flexible statistical models, such as semi-parametric regression models, has increased across various fields. When dealing with mixture models, it is beneficial to conduct research on variable selection from both practical and theoretical perspectives.\\
+In our proposed method for finite mixture models, we utilize semi-parametric regression to leverage the advantages of both semi-parametric models and finite mixture models simultaneously. A significant advantage of this method is the incorporation of auxiliary information about auxiliary variables that are available today in the form of domain knowledge or results from external studies. For example, in cancer genomics, domain knowledge can be obtained from published disease-related signatures, online encyclopedias containing gene ontologies, and summary statistics such as p-values. In the proposed method, numerous auxiliary data can be incorporated into the model under the title of co-data, and the advantage of these data can be utilized for variable selection and prediction.\\
+High-dimensional data allow for more complex and potentially sparser priors with multiple hyperparameters. Additionally, a large number of variables $ (p>n) $ may lead to better estimates. We aim to exploit all useful prior information when researching new, high-dimensional data. To achieve this, we consider prior information in the form of complementary data, or co-data. Such an external source of information is referred to as co-data \hbox{\cite{Neuenschwander2016}}, as it provides additional information about the covariates. Co-data provides information about covariates. In general, we use the term co-data to refer to any data that complements the main data by providing prior information about covariates.\\
+In our proposed method for finite mixture models, we utilize semi-parametric regression to leverage the advantages of both semi-parametric models and finite mixture models simultaneously. A significant advantage of this method is the incorporation of auxiliary information about auxiliary variables that are available today in the form of domain knowledge or results from external studies. For example, in cancer genomics, domain knowledge can be obtained from published disease-related signatures, online encyclopedias containing gene ontologies, and summary statistics such as p-values. In the proposed method, numerous auxiliary data can be incorporated into the model under the title of co-data, and the advantage of these data can be utilized for variable selection and prediction.\\
+The mixture model was first introduced into the literature in the 19th century by \cite{Pearson1894}. He used a Gaussian univariate mixture model to fit data expressing the ratio of forehead length to body length of 1000 crabs collected by \cite{Weldon1892}. In the last two decades, the use of mixture models has increased significantly. \hbox{\cite{Khalili-Chen2007}} have considered variable selection in finite mixture regression models, which are parametric models. \hbox{\cite{Ormoz-Eskandari2013}} have studied variable selection in finite mixture semi-parametric regression (FMSPR) models that consider a linear combination of non-parametric and parametric components.This version maintains the technical content and improves clarity and grammatical correctness. Finite mixture models have been widely studied for their ability to model heterogeneity within populations. 
+\cite{McLachlan2019}
+provide a comprehensive review of finite mixture models and their applications. 
+\cite{Elsawah2018} 
+and 
+\cite{Alawady2016} 
+have further extended the theoretical framework by addressing heterogeneous and non-identical populations.\\
+Recent advances in shrinkage estimation methods have been extensively discussed in the literature. For example, 
+\cite{Gupta2024}
+introduced efficient shrinkage techniques for logistic and uniform distributions, respectively. 
+Similarly, 
+\cite{Bodnar2022} 
+explored shrinkage-based high-dimensional inference, demonstrating its application in covariance estimation. 
+These methods provide robust frameworks for handling high-dimensional data and form the basis for our proposed model.\\
+Using the EM algorithm in mixture models is a pathfinder in most cases. Our primary method in this article relies on this algorithm. It should be noted that in semi-parametric models and high-dimensional data, traditional methods are not efficient. According to the paper by \hbox{\cite{Vannee2021}}, the ecpc method is considered for high-dimensional data with parametric models. In this article, non-parametric components and finite mixture models are not considered. Our method combines the ecpc method with the EM algorithm. Our goal is to select variables and predict the variables in our proposed method based on semi-parametric mixture models.\\
+The structure of this paper is as follows: Section 2 reviews the finite mixture model framework, Section 3 introduces the proposed semi-parametric approach, Section 4 details the simulation study, and Section 5 concludes with discussions on the findings and potential future research directions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finite mixture model} \label{sec2}
+\qquad Finite mixture models provide a mathematical approach to combining multiple probability distributions and creating a parametric framework for modeling unknown distributions. In the following, the finite mixture model in generalized regression (FMGSP) introduced by 
+\hbox{\cite{Ormoz-Eskandari2016}} 
+is defined. 
+\begin{Definition} \label{def1}
+Let $ \mathbf{Y} \in \mathbb{R}^{n } $ be the response variable and (X, Z) a vector of covariates with $ X \in \mathbb{R}^{n \times p } $ representing real variables and nonparametric coefficients, and $ Z \in \mathbb{R}^{n \times q } $ representing parametric coefficients of the model. Consider $ G = {f(Y; \theta ,\phi); (\theta ,\phi) \in \Theta \times (0,\infty)} $; $  \Theta \subset \mathfrak{R} $ a family of parametric density functions for Y, where $  \Theta \subset \mathfrak{R} $ and $ \phi $ are scale parameters. It is said that (X, Z, Y) is a finite mixture of regression models with C components when the conditional density function Y is represented as:
+\[
+f(Y; X, Z, \Psi) = \sum_{c=1}^{C} \pi_{c}  f_{c}(Y; \theta_{c} (X, Z),\phi_{c}),
+\]
+With the following conditions:
+ \begin{enumerate}
+	\item  $ \theta_{c}(X, Z) = h(\alpha_{c}(Z)+ Z^{T} \beta_{c}) $
+	\item  $ \alpha(.) $ is a vector of unknown smooth regression functions.
+	\item The parametric vector $ \Psi $ as:\\
+	$ \Psi=(\alpha_{1}, \alpha_{2}, ...,\alpha_{c},\beta_{1},\beta_{2}, ...,\beta_{c},\phi,\pi) $ where $ \alpha_{c} = (\alpha_{c1}, \alpha_{c2}, ...,\alpha_{cq})^{T} $،
+	$ \beta_{c} = (\beta_{c1}, \beta_{c2}, ...,\beta_{cp})^{T} $،
+	$ \phi = (\phi_{1}, \phi_{2}, ...,\phi_{c})^{T} $
+	and
+	$ \pi = (\pi_{1}, \pi_{2}, ...,\pi_{c-1})^{T} $,
+	wirh
+	$ \pi_{c-1} > 0 $
+	and
+	$ \sum_{c =1}^{C} \pi_{c} $.
+\end{enumerate}
+\end{Definition}
+
+
+\section{Notation}
+\qquad We denote the response vector with 
+$ \mathbf{Y} \in \mathbb{R}^{n } $ with normal distribution
+and the matrix of observed data, where each row corresponds to a sample, and each column represents a feature or variable. Specifically, $ X \in \mathbb{R}^{n \times p } $, where n is the number of samples (observations) and  is the number of features (variables), the auxiliary, which provides additional information related to the samples or features in $ X $. This matrix can contain information such as group labels, external covariates, or hierarchical relationships that are not present in $ X $. $ Z \in \mathbb{R}^{n \times q } $, where q is the number of co-data variables and
+$ p \gg n  $. The mixing proportions are denoted by 
+$ \pi_c $, satisfying 
+$ \sum_{c=1}^C \pi_c = 1 $, where C represents the number of components in the finite mixture model. Finally, 
+denotes the parameters for the $ \theta_c(X, Z) $
+c-th component, which depend on the covariates X and Z.
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finite mixture model in semi-parametric model for co-data with high dimensions}
+\qquad In high-dimensional data scenarios, where the response variable $ \mathbf{Y} \in \mathbb{R}^{n } $ and the data matrix $ X \in \mathbb{R}^{n \times p } $ with $ p \gg n  $ alongside $ Z \in \mathbb{R}^{n \times q } $, the semi-parametric model based on the non-parametric model of
+\hbox{\cite{Li-Liang2008}}
+with parameters
+$ \beta $
+and 
+$ \alpha $
+is considered as follows:
+\[
+g( E \{Y\} ) = X \beta + \alpha(Z).
+\]
+Where
+$ \beta \in \mathbb{R}^{p} $
+is a vector of regression coefficients and 
+$ \alpha (.)  $
+is a vector consisting of smoothing regression coefficient functions and g(.) is a known link function.\\
+The density function for the mixture model are defined as follows:
+\begin{eqnarray}
+	\label{eq1}
+	f(Y_{i}; X_{i}, Z_{i} , \theta) &=& \sum_{c=1}^{C} \pi_{c} N (X_{i} \beta_{c}+ \alpha_{c}(Z_{i}), \sigma^{2}_{c} )  \quad i = 1, 2, ..., n,  \\
+	\beta_{kc}|\tau_{k,local}^{2} &\sim & N (0, \tau_{k,local}^{2}),  \qquad    k = 1, 2, ... , p  \cr
+	\tau_{k,local}^{2} &=& \tau_{global}^{2} \sum_{d =1}^{D} w^{(d)}  T_{k}^{(d)} \gamma^{(d)}. \nonumber
+\end{eqnarray}
+Here, $ X_{i} $ and $ T_{k} $ are the i-th and k-th rows of the X and T matrices, respectively. The local prior variances $ \tau_{k,local}^{2} $ are regressed on the co-data $  T^{(d)} $, $ d = 1, 2, ... , D $, with weight vectors $ \gamma^{(d)} \in \mathbb{R}^{G^{(d)}}_{+} $ and  $ w^{(d)} \in \mathbb{R}_{+} $.\\
+
+
+Let us denote the corresponding log-likelihood by
+$ \ell(\beta, \alpha) $ 
+and the penalized log-likelihood by
+\begin{eqnarray}
+	\label{eq2}
+		L (\Psi ) &=& \sum_{i=1}^{n} log \sum_{c=1}^{C} \pi_{c}  \frac{1}{\sqrt{2 \pi \sigma^{2}_{c}}}  exp \{-\frac{1}{2 \sigma^{2}_{c}}  (Y_{i}- X_{i} \beta_{c} + \alpha_{c} (Z_{i} ))^{2} \} \cr
+	\ell(\beta, \alpha) &=& L (\Psi ) - \sum_{k=1}^{p} \frac{1}{\tau_{(k,local)}^{2}} \beta_{k}^{2}   \\
+   &=& \sum_{i=1}^n \left( \log \left( \sum_{c=1}^C \pi_c \frac{1}{\sqrt{2 \pi \sigma_c^2}} \exp \left( -\frac{(Y_i - X_i \beta_c + \alpha_c(Z_i))^2}{2 \sigma_c^2} \right) \right) \right) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^2_k .	\nonumber
+\end{eqnarray}
+To provide a clear understanding of our proposed method, we outline its steps as follows:\\
+Initial Empirical Bayes Estimation for Parametric Component: use the ecpc method to obtain an initial estimate of the parametric component. This method incorporates co-data to provide robust initial values for $ \beta $ and other related parameters. This workflow is illustrated in Figure \ref{fig:proposed-method}, which provides a schematic overview of the entire process. \\
+Step 1: Nonparametric Component Estimation: based on the initial estimates, the nonparametric component is estimated using the Expectation-Maximization (EM) algorithm. The complete log-likelihood function is maximized iteratively.\\
+Step 2: Parameter Refinement Using Empirical Bayes: after updating the nonparametric component, the Bayesian Empirical method is applied to refine other parameters, such as hyperparameters $( \gamma^{(d)} $, $ \tau_{k,local}^{2} $, $ w^{(d)} $, and $ w^{(d)}) $. \\
+Step 3: Final Convergence and Parameter Estimation: steps 1 and 2 are repeated until convergence criteria are met, resulting in the final estimates of all model parameters. \\
+In the proposed methodology, Ridge regression is employed for variable selection and shrinkage by leveraging co-data. While Ridge regression is effective in handling multicollinearity and stabilizing parameter estimates, it does not perform variable selection directly. To address this, incorporating the Least Absolute Shrinkage and Selection Operator (LASSO) could enhance the framework by introducing a mechanism for simultaneous shrinkage and variable selection. LASSO imposes an \(L_1\)-penalty, which encourages sparsity in the parameter estimates, making it particularly suitable for high-dimensional settings where the number of predictors (\(p\)) exceeds the number of observations (\(n\)). Future extensions of this work could explore the integration of LASSO with the proposed semi-parametric framework, potentially improving the efficiency of variable selection and model interpretation.
+
+\subsection{Initial empirical bayes estimate for parametric component}
+\qquad This step involves considering an initial value for the parametric component using the ecpc method outlined by \hbox{\cite{Vannee2021}}. This method is particularly relevant for handling high-dimensional data within parametric models, and it effectively leverages the information from complementary data (co-data). By integrating these methods, our approach aims to enhance variable selection and prediction within the semi-parametric framework of mixture models, thus addressing the complexities associated with high-dimensional datasets.
+
+\subsection{Nonparametric component estimation}\label{sec:intro}
+\qquad We replace the initial value of $ \beta^{(0)} $ in the log-likelihood function:
+\[	\ell(\beta^{(0)}, \alpha) =\sum_{i=1}^n \log \left(\sum_{c=1}^C \pi_c \frac{1}{\sqrt{2 \pi \sigma_c^2}} \exp \left( -\frac{(Y_i - X_i \beta_{c}^{(0)} + \alpha_c(Z_i))^2}{2 \sigma_c^2} \right) \right) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^{2(0)}_{k}.
+\]
+To estimate the unknown coefficients based on the complete data in the presence of hypothetical marker variables $ v_{ic} $, the complete log-likelihood function is:
+\begin{eqnarray}
+	\label{eq3}
+	L_{n}^{c}(\Psi) & = & \sum_{i=1}^{n} \sum_{c=1}^{C} v_{ic} \left\{ \log \pi_{c} + \log \left( \frac{1}{\sqrt{2 \pi \sigma^{2}_{c}}} \right) - \frac{1}{2 \sigma^{2}_{c}} (Y_{i} - X_{ic} \beta^{(0)}_{c} + \alpha_{c}(Z_{ic}))^{2} \right\} - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^{2(0)}_k ,  \\
+		& = & \sum_{i=1}^{n} \sum_{c=1}^{C} v_{ic} \left\{ log \pi_{c} + log ( \frac{1}{\sqrt{2 \pi \sigma^{2}_{c}}}) - \frac{1}{2 \sigma^{2}_{c}} (Y_{i}- X_{ic} \beta^{(0)}_{c} + \alpha_{c} (Z_{ic} ))^{2} \right\} - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^{2(0)}_k  . \nonumber
+\end{eqnarray}
+To maximize and calculate the maximum value of the complete log-likelihood function, we use the EM algorithm as follows:\\
+E-Step: Calculate the expected value of the complete log-likelihood function given the current parameter estimates $ \Psi^{(r)} $:
+%\[
+%Q(\Psi,\Psi^{(r)}) = \sum_{i=1}^{n} \sum_{c=1}^{C} \omega_{ic}^{(r)} log \pi_{c} 
+%\]
+%+ \sum_{i=1}^{n} \sum_{c=1}^{C} \omega_{ic}^{(r)} \{log \{\dfrac{1}{\sqrt{2 \pi \sigma^{2}_{c}}} \} - \frac{1}{2 \sigma^{2}_{c}}  (Y_{i} - X_{i} \beta_{0}_{c} + \alpha_{c} (Z_{ic} ))^{2}\}
+%\]	
+
+\begin{eqnarray}
+	Q(\Psi | \Psi^{(t)}) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^{2(0)}_k  &= & E_{Z | Y, \Psi^{(t)}} [\log L(\Psi) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^{2(0)}_k | Y, \Psi^{(t)}] \cr
+&=&	E_{Z | Y, \Psi^{(t)}} [\log L(\Psi) | Y, \Psi^{(t)}] \\
+	& = & \sum_{i=1}^{n} \sum_{c=1}^{C} \omega_{ic}^{(r)} log \pi_{c}
+	+ \sum_{i=1}^{n} \sum_{c=1}^{C} \omega_{ic}^{(r)} \{log \{\dfrac{1}{\sqrt{2 \pi \sigma^{2}_{c}}} \} - \frac{1}{2 \sigma^{2}_{c}}  (Y_{i} - X_{i} \beta_{0}_{c} + \alpha_{c} (Z_{ic} ))^{2}\} , \nonumber
+\end{eqnarray}
+Where:
+\[
+\omega_{ic}^{(r)} = \frac{\pi_{c}^{(r)} [\{\dfrac{1}{\sqrt{2 \pi \sigma^{2}_{c}}} \} exp\{- \frac{1}{2 \sigma^{2}_{c}} (Y_{i} - X_{i} \beta^{(0)}_{c} + \alpha_{c} (Z_{ic} ))^2\}]}{\sum_{j=1}^{C} \pi_{j}^{(r)} [\{\dfrac{1}{\sqrt{2 \pi \sigma^{2}_{c}}} \} exp\{- \frac{1}{2 \sigma^{2}_{c}} (Y_{i} - X_{ic} \beta^{(0)}_{j} + \alpha_{j} (Z_{ic} ))^2\}]}.
+\]
+M-Step: Update the parameter estimates $ \Psi^{(r+1)} $ by maximizing Q with respect to the parameters $ \pi_{c}, \alpha_{c} $, and $ \sigma^{2}_{c} $:
+\begin{eqnarray}
+	\label{eq4}
+	\Psi^{(t+1)} &=& \arg \max_{\Psi} \left( Q(\Psi | \Psi^{(t)}) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^2_k \right) \cr
+	 &=& \arg \max_{\Psi} Q(\Psi | \Psi^{(t)}).  \nonumber
+\end{eqnarray}
+Now the parameter values are opbtained as follows:
+\begin{eqnarray}
+	\label{eq5}
+	\hat{\pi}_{c}^{(r+1)} & = & \frac{1}{n}  \sum_{i=1}^{n} \omega_{ic}^{(r)}  \qquad c = 1, ..., C  \cr
+	\hat{\alpha}_{c}^{(r+1)}	& = & \frac{ \sum_{i=1}^{n} (Y_{i} - X_{i}\beta^{(0)}_{c})}{\sum_{i=1}^{n} \omega_{ic}^{(r)}}  \qquad c = 1, ..., C \\
+	\hat{\sigma^{2}}_{c}^{(r+1)}	& = & \frac{ \sum_{i=1}^{n} (Y_{i} - X_{i}\beta^{(0)}_{c} - \hat{\alpha}_{c})^{2}}{2\sum_{i=1}^{n} \omega_{ic}^{(r)}}  \qquad c = 1, ..., C \nonumber
+\end{eqnarray}
+
+\subsection{Empirical Bayes estimates for parametric component $ \beta $, $ \gamma^{(d)} $, $ \tau_{k,local}^{2} $ and $ w^{(d)} $}\label{sec:intro}
+\qquad After obtaining the updated estimates for $ \alpha $ and $ \sigma $ from the M-step, we proceed to refine the estimates for $ \beta $. The process involves substituting the updated $ \alpha_{c} $ and $ \sigma^{2}_{c} $ into the log-likelihood function and maximizing it with respect to $ \beta $.
+\begin{enumerate}
+	\item[(1)] Substitute updated values: Using the updated $ \alpha_{c} $ and $  \sigma^{2}_{c} $ from Step 1, the log-likelihood function is reformulated as:
+	\[
+	 \ell(\beta, \hat{\alpha}) = \sum_{i=1}^n \left( \log \left( \sum_{c=1}^C \hat{\pi}_c \frac{1}{\sqrt{2 \pi \hat{\sigma}_c^2}} \exp \left( -\frac{(Y_i - X_i \beta_c + \hat{\alpha}_{c}(Z_{i}))^2}{2 \hat{\sigma}_c^2} \right) \right) \right) - \sum_{k=1}^{p} \frac{1}{\tau^2_{k,local}} \beta^2_k .
+	 \]
+	\item[(2)]	Maximize Log-Likelihood: We maximize this log-likelihood function with respect to $ \beta $ to obtain the updated estimates:
+	\[ \hat{\beta}{c}^{(r+1)} = \arg \min_{\beta} \left( \sum_{i=1}^{n} (Y_i - X_i \beta)^2 + \lambda \sum_{k=1}^{p} \beta_k^2 \right) .
+	\] 
+	Here, $ \lambda $ is equivalent to $ \frac{1}{\tau^2_{k,local}} $
+	\item[(3)] Empirical bayes for hyperparameters: Additionally, the hyperparameters $ \gamma $, $ \tau^{2}_{k, local} $, and $ w^{(d)} $ are estimated using the empirical Bayes method. The local prior variances $ \tau^{2}_{k, local} $ are calculated as follows:
+	\[ \tau^{2}_{k, local} = \tau^{2}_{global} \sum_{d=1}^{D} w^{(d)} T^{(d)}_{k} \gamma^{(d)} .
+	\]
+\end{enumerate}
+By iteratively refining $ \beta  $using the updated values of $ \alpha $ and $ \sigma $, and leveraging the co-data through the empirical Bayes method, we ensure a comprehensive and robust estimation of the model parameters. This process is repeated until convergence, providing accurate parameter estimates for the semi-parametric finite mixture model.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simulation study}\label{sec4}
+\qquad In this section, we conduct an extensive simulation study to assess the performance of the proposed algorithm for parameter estimation in a finite mixture model. We simulate a dataset with $ n = 100 $ samples and $ p = 300 $ auxiliary variables. The simulation utilizes two types of co-data: informative groups and random groups, simulated in a straightforward manner. For this study, we assume $ c = 2 $.
+\begin{enumerate}
+	\item[(1)] Initial Estimation using the ecpc Method: In the initial step, the empirical Bayes approach, as per the ecpc method, is employed for estimating the parametric component. We use a linear semi-parametric model for a set of constant regression coefficients, denoted as $ \beta $. The initial values for the parameters are set as $ \sigma^2 = 1 $ and $ \tau^2 = 0.1 $, and we assume that
+	\[
+	\beta_{k} \sim N(0, \tau^2 I{p \times p}), \quad k = 1, \ldots, p 
+	\]
+	\item[(2)]	The training and testing data are generated as follows: 
+	\begin{eqnarray}
+		\beta_{k} & \sim & N(0, \tau^{2} I_{p \times p})  \qquad k = 1, ..., p  \cr
+		[X_{train}]_{ij}, [X_{test}]_{ij}	& \sim & \N(0,1)  \qquad i = 1, ..., n \quad j = 1, ..., p \cr
+		Y	& \sim & N(X\beta^{(0)} + z_{b}, \sigma^{2}I_{p \times p})   \nonumber
+	\end{eqnarray}
+	We denote the estimated value of $ \beta $ from this step as $ \beta $. Given the mixed community setup, $ \beta $ contains C components.
+	\item[(3)] Parameter Estimation Using the EM Algorithm: The initial parametric vector $ \beta = \binom{0.004826179}{-0.0010269085} $ is calculated. The EM algorithm and the relations (5) are then used to estimate the other components. The weights of the finite mixture model are $ \pi = \binom{0.3651813}{0.6348187} $, the non-parametric component $ \alpha = \binom{0.2463778}{-0.05475492} $, and $ \sigma^{2} = \binom{4.718448e-18}{1.110223e-17} $.
+	\item[(4)] Re-estimation of Parameters: In this step, we replace the previously estimated parameters and again apply the ecpc method to re-estimate the parametric component $ \beta $ and other co-data-related parameters. Based on these calculations, we observe that the values of $ \beta $ decrease in each update step due to the penalty, which helps prevent overfitting. These changes show that the values of $ \beta $ become smaller, making the model respond more conservatively to the data. The results of this step are summarized in table \ref{table1}. The Sum of Squared Errors (SSE) index is calculated for the proposed method as follows:.
+   \[  \text{SSE} = (\hat{Y}_{\text{EM}} - Y)' (\hat{Y}_{\text{EM}} - Y). \]
+\end{enumerate}
+One significant advantage of this method is the use of hyper-shrinkage in the penalty and the inclusion of auxiliary data in the form of co-data. To highlight these advantages, we compare our method with similar approaches, such as \hbox{\cite{Vannee2021}}.\\
+Based on the analysis and calculations performed in Tables \ref{table1} and \ref{table2} and log-likelihood function (\ref{eq2}), the results show significant changes in the model parameters and error metrics. In Table \ref{table1}, the $ \beta $ and $ \gamma $ parameters have decreased shrinkage. This reduction in values indicates the penalty's effect in improving accuracy and preventing overfitting. The values of $ \beta $ and $ \gamma $ have been halved, helping to maintain simplicity and increase the model's generalizability. In Table \ref{table2}, the SSE value for both Ridge and ecpc models has decreased shrinkage. The reduction is from $ 0.1 $ to $ 0.09 $ for the Ridge model and from $ 0.08 $ to $ 0.07 $ for the ecpc model. The decrease in SSE indicates improved model performance and greater prediction accuracy.\\	
+Given the results obtained from Tables \ref{table1} and \ref{table2}, it can be concluded that adding penalty in (\ref{eq2}) to the models enhances their predictive performance. The reduction in parameter values and SSE metrics indicates the efficiency of this penalty in increasing accuracy and preventing overfitting. Overall, these results suggest that using similar penalties can improve the quality of predictive models.\\
+The results in Table \ref{table3} demonstrate that the proposed method significantly outperforms existing approaches in terms of SSE and GMSE for both c=2 and c=3. Specifically. For c=2, the proposed method achieved an SSE of 328.82 and GMSE of 1.43, showing notable improvement compared to Vannee et al. (362.10, 1.65) and Ridge penalty (390.20, 1.82). For c=3, the proposed method reduced the SSE to 185.61 and GMSE to 1.14, outperforming Vannee et al. (210.50, 1.50) and Ridge penalty (250.30, 1.60).\\
+In summary, our method combines the benefits of semi-parametric models, finite mixture models, adaptive penalties, and various types of co-data, yielding satisfactory results. We applied our methods to a clinical application, demonstrating the benefits of using co-data based on the SSE and GMSE indices in finite mixture models. According to our simulation results, this method achieves a competitive SSE and GMSE, integrating diverse components into the model effectively.In summary, our method combines the benefits of semi-parametric models, finite mixture models, adaptive penalties, and various types of co-data, yielding satisfactory results. We applied our methods to a clinical application, demonstrating the benefits of using co-data based on the SSE and GMSE indices in finite mixture models. According to our simulation results, this method achieves a competitive SSE and GMSE, integrating diverse components into the model effectively.
+The current simulations focus on Ridge regression for leveraging co-data in variable selection. However, a natural extension would be to evaluate the performance of LASSO in similar settings. By encouraging sparsity in the parameter estimates, LASSO may provide a more interpretable model, particularly in cases with a large number of irrelevant predictors. 
+
+\begin{figure}[h!]
+	\centering
+	\begin{tikzpicture}[node distance=2cm]
+		
+		% Nodes
+		\node (start) [startstop] {Start};
+		\node (input) [process, below of=start] {Input Data};
+		\node (step1) [process, below of=input] {Step 1: Initial Estimation (ecpc)};
+		\node (step2) [process, below of=step1] {Step 2: EM Algorithm for Nonparametric Component};
+		\node (step3) [process, below of=step2] {Step 3: Parameter Refinement (Empirical Bayes)};
+		\node (output) [startstop, below of=step3] {Final Output};
+		
+		% Arrows
+		\draw [arrow] (start) -- (input);
+		\draw [arrow] (input) -- (step1);
+		\draw [arrow] (step1) -- (step2);
+		\draw [arrow] (step2) -- (step3);
+		\draw [arrow] (step3) -- (output);
+		
+	\end{tikzpicture}
+	\caption{Flow Chart of the Proposed Method}
+	\label{fig:proposed-method}
+\end{figure}
+
+
+\begin{table}
+	\centering
+	\caption{ \small{ \it{The values of model parameters with c = 2} }} \label{table1}
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		$\beta $ & $\gamma$ & 	$ w $ & $ MSE(EMecpc) $ & $ MSEridge $ & $\tau_{global}^{2}$ \\
+		\hline
+		$ \binom{0.004826179}{-0.0010269085} $ & $ \binom{0.0025}{-0.0015} $ & 1 & 0.010 & 0.013 &  0.00382209\\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+
+\begin{table}
+	\centering
+	\caption{ \small{ \it{Value SSE for simulated data with c = 2 for n = 100} }} \label{table2}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		- & with penalty & without penalty \\
+		\hline
+		SSE(EMecpc) & 0.07 & 0.08 \\
+		\hline
+			SSE(Ridge) &0.09  & 0.1 \\
+		\hline
+	\end{tabular}
+\end{table}	
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Application (cervical cancer stage)}
+\qquad Cervical cancer is the third most frequent cancer among women world-wide.
+The causative agent is a persistent infection with one of 15 oncogenic human papilloma viruses (HPVs). There are more than 100 identified HPV genotypes, 40 of them are considered to infect the genital tract and the types 16, 18, and 45 are found to be the most common in cervical cancer. HPV genotypes are associated with cervical precancerous lesions and the development of cervical cancer. Host genome DNA methylation signatures in normal, precancerous, and cervical tissue may indicate tissue-specific disruption in carcinogenesis. In the article
+\cite{Farkas2013}
+the authors studied the identification of new candidate genes that are differentially methylated in squamous cell carcinoma compared to DNA samples obtained from grade 3 cervical intraepithelial neoplasia (CIN3) and normal cervical scrapings. Using $ IIH450B\footnote{Illumina Infinium HumanMethylation450 BeadChip} $ method, they detected DNA methylation changes at the genome level in CpG islands, CpG banks and shelves. Their findings showed an extensive differential methylation signature in cervical cancer compared with the CIN3 or normal cervical tissues.\\
+The cervical specimens were collected in the Sisters of Mercy Hospital, Zagreb, Croatia during the period from 2004 to 2011. Afrer DNA preparation, To analyze our own proposed model, we used the $\beta $-value calculated in this article. The $ \beta $-value generated for each CpG locus measures the intensity of methylated $ (\beta = 1) $ and unmethylated probes $ (\beta = 0) $. It is calculated as $ \beta = [\frac{M}{(M + U + 100)}] $, where M = methylated allele and U = unmethylated allele. Our aim is to find a classifier that best differentiates normal tissue from CIN3 tissue. \\
+According to our purpose, here we consider mean 
+$ \beta $
+-value for the $ CpG $ sites represented in the heat map of the article
+‌\cite{Farkas2013}
+as Normal tissue and CIN3 tissue with mixing probability $ (0.3015302, 0.6984698) $. Methylation levels are measured in independent subjects (n = 50) with normal tissue or CIN3 tissue. After filtering, the data contains of methylation levels of p = 2720 probes corresponding to specific sites in the DNA. For the hierarchical group, in our proposed method, we use the combination of hierarchical lasso and ridge hypershrinkage to covariate selection and estimate the weight of the previous variances for the hierarchical group. To estimate the penalty function, we also use ridge's estimation as a default. Our method is that we first obtain the parametric component as initial values using the $ecpc$ method. In this paper, we use co-data with high-dimensional. To estimate the non-parametric component, we use the EM algorithm, and we use the ecpc method once the non-parametric component is known, for estimate the other parameters.\\
+We use the Generalized Mean Square Error (GMSE) and the Sum of Squared Error (SSE), to evaluate the parameter estimation performance that results are shown in table \ref{table3}. Index GMSE is defined as follows
+
+\[
+GMSE(\hat{\beta}) =  (\hat{\beta} - \beta)E(XX^{′})(\hat{\beta} - \beta) .
+\]
+A reduction in all error metrics (MSE, SSE, GMSE) is observed for both $ c = 2 $ and $ c = 3 $. These reductions indicate an improvement in the accuracy and performance of the models (\ref{eq2}). The improvement in model performance, with reduced errors and increased prediction accuracy, demonstrates the high effectiveness of shrinkage in enhancing the quality of Ridge and ecpc models. In (\ref{eq2}) to the models for both $ c = 2 $ and $ c = 3 $ has led to a significant reduction in error metrics. These improvements indicate that using appropriate penalties can help increase accuracy and reduce error in predictive models, creating models with better generalizability. The comparative performance analysis of the proposed method against existing approaches is summarized in Table \ref{table4}. It highlights the superiority of our method in terms of lower SSE and GMSE values for both $ c = 2 $ and $ c = 3 $, demonstrating its improved accuracy and robustness.
+\begin{table}
+	\centering
+	\caption{ \small{ \it{Comparison of parameters' performance indices for $c=2$ and $c=3$} }} \label{table3}
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		$ $ & $MSE(EMecpc)$ & 	$ MSEridge $ & $ SSE $ & $GMSE$ \\
+		\hline
+		$ c = 2 $ &  1.039  & 1.172  & 328.81 &  1.41\\
+		\hline
+		$ c = 3 $ & 0.818 & 1.381  & 185.6 & 1.12 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Comparison of Performance for \(c=2\) and \(c=3\)}
+	\label{table4}
+	\begin{tabular}{|l|c|c|c|c|c|}
+		\hline
+		\textbf{Method}            & \textbf{Components (\(c\))} & \textbf{SSE} & \textbf{GMSE} & \textbf{MSEecpc} & \textbf{MSEridge} \\ \hline
+		Proposed Method            & \(c=2\)                   & 328.82       & 1.43          & 1.041            & 1.174             \\ \hline
+		Proposed Method            & \(c=3\)                   & 185.61       & 1.14          & 0.838            & 1.401             \\ \hline
+		Vannee et al. (2021)       & \(c=2\)                   & 362.10       & 1.65          & 1.120            & 1.201             \\ \hline
+		Vannee et al. (2021)       & \(c=3\)                   & 210.50       & 1.50          & 0.900            & 1.500             \\ \hline
+		Ridge Penalty              & \(c=2\)                   & 390.20       & 1.82          & 1.174            & 1.301             \\ \hline
+		Ridge Penalty              & \(c=3\)                   & 250.30       & 1.60          & 0.950            & 1.650             \\ \hline
+	\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       SECTION
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion} \label{sec5}
+\qquad We have presented a semi-parametric approach for estimating finite mixture models in high-dimensional data. We utilized various types of covariate data to enhance estimation accuracy through penalized semi-parametric models within the framework of finite mixture models. This method effectively combines the advantages of semi-parametric modeling, finite mixture models, adaptive penalties, and covariate data types, yielding satisfactory results.\\
+We applied these methods to a clinical application, demonstrating the benefits of incorporating covariate data as indicated by SSE and GMSE indices in semi-parametric models of finite mixture models. The simulation and application results show that our method achieves acceptable SSE and GMSE criteria and effectively incorporates different model components. \\
+In this study, we introduced an enhanced semi-parametric model (\ref{eq2}) to improve the accuracy and performance of existing Ridge and ECPC models. Through rigorous mathematical derivations and the application of the EM algorithm, we demonstrated that the inclusion of shrinkage effectively reduces error metrics such as MSE, SSE, and GMSE across different scenarios $ c = 2 $ and $ c = 3 $. Our simulations confirm that the shrinkage leads to consistent performance improvements, with notable reductions in MSE for both Ridge and ecpc models.\\
+The analysis also revealed significant decreases in SSE and GMSE, further underscoring the robustness and effectiveness of the proposed methodology. These improvements highlight the potential of shrinkage in refining model estimates, thereby enhancing predictive accuracy and model reliability.\\
+The proposed framework demonstrates robustness in high-dimensional settings by utilizing Ridge regression for variable selection. Future work could extend this approach by incorporating LASSO, which combines the benefits of shrinkage and variable selection. This extension could further enhance the flexibility and interpretability of the proposed method, particularly in sparse data scenarios.\\
+In summary, the integration of shrinkage within the semi-parametric framework not only enhances model performance but also offers a versatile approach for addressing various prediction challenges in statistical modeling. Future research could extend this work by exploring the application of shrinkage in other complex modeling contexts and assessing its impact on different types of data and model structures. This study lays the groundwork for more sophisticated and accurate predictive models in statistical analysis, setting a new standard for model optimization in the field.
+
+%\bibliography{ref}
+%\bibliographystyle{chicago}
+
+\newpage
+\begin{thebibliography}{}
+	
+		\bibitem[\protect\citeauthoryear{McLachlan et al.}{McLachlan et al.}{2019}]{McLachlan2019}
+McLachlan, Geoffrey J., Sharon X. Lee, and Suren I. Rathnayake (2019).
+\newblock Finite mixture models.
+\newblock {\em  Annual review of statistics and its application. {\bf 6.1}\/},
+355-378.
+
+\bibitem[\protect\citeauthoryear{Elsawah et al.}{Elsawah et al.}{2018}]{Elsawah2018}
+Elsawah, A.M., Essawe, F. and Zhao, H., (2018 a).
+\newblock Asymptotic theory of dual generalized order statistics from heterogeneous population.
+\newblock {\em  Journal of Indian Society for Probability and Statistics. {\bf 19}\/},
+359-377.
+
+
+\bibitem[\protect\citeauthoryear{Alawady et al.}{Alawady et al.}{2016}]{Alawady2016}
+Alawady MA, Elsawah AM, Hu J, Qin H (2016).
+\newblock Asymptotic behavior of non-identical multivariate mixture.
+\newblock {\em  ProbStat Forum.},
+95–104.
+
+
+\bibitem[\protect\citeauthoryear{Khalili and Chen}{Khalili and Chen}{2007}]{Khalili-Chen2007}
+Khalili, A. and Chen, J. (2007).
+\newblock  Variable Selection in Finite Mixture of Regression Models.
+\newblock {\em J. Amer,Statist. Assoc. {\bf 102}\/},
+1025--1038.	
+
+
+\bibitem[\protect\citeauthoryear{Neuenschwander et al.}{Neuenschwander et al.}{2016}]{Neuenschwander2016}
+Neuenschwander, B., Roychoudhury, S., and Schmidli, H. (2016).
+\newblock On the use of co-data in clinical trials. Statist.
+\newblock {\em  Statist Biopharm. Res. {\bf 8(3)}\/},
+345--354.
+
+
+
+\bibitem[\protect\citeauthoryear{Ormoz and Eskandari}{Ormoz and Eskandari}{2013}]{Ormoz-Eskandari2013}
+Ormoz, E. and Eskandari, F. (2013).
+\newblock Variable Selection in Finite Mixture of Semi-Parametric Regression Models.
+\newblock {\em Commun stat - theorm,to appear}.
+
+
+\bibitem[\protect\citeauthoryear{Ormoz and Eskandari}{Ormoz and Eskandari}{2016}]{Ormoz-Eskandari2016} 
+Ormoz, E. and Eskandari, F. (2016).
+\newblock Variable selection in finite mixture of Semi-Parametric regression models.
+\newblock {\em Communications in Statistics, Theory and Methods (to appear). {\bf 45(3)}\/},
+695--711.
+
+\bibitem[\protect\citeauthoryear{Gupta et al.}{Ggupta et al.}{2024}]{Gupta2024}
+Gupta, S., Vishwakarma, G.K. and Elsawah, A.M. (2024).
+\newblock Shrinkage Estimation for Location and Scale Parameters of Logistic Distribution Under Record Values.
+\newblock {\em  Ann. Data. Sci. {\bf 11}\/},
+1209–1224.
+
+\bibitem[\protect\citeauthoryear{Bodnar et al.}{Bodnar et al.}{2022}]{Bodnar2022}
+Bodnar, Bodnar and Parolya (2022).
+\newblock Recent advances in shrinkage-based high-dimensional inference.
+\newblock {\em  Journal of Multivariate Analysis. {\bf 188}\/},
+104826. https://doi.org/10.1016/j.jmva.2021.104826.
+
+\bibitem[\protect\citeauthoryear{Chen et al.}{Chen et al.}{2011}]{Chen2011}
+Chen, Yilun, Ami Wiesel, and Alfred O. Hero. (2011).
+\newblock Robust shrinkage estimation of high-dimensional covariance matrices.
+\newblock {\em  IEEE Transactions on Signal Processing. {\bf 59.9}\/},
+4097-4107.	
+
+\bibitem[\protect\citeauthoryear{Pearson}{‌Pearson}{1894}]{Pearson1894}
+Pearson, K. (1894).
+\newblock Contributions to the Mathematical Theory of Evolution.
+\newblock {\em Philosophical Transactions of the Royal Society of London. {\bf 185}\/},
+71--110.
+
+\bibitem[\protect\citeauthoryear{Vannee et al.}{Vannee et al.}{2021}]{Vannee2021}
+Van Nee, M. M., Wessels, L. F., and van de Wiel, M. A. (2021).
+\newblock Flexible co-data learning for high-dimensional prediction.
+\newblock {\em  Statistics in Medicine. {\bf 40(26)}\/},
+5910--5925.
+\newblock https://doi.org/10.1002/sim.9162.
+
+
+\bibitem[\protect\citeauthoryear{Vannee et al.}{Vannee et al.}{2022b}]{Vanne2022b} 
+Van Nee, M. M., Wessels, L. F., and van de Wiel, M. A. (2022b).
+\newblock ecpc: An R‐package for generic co‐data models for high‐dimensional prediction
+\newblock {\em arXiv preprint arXiv:2205.07640}.
+
+
+
+\bibitem[\protect\citeauthoryear{‌Weldon}{‌Weldon}{1892}]{Weldon1892}
+Weldon, W. (1892).
+\newblock Certain Correlated Varians in Crangon Vulgaris.
+\newblock {\em Proceedings of the Royall Society of the London},
+2--21.
+
+\bibitem[\protect\citeauthoryear{Li and Liang}{Li and Liang}{2008}]{Li-Liang2008}
+Li, R., and Liang, H. (2008).
+\newblock Variable selection in semiparametric regression modeling, Annals of Statistics.
+\newblock {\em Annals of Statistics {\bf 36(1)}\/},
+261--86.
+
+
+\bibitem[\protect\citeauthoryear{Farkas et al.}{Farkas et al.}{2013}]{Farkas2013} 
+Farkas, S. A., Milutin-Gašperov, N.,  Grce, M., and Nilsson, T. (2013).
+\newblock Genome-wide DNA methylation assay reveals novel candidate biomarker genes in cervical cancer.
+\newblock {\em Epigenetics. {\bf 8:11}\/},
+12113--1225.
+
+	
+\bibitem[\protect\citeauthoryear{Khalili and Chen}{Khalili and Chen}{2007}]{Khalili-Chen2007}
+Khalili, A. and Chen, J. (2007).
+\newblock  Variable Selection in Finite Mixture of Regression Models.
+\newblock {\em J. Amer,Statist. Assoc. {\bf 102}\/},
+1025--1038.	
+
+
+\bibitem[\protect\citeauthoryear{Neuenschwander et al.}{Neuenschwander et al.}{2016}]{Neuenschwander2016}
+Neuenschwander, B., Roychoudhury, S., and Schmidli, H. (2016).
+\newblock On the use of co-data in clinical trials. Statist.
+\newblock {\em  Statist Biopharm. Res. {\bf 8(3)}\/},
+345--354.
+
+
+
+\bibitem[\protect\citeauthoryear{Ormoz and Eskandari}{Ormoz and Eskandari}{2013}]{Ormoz-Eskandari2013}
+Ormoz, E. and Eskandari, F. (2013).
+\newblock Variable Selection in Finite Mixture of Semi-Parametric Regression Models.
+\newblock {\em Commun stat - theorm,to appear}.
+
+
+\bibitem[\protect\citeauthoryear{Ormoz and Eskandari}{Ormoz and Eskandari}{2016}]{Ormoz-Eskandari2016} 
+Ormoz, E. and Eskandari, F. (2016).
+\newblock Variable selection in finite mixture of Semi-Parametric regression models.
+\newblock {\em Communications in Statistics, Theory and Methods (to appear). {\bf 45(3)}\/},
+695--711.
+
+
+\bibitem[\protect\citeauthoryear{Pearson}{‌Pearson}{1894}]{Pearson1894}
+Pearson, K. (1894).
+\newblock Contributions to the Mathematical Theory of Evolution.
+\newblock {\em Philosophical Transactions of the Royal Society of London. {\bf 185}\/},
+71--110.
+
+\bibitem[\protect\citeauthoryear{Vannee et al.}{Vannee et al.}{2021}]{Vannee2021}
+Van Nee, M. M., Wessels, L. F., and van de Wiel, M. A. (2021).
+\newblock Flexible co-data learning for high-dimensional prediction.
+\newblock {\em  Statistics in Medicine. {\bf 40(26)}\/},
+5910--5925.
+\newblock https://doi.org/10.1002/sim.9162.
+
+
+\bibitem[\protect\citeauthoryear{Vannee et al.}{Vannee et al.}{2022b}]{Vanne2022b} 
+Van Nee, M. M., Wessels, L. F., and van de Wiel, M. A. (2022b).
+\newblock ecpc: An R‐package for generic co‐data models for high‐dimensional prediction
+\newblock {\em arXiv preprint arXiv:2205.07640}.
+
+
+
+\bibitem[\protect\citeauthoryear{‌Weldon}{‌Weldon}{1892}]{Weldon1892}
+Weldon, W. (1892).
+\newblock Certain Correlated Varians in Crangon Vulgaris.
+\newblock {\em Proceedings of the Royall Society of the London},
+2--21.
+
+\bibitem[\protect\citeauthoryear{Farkas et al.}{Farkas et al.}{2013}]{Farkas2013} 
+Farkas, S. A., Milutin-Gašperov, N.,  Grce, M., and Nilsson, T. (2013).
+\newblock Genome-wide DNA methylation assay reveals novel candidate biomarker genes in cervical cancer.
+\newblock {\em Epigenetics. {\bf 8:11}\/},
+12113--1225.
+
+\bibitem[\protect\citeauthoryear{Fan and Li}{Fan and Li}{2001}]{Fan-Li2001}
+Fan, J. and Li, R. (2001).
+\newblock Variable selection via nonconcave penalized likelihood and its oracle properties.
+\newblock {\em Journal of the American Statistical Association. {\bf 96, 456}\/},
+1348--1360.
+
+\bibitem[\protect\citeauthoryear{‌Tibshirani}{‌Tibshirani}{1996}]{Tibshirani1996} 
+Tibshirani,  M.C. (1996).
+\newblock Families of Distributions Arising from Distributions of Order Statistics.
+\newblock {\em TEST {\bf 13}\/},
+1--43.	
+
+\end{thebibliography}
+
+\end{document}
+

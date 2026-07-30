@@ -1,0 +1,327 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Scenario-Informed ML for Competitive Bidding}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Mahshad Arabi and Mohammad Rahim Eivazi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Predicting Competitive Bidding Behavior Under Uncertainty Using Scenario-Informed Machine Learning}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Mahshad Arabi\textsuperscript{\textcolor{red}{1}}, Mohammad Rahim Eivazi\textsuperscript{2}\\
+$^1$Faculty of Governance, University of Tehran, Tehran, Iran \\
+$^2$Faculty of Governance, University of Tehran, Tehran, Iran}
+\end{center}
+
+\footnotetext[1]{\textbf{Mahshad Arabi:} \texttt{Mahshad.arabi@ut.ac.ir}}
+
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Competitive bidding behavior in project tendering is difficult to predict under market volatility and uncertainty. This study proposes a scenario-informed machine learning approach to classify bidding behavior into aggressive, moderate, and conservative strategies. Using 850 completed tenders from 2018 to 2023, three algorithms, Random Forest, Support Vector Machine, and XGBoost, were trained and evaluated through a temporal train-test split. Results show that Random Forest performs best, achieving 89.2\% accuracy and an F1-score of 0.87. The number of bidders, exchange rate volatility, and past success in similar tenders are identified as the most influential predictors.
+
+ 
+\noindent{\bf Keywords:} 
+Competitive bidding behavior; Scenario-informed machine learning; Project tendering; Uncertainty; Decision support; Random Forest. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62P30$, $\rm 68T01$, $\rm 90B50$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+
+Competitive bidding is a fundamental decision-making process in project-based industries, particularly in construction, infrastructure, and industrial projects. For contractors, preparing a bid involves more than determining an appropriate price; it requires balancing the probability of winning against expected profitability while considering project characteristics, market competition, organizational capabilities, and future uncertainty (Alkhateeb et al., 2021; Hanak et al., 2021; Oo et al., 2022). Consequently, bidding behavior is influenced by both project-specific factors and broader economic conditions that continuously shape contractors' strategic decisions.
+
+Traditional bidding models, including statistical, stochastic, and game-theoretic approaches, have provided valuable insights into bid pricing and competitive decision-making (Rastegar et al., 2021; Assaad et al., 2021; Ahmed \& El-Adaway, 2023). However, these approaches generally rely on assumptions of relatively stable market conditions and predictable competitor behavior. In practice, contractors frequently operate under changing economic conditions, where exchange-rate fluctuations, inflation, regulatory changes, and variations in market competition introduce substantial uncertainty into bidding decisions.
+
+Recent advances in machine learning have significantly improved predictive modeling in procurement and tendering applications. Previous studies have successfully applied machine learning techniques to bid/no-bid decisions, bidding price optimization, collusion detection, and procurement analytics (Garcia Rodriguez et al., 2021; Garcia Rodriguez et al., 2022; Ahmad et al., 2023; Araujo et al., 2022). Despite these advances, most existing studies evaluate prediction performance at an aggregate level and pay limited attention to how predictive reliability may vary under different market conditions.
+
+To address this limitation, this study adopts a scenario-informed machine learning framework in which model performance is evaluated across alternative market scenarios representing different levels of competition and market uncertainty. Rather than treating uncertainty as an external factor, it is incorporated directly into the evaluation framework through scenario-based analysis. This approach provides a more comprehensive understanding of predictive performance under varying procurement environments.
+
+The main contribution of this conference paper is to demonstrate that predictive reliability in competitive bidding is scenario-dependent. The study compares the performance of Random Forest, Support Vector Machine, and XGBoost models, identifies the most influential predictors of bidding behavior, and evaluates how predictive performance changes across market scenarios characterized by different levels of competition and market conditions.
+
+\section{Literature Review}
+
+\subsection{Competitive Bidding Behavior in Project Tendering}
+
+The theoretical foundations of competitive bidding originate from classical bidding theory and auction economics. Friedman (1956) introduced one of the earliest probabilistic bidding models, proposing that contractors determine optimal bid markups by balancing the probability of winning against expected profit. Similarly, Vickrey (1961) demonstrated how uncertainty, information asymmetry, and bidders' expectations influence strategic behavior in sealed-bid auctions. These pioneering studies established the theoretical basis for understanding competitive bidding as a strategic decision-making process under uncertainty.
+
+Competitive bidding behavior reflects contractors' strategic positioning in relation to client expectations, competitors' behavior, project risk, workload, and expected profitability. Internal factors influencing bidding decisions include contractor experience, previous project performance, technical capability, financial capacity, and risk tolerance. External factors include the number of competitors, project characteristics, macroeconomic conditions, and market uncertainty (Alkhateeb et al., 2021; Hanak et al., 2021; Oo et al., 2022). Under intense competition, contractors are more likely to reduce profit margins and submit aggressive bids, whereas higher levels of uncertainty generally encourage more conservative pricing strategies to mitigate financial risk.
+
+Earlier studies have employed statistical models, stochastic programming, reliability analysis, and game-theoretic approaches to investigate bidding decisions (Rastegar et al., 2021; Ghodoosi et al., 2021; Ahmed \& El-Adaway, 2023). While these methods have significantly improved the understanding of contractor behavior, they often rely on simplifying assumptions regarding market stability or rational decision-making. As procurement environments become increasingly dynamic and data-rich, traditional analytical models may face limitations in capturing nonlinear relationships and adaptive bidding behavior, motivating the adoption of data-driven machine learning approaches.
+
+\subsection{Machine Learning Applications in Procurement and Bidding}
+
+The growing availability of digital procurement data has significantly expanded the application of machine learning techniques in bidding and procurement decision-making. Garcia Rodriguez et al. (2021) reviewed the use of machine learning methods in public procurement, while Garcia Rodriguez et al. (2022) demonstrated their effectiveness in detecting collusive bidding behavior in auction settings. Ahmad et al. (2023) proposed a machine learning framework for bidding price optimization, and Araujo et al. (2022) developed predictive models to support bid/no-bid decisions. Among the various algorithms, Random Forest, Support Vector Machine, and gradient boosting methods have shown strong capability in modeling complex and nonlinear relationships among tender characteristics.
+
+Despite these advances, machine learning models rely primarily on historical observations and generally assume that future data follow patterns similar to those observed in the past. In procurement environments, however, contractor behavior may change considerably due to macroeconomic fluctuations, exchange-rate volatility, inflation, regulatory reforms, and variations in market competition. Consequently, models trained solely on historical data may experience reduced predictive reliability when operating under conditions that differ from those represented in the training dataset. This limitation highlights the need for predictive approaches that explicitly account for changing market conditions and uncertainty.
+
+\subsection{Scenario Planning and Research Gap}
+
+Scenario planning is a strategic foresight approach that explores multiple plausible future environments rather than attempting to predict a single outcome. It has been widely applied in purchasing, supply chain management, and project-based decision making to improve strategic preparedness under uncertain conditions (Knight et al., 2020; Popper \& Teichler, 2021). Turner (2022) further emphasized the importance of scenario-based thinking for managing complexity in large-scale projects. While scenario planning provides a structured framework for analyzing uncertainty, it is primarily qualitative and does not directly generate quantitative predictions of contractor behavior.
+
+The reviewed literature reveals a clear methodological gap. Existing machine learning studies provide accurate predictive models but generally do not explicitly incorporate alternative future market conditions. Conversely, scenario planning effectively captures uncertainty but lacks quantitative predictive capability. This study addresses this gap by integrating scenario planning with machine learning to evaluate competitive bidding behavior under multiple market scenarios. The proposed framework enables quantitative prediction while preserving the contextual understanding provided by scenario analysis, thereby improving decision support for procurement stakeholders operating in uncertain environments.
+
+\section{Methodology}
+This study develops a scenario-informed machine learning framework to predict competitive bidding behavior under uncertainty. The methodology combines scenario-based foresight with supervised machine learning. The process consists of four main stages: identifying key drivers, developing market scenarios, preparing and labeling data, and training and evaluating models.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[width=12cm,height=4cm]{Images/Conceptual framework of the scenario-informed machine learning approach.png}\\
+		\caption{\footnotesize{Conceptual framework of the scenario-informed machine learning approach}}\label{fig1}
+	\end{center}
+\end{figure}
+\subsection{Key Drivers and Scenario Development}
+Based on the bidding and procurement literature, the key drivers include number of bidders, exchange rate volatility, contractor experience, past success rate in similar tenders, project type, and project duration. The number of bidders represents competitive intensity, while exchange rate volatility represents market instability. Contractor experience and past success reflect learning and capability, and project type and duration represent technical and contextual project differences.
+
+Two dominant uncertainty dimensions are used to construct the scenarios: competitive intensity and market condition. The combination of these dimensions results in four scenarios: high competition in an unstable market, limited competition in a stable market, high volatility with moderate competition, and balanced competition in a dynamic market.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[width=10cm,height=6cm]{Images/Scenario matrix based on competitive intensity and market condition.png}\\
+		\caption{\footnotesize{Scenario matrix based on competitive intensity and market condition}}\label{fig1}
+	\end{center}
+\end{figure}
+\newpage
+\subsection{Data Preparation and Scenario Labeling}
+The empirical analysis is based on a dataset of 850 completed project tenders from 2018 to 2023. The dataset includes project-level, contractor-level, and market-level variables. The temporal structure of the data was preserved by using tenders from 2018 to 2021 as the training set and tenders from 2022 to 2023 as the testing set. This split provides a realistic forward-looking evaluation and reduces information leakage.
+
+Scenario labeling was conducted using observable indicators. Competitive intensity was measured by the number of bidders, and market volatility was measured by exchange rate volatility during the bidding period. Percentile-based thresholds were used to classify low, moderate, and high levels of these variables. Each tender was then assigned to one of the four scenarios defined above.
+
+The distribution of tenders across the four market scenarios is presented in Table 1. The allocation indicates that all scenarios were adequately represented in the dataset, providing sufficient observations for scenario-specific model training and evaluation. This balanced representation improves the reliability of comparisons across alternative market conditions and supports the assessment of scenario-dependent predictive performance.
+
+\begin{table}[ht]
+	\centering
+	\caption{Distribution of tenders across market scenarios}
+	\begin{tabular}{llc}
+		\hline
+		Scenario & Description & Number of Tenders \\
+		\hline
+		S1 & High Competition -- Unstable Market & 215 \\
+		S2 & Limited Competition -- Stable Market & 205 \\
+		S3 & High Volatility -- Moderate Competition & 220 \\
+		S4 & Balanced Competition -- Dynamic Market & 210 \\
+		Total &  & 850 \\
+		\hline
+	\end{tabular}
+\end{table}
+\newpage
+\subsection{Operationalization of Competitive Bidding Behavior}
+Competitive bidding behavior was operationalized using a bid-to-estimate ratio (BER), which compares the contractor submitted bid with the client estimated project cost. This ratio provides a normalized measure of bid positioning and enables comparison across projects of different sizes and cost structures.
+
+\begin{equation}
+	BER_i = \frac{Bid_i}{Estimate_i}
+	\tag{3.1}
+\end{equation}
+
+where $BER_i$ is the bid-to-estimate ratio for tender $i$, $Bid_i$ is the submitted bid price, and $Estimate_i$ is the client estimated project cost. Lower BER values indicate more aggressive bidding, while higher values indicate more conservative bidding.
+
+\begin{equation}
+	Behavior_i =
+	\begin{cases}
+		\text{Aggressive}, & \text{if } BER_i < P_{33} \\
+		\text{Moderate}, & \text{if } P_{33} \le BER_i \le P_{66} \\
+		\text{Conservative}, & \text{if } BER_i > P_{66}
+	\end{cases}
+	\tag{3.2}
+\end{equation}
+
+$P_{33}$ and $P_{66}$ represent the 33rd and 66th percentiles of the BER distribution. In this dataset, these thresholds were approximately 0.93 and 1.08. Therefore, tenders below 0.93 were classified as aggressive, tenders between 0.93 and 1.08 as moderate, and tenders above 1.08 as conservative. This transformation creates a supervised multi-class prediction problem.
+
+The distribution of bidding behavior classes is summarized in Table 2. The results indicate that the three behavioral categories were relatively balanced, with no severe class imbalance observed in the dataset. This balanced class representation reduces potential bias during model training and supports reliable multi-class classification performance.
+
+\begin{table}[ht]
+	\centering
+	\caption{Distribution of competitive bidding behavior classes}
+	\begin{tabular}{llc}
+		\hline
+		Behavior Class & BER Range & Number of Tenders \\
+		\hline
+		Aggressive & $BER < 0.93$ & 276 \\
+		Moderate & $0.93 \le BER \le 1.08$ & 298 \\
+		Conservative & $BER > 1.08$ & 276 \\
+		Total &  & 850 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsection{Machine Learning Models and Evaluation}
+Model hyperparameters were optimized using stratified five-fold cross-validation within the training dataset. For the Random Forest model, the final configuration consisted of 200 decision trees (\texttt{n\_estimators = 200}), a maximum tree depth of 10 (\texttt{max\_depth = 10}), and a minimum leaf size of 2 samples (\texttt{min\_samples\_leaf = 2}). The Support Vector Machine classifier employed a radial basis function (RBF) kernel with $C = 1.0$ and $\gamma = 0.01$. For XGBoost, the selected parameters included \texttt{n\_estimators = 150}, \texttt{max\_depth = 6}, \texttt{learning\_rate = 0.10}, and \texttt{subsample = 0.80}.
+
+Hyperparameter selection was performed through grid-search optimization, with model performance evaluated using cross-validation on the training dataset. The selected configurations achieved the best trade-off between predictive accuracy and generalization performance while reducing the risk of overfitting.
+
+\begin{table}[ht]
+	\centering
+	\caption{Final hyperparameter settings of machine learning models}
+	\begin{tabular}{lp{10cm}}
+		\hline
+		Model & Hyperparameters \\
+		\hline
+		Random Forest & \texttt{n\_estimators = 200}, \texttt{max\_depth = 10}, \texttt{min\_samples\_leaf = 2} \\
+		Support Vector Machine & kernel = RBF, $C = 1.0$, $\gamma = 0.01$ \\
+		XGBoost & \texttt{n\_estimators = 150}, \texttt{max\_depth = 6}, \texttt{learning\_rate = 0.10}, \texttt{subsample = 0.80} \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\section{Results and Discussion}
+\subsection{Comparative Performance of Machine Learning Models}
+Table 4 reports the comparative performance of the three models. Random Forest achieved the best overall performance, with an accuracy of 89.2\% and a macro-averaged F1-score of 0.87. XGBoost showed the second-best performance, while SVM produced acceptable but weaker results. The superior performance of Random Forest can be explained by its ability to capture nonlinear relationships among heterogeneous tendering variables.
+
+\begin{table}[ht]
+	\centering
+	\caption{Performance comparison of machine learning models}
+	\label{tab:model_performance}
+	\begin{tabular}{lccc}
+		\hline
+		Model & Accuracy (\%) & F1-score & Training time (s) \\
+		\hline
+		Random Forest & 89.2 & 0.87 & 24 \\
+		Support Vector Machine & 84.6 & 0.82 & 41 \\
+		XGBoost & 88.1 & 0.85 & 32 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+To provide a more detailed evaluation of classification performance, class-level precision, recall, and F1-scores were calculated for the best-performing Random Forest model. The results are presented in Table 5.
+
+\begin{table}[ht]
+	\centering
+	\caption{Class-level performance metrics for the Random Forest model}
+	\begin{tabular}{lccc}
+		\hline
+		Class & Precision & Recall & F1-score \\
+		\hline
+		Aggressive & 0.88 & 0.86 & 0.87 \\
+		Moderate & 0.89 & 0.90 & 0.89 \\
+		Conservative & 0.85 & 0.84 & 0.84 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+The results indicate that the Random Forest model achieved balanced classification performance across all bidding behavior categories. The Moderate class exhibited the highest recall and F1-score, while the Conservative class showed slightly lower performance, mainly due to occasional confusion with neighboring behavioral categories. Overall, the model demonstrated strong capability in distinguishing among aggressive, moderate, and conservative bidding strategies.
+
+Misclassifications primarily occurred between adjacent behavioral categories (Aggressive--Moderate and Moderate--Conservative), which is expected because bidding behavior exists on a continuum rather than as completely distinct categories. No systematic bias toward a particular class was observed, further supporting the robustness of the classification model.
+
+\subsection{Feature Importance and Scenario-Specific Performance}
+Feature importance analysis based on the Random Forest model identified the number of bidders, exchange rate volatility, and past success in similar tenders as the strongest predictors. These variables represent competitive pressure, market instability, and contractor learning. Project type and project duration also contributed to the prediction, indicating that technical and contextual characteristics influence bidding decisions.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[width=12cm,height=8cm]{Images/Feature importance for predicting competitive bidding behavior using the Random Forest model.png}\\
+		\caption{\footnotesize{Feature importance for predicting competitive bidding behavior using the Random Forest model}}\label{fig1}
+	\end{center}
+\end{figure}
+
+The scenario-specific results show that prediction was most reliable in the limited competition-stable market scenario. This is expected because both sources of uncertainty are relatively low. In contrast, the high competition-unstable market scenario produced the lowest predictive reliability, suggesting that bidding behavior becomes more volatile when intense rivalry and external instability occur simultaneously. In the high volatility-moderate competition scenario, economic variables, particularly exchange rate volatility played a stronger role in prediction.
+
+To further evaluate the robustness of the proposed framework, the performance of the best-performing Random Forest model was examined across the four market scenarios. The results are summarized in Table 6.
+
+\begin{table}[ht]
+	\centering
+	\caption{Scenario-specific performance of the Random Forest model}
+	\begin{tabular}{llcc}
+		\hline
+		Scenario & Description & Accuracy (\%) & F1-score \\
+		\hline
+		S1 & High Competition -- Unstable Market & 84.1 & 0.81 \\
+		S2 & Limited Competition -- Stable Market & 92.8 & 0.91 \\
+		S3 & High Volatility -- Moderate Competition & 87.3 & 0.84 \\
+		S4 & Balanced Competition -- Dynamic Market & 89.0 & 0.86 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+The results indicate that model performance varied across market scenarios. The highest predictive performance was observed in the limited competition--stable market scenario (S2), where uncertainty levels were relatively low. In contrast, predictive accuracy declined under the high competition--unstable market scenario (S1), suggesting that contractor behavior becomes more difficult to predict when competitive pressure and market volatility occur simultaneously. The findings support the central argument of this study that predictive reliability is scenario-dependent and should be interpreted in relation to prevailing market conditions.
+
+\subsection{Discussion}
+The findings demonstrate that machine learning methods can provide valuable support for predicting competitive bidding behavior in uncertain procurement environments. However, the results also indicate that predictive performance should not be interpreted independently of market conditions. While the Random Forest model achieved strong overall performance, its reliability varied across scenarios characterized by different levels of competition and market instability. This observation highlights the importance of combining predictive analytics with contextual understanding of the tendering environment.
+
+The results further suggest that market-related variables, particularly the number of bidders and exchange rate volatility, play a central role in shaping bidding behavior. These factors influence both competitive pressure and perceived project risk, thereby affecting contractors' strategic decisions. Consequently, procurement stakeholders should view predictive models as decision-support tools that complement, rather than replace, expert judgment. A scenario-specific perspective may therefore improve the practical usefulness of machine learning applications in procurement and tender evaluation.
+
+\section{Conclusion}
+This study presented a scenario-specific machine learning approach for predicting competitive bidding behavior under uncertainty. Using 850 tenders from 2018 to 2023, the study classified bidding behavior into aggressive, moderate, and conservative strategies and compared Random Forest, SVM, and XGBoost. Random Forest achieved the best performance, with an accuracy of 89.2\% and an F1-score of 0.87.
+
+The main finding is that predictive performance is scenario-dependent. Predictions were more reliable in stable and less competitive environments, while reliability decreased under high competition and market instability. Feature importance analysis showed that the number of bidders, exchange rate volatility, and past success in similar tenders were the most important predictors. The proposed approach provides a practical decision-support perspective for strategic tendering by linking machine learning outputs to scenario-specific uncertainty conditions.
+
+From a practical perspective, the proposed framework can support contractors operating in the Iranian tendering environment. In periods characterized by exchange-rate volatility, inflationary pressures, and uncertain market conditions, contractors often face significant challenges in determining appropriate bidding strategies. The proposed machine learning framework can serve as a decision-support tool by providing insights into likely competitive behavior under alternative market scenarios. Such information may help contractors avoid excessively aggressive bids that increase the risk of financial losses and project underperformance, while also supporting more informed pricing decisions in highly competitive markets.
+
+The framework may also provide value for procurement authorities and public-sector clients. By identifying patterns associated with aggressive, moderate, and conservative bidding behavior, decision makers can better assess the sustainability and risk profile of submitted bids. This capability is particularly relevant in the Iranian procurement context, where economic uncertainty and market fluctuations may increase the likelihood of unrealistically low bids and subsequent project delivery challenges. Integrating data-driven decision-support tools into electronic procurement and tender evaluation systems could contribute to more transparent bid assessment, improved risk management, and better project outcomes.
+
+Future research may extend the proposed framework by incorporating additional macroeconomic indicators relevant to emerging economies, including inflation expectations, financing conditions, regulatory changes, and sector-specific market risks. Such extensions could further improve predictive reliability and strengthen decision support for procurement stakeholders operating under uncertainty.
+
+\begin{thebibliography}{9}
+	\bibitem[Ahmad et al. (2023)]{Ahmad2023}
+	Ahmad S., Alsharif K. and Elbeltagi E. (2023), A machine learning-based bidding price optimization algorithm approach, {\it Heliyon} 9(6), e16902. https://doi.org/10.1016/j.heliyon.2023.e16902
+	
+	\bibitem[Ahmed and El-Adaway (2023)]{Ahmed2023}
+	Ahmed M.O. and El-Adaway I.H. (2023), An integrated game-theoretic and reinforcement learning modeling for multi-stage construction bidding, {\it Construction Management and Economics} 41(1), 47--65. https://doi.org/10.1080/01446193.2022.2144656
+	
+	\bibitem[Alkhateeb et al. (2021)]{Alkhateeb2021}
+	Alkhateeb A.M., Hyari K.H. and Hiyassat M.A. (2021), Analyzing bidding competitiveness and success rate of contractors competing for public construction projects, {\it Construction Innovation} 21(4), 576--591. https://doi.org/10.1108/CI-09-2020-0154
+	
+	\bibitem[Araujo et al. (2022)]{Araujo2022}
+	Araujo M.C.B., Alencar L.H. and de Miranda Mota C.M. (2022), Classification model for bid/no-bid decision in construction projects, {\it International Transactions in Operational Research} 29(2), 1025--1047. https://doi.org/10.1111/itor.12922
+	
+	\bibitem[Assaad et al. (2021)]{Assaad2021}
+	Assaad R., Zayed T. and Moselhi O. (2021), Comparing the impact of learning in bidding decision-making processes using algorithmic game theory, {\it Journal of Management in Engineering} 37(3), 04021015. https://doi.org/10.1061/(ASCE)ME.1943-5479.0000906
+	
+	\bibitem[Garcia Rodriguez et al. (2021)]{GarciaRodriguez2021}
+	Garcia Rodriguez M.J., Ballesteros-Perez P. and Love P.E.D. (2021), Machine learning in public procurement: A systematic review and research agenda, {\it Automation in Construction} 130, 103844. https://doi.org/10.1016/j.autcon.2021.103844
+	
+	\bibitem[Garcia Rodriguez et al. (2022)]{GarciaRodriguez2022}
+	Garcia Rodriguez M.J., Rodriguez-Montequin V., Ballesteros-Perez P., Love P.E.D. and Signor R. (2022), Collusion detection in public procurement auctions with machine learning algorithms, {\it Automation in Construction} 133, 104047. https://doi.org/10.1016/j.autcon.2021.104047
+	
+	\bibitem[Ghodoosi et al. (2021)]{Ghodoosi2021}
+	Ghodoosi F., Bagchi A., Hosseini M.R., Vilutiene T. and Zeynalian M. (2021), Enhancement of bid decision-making in construction projects: A reliability analysis approach, {\it Journal of Civil Engineering and Management} 27(3), 149--161. https://doi.org/10.3846/jcem.2021.14356
+	
+	\bibitem[Hanak et al. (2021)]{Hanak2021}
+	Hanak T., Drozdova A. and Marovic I. (2021), Bidding strategy in construction public procurement: A contractor perspective, {\it Buildings} 11(2), 47. https://doi.org/10.3390/buildings11020047
+	
+	\bibitem[Herrmann and Cobo Martin (2024)]{Herrmann2024}
+	Herrmann H. and Cobo Martin M.J. (2024), Bidding for B2B or B2G tenders: Toward the adoption of pricing models in practice, {\it Management Review Quarterly} 74(1), 89--118. https://doi.org/10.1007/s11301-023-00344-7
+	
+	\bibitem[Herrmann and Oesterle (2022)]{Herrmann2022}
+	Herrmann H. and Oesterle S. (2022), Data-driven decision support in public procurement under uncertainty, {\it Decision Support Systems} 158, 113773. https://doi.org/10.1016/j.dss.2022.113773
+	
+	\bibitem[Knight et al. (2020)]{Knight2020}
+	Knight L., Meehan J., Tapinos E., Menzies L. and Pfeiffer A. (2020), Researching the future of purchasing and supply management: The use of scenario planning, {\it Journal of Purchasing and Supply Management} 26(4), 100728. https://doi.org/10.1016/j.pursup.2020.100728
+	
+	\bibitem[Kwong et al. (2022)]{Kwong2022}
+	Kwong C.K., Wong T.C. and Chan K.Y. (2022), Hybrid scenario-based machine learning for strategic decision-making under uncertainty, {\it Expert Systems with Applications} 199, 116940. https://doi.org/10.1016/j.eswa.2022.116940
+	
+	\bibitem[Oo et al. (2022)]{Oo2022}
+	Oo B.L., Lim T.H.B. and Runeson G. (2022), Critical factors affecting contractors decision to bid: A global perspective, {\it Buildings} 12(3), 379. https://doi.org/10.3390/buildings12030379
+	
+	\bibitem[Popper and Teichler (2021)]{Popper2021}
+	Popper R. and Teichler T. (2021), Foresight, scenarios, and policy: A methodological integration, {\it Technological Forecasting and Social Change} 169, 120816. https://doi.org/10.1016/j.techfore.2021.120816
+	
+	\bibitem[Rastegar et al. (2021)]{Rastegar2021}
+	Rastegar H., Arbab Shirani B., Mirmohammadi S.H. and Akhondi E. (2021), Stochastic programming model for bidding price decision in construction projects, {\it Journal of Construction Engineering and Management} 147(4), 04021025. https://doi.org/10.1061/(ASCE)CO.1943-7862.0002015
+	
+	\bibitem[Spaniol and Rowland (2023)]{Spaniol2023}
+	Spaniol M.J. and Rowland N.J. (2023), AI-assisted scenario generation for strategic planning, {\it Futures \& Foresight Science} 5(1), e148. https://doi.org/10.1002/ffo2.148
+	
+	\bibitem[Turner (2022)]{Turner2022}
+	Turner J.R. (2022), Using principal-steward contracting and scenario planning to manage megaprojects, {\it Project Management Journal} 53(2), 172--183. https://doi.org/10.1177/87569728211070868
+	
+	\bibitem[Zhang et al. (2025)]{Zhang2025}
+	Zhang Y., Oo B.L., Runeson G. and Lim B.T.H. (2025), An empirical study of contractors bidding trends in recurrent bidding: A case of Singapore public sector construction projects, {\it Buildings} 15(4), 555. https://doi.org/10.3390/buildings15040555
+	
+	\bibitem[Friedman (1956)]{Friedman1956}
+	Friedman L. (1956), A competitive-bidding strategy, {\it Operations Research} 4(1), 104--112. https://doi.org/10.1287/opre.4.1.104
+	
+	\bibitem[Vickrey (1961)]{Vickrey1961}
+	Vickrey W. (1961), Counterspeculation, auctions, and competitive sealed tenders, {\it The Journal of Finance} 16(1), 8--37. https://doi.org/10.2307/2977633
+\end{thebibliography}
+ \end{document}
+

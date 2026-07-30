@@ -1,0 +1,347 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{multirow}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Short Article Title}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Robust Time Series Clustering}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf A Robust Computational Framework for Time Series Clustering with Skewed Distributions}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Ali Shadrokh\footnote[1]{{\bf Corresponding Author:} {\tt a.shadrokh@pnu.ac.ir }}, Samira Saadati $^2$  \\
+$^1$Department of Statistics, Payame Noor University, Tehran, Iran \\
+$^2$Department of Statistics, Payame Noor University, Tehran, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This study develops a robust model-based clustering framework for time series by incorporating Laplace and Skew-Laplace distributions to address non-normality, skewness, and heavy-tailedness in real-world data. We assume that cluster observations follow a polynomial regression structure with a temporal Vandermonde design matrix. The model parameters are estimated using both Frequentist (via the EM algorithm) and Bayesian (via MCMC sampling) approaches. Simulation results indicate that while the Skew-Laplace model performs comparably to Normal and Laplace models under symmetric conditions, it significantly outperforms them when the data are skewed and heavy-tailed. In such scenarios, symmetric distributions tend to overestimate variance to compensate for their lack of flexibility, whereas the Skew-Laplace model provides a more robust and efficient fit. Furthermore, the Bayesian approach demonstrates superior performance over Frequentist methods, particularly in clusters with small sample sizes. These findings highlight the effectiveness of the Skew-Laplace model as a comprehensive and highly adaptable framework for complex time series analysis.
+
+\noindent{\bf Keywords:} 
+Time series clustering, Bayesian inference, Robust estimation, Polynomial mixture models. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62M10$, $\rm 62H30$, $\rm 62F15$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%%%% Main Text %%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+Clustering is a fundamental unsupervised learning technique in time series analysis, aimed at partitioning data into groups based on temporal patterns. Recent comprehensive studies have highlighted a wide array of methodologies for this purpose, ranging from distance-based to generative models \citep{paparrizos2025}. Among these, the model-based approach \citep{banfield1993, mclachlan1998} stands out by assuming that observations are generated from a finite mixture distribution \citep{mclachlan2000}. This framework offers two primary advantages: enhanced precision when the model correctly captures temporal dynamics and the inherent capability for future prediction.
+
+Unlike distance-based methods, model-based clustering elevates the analysis to a statistical inference level. It enables the use of quantitative criteria, such as the Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC), to determine the optimal number of clusters and regression orders. By relying on probability distributions, it provides a robust mathematical foundation for uncovering the latent structure of complex data. However, traditional Gaussian-based mixture models often fail when encountering real-world time series that exhibit non-normality or heavy tails. Building upon the foundational work on Bayesian estimation for skewed distributions \citep{farokhi_shadrokh_2018}, this study addresses these limitations by introducing a robust clustering framework based on Laplace and Skew-Laplace distributions.
+
+
+\section{Theoretical Foundations}
+
+In this study, we consider $n$ independent time series of length $m$, assuming they follow a mixture polynomial regression model with $L$ components. For each observation $x_{ij}$ at time $t_j$, the model is formulated as:
+\begin{equation}
+x_{ij} = \sum_{l=1}^{L} \omega_{il} (T_j' \beta_l + \sigma_l \varepsilon_{ij}), \quad \varepsilon_{ij} \sim f_l(0, 1, \theta_l)
+\end{equation}
+where $\beta_l$ is the vector of polynomial coefficients, $\sigma_l$ is the scale parameter, $\omega_{il}$ is the latent cluster assignment variable, $T_j$ is the $j$-th row of the temporal Vandermonde Matrix, and $f_l(0, 1, \theta_l)$ denotes the probability density function of the error term $\varepsilon_{ij}$ with skewness parameter $\theta_l$.
+
+Traditional Gaussian-based mixture models often lack the flexibility to handle skewness and heavy tails, leading to biased estimates \citep{lee2013a}. While robust models using Student-t or Laplace distributions have been proposed, they predominantly focus on independent data. Among skew-symmetric families, the Skew-Laplace (SL) distribution offers a more flexible and computationally tractable alternative to the Skew-Normal distribution, especially in the presence of extreme outliers and high asymmetry \cite{arslan2009}. By extending model-based curve clustering to the SL family, this research simultaneously accounts for temporal dependence and non-normality, providing a robust framework for complex time series structures.
+
+\subsection{Laplace and Skew-Laplace Distributions}
+
+The robust clustering framework developed in this study relies on the stochastic representations of Laplace and Skew-Laplace distributions, facilitating parameter estimation via the EM algorithm and MCMC methods.
+
+\subsubsection{Laplace Distribution}
+A random variable $X$ follows a Laplace distribution $L(\mu, \sigma)$ if its density is $f(x \mid \mu, \sigma) = \frac{1}{2\sigma} \exp(-|x-\mu|/\sigma)$. Following Andrews and Mallows \citep{andrews1974}, its hierarchical representation is:
+\begin{equation}\label{eq6}
+X_i \mid V_i \sim N\left(\mu, \frac{\sigma^2}{2V_i}\right), \quad V_i \sim IG(1, 1/2)
+\end{equation}
+where $IG$ denotes the Inverse-Gaussian distribution. This structure yields the conditional expectations:
+$N_{1i} = E(V_i \mid x_i) = \frac{\sigma}{\sqrt{2}|x_i-\mu|}$ and $N_{2i} = E(V_i^{-1} \mid x_i) = 1 + \sqrt{2}\frac{|x_i-\mu|}{\sigma}$.
+
+\subsubsection{Skew-Laplace Distribution}
+The Skew-Laplace distribution $SL(\mu, \sigma, \gamma)$, as introduced by Arslan \citep{arslan2009}, extends the symmetric case by adding a skewness parameter $\gamma \in \mathbb{R}$. Its stochastic representation is given by:
+\begin{equation}\label{10}
+X_i \mid V_i \sim N\left(\mu + V_i^{-1}\gamma, \frac{\sigma^2}{V_i}\right), \quad V_i \sim IG(1, 1/2)
+\end{equation}
+This representation is pivotal for deriving the complete-data likelihood. Based on the Inverse-Gaussian expectations, we obtain:
+$M_{1i} = E(V_i \mid x_i) = \frac{\sqrt{\gamma^2+\sigma^2}}{|x_i-\mu|}$ and $M_{2i} = E(V_i^{-1} \mid x_i) = \frac{\sigma^2}{\gamma^2+\sigma^2} + \frac{|x_i-\mu|}{\sqrt{\gamma^2+\sigma^2}}$.
+The $SL$ distribution reduces to the symmetric Laplace when $\gamma=0$, offering superior flexibility in modeling both skewness and heavy tails.
+
+Based on the stochastic representations in Equations (\ref{eq6}) and (\ref{10}), $X$ represents the observed time series while $V$ serves as the latent variable, together forming the complete data $(X, V)$. This hierarchical structure allows the definition of the complete-data likelihood function derived from the joint densities. Consequently, maximum likelihood (ML) estimates can be efficiently obtained through the Expectation-Maximization (EM) algorithm, while the Bayesian framework utilizes these representations for Gibbs sampling.
+
+\section{Model-Based Clustering for Time Series}
+
+We consider $n$ independent time series $x_1, \dots, x_n$, each consisting of $m$ observations. The clustering framework is based on the following mixture model:
+\begin{equation}\label{mix_model}
+f(x_i \mid T, \Psi) = \sum_{k=1}^K \pi_k f_k(x_i \mid T, \psi_k), \quad i=1, \dots, n,
+\end{equation}
+where $\Psi = (\pi_1, \dots, \pi_K, \psi_1, \dots, \psi_K)$ is the set of all parameters and $\psi_k = (\beta_k, \sigma_k, \theta_k)$ represents the parameter vector for the $k$-th cluster. To account for the temporal structure, the cluster-specific density is defined as the product of marginal densities:
+\begin{equation}\label{ts_density}
+f_k(x_i \mid T, \psi_k) = \prod_{j=1}^m f(x_{ij} \mid T'_{kj} \beta_k, \sigma_k, \theta_k)
+\end{equation}
+
+\subsection{Parameter Estimation via EM Algorithm}
+Due to the presence of latent variables—cluster membership $Z_{ik}$ and stochastic representation $v_{ij}$—we employ the EM algorithm. The complete-data log-likelihood for the Skew-Laplace (SL) model is derived as:
+\begin{align}\label{log_like_SL}
+l_c^{SL} (\Psi) &= \sum_{i,k} Z_{ik} \log(\pi_k) + \sum_{i,j,k} Z_{ik} \left[ -\frac{1}{2} \log(\sigma_k^2) - \frac{3}{2} \log(v_{ij}) - \frac{v_{ij}}{2\sigma_k^2} (x_{ij} - T'_{kj}\beta_k)^2 \right. \nonumber \\
+&\left. + \frac{\gamma_k}{\sigma_k^2}(x_{ij} - T'_{kj}\beta_k) - \frac{v_{ij}^{-1}}{2} \left( \frac{\gamma_k^2}{\sigma_k^2} + 1 \right) \right]
+\end{align}
+
+In the \textbf{E-step}, the conditional expectations of the latent variables are computed. For the SL model, these are:
+\begin{equation}
+\hat{M}_{1ijk}^{(r)} = \hat{Z}_{ik}^{(r)} \frac{\sqrt{\gamma_k^{2(r)} + \sigma_k^{2(r)}}}{|x_{ij} - T_{kj}' \beta_k^{(r)}|}, \quad \hat{M}_{2ijk}^{(r)} = \hat{Z}_{ik}^{(r)} \left( \frac{\sigma_k^{2(r)}}{\gamma_k^{2(r)} + \sigma_k^{2(r)}} + \frac{|x_{ij} - T_{kj}' \beta_k^{(r)}|}{\sqrt{\gamma_k^{2(r)} + \sigma_k^{2(r)}}} \right)
+\end{equation}
+where $\hat{Z}_{ik}^{(r)}$ is the posterior probability of membership.
+
+In the \textbf{M-step}, parameters are updated by maximizing the $Q$-function. The update for the regression coefficients $\beta_k$ is given by:
+\begin{equation}
+\beta_k^{(r+1)} = \left( T_k' \left[ \sum_{i=1}^n \hat{\mathbf{M}}_{1ik}^{(r)} \right] T_k \right)^{-1} T_k' \sum_{i=1}^n \left( \hat{\mathbf{M}}_{1ik}^{(r)} \mathbf{x}_i - \gamma_k^{(r)} \hat{\mathbf{Z}}_{ik}^{*(r)} \right)
+\end{equation}
+where $\hat{\mathbf{M}}_{1ik}^{(r)} = \text{diag}(\hat{M}_{1i1k}^{(r)}, \dots, \hat{M}_{1imk}^{(r)})$ and $\hat{\mathbf{Z}}_{ik}^{*(r)} = \text{rep}(\hat{Z}_{ik}^{(r)}, m)$. Similar update rules are derived for $\pi_k$, $\sigma_k^2$, and the skewness parameter $\gamma_k$. The symmetric Laplace model is obtained as a special case where $\gamma_k=0$.
+
+\subsection{Bayesian Inference and Gibbs Sampling}
+
+To overcome the complexity of the posterior distribution in mixture models, we employ a hierarchical Bayesian approach. Following Richardson and Green \citep{richardson1997}, we assign conjugate prior distributions to ensure tractable full conditional posteriors for MCMC sampling:
+\begin{align*}
+\boldsymbol{\beta}_k \sim N_p (\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k), \quad \sigma_k^2 | b \sim \mathcal{IG}(\alpha, b), \quad b \sim \Gamma(\lambda_1, \lambda_2) \\
+\gamma_k \sim N(\zeta_k, \tau_k^2), \quad \boldsymbol{\pi} \sim \text{Dirichlet}(h, \dots,h)
+\end{align*}
+To implement the Gibbs sampler, the full conditional posterior distributions are derived. For the Skew-Laplace model, the auxiliary variables $v_{ij}$ follow an Inverse-Gaussian distribution:
+\begin{equation}
+\pi(v_{ij} \mid \text{others}, Z_{ik}=1) \sim \text{IGau} \left( \sqrt{\frac{\sigma_k^2 + \gamma_k^2}{(x_{ij} - \mathbf{T}_{kj}' \boldsymbol{\beta}_k)^2}}, \frac{\gamma_k^2}{\sigma_k^2} + 1 \right)
+\end{equation}
+The membership variables $Z_{ik}$ are sampled from a Multinomial distribution with updated probabilities $\pi_k^*$. The posterior for regression coefficients $\boldsymbol{\beta}_k$ is Normal with updated precision matrices:
+\begin{equation}
+\pi(\boldsymbol{\beta}_k \mid \text{others}) \sim N_{p_k} \left( \left[ \sum_{i=1}^n \mathbf{F}_{1ik} \right]^{-1} \sum_{i=1}^n \mathbf{F}_{2ik}, \left[ \sum_{i=1}^n \mathbf{F}_{1ik} \right]^{-1} \right)
+\end{equation}
+where $\mathbf{F}_{1ik}$ and $\mathbf{F}_{2ik}$ incorporate both the likelihood information and prior hyperparameters. The scale $\sigma_k^2$ and skewness $\gamma_k$ parameters are similarly updated using Inverse-Gamma and Normal distributions, respectively. To ensure convergence and mitigate label-switching, hyperparameters are initialized via a DTW-based k-means clustering of the time series.  To assess the stability of the proposed framework, we compared the DTW-based initialization with a purely random initialization. While the model eventually converged to similar posterior estimates under random initialization, the DTW-based approach significantly reduced the number of iterations required for convergence and exhibited higher stability against local optima. This indicates that while the model is fundamentally robust to the choice of starting values, the informed initialization via DTW enhances computational efficiency and ensures more reliable convergence in high-dimensional settings.
+
+\subsection{Model Selection: Number of Clusters and Regression Order}
+A critical aspect of the proposed model is simultaneously determining the optimal number of clusters ($K$) and the polynomial degree ($p$). We employ the Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC), defined as:
+\begin{align*}
+AIC &= 2\nu(K, p) - 2l(\hat{\Psi}) \\
+BIC &= \nu(K, p) \log(nm) - 2l(\hat{\Psi})
+\end{align*}
+where $\nu(K, p) = (K - 1) + K(p + 3)$ represents the total number of free parameters (including mixture weights, regression coefficients, scale, and skewness). In practice, we evaluate the models over a grid search of $K \in \{1, \dots, K_{max}\}$ and $p \in \{1, \dots, p_{max}\}$. The pair $(K, p)$ that minimizes the BIC is selected as the optimal configuration, as it provides a superior balance between model complexity and goodness-of-fit.
+
+\section{Simulation Study}
+We evaluate the performance of the proposed Skew-Laplace (SL) and Laplace (L) mixture models against the classical Normal (N) model. A dataset of $n=60$ time series with length $m=60$ is generated from two clusters ($K=2$) following polynomial regressions of degrees $p_1=5$ and $p_2=3$. Each of these 1,000 simulations was initialized using the DTW-based approach described in Section 3.2 to ensure the robustness of the results. Moreover, the choice of a relatively small sample size ($n=60, m=60$) is intentionally aligned with the strengths of the Bayesian framework, which is specifically designed to provide stable and regularized estimates in limited-sample scenarios through the integration of prior information, thereby avoiding the overfitting issues common in frequentist methods.
+
+Three scenarios are considered based on the error distribution $\varepsilon_{ij}$: (1) Normal, (2) Laplace (symmetric heavy-tailed), and (3) Skew-Laplace (skewed heavy-tailed). The sampling process was repeated 1,000 times to calculate the Root Mean Square Error (RMSE) and Mean Clustering Accuracy.
+
+\begin{table}[ht]
+\centering
+\caption{Mean clustering accuracy across different scenarios and estimation approaches.}
+\label{tab:accuracy}
+\small
+\begin{tabular}{lcccccc}
+\hline
+\multirow{2}{*}{Model} & \multicolumn{2}{c}{Scenario 1 (N)} & \multicolumn{2}{c}{Scenario 2 (L)} & \multicolumn{2}{c}{Scenario 3 (SL)} \\
+\cline{2-7}
+ & Freq. & Bay. & Freq. & Bay. & Freq. & Bay. \\
+\hline
+Normal & 0.95 & 0.97 & 0.78 & 0.82 & 0.71 & 0.73 \\
+Laplace & 0.88 & 0.90 & 0.95 & 0.98 & 0.74 & 0.78 \\
+Skew-Laplace & 0.92 & 0.94 & 0.92 & 0.93 & $\mathbf{0.96}$ & $\mathbf{0.98}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+The results in Table \ref{tab:accuracy} demonstrate that while the Normal model is optimal under its own distribution, its performance drops significantly (up to 25\%) in the presence of heavy tails or skewness. Conversely, the SL model shows remarkable flexibility; it remains competitive in Scenario 1 and 2, while outperforming all models in Scenario 3 with 98\% accuracy. 
+
+Table \ref{tab:results_s3} summarizes the RMSE for Scenario 3. It is evident that the Bayesian approach consistently yields lower RMSE compared to the frequentist method, particularly for the skewness parameter $\gamma_k$ and scale $\sigma_k^2$. This superiority stems from the hierarchical prior structure which effectively regularizes estimates in complex mixture settings.
+
+\begin{table}[ht]
+\centering
+\caption{RMSE values for Scenario 3 (Skew-Laplace distribution).}
+\label{tab:results_s3}
+\footnotesize
+\begin{tabular}{llcccc}
+\hline
+\multirow{2}{*}{Cluster} & \multirow{2}{*}{Param.} & \multicolumn{2}{c}{Frequentist} & \multicolumn{2}{c}{Bayesian} \\
+\cline{3-6}
+ &  & L & SL & L & SL \\
+\hline
+\multirow{3}{*}{Cluster 1} & $\beta_{01}$ & 1.2237 & 0.1307 & 1.1302 & 0.0947 \\
+ & $\sigma_1^2$ & 1.4817 & 0.1302 & 1.1760 & 0.1062 \\
+ & $\gamma_1$ & - & 0.1485 & - & 0.0652 \\
+\hline
+\multirow{3}{*}{Cluster 2} & $\beta_{02}$ & 1.0218 & 0.1289 & 0.9665 & 0.0923 \\
+ & $\sigma_2^2$ & 1.8138 & 0.1207 & 0.9700 & 0.0957 \\
+ & $\gamma_2$ & - & 0.1339 & - & 0.0739 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Application to a Benchmark Dataset}
+To evaluate the effectiveness of the proposed framework, we utilize the \texttt{toydataset} from the \texttt{SaMUraiS} R package. This benchmark dataset is specifically designed to incorporate non-normal distributions, including heavy-tailed and skewed characteristics, making it an ideal candidate for testing the robustness of the model against normality assumptions. The dataset comprises 30 high-dimensional time series, each with 350 observations. By performing a grid search over candidate values for the number of clusters $K$ and the polynomial degrees $p$, the optimal configuration was identified as $K=3$ clusters with $p = (1, 0, 1)$ based on the minimum AIC and BIC criteria. It should be noted that for the Bayesian approach, AIC and BIC were calculated using the posterior mean of the parameters as point estimates in the likelihood function. This was done to ensure a consistent and direct comparison between the two estimation frameworks on a uniform scale, even though criteria like DIC or WAIC are also common in Bayesian model selection.
+
+Notably, all models achieved 100\% clustering accuracy, correctly assigning each series to its respective hidden group.
+
+\begin{table}[ht]
+\centering
+\caption{Model selection criteria for the 3-cluster solutions.}
+\label{tab:model_selection}
+\footnotesize
+\begin{tabular}{llccc}
+\hline
+Approach & Criterion & Normal & Laplace & Skew-Laplace \\
+\hline
+\multirow{2}{*}{Frequentist} & $AIC$ & 963.30 & 769.99 & 769.38 \\
+ & $BIC$ & 1106.51 & 913.20 & 955.55 \\
+\hline
+\multirow{2}{*}{Bayesian} & $AIC$ & 728.32 & 706.75 & $\mathbf{612.13}$ \\
+ & $BIC$ & 871.53 & 849.96 & $\mathbf{798.30}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+As shown in Table \ref{tab:model_selection}, the Skew-Laplace model under the Bayesian approach provides the best fit (lowest AIC/BIC). A key finding, summarized in Table \ref{tab:parameter_estimates}, is the behavior of the estimated scale parameter ($\sigma^2$). The Normal model consistently overestimates the variance (e.g., $\hat{\sigma}_1^2 = 0.86$) compared to the Skew-Laplace model ($\hat{\sigma}_1^2 = 0.21$). This occurs because the Normal distribution inflates the dispersion to compensate for its inability to model heavy tails and asymmetry. By utilizing a skewness parameter ($\gamma_k$), our proposed model captures the distributional shape directly, leading to more parsimonious and precise variance estimates.
+
+\begin{table}[ht]
+\centering
+\caption{Parameter estimates for the first cluster ($k=1$).}
+\label{tab:parameter_estimates}
+\footnotesize
+\begin{tabular}{lcccccc}
+\hline
+\multirow{2}{*}{Param.} & \multicolumn{3}{c}{Frequentist} & \multicolumn{3}{c}{Bayesian} \\
+\cline{2-7}
+ & Normal & Laplace & Skew-L. & Normal & Laplace & Skew-L. \\
+\hline
+$\beta_{01}$ & 5.5004 & 5.9833 & 6.7729 & 5.4580 & 5.9412 & 6.4518 \\
+$\sigma_{1}^2$ & 0.8689 & 0.2869 & $\mathbf{0.2158}$ & 0.8568 & 0.2604 & $\mathbf{0.2126}$ \\
+$\gamma_1$ & - & - & -0.3934 & - & - & -0.3908 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Conclusion}
+This study presented a robust model-based clustering framework for time series using Laplace and Skew-Laplace (SL) distributions. Our findings from both simulation and real data applications lead to several key conclusions:
+\begin{itemize}
+    \item \textbf{Efficiency and Flexibility:} The SL model demonstrates exceptional flexibility. Unlike the Normal and Laplace models, it maintains high accuracy across symmetric, skewed, and heavy-tailed scenarios without the risk of overestimating variance.
+    \item \textbf{Bayesian Superiority:} The Bayesian approach, through its hierarchical prior structure, provides more stable parameter estimates and higher clustering accuracy compared to the frequentist EM-based method.
+    \item \textbf{Model Robustness:} The SL distribution acts as a universal tool; it converges to the true underlying structure even when the data follow a Normal or symmetric Laplace distribution, making it a reliable choice for complex time series where the true distribution is unknown.
+\end{itemize}
+For future research, we propose incorporating \textbf{regime-switching} mechanisms within each cluster. This would allow for a hierarchical clustering framework where time series are first grouped into macro-clusters, and then segmented into micro-level internal regimes, providing a deeper understanding of latent temporal dynamics.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+%\bibitem{adrian2016}
+%Adrian, A., Maitra, R. and Hurn, M. (2016). \textit{Developments in model-based clustering}. New York: Springer.
+
+\bibitem[Andrews and Mallows(1974)]{andrews1974}
+Andrews, D. F. and Mallows, C. L. (1974). Scale mixtures of normal distributions. \textit{Journal of the Royal Statistical Society: Series B}, 36(1), pp. 99-102.
+
+\bibitem[Arslan(2009)]{arslan2009}
+Arslan, O. (2009). An alternative multivariate skew-Laplace distribution. \textit{Statistical Papers}, 51(4), pp. 771-787.
+
+%\bibitem{azzalini1985}
+%Azzalini, A. (1985). A class of distributions which includes the normal ones. \textit{Scandinavian Journal of Statistics}, 12(2), pp. 171-178.
+
+%\bibitem{azzalini1999}
+%Azzalini, A. and Capitanio, A. (1999). Statistical applications of the multivariate skew-normal distribution. \textit{Journal of the Royal Statistical Society: Series B}, 61(3), pp. 579-602.
+
+\bibitem[Banfield and Raftery(1993)]{banfield1993}
+Banfield, J.D. and Raftery, A.E. (1993). Model-based Gaussian and non-Gaussian clustering. \textit{Biometrics}, 49(3), pp. 803-821.
+
+%\bibitem{browne2015}
+%Browne, R.P. and McNicholas, P.D. (2015). A mixture of generalized hyperbolic distributions. \textit{Canadian Journal of Statistics}, 43(2), pp. 176-198.
+
+\bibitem[Chamroukhi(2010)]{chamroukhi2010}
+Chamroukhi, F. (2010). \textit{Bayesian and maximum likelihood approaches for model-based curve clustering}. Ph.D. Dissertation, Université de Technologie de Compiègne.
+
+%\bibitem{dempster1977}
+%Dempster, A.P., Laird, N.M. and Rubin, D.B. (1977). Maximum likelihood from incomplete data via the EM algorithm. \textit{Journal of the Royal Statistical Society: Series B}, 39(1), pp. 1-22.
+
+%\bibitem{diebolt1990}
+%Diebolt, J. and Robert, C. P. (1990). Bayesian estimation of finite mixture distributions. \textit{Journal of the Royal Statistical Society: Series B}, 2(1).
+
+%\bibitem{diebolt1994}
+%Diebolt, J. and Robert, C.P. (1994). Estimation of finite mixture distributions through Bayesian sampling. \textit{Journal of the Royal Statistical Society: Series B}, 56(2), pp. 363-375.
+
+\bibitem[Farokhi and Shadrokh(2018)]{farokhi_shadrokh_2018}
+Farokhi, A. and Shadrokh, A. (2018). Bayesian Estimation in Skew-Normal and Skew-Laplace Linear Multilevel Models. \textit{Afghanistan Quarterly}, 11(2), pp. 144-165.
+
+%\bibitem{farokhi_shadrokh_2016}
+%Farokhi, A. and Shadrokh, A. (2016). Bayesian Analysis of Multilevel Models with the Skew-Slash Distribution. \textit{International Journal of Applied Mathematics and Statistics}, 55(1), pp. 1-11.
+
+%\bibitem{fraley2002}
+%Fraley, C. and Raftery, A. E. (2002). Model-based clustering, discriminant analysis, and density estimation. \textit{Journal of the American Statistical Association}, 97(458), pp. 611-631.
+
+%\bibitem{gaffney2004}
+%Gaffney, S.J. (2004). \textit{Probabilistic curve clustering using mixture models}. Ph.D. Dissertation, University of California, Irvine.
+
+%\bibitem{gelman2008}
+%Gelman, A., Jakulin, A., Pittau, M.G. and Su, Y.S. (2008). A weakly informative default prior distribution for logistic and other regression models. \textit{The Annals of Applied Statistics}, 2(4), pp. 1360-1383.
+
+%\bibitem{gui2003}
+%Gui, R. (2003). \textit{Model-based clustering of time series}. Ph.D. Dissertation, University of British Columbia.
+
+%\bibitem{hebrial2010}
+%Hebrial, C., Samé, A., Chamroukhi, F., Govaert, G. and Aknin, P. (2010). A latent class model for diagnosing railway track circuits. \textit{IFAC Symposium on Fault Detection}.
+
+\bibitem[Keeney(2013)]{keeney2013}
+Keeney, S. (2013). \textit{Developments in model-based clustering of time series}. Ph.D. Dissertation, University of Dublin.
+
+\bibitem[Lee and McLachlan(2013)]{lee2013a}
+Lee, S. and McLachlan, G.J. (2013). On the fitting of mixtures of multivariate skew t-distributions via the EM algorithm. \textit{arXiv preprint arXiv:1305.1095}.
+
+%\bibitem{marin2005}
+%Marin, J.M., Mengersen, K. and Robert, C.P. (2005). Bayesian modelling and inference on mixtures of distributions. \textit{Handbook of Statistics}, 25, pp. 459-507.
+
+%\bibitem{mclachlan1997}
+%McLachlan, G.J. and Krishnan, T. (1997). \textit{The EM algorithm and extensions}. New York: John Wiley \& Sons.
+
+\bibitem[McLachlan and Krishnan(1998)]{mclachlan1998}
+McLachlan, G. J. and Krishnan, T. (1998). \textit{The EM algorithm and extensions}. Updated edition. New York: John Wiley \& Sons.
+
+\bibitem[McLachlan and Peel(2000)]{mclachlan2000}
+McLachlan, G.J. and Peel, D. (2000). \textit{Finite mixture models}. New York: John Wiley \& Sons.
+
+\bibitem[Paparrizos et al.(2025)]{paparrizos2025}
+Paparrizos, J., Kang, U., Antunes, N., Tsay, P.S., Palpanas, T. and Franklin, M.J. (2025). Time-Series Clustering: A Comprehensive Study. \textit{Proceedings of the VLDB Endowment}, 18.
+
+%\bibitem{pewsey2000}
+%Pewsey, A. (2000). Problems of inference for Azzalini's skew-normal distribution. \textit{Journal of Applied Statistics}, 27(7), pp. 859-870.
+
+%\bibitem{picard2007}
+%Picard, F., Robin, S., Lavielle, M., Vaisse, C. and Daudin, J.J. (2007). A statistical approach for array CGH data segmentation. \textit{BMC Bioinformatics}, 6(1), pp. 1-14.
+
+%\bibitem{ramsay2005}
+%Ramsay, J.O. and Silverman, B.W. (2005). \textit{Functional Data Analysis}. 2nd ed. New York: Springer.
+
+\bibitem[Richardson and Green(1997)]{richardson1997}
+Richardson, S. and Green, P.J. (1997). On Bayesian analysis of mixtures with an unknown number of components. \textit{Journal of the Royal Statistical Society: Series B}, 59(4), pp. 731-792.
+
+%\bibitem{roeder1997}
+%Roeder, K. and Wasserman, L. (1997). Practical Bayesian density estimation using mixtures of Normals. \textit{Journal of the American Statistical Association}, 92(439), pp. 894-902.
+
+%\bibitem{sartori2006}
+%Sartori, N. (2006). Bias prevention of maximum likelihood estimates for scalar skew-normal and skew-t distributions. \textit{Biometrika}, 93(2), pp. 421-433.
+
+%\bibitem{song2014}
+%Song, W., Yao, W. and Xing, Y. (2014). Robust mixture regression model based on Laplace distribution. \textit{Computational Statistics \& Data Analysis}, 71, pp. 128-140.
+
+%\bibitem{xiang2004}
+%Xiang, Y., Gubian, S., Martin, F., Lanni, P. and Rivier, A. (2004). Generalized simulated annealing for efficient global optimization: the GenSA package. \textit{The R Journal}.
+
+%\bibitem{yao2014}
+%Yao, W., Wei, Y. and Yu, C. (2014). Robust mixture regression using the t-distribution. \textit{Computational Statistics \& Data Analysis}, 71, pp. 116-127.
+
+%\bibitem{zhang2013}
+%Zhang, J. (2013). Robust mixture regression modeling based on Pearson type VII distribution. \textit{Communications in Statistics}, 42(10).
+\end{thebibliography}
+\end{document}
+
+

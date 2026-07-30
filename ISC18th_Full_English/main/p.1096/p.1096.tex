@@ -1,0 +1,498 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\begin{quote}
+\includegraphics[width=5.98453in,height=0.99667in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image1.jpeg}
+\end{quote}
+
+\hypertarget{application-of-best-linear-unbiased-prediction-blup-in-stability-analysis-and-genotype-environment-interaction-studies}{%
+\section{Application of Best Linear Unbiased Prediction (BLUP) in
+Stability Analysis and Genotype × Environment Interaction
+Studies}\label{application-of-best-linear-unbiased-prediction-blup-in-stability-analysis-and-genotype-environment-interaction-studies}}
+
+\textbf{Naser Sabaghnia}\footnote{\begin{quote}
+  \textbf{Corresponding Author:} sabaghnia@maragheh.ac.ir
+  \end{quote}}
+
+\begin{quote}
+\textbf{University of Maragheh, Iran}
+\end{quote}
+
+\textbf{Abstract:}
+
+Genotype × environment interaction (GEI) is a major challenge in plant
+breeding, as it complicates the identification of genotypes that are
+both high-performing and stable across diverse environments.
+Multi-environment trials (METs) generate complex datasets, often
+unbalanced and incomplete, where traditional ANOVA or regression-based
+stability metrics are limited. Best Linear Unbiased Prediction (BLUP),
+within a mixed model framework, provides a robust approach for
+estimating genotypic performance while accounting for random effects,
+environmental variation, and heterogeneous residuals. BLUP enables
+shrinkage-based predictions, improving accuracy over raw means or BLUE,
+particularly in unbalanced datasets. Furthermore, incorporation of
+pedigree or marker-derived relationship matrices allows exploitation of
+genetic correlations, enhancing prediction of untested genotypes and
+facilitating genomic selection. BLUP-based methods can also quantify
+stability through variance of predicted genotypic values across
+environments, factor-analytic decomposition of G×E, and
+reliability-adjusted indices, providing actionable insights for
+selection. This manuscript reviews theoretical foundations, practical
+implementation, and computational approaches for BLUP in METs, including
+hierarchical and factorial designs. It also discusses integration with
+factor-analytic models for complex GEI, the use of combined pedigree and
+marker information, and strategies for handling missing data. BLUP-based
+stability analysis represents a flexible and powerful tool for modern
+plant breeding, enabling selection of widely adapted and specifically
+adapted genotypes while maximizing genetic gain under diverse
+environmental conditions.
+
+\textbf{Keywords:} Mixed models, Plant breeding, Multi-environment
+trials
+
+\textbf{Mathematics Subject Classification (2010):} 62P10, 62J12, 62H25,
+92D10.
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Plant breeders aim to select genotypes that combine high yield potential
+with stability across diverse environments. Phenotypic performance of
+genotypes is determined by their genetic makeup (G), environmental
+conditions (E), and the interaction between genotype and environment
+(G×E). While classical analysis of variance (ANOVA) partitions total
+phenotypic variation into G, E, and GEI components, it does not provide
+precise predictions of genotypic performance, especially in unbalanced
+trials or when data from multiple environments and years are available
+(Smith et al., 2001). Stability analysis is often employed to quantify
+the consistency of genotype performance across environments. Classical
+methods include the regression-based Finlay-Wilkinson approach, AMMI
+(Additive Main Effects and Multiplicative Interaction) models, and
+Eberhart-Russell parameters (Lynch \& Walsh, 1998). However, these
+approaches have limitations in handling unbalanced data, missing
+observations, and complex pedigree structures.
+
+Mixed models and Best Linear Unbiased Prediction (BLUP) have emerged as
+powerful tools for addressing these limitations (Piepho \& Möhring,
+2006). BLUP provides estimates of genotypic effects by explicitly
+modeling random effects and variance-covariance structures,
+accommodating unbalanced datasets, repeated measurements, and
+heterogeneous variances. Furthermore, BLUP can incorporate pedigree or
+marker-based genetic relationships, improving prediction accuracy for
+selection in breeding programs. This manuscript reviews the theoretical
+foundations of BLUP in the context of GEI and stability analysis,
+discusses model formulation for hierarchical and factorial experimental
+designs, and presents practical applications and considerations for
+plant breeding programs.
+
+\hypertarget{stability-experiments}{%
+\section{Stability Experiments}\label{stability-experiments}}
+
+Multi-environment trials are used to evaluate the performance of
+genotypes across diverse environmental conditions. Typical designs
+include randomized complete block designs (RCBD), incomplete block
+designs, lattice designs, and factorial experiments. Trials are often
+conducted over multiple years and locations to capture environmental
+variability. Phenotypic data collected from METs are subject to both
+spatial and temporal variation (Fig. 1). The statistical model for
+phenotypic data is generally expressed as:
+
+\[y_{ijk} = \mu + g_{i} + e_{j} + (ge)_{ij} + \varepsilon_{ijk}
+\]
+
+BLUP is derived from the general linear mixed model (LMM):
+
+\[\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{Zu} + \mathbf{\varepsilon}\mathbf{
+}\]
+
+\[\mathbf{u} \sim N(0,\mathbf{G}),\mathbf{\varepsilon} \sim N(0,\mathbf{R})\]
+
+where \(\mathbf{G}\) represents the variance--covariance structure among
+random effects, which can be simple (homogeneous) or complex
+(heterogeneous or structured by pedigree or markers). \(\mathbf{R}\)
+represents residual covariance, which may also accommodate spatial or
+temporal correlation (Piepho \& Möhring, 2006).
+
+The BLUP of \(\mathbf{u}\) is obtained by solving the mixed model
+equations:
+
+\[\begin{bmatrix}
+\mathbf{X}^{'}\mathbf{R}^{- 1}\mathbf{X} & \mathbf{X}^{'}\mathbf{R}^{- 1}\mathbf{Z} \\
+\mathbf{Z}^{'}\mathbf{R}^{- 1}\mathbf{X} & \mathbf{Z}^{'}\mathbf{R}^{- 1}\mathbf{Z} + \mathbf{G}^{- 1} \\
+\end{bmatrix}\begin{bmatrix}
+\widehat{\mathbf{\beta}} \\
+\widehat{\mathbf{u}} \\
+\end{bmatrix} = \begin{bmatrix}
+\mathbf{X}^{'}\mathbf{R}^{- 1}\mathbf{y} \\
+\mathbf{Z}^{'}\mathbf{R}^{- 1}\mathbf{y} \\
+\end{bmatrix}
+\]
+
+Genetic relationships among genotypes can be included via the numerator
+relationship matrix (\(\mathbf{A}\)) or marker-based similarity matrices
+(\(\mathbf{S}\)). The variance-covariance structure of genotypic effects
+can be expressed as:
+
+\[\mathbf{G} = \sigma_{g}^{2}\mathbf{A}\text{or}\mathbf{G} = \sigma_{g}^{2}\mathbf{S}\mathbf{
+}\]
+
+\[\mathbf{G} = r_{A}^{2}\mathbf{A} + r_{S}^{2}\mathbf{S}\mathbf{
+}\]
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=5.32in,height=1.86314in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image2.jpg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 1. Decomposition of phenotypic variance \\
+\bottomrule()
+\end{longtable}
+
+BLUP can be applied to hierarchical (nested) and factorial designs:
+Hierarchical (nested), so genotypes nested within families. Model allows
+estimation of within- and between-family effects. Factorial (crossed),
+like diallel crosses or hybrids from two heterotic pools. Model can
+include general combining ability (GCA), specific combining ability
+(SCA), and test-cross effects.
+
+For example, a diallel model with GCA and SCA effects is expressed as:
+
+\[y_{ijk} = \mu + g_{i} + g_{j} + s_{ij} + e_{k} + \varepsilon_{ijk}
+\]
+
+Stability is assessed by decomposing GEI effects or predicting genotype
+performance across environments with low fluctuations (Fig. 2).
+BLUP-based approaches included (i) BLUP of genotype-by-environment
+effects which predicts genotypic performance in specific environments
+(Schabenberger \& Gotway, 2005). (ii) Reliability-based stability
+measures so every stability variance can be estimated using predicted
+genotypic values. (iii) Factor-analytic models, which approximate G×E
+covariance structure using latent factors; BLUPs of factor scores
+provide stability estimates.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=4.54478in,height=1.99222in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image3.jpeg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 2. Effect of shrinkage on raw means \\
+\bottomrule()
+\end{longtable}
+
+Simulation can illustrate BLUP performance. For example, an experiment
+with 50 genotypes tested in 6 environments, with 3 replicates per
+environment, can be simulated with heterogeneous genetic variances. BLUP
+provides shrinkage-adjusted predictions with higher correlation to true
+genotypic values than raw means or BLUEs, particularly in unbalanced
+datasets.
+
+\hypertarget{sas-codes}{%
+\section{SAS codes}\label{sas-codes}}
+
+Regarding accept the assumptions of Model 1, the effect of the general
+adaptability ability (GAA) of genotype i is equal to u+v\emph{i}. The
+deviation from the sum u+v\emph{i} represents the specific adaptability
+ability effect (SAA\emph{\textsubscript{ik}}) of genotype i in
+environment k. This effect consists of a linear component (the effect of
+environment dk) and a nonlinear component (the interaction effect
+(vd)\textsubscript{ik}). To determine the effects of
+GAA\textsubscript{i} and SAA\textsubscript{ik}, the mean phenotypic
+values across replications are calculated. In this way, the results of
+testing n genotypes across m environments can be arranged in an n×m
+table, where: x\textsubscript{i} is the sum of all phenotypic values for
+genotype i, x\textsubscript{k} is the total phenotypic sum in
+environment k, X.. is the grand total of all phenotypic values,
+x\textsubscript{ik} is the phenotypic value of genotype i in environment
+k. The GAA and SAA effects are calculated using the following formulas
+(Fig. 1):
+
+\[x_{i.} = \sum_{k}^{}x_{ik} = x_{i1} + x_{i2} + \ldots + x_{im}\]
+
+\[x_{nk} = \sum_{k}^{}x_{ik} = x_{1k} + x_{2k} + \ldots + x_{nk}\]
+
+\[x_{ik} = u + v_{i} + d_{k} + {(vd)}_{ik}\]
+
+\[x_{ik} = u + {GAA}_{i} + {SAA}_{ik}\]
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=4.23313in,height=1.83843in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image4.jpeg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 1. Schematic illustration of stability evaluation \\
+\bottomrule()
+\end{longtable}
+
+The variance of random deviations for the mean phenotypic value in a
+specific environment x\textsubscript{ik} is computed as:
+
+\[{var}_{xik} = \frac{\sigma_{e}^{2}}{c} = \sigma^{2}\]
+
+The variance of the difference between the means of two genotypes is
+determined as:
+
+\[{var}_{(x_{ik}/x_{nm})} = 2\sigma^{2}\]
+
+To obtain the standard error of the differences between effects, the
+square root of the corresponding variance must be taken. The least
+significant difference (LSD) is then obtained by multiplying the
+standard error by a constant magnitude. Comparison of genotypes in terms
+of general adaptability can be performed by comparing
+GAA\textsubscript{i} values. To estimate the interaction strength of
+genotype i with environments, the genotype × environment interaction
+variance can be used. To measure the stability of genotype i, it is
+recommended to use the variance of SAA\textsubscript{i}. Therefore,
+stability can be defined as the capacity of a genotype to maintain its
+phenotypic expression under various environmental conditions through
+organized mechanisms.
+
+\hypertarget{stability-analysis}{%
+\section{Stability analysis}\label{stability-analysis}}
+
+Practical code examples for fitting BLUP in multi-environment trials
+(METs), including stability analysis using factor-analytic models are:
+
+proc mixed data=MET\_data;
+
+class Genotype Environment Replicate;
+
+model Yield = Environment / solution;
+
+random Genotype Genotype*Environment;
+
+/* Genotype and GxE effects as random */
+
+lsmeans Genotype / pdiff cl;
+
+run;
+
+Genotype and Genotype*Environment are treated as random effects to
+obtain BLUPs.
+
+Environment is fixed to capture environmental means.
+
+lsmeans Genotype provides predicted genotypic values across
+environments.
+
+Practical code examples for fitting BLUP in multi-environment trials
+(METs), including
+
+Factor-analytic model for G×E are:
+
+proc mixed data=MET\_data method=REML;
+
+class Genotype Environment;
+
+model Yield = Environment;
+
+random Genotype / type=fa(1) g;
+
+repeated Environment / subject=Genotype type=ar(1);
+
+ods output SolutionR=BLUPs;
+
+run;
+
+type=fa(1) specifies a factor-analytic covariance structure for G×E.
+
+repeated allows modeling residual correlation across environments.
+
+BLUPs output contains predicted genotypic values adjusted for G×E.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=3.74772in,height=2.97015in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image5.jpeg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 2. Flowchart of breeding and selection strategy \\
+\bottomrule()
+\end{longtable}
+
+\hypertarget{breeding-for-gaa-while-considering-stability}{%
+\section{Breeding for GAA while considering
+stability}\label{breeding-for-gaa-while-considering-stability}}
+
+The BLUP accounts for missing data, unbalanced replication, and
+heterogeneous variance, yielding more accurate estimates of genotypic
+performance across environments compared to classical ANOVA or
+regression-based stability analysis. In factorial and diallel crosses,
+BLUP allows estimation of GCA and SCA effects even for untested hybrids
+(Bernardo, 1994). BLUP predictions enable the derivation of stability
+metrics across environments, so variance of predicted genotype
+performance across environments reflects stability. Also,
+factor-analytic models separate main effects from interaction patterns,
+highlighting genotypes with stable performance (low sensitivity to
+environmental variation) or specific adaptation (high performance in
+certain environments).
+
+BLUP can model complex covariance structures among environments, such as
+autoregressive or spatially correlated residuals (Edwards \& Jannink,
+2006). Genotypic effects can be predicted for untested environments,
+enabling selection for wide or targeted adaptation. Marker information
+can enhance BLUP predictions by improving estimation of genetic
+relationships, especially for genotypes with incomplete pedigree data.
+Combined models of A and S matrices allow optimal utilization of both
+pedigree and marker data.
+
+BLUP provides a flexible, robust framework for analyzing MET data and
+assessing GEI. Compared with classical stability metrics, BLUP improves
+prediction of genotypic performance under unbalanced and incomplete data
+(Fig. 3). Also, it accounts for complex variance-covariance structures,
+including spatial, temporal, and pedigree effects. BLUP Supports
+hierarchical and factorial designs, enabling dissection of GCA, SCA, and
+within-family variation. Finally, it Facilitates integration of pedigree
+and marker-based genetic relationships for genomic prediction.
+
+The main assumptions of BLUP are normally distributed random effects and
+correctly specified variance-covariance structures. In practice, REML
+estimation is robust to moderate deviations from normality, although
+outliers may affect inference (Piepho \& Möhring, 2006). Accurate
+variance component estimation is crucial, particularly in plant
+breeding, where the number of genotypes is often limited. Bayesian or
+shrinkage approaches can help address heterogeneity among crosses or
+environments (Edwards \& Jannink, 2006). BLUP-based stability analysis
+also allows flexible interpretation of GEI (Schabenberger \& Gotway,
+2005). Factor-analytic models and prediction-based stability metrics
+provide information on general adaptability and specific adaptation,
+guiding breeders in selecting genotypes for wide or targeted
+environmental adaptation.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics[width=5.4403in,height=1.52166in]{vertopal_02dcbf921eaa45acad2f5a464a87959f/media/image6.jpg}
+\end{minipage} \\
+\midrule()
+\endhead
+Figure 3. Workflow for BLUP-based stability analysis \\
+\bottomrule()
+\end{longtable}
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+BLUP is a powerful tool for stability analysis and GEI studies in plant
+breeding. By incorporating random effects, variance--covariance
+structures, and pedigree or marker information, BLUP enables precise
+prediction of genotypic performance across environments. Its ability to
+handle unbalanced and incomplete data, coupled with flexible model
+specification, makes it superior to classical methods in
+multi-environment trials. The integration of BLUP with genomic
+information and hierarchical experimental designs further enhances
+selection efficiency. Future research should focus on robust variance
+estimation in small datasets, robustness to non-normality, and practical
+applications in modern breeding programs.
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+Bernardo, R. (1994). Predicting hybrid performance from parental lines:
+Implications for the design of breeding programs. \emph{Theoretical and
+Applied Genetics,} 89, 917--924.
+
+Piepho, H.P., Möhring, J. (2006). Computing heritability and selection
+response from unbalanced plant breeding trials. \emph{Genetics,} 173,
+1885--1894.
+
+Smith, A.B., Cullis, B.R., Thompson, R. (2001). Analyzing variety by
+environment data using multiplicative mixed models and adjustments for
+spatial field trend. \emph{Biometrics,} 57, 1138--1147.
+
+Lynch, M., Walsh, B. (1998). Genetics and Analysis of Quantitative
+Traits. Sinauer Associates. MA, USA.
+
+Schabenberger, O., Gotway, C.A. (2005). \emph{Statistical Methods for
+Spatial Data Analysis.} CRC Press. FL, USA
+
+Edwards, J., Jannink, J.L. (2006). Bayesian modeling of
+genotype-by-environment interactions for assessing crop stability.
+\emph{Theoretical and Applied Genetics,} 112, 1247--1255.
+
+\end{document}

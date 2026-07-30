@@ -1,0 +1,287 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Estimation of the L-L Distribution Utilizing Record Data}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{B.Tarvirdizade}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Parameters Estimation of the Lomax-Lindley Distribution Utilizing Record Data}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Bahman Tarvirdizade  \footnote[1]{{\bf Corresponding Author:} {\tt b.tarvirdizade@urmia.ac.ir }} \\
+$^1$Department of Statistics, Faculty of Sciences, Urmia University, Urmia, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This paper is devoted to the problem of parameters estimation based on record values from Lomax-Lindley distribution. The estimation of parameters are obtained by using the maximum likelihood method and  Bayesian method under squared error and linear-exponential loss functions. A Monte Carlo simulation study is conducted to investigate and compare the performance of different types of estimators presented in this paper. Based on our simulation outcomes, it is observed that the Bayesian estimators perform better than the MLEs in the estimation of the unknown parameters.
+ 
+\noindent{\bf Keywords:} 
+Lomax-Lindley distribution, Maximum likelihood estimation, Bayesian estimation, and Record values. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F15$, $\rm 65C05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+In statistics, a record value is defined as the the largest or smallest value from a set of values. The record values have a great significance because of their applications in many fields of real life such as data relating to economics, meteorology, hydrology, sports and life tests. Theory of record statistics were first introduced and studied by \cite{2}. After that, numerous studies on record values and related topics have been done by various authors. Interested readers may refer to the book by \cite{1} and the references contained therein.
+
+Recently, \cite{3} has introduced a new flexible three-parameter distribution using the combination of the Lomax and the Lindley distributions in a serial system which is called the Lomax-Lindley (L-L) distribution. The cumulative distribution function (cdf) and the probability density function (pdf) of the L-L distribution with parameters $\alpha$, $\beta$ and $\theta$ are given by
+\begin{eqnarray} \label{1}
+F(x) = 1 - {\left( {1 + \beta x} \right)^{ - \alpha }}\left( {1 + \frac{{\theta x}}{{\theta  + 1}}} \right){e^{ - \theta x}},\quad x > 0,\; \alpha  > 0,\; \beta ,\theta  \ge 0,
+\end{eqnarray}
+and
+\begin{eqnarray} \label{2}
+f(x) = \left( {\frac{{{\theta ^2}(1 + x)}}{{1 + \theta }} + \frac{{\alpha \beta }}{{1 + \beta x}}\left( {1 + \frac{{\theta x}}{{\theta  + 1}}} \right)} \right){\left( {1 + \beta x} \right)^{ - \alpha }}{e^{ - \theta x}},\quad x > 0,\; \alpha  > 0,\; \beta ,\theta  \ge 0,
+\end{eqnarray}
+respectively. The L-L distribution could be applied effectively for analyzing different types of lifetime data since it has a simple form of hazard rate function (hrf) which can accommodate decreasing, increasing, bathtub-shaped and unimodal hazard rates. Some statistical properties and estimation of the parameters of the L-L distribution using maximum likelihood and Bayesian methods were studied by \cite{3,4}. Also, it was shown that the L-L distribution provides a better fit than other three-parameter distributions for data with a bathtub-shaped hazard rate while its hrf is very simple in comparison with those of the competitor distributions. In this paper, we apply maximum likelihood and Bayesian approachs to estimate the parameters of the L-L distribution based on upper record data. First the likelihood equations of the parameters under upper record data are presented and then, the Bayes estimates of the parameters based on symmetric and asymmetric loss functions are obtained. 
+
+The rest of the paper is organized as follows. In Section 2, the maximum likelihood estimation (MLE) of the parameters of the L-L distribution based on upper record values are considered. In Section 3, the Bayes estimates of unknown parameters under the squared error and linear-exponential (LINEX) loss functions via the Metropolis-Hastings method are obtained. In Section 4, to investigate and compare the performance of the different methods of estimation presented in this paper, outcomes of a Monte Carlo simulation study are presented.
+
+\section{Maximum Likelihood Estimation}
+Consider a distribution having cdf $F(x)$ and pdf $f(x)$ and suppose $\underline r  = ({r_{1}},...,{r_{n}})$ is the first $n$ upper record data extracted from this distribution. According to \cite{1}, the joint pdf of these observations is given by
+\begin{eqnarray} \label{3}
+f(\underline r) = f({r_{n}})\prod\limits_{i = 1}^{n - 1} {\left( {\frac{{f({r_{i}})}}{{1-F({r_{i}})}}} \right)} , \qquad -\infty < {r_{1}} < ... < {r_{n}} < \infty.
+\end{eqnarray}
+The likelihood function from (\ref{3}) with $F$ and $f$ replaced by (\ref{1}) and (\ref{2}), respectively, is obtained as
+\begin{eqnarray} \label{4}
+L(\alpha ,\beta ,\theta |\underline r ) = \prod\limits_{i = 1}^n {\left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right)} {(1 + \beta {r_n})^{ - \alpha }}\left( {1 + \frac{{\theta {r_n}}}{{1 + \theta }}} \right){e^{ - \theta {r_n}}}, \; 0 < {r_1} < ... < {r_n} < \infty.
+\end{eqnarray}
+Thereafter, the log-likelihood function is expressed as
+\begin{eqnarray} \label{5}
+\ell (\alpha ,\beta ,\theta |\underline r ) = \sum\limits_{i = 1}^n {\log } \left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right) - \alpha \log (1 + \beta {r_n}) + \log \left( {1 + \frac{{\theta {r_n}}}{{1 + \theta }}} \right) - \theta {r_n}.
+\end{eqnarray}
+To get the likelihood equations, derivatives of (\ref{5}) relative to $(\alpha, \beta, \theta)$ can be derived as follows
+\begin{eqnarray} \label{6}
+\hskip -28mm \frac{{\partial \ell }}{{\partial \alpha }} = \sum\limits_{i = 1}^n {\log } \left( {\frac{{\beta (1 + \theta  + \theta {r_i})}}{{{\theta ^2}(1 + {r_i})(1 + \beta {r_i}) + \alpha \beta (1 + \theta  + \theta {r_i})}}} \right) - \log (1 + \beta {r_n}) = 0,
+\end{eqnarray}
+\vskip -7mm
+\begin{eqnarray} \label{7}
+\hskip -20mm\frac{{\partial \ell }}{{\partial \beta }} = \sum\limits_{i = 1}^n {\log } \left( {\frac{{\alpha (1 + \theta  + \theta {r_i})}}{{{\theta ^2}(1 + {r_i}){{(1 + \beta {r_i})}^2} + \alpha \beta (1 + \beta {r_i})(1 + \theta  + \theta {r_i})}}} \right) - \frac{{\alpha {r_n}}}{{1 + \beta {r_n}}} = 0,
+\end{eqnarray}
+\vskip -7mm
+\begin{eqnarray}  \label{8}
+\frac{{\partial \ell }}{{\partial \theta }} = \sum\limits_{i = 1}^n {\log } \left( {\frac{{\theta (1 + {r_i})(2 + \theta  + \theta {r_i})(1 + \beta {r_i})}}{{{\theta ^2}(1 + {r_i})(1 + \beta {r_i})(1 + \theta  + \theta {r_i}) + \alpha \beta {{(1 + \theta  + \theta {r_i})}^2}}}} \right) + \frac{{{r_n}}}{{(1 + \theta )(1 + \theta  + \theta {r_n})}} - {r_n} = 0.
+\end{eqnarray}
+The MLEs of $\alpha$, $\beta$ and $\theta$, say $\hat \alpha$, $\hat \beta$ and $\hat \theta$, can be obtained through the solution of these nonlinear equations. These equations cannot be solved analytically and therefore, we have to solve the equations numerically. We can use iterative techniques such as a Newton-Raphson type algorithm to obtain the MLEs of the parameters $\alpha$, $\beta$ and $\theta$. To find the standard error of the MLEs of the parameters $\alpha$, $\beta$ and $\theta$, we can obtain the asymptotic variance-covariance matrix of the MLEs, which need to calculate the observed information matrix. The variance-covariance matrix $\textbf{V}$ can be approximated by the reciprocal of the observed information matrix, i.e., $\textbf{V} = {I^{ - 1}}$. Since $\textbf{V}$ involves the parameters $\alpha$, $\beta$ and $\theta$, we replace the parameters by the corresponding MLEs in order to obtain an estimate of $\textbf{V}$, which is denoted by
+\begin{eqnarray} \label{8}
+\hat V = \left( {\begin{array}{*{20}{c}}
+{{{\hat V}_{11}}}&{{{\hat V}_{12}}}&{{{\hat V}_{13}}}\\
+{{{\hat V}_{21}}}&{{{\hat V}_{22}}}&{{{\hat V}_{23}}}\\
+{{{\hat V}_{31}}}&{{{\hat V}_{32}}}&{{{\hat V}_{33}}}
+\end{array}} \right) = {\left( {\begin{array}{*{20}{c}}
+{{{\hat I}_{11}}}&{{{\hat I}_{12}}}&{{{\hat I}_{13}}}\\
+{{{\hat I}_{21}}}&{{{\hat I}_{22}}}&{{I_{23}}}\\
+{{{\hat I}_{31}}}&{{{\hat I}_{32}}}&{{{\hat I}_{33}}}
+\end{array}} \right)^{ - 1}},
+\end{eqnarray}
+where ${{\hat I}_{ij}}$ is the $(i,j)$th element of the observed information matrix $I$ with $\alpha$, $\beta$ and $\theta$ replaced by $\hat \alpha$, $\hat \beta$ and $\hat \theta$, respectively. 
+
+\section{Bayesian Estimation}
+In this section, we discuss Bayesian estimation of the parameters of the L-L distribution based on upper record data under different loss functions. One of the most commonly used loss function is squared error (SE) loss function which is given by $L(\Theta ,\delta (X)) = {(\delta (X) - \Theta )^2}$, where $\delta$ is a decision rule based on the data and $\Theta$ is the unknown parameter. The symmetric nature of SE loss function gives equal weight to overestimation and underestimation of the parameters under consideration. However, in life testing, overestimation may be more serious than underestimation or vice versa. In these cases, the use of an asymmetric loss function which assigns greater importance to overestimation or underestimation may be more appropriate. For this purpose, \cite{6} proposed a convex but asymmetric loss function which is known as LINEX loss function and is defined as
+\begin{eqnarray} \label{9}
+L(\Theta ,\delta ) = {e^{c(\delta  - \Theta )}} - c(\delta  - \Theta ) - 1, \quad c \ne 0
+\end{eqnarray}
+The shape parameter $c$ is known and gives the degree of asymmetry.  If $c>0$, the overestimation is more serious than underestimation and if $c<0$, underestimation is more serious than overestimation. If $c$ close to zero, the LINEX loss is approximately SE loss and therefore almost symmetric. Under the LINEX loss function (\ref{9}), the Bayes estimator of $\Theta$ that minimizes the posterior risk $E\left[ {L(\Theta ,\delta (X))|X} \right]$ is given by
+\begin{eqnarray} \label{10}
+{\delta _{BL}}(X) =  - \frac{1}{c}\log E\left( {{e^{ - c\Theta }}|X} \right),
+\end{eqnarray}
+provided that the expectation exists and is finite. 
+
+For the prior distributions, we assumed that $\alpha$, $\beta$ and $\theta$ have independent gamma priors as $Gamma({\gamma _1},{\lambda _1})$, $Gamma({\gamma _2},{\lambda _2})$ and $Gamma({\gamma _3},{\lambda _3})$, respectively, with the pdf's given by
+\begin{eqnarray} \label{11}
+\pi (\Theta|{\gamma _i},{\lambda _i}) = \frac{{\lambda _i^{{\gamma _i}}{\Theta^{{\gamma _i} - 1}}{e^{ - {\lambda _i}\Theta}}}}{{\Gamma ({\gamma _i})}},\quad \Theta > 0,\quad {\gamma _i},{\lambda _i} > 0,
+\end{eqnarray}
+where $\Theta$ can be each of the parameters $\alpha$, $\beta$ and $\theta$ and the hyperparameters $({\gamma _i},{\lambda _i})$, $i=1,2,3$, are assumed to be known. Now, using (\ref{4}) and (\ref{11}), the joint posterior density function of $\alpha$, $\beta$ and $\theta$ can be written as
+\begin{eqnarray} \label{12}
+\hskip -6mm \pi (\alpha,\beta,\theta|\underline r) &=& \frac{{\pi (\alpha)\pi (\beta)\pi (\theta)L(\alpha,\beta,\theta|\underline r)}}{{\int_\theta {\int_\beta {\int_\alpha {\pi (\alpha)\pi (\beta)\pi (\theta)L(\alpha,\beta,\theta|\underline r)d\alpha d\beta d\theta} } } }} \cr
+&\propto&\prod\limits_{i = 1}^n {\left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right)} {(1 + \beta {r_n})^{ - \alpha }}\left( {1 + \frac{{\theta {r_n}}}{{1 + \theta }}} \right) \cr
+&& \times {\alpha ^{{\gamma _1} - 1}}{\beta ^{{\gamma _2} - 1}}{\theta ^{{\gamma _3} - 1}} {e^{ - {\lambda _1}\alpha  - {\lambda _2}\beta  - ({\lambda _3} + {r_n})\theta }}.
+\end{eqnarray}
+Since the above multiple integrals can not be solved analytically, the expression for $\pi (\alpha,\beta,\theta|\textbf{x})$ in (\ref{12}) can not be written in a closed form. Therefore, we need a simulation technique to compute the Bayes estimate of the parameters. We adopt the Gibbs sampling technique which requires a decomposition of the joint posterior distribution into full conditional distributions for each parameter and then sampling from them. The full conditional distributions of $\alpha$, $\beta$ and $\theta$ can be obtained as follows
+\begin{eqnarray} \label{13}
+\hskip -10mm \pi (\alpha |\beta ,\theta ,\underline r ) \propto \prod\limits_{i = 1}^n {\left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right)} {(1 + \beta {r_n})^{ - \alpha }}{\alpha ^{{\gamma _1} - 1}}{e^{ - {\lambda _1}\alpha }},
+\end{eqnarray}
+\vskip -8mm
+\begin{eqnarray} \label{14}
+\hskip -10mm \pi (\beta |\alpha ,\theta ,\underline r ) \propto \prod\limits_{i = 1}^n {\left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right)} {(1 + \beta {r_n})^{ - \alpha }}{\beta ^{{\gamma _2} - 1}}{e^{ - {\lambda _2}\beta }},
+\end{eqnarray}
+\vskip -8mm
+\begin{eqnarray} \label{15}
+\pi (\theta |\alpha ,\beta ,\underline r ) \propto \prod\limits_{i = 1}^n {\left( {\frac{{{\theta ^2}(1 + {r_i})}}{{1 + \theta  + \theta {r_i}}} + \frac{{\alpha \beta }}{{1 + \beta {r_i}}}} \right)} \left( {1 + \frac{{\theta {r_n}}}{{1 + \theta }}} \right){\theta ^{{\gamma _3} - 1}}{e^{ - ({\lambda _3} + {r_n})\theta }}.
+\end{eqnarray}
+The full conditional distributions for $\alpha$, $\beta$ and $\theta$ cannot be reduced analytically to well-known distributions and therefore it is not possible to sample directly by standard methods. In order to generate values of $\alpha$, $\beta$ and $\theta$ from (\ref{13})--(\ref{15}), we use the Metropolis-Hastings algorithm into the Gibbs sampling algorithm as explained by \cite{5}. Therefore, we can use the following algorithm for Gibbs sampling:
+\begin{itemize}
+\item 
+Step 1. Start with an initial guess $({\alpha^{(0)}},{\beta^{(0)}},{\theta^{(0)}})$ and set t = 1.
+\item
+Step 2. Using Metropolis-Hastings method, generate ${\alpha^{(t)}}$ from $\pi (\alpha|{\beta^{(t-1)}},{\theta^{(t-1)}},\underline r)$ with the proposal distribution
+$$
+q(\alpha) \propto N({\alpha^{(t - 1)}},{C_\alpha}{{\hat V}_{11}})I(\alpha > 0),
+$$
+where ${C_\alpha}$ is a scaling factor, ${\hat V}_{11}$ is given in (\ref{8}) and $N(\mu ,{\sigma ^2})$ $I(\alpha > 0)$ denote the normal distribution $N(\mu ,{\sigma ^2})$ truncated on $(0,\infty)$.
+\item
+Step 3. Using Metropolis-Hastings method, generate ${\beta^{(t)}}$ from $\pi (\beta|{\alpha^{(t)}},{\theta^{(t-1)}},\underline r)$ with the proposal distribution
+$$
+q(\beta) \propto N({\beta^{(t - 1)}},{C_\beta}{{\hat V}_{22}})I(\beta > 0),
+$$
+where ${C_\beta}$ is a scaling factor and ${\hat V}_{22}$ is given in (\ref{8}).
+\item 
+Step 4. Using Metropolis-Hastings method, generate ${\theta^{(t)}}$ from $\pi (\theta|{\alpha^{(t)}},{\beta^{(t)}},\underline r)$ with the proposal distribution
+$$
+q(\theta) \propto N({\theta^{(t - 1)}},{C_\theta}{{\hat V}_{33}})I(\theta>0),
+$$
+where ${C_\theta}$ is a scaling factor and ${\hat V}_{33}$ is given in (\ref{8}).
+\item 
+Step 5. Set t = t + 1.
+\item 
+Step 6. Repeat Steps 2--5, N times, and obtain the posterior sample $({\alpha^{(t)}},{\beta^{(t)}},{\theta^{(t)}})$, $t = 1,...,N$. 
+\end{itemize}
+After generating a sample from the above algorithm, we can compute the Bayes estimate of the parameters $\alpha$, $\beta$ and $\theta$ under the SE and LINEX loss functions as follow
+\begin{eqnarray} \label{16}
+{{\tilde \Theta }_{BS}} = \hat E(\Theta |X) = \frac{1}{{N - M}}\sum\limits_{i = M + 1}^N {{\Theta ^{(i)}}},
+\end{eqnarray}
+\vskip -8mm
+\begin{eqnarray} \label{17}
+{{\tilde \Theta }_{BL}} =  - \frac{1}{c}\log \hat E({e^{ - c\Theta }}|X) =  - \frac{1}{c}\log \left( {\frac{1}{{N - M}}\sum\limits_{i = M + 1}^N {{e^{ - c{\Theta ^{(i)}}}}} } \right),
+\end{eqnarray}
+respectively, where $M$ is the burn-in period and $\Theta$ can be each of the parameters $\alpha$, $\beta$ and $\theta$. 
+
+\section{A Simulation Study}
+In this section, a Monte Carlo simulation study is conducted to investigate and compare the performance of the point estimators presented in Sections 2 and 3. In this simulation study we generate the record data of size $n=5, 10, 15$ from the L-L distribution with three different parameter combinations $(\alpha, \beta, \theta)$, namely (0.25, 1, 0.75) (Case I), (1, 0.75, 0.5) (Case II) and (0.5, 0.25, 1) (Case III), respectively. To compute different Bayes estimates, we determine the hyperparameter values so that each prior mean equals its corresponding true parameter value and the prior variances equal 0.5. Therefore, we use the hyperparameter values as $({\gamma _1},{\lambda _1}) = (0.125,0.5)$, $({\gamma _2},{\lambda _2}) = (2,2)$, $({\gamma _3},{\lambda _3}) = (1.125,1.5)$ for Case I, $({\gamma _1},{\lambda _1}) = (2,2)$, $({\gamma _2},{\lambda _2}) = (1.125,1.5)$ , $({\gamma _3},{\lambda _3}) = (0.5,1)$ for Case II and $({\gamma _1},{\lambda _1}) = (0.5,1)$, $({\gamma _2},{\lambda _2}) = (0.125,0.5)$, $({\gamma _3},{\lambda _3}) = (2,2)$ for Case III. We generate $N=10000$ MCMC samples and discard the first $M=2000$ values as burn-in period as described in Section 3. The performances of the point estimators are compared in terms of their estimated risk (ER). When $\theta$ is estimated by $\hat \theta$, its ER by different methods is computed from the following formulas:
+\begin{eqnarray*}
+E{R_{ML}}(\theta ) = E{R_{BS}}(\theta ) = \frac{1}{T}\sum\limits_{i = 1}^T {{{({{\hat \theta }_i} - \theta )}^2}},
+\end{eqnarray*}
+\vskip -8mm
+\begin{eqnarray*}
+E{R_{BL}}(\theta ) = \frac{1}{T}\sum\limits_{i = 1}^T {\left( {{e^{c({{\hat \theta }_i} - \theta )}} - c({{\hat \theta }_i} - \theta ) - 1} \right)},
+\end{eqnarray*}
+where $T$ is the number of replications and ${{\hat \theta }_i}$ is the estimate of $\theta$ in $i$th replication. We report the average estimate (AE) and ER of the parameters in Tables 1--3. All the results are reported based on 1000 replications.
+
+\begin{table}[!ht]
+\centering
+\caption{{\small AEs and ERs (in parentheses) of the parameters for $(\alpha, \beta, \theta) = (0.25, 1, 0.75)$}}
+{ \small
+\begin{tabular}[c]{ccccc}
+\hline
+$ n $ & ${\hat \alpha}$ & $ {{\tilde \alpha}_{BS}} $ & $ {{\tilde \alpha}_{BL}} (c=2)$ & $ {{\tilde \alpha}_{BL}} (c=-1)$  \\
+\hline
+5 &1.3932 (3.0355)& 0.3561 (0.0960)& 0.1650 (0.0428)& 0.7459 (0.3541) \\
+10 &1.2816 (2.6046)& 0.3327 (0.0822)& 0.1580 (0.0371)& 0.5624 (0.2110) \\
+15 &1.1887 (2.1878)& 0.3478 (0.0783)& 0.1680 (0.0342)& 0.4727 (0.1703) \\
+\hline
+$ n $ & ${\hat \beta}$ & $ {{\tilde \beta}_{BS}} $ & $ {{\tilde \beta}_{BL}} (c=2)$ & $ {{\tilde \beta}_{BL}} (c=-1)$  \\
+\hline
+5 &1.5788 (2.2411)& 1.1044 (0.1480)& 0.7260 (0.1277)& 1.4122 (0.2102) \\
+10 &1.3752 (1.8138)& 1.0990 (0.1244)& 0.7240 (0.1191)& 1.3855 (0.1954) \\
+15 &1.3100 (1.6865)& 1.1051 (0.1206)& 0.7277 (0.1162)& 1.3388 (0.1856) \\
+\hline
+$ n $ & ${\hat \theta}$ & $ {{\tilde \theta}_{BS}} $ & $ {{\tilde \theta}_{BL}} (c=2)$ & $ {{\tilde \theta}_{BL}} (c=-1)$  \\
+\hline
+5 &0.6330 (0.1560)& 0.7919 (0.0737)& 0.7809 (0.1331)& 0.8663 (0.0537) \\
+10 &0.6352 (0.0855)& 0.8118 (0.0589)& 0.7491 (0.0936)& 0.8464 (0.0320) \\
+15 &0.6559 (0.0374)& 0.7687 (0.0437)& 0.7279 (0.0768)& 0.7903 (0.0224) \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{{\small AEs and ERs (in parentheses) of the parameters for $(\alpha, \beta, \theta) = (1, 0.75, 0.5)$}}
+{ \small
+\begin{tabular}[c]{ccccc}
+\hline
+$ n $ & ${\hat \alpha}$ & $ {{\tilde \alpha}_{BS}} $ & $ {{\tilde \alpha}_{BL}} (c=2)$ & $ {{\tilde \alpha}_{BL}} (c=-1)$  \\
+\hline
+5 &1.6391 (1.8835)& 1.0859 (0.1760)& 0.7555 (0.3204)& 1.3855 (0.1281) \\
+10 &1.4455 (1.5637)& 1.0416 (0.1590)& 0.7269 (0.2953)& 1.3411 (0.1084) \\
+15 &1.4001 (1.4933)& 1.0194 (0.1452)& 0.7238 (0.2567)& 1.3082 (0.0904) \\
+\hline
+$ n $ & ${\hat \beta}$ & $ {{\tilde \beta}_{BS}} $ & $ {{\tilde \beta}_{BL}} (c=2)$ & $ {{\tilde \beta}_{BL}} (c=-1)$  \\
+\hline
+5 &1.6345 (2.8098)& 0.8474 (0.3718)& 0.5317 (0.2166)& 1.1130 (0.5152) \\
+10 &1.3664 (2.0893)& 0.8265 (0.2408)& 0.5151 (0.1516)& 1.0462 (0.3572) \\
+15 &1.2821 (1.6276)& 0.8420 (0.1563)& 0.5229 (0.1146)& 1.0701 (0.3008) \\
+\hline
+$ n $ & ${\hat \theta}$ & $ {{\tilde \theta}_{BS}} $ & $ {{\tilde \theta}_{BL}} (c=2)$ & $ {{\tilde \theta}_{BL}} (c=-1)$  \\
+\hline
+5 &0.4844 (0.1192)& 0.6081 (0.0880)& 0.4751 (0.1627)& 0.7017 (0.0675) \\
+10 &0.4848 (0.0346)& 0.5687 (0.0643)& 0.5150 (0.1008)& 0.5987 (0.0348) \\
+15 &0.4982 (0.0293)& 0.5624 (0.0304)& 0.5341 (0.0557)& 0.5774 (0.0157) \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{{\small AEs and ERs (in parentheses) of the parameters for $(\alpha, \beta, \theta) = (0.5, 0.25, 1)$}}
+{ \small
+\begin{tabular}[c]{ccccc}
+\hline
+$ n $ & ${\hat \alpha}$ & $ {{\tilde \alpha}_{BS}} $ & $ {{\tilde \alpha}_{BL}} (c=2)$ & $ {{\tilde \alpha}_{BL}} (c=-1)$  \\
+\hline
+5 &1.3069 (2.2308)& 1.1224 (0.4063)& 0.7669 (0.2036)& 1.3566 (0.4702) \\
+10 &1.0934 (1.7299)& 1.0510 (0.3407)& 0.7226 (0.1666)& 1.2823 (0.3696) \\
+15 &0.9156 (1.3013)& 0.9816 (0.2530)& 0.6828 (0.0990)& 1.1832 (0.3083) \\
+\hline
+$ n $ & ${\hat \beta}$ & $ {{\tilde \beta}_{BS}} $ & $ {{\tilde \beta}_{BL}} (c=2)$ & $ {{\tilde \beta}_{BL}} (c=-1)$  \\
+\hline
+5 &1.3738 (2.6411)& 0.8483 (0.3871)& 0.5304 (0.2282)& 1.1890 (0.6235) \\
+10 &1.2801 (2.3248)& 0.8053 (0.3552)& 0.5020 (0.2120)& 1.0952 (0.5608) \\
+15 &1.2039 (2.1359)& 0.7573 (0.2773)& 0.4708 (0.1361)& 1.0475 (0.5267) \\
+\hline
+$ n $ & ${\hat \theta}$ & $ {{\tilde \theta}_{BS}} $ & $ {{\tilde \theta}_{BL}} (c=2)$ & $ {{\tilde \theta}_{BL}} (c=-1)$  \\
+\hline
+5 &0.7414 (0.2296)& 0.8317 (0.1181)& 0.6194 (0.2616)& 0.9861 (0.0776) \\
+10 &0.8549 (0.1270)& 0.8538 (0.0838)& 0.7534 (0.1578)& 0.9112 (0.0447) \\
+15 &0.9313 (0.0895)& 0.9518 (0.0639)& 0.8820 (0.1053)& 0.9908 (0.0351) \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+From Tables 1--3, it can be seen that the ERs of all estimates decrease as the sample sizes increase in all cases, as expected. It is observed that the MLEs provide the large ERs in most of the cases, especially when the sample size is small. Comparing the MLEs and Bayes estimations, it is observed that the ERs of the Bayes estimations (at least under one loss function) are less than that of the MLEs. The results shows that the performances of the Bayes estimators under various loss functions are different. Also, it is clear that the Bayes estimates under the LINEX loss function are sensitive to the values of the shape parameter $c$. It can be observed that the performances of Bayes estimates under the LINEX loss function for small values of $c$ become close to the performances of Bayes estimates under the SE loss function, as expected.  
+
+
+\section*{Discussion and Conclusion}   
+In this paper, the problem of statistical inference on the parameters of a three-parameters distribution, called the Lomax-Lindley distribution, is considered. The MLE and Bayesian estimation of the parameters under SE and LINEX loss functions are obtained. To investigate and compare the performance of different types of estimators presented in this paper a Monte Carlo simulation study is conducted. Based on simulation results, we observed that the Bayesian estimators
+(at least under one loss function) perform better than the MLEs in the estimation of the unknown parameters.
+
+
+\begin{thebibliography}{9}
+\bibitem[Arnold et al. (1998)]{1}
+Arnold, B.C., Balakrishnan, N., and Nagaraja, H.N. (1998), {\it Records,} New York: John Wiley and
+Sons.
+
+\bibitem[Chandler (1952)]{2}
+Chandler, K.N. (1952), The distribution and frequency of record values. {\it Journal of the Royal Statistical Society: Series B (Methodological)}, 14, 220-228. 
+
+\bibitem[Tarvirdizade (2021)]{3}
+Tarvirdizade, B. (2021), The Lomax-Lindley distribution: properties and applications to lifetime data. {\it Communications Faculty of Sciences Universitycof Ankara Series A1 Mathematics and Statistics}, 70, 965-983.
+
+\bibitem[Tarvirdizade (2025)]{4}
+Tarvirdizade, B. (2025), Bayesian inference on the parameters of the Lomax-Lindley distribution. {\it The 5th National Congress on Mathematics and Statistics}, 95-101.
+
+\bibitem[Tierney (1994)]{5}
+Tierney, L. (1994), Markov chains for exploring posterior distributions. {\it The Annals of Statistics},
+22(4), 1701-1728. 
+
+\bibitem[Varian (1975)]{6}
+Varian, H. (1975), {\it A Bayesian approach to real estate assessment,} In Studies in Bayesian econometrics and statistics in honor of Leonard J. Savege (pp. 195-208). Amsterdam, The Netherlands: North Holland.
+
+\end{thebibliography}
+ \end{document}
+

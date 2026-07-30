@@ -1,0 +1,313 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1053/}{main/p.1053/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Monte Carlo EM for Censored ARMA}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Mardani-Fard et al.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf A Monte Carlo EM Algorithm for Fitting ARMA Models to Censored Time Series}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Heydar Ali Mardani-Fard\footnote[1]{{\bf Corresponding Author:} {\tt :h\_mardanifard@yahoo.com }}, Zohreh Shishebor$^2$,  Roya Nasirzadeh$^3$ , Fariba Nasirzadeh$^4$\\
+$^1$Department of Mathematics, Yasouj University, Yasouj, Iran \\
+$^2$Department of Statistics, College of Science, Shiraz University, Shiraz, Iran\\
+$^3$Department of Statistics, Faculty of Science, Fasa University, Fasa, Iran\\
+$^4$Fars Electricity Distribution Company, Shiraz, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Censored time series arise commonly in environmental and meteorological applications when measurements fall below detection limits. Fitting Gaussian ARMA models is challenging due to an irregular observed-data likelihood. \cite{park2007} proposed a simulation-based EM-like procedure that imputes censored values from their conditional truncated Gaussian distribution. While effective, this estimator often exhibits high Monte Carlo variability and unstable convergence under severe censoring. We introduce a Monte Carlo averaged variant: at each iteration, multiple independent stochastic updates are averaged, reducing estimator variance. Our method collapses to the original procedure when the number of averaged updates equals one. Simulation studies across several ARMA models show improved stability and accuracy, especially under heavy censoring. 
+ 
+\noindent{\bf Keywords:} 
+Censored time series, ARMA models, Truncated multivariate normal, EM-like estimation, and Monte Carlo averaging. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62M10$, $\rm 83C75$, $\rm 65C05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:intro}
+Temporal dependence is a fundamental characteristic of many time series, and neglecting it can lead to erroneous conclusions. Gaussian ARMA models are widely used for stationary univariate series. However, in practice, observations are frequently censored by detection thresholds, which greatly complicates exact likelihood-based inference.
+
+Let $\{Y_t\}$ denote the latent process and $\{X_t\}$ the observed series. Under right censoring at threshold $c$,
+\begin{equation}\label{eq:minYc}
+X_t = \min(Y_t,c).
+\end{equation}
+This censoring mechanism produces a mixed discrete-continuous likelihood, rendering standard ARMA estimation analytically intractable.
+
+Various methods have been proposed for handling censored time series, including substitution rules, approximate likelihoods, and imputation-based techniques. A simulation-based EM-like algorithm was introduced by \cite{park2007}, in which censored values are sampled from their conditional truncated multivariate normal distribution, followed by parameter updates from the completed data. Because this update depends on random imputation, the resulting estimator is stochastic and can exhibit substantial variability across different runs.
+
+More recent contributions have extended these ideas in several directions. \cite{davis2021} provide a comprehensive review of count time series methodology. \cite{king2025} develop warped dynamic linear models, while \cite{silva2023} propose a Bayesian approach specifically for censored count data. \cite{heinen2003} introduced an autoregressive conditional Poisson model for count time series. In the context of censored regression, \cite{gong2018} studied Tobit regression for survival data with multiple censoring sources, and \cite{pedregal2024} applied Tobit exponential smoothing with time aggregation for censored data forecasting. \cite{yilmaz2019} addressed the completion of right-censored data in time-series modeling using computational approaches.
+
+To mitigate the instability inherent in the original stochastic update, we propose averaging several independent stochastic updates at each iteration. This modification retains the simplicity of the original EM-like structure while reducing Monte Carlo variability. When the number of averaged updates equals one, our method reduces exactly to the estimator of \cite{park2007}. The remainder of the paper is structured as follows. Section~\ref{sec:method} describes the proposed methodology. Section~\ref{sec:simulations} presents simulation results. The final section offers concluding remarks.
+
+\section{Monte Carlo Averaged EM-like Estimation}
+\label{sec:method}
+Let $\{Y_t\}_{t=1}^n$ be a stationary Gaussian ARMA$(p,q)$ process with mean $\mu$ and innovation variance $\sigma^2$ satisfying
+\begin{equation*}
+\phi(B)(Y_t-\mu)=\theta(B)\varepsilon_t,
+\qquad
+\varepsilon_t \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,\sigma^2),
+\end{equation*}
+where
+\begin{equation*}
+\phi(B)=1-\phi_1B-\cdots-\phi_pB^p,
+\qquad
+\theta(B)=1+\theta_1B+\cdots+\theta_qB^q,
+\end{equation*}
+and $B$ denotes the backshift operator. The observed series is obtained by right censoring at threshold $c$ as in \eqref{eq:minYc}. Denote by $\mathcal{N}_n$ and $\mathcal{C}_n$ the index sets of uncensored and censored observations, respectively.
+
+Under the Gaussian ARMA model, the latent vector $\mathbf{Y}_{1:n} = (Y_1,\ldots,Y_n)^\top$ follows a multivariate normal distribution with covariance matrix determined by the ARMA parameters. Consequently, the conditional distribution of the censored components given the uncensored ones is a truncated multivariate normal, which provides a basis for stochastic imputation.
+
+Following \citet{park2007}, we construct a completed dataset by drawing the censored observations from their conditional distribution given the current parameter estimate, then compute the complete-data maximizer. Since this update is stochastic, we repeat the process multiple times and average the resulting parameter vectors.
+
+Let $\boldsymbol{\theta}^{(m)}$ denote the parameter estimate at iteration $m$. For $j=1,\ldots,k$, generate
+\[
+\boldsymbol{\Theta}^{+(m,j)} = \mathcal{A}_j(\boldsymbol{\theta}^{(m)}),
+\]
+where $\mathcal{A}_j$ represents one stochastic update (imputation plus maximization). The parameter is then updated as
+\[
+\boldsymbol{\theta}^{(m+1)} = \frac{1}{k}\sum_{j=1}^k \boldsymbol{\Theta}^{+(m,j)}.
+\]
+When $k=1$, the procedure reduces exactly to the original simulation-based EM-like algorithm of \citet{park2007}.
+
+\begin{alg}\label{alg:PAEM}
+This algorithm has the following steps:
+\begin{itemize}
+\item Initialize $\boldsymbol{\theta}^{(0)}$
+\item For $m=0,1,2,\ldots$ until convergence:
+\begin{itemize}
+\item For $j=1,\ldots,k$:
+\begin{itemize}
+\item Simulate censored observations from their conditional truncated normal distribution given $\boldsymbol{\theta}^{(m)}$
+\item Compute the complete-data maximizer $\boldsymbol{\Theta}^{+(m,j)}$
+\end{itemize}
+\item Update $\boldsymbol{\theta}^{(m+1)} \leftarrow \frac{1}{k}\sum_{j=1}^k \boldsymbol{\Theta}^{+(m,j)}$
+\end{itemize}
+\end{itemize}
+\end{alg}
+
+Averaging preserves the fundamental algorithmic structure while reducing the variability of the stochastic update. In practice, this often leads to more stable convergence behavior without additional tuning.
+
+	\section{Simulation Study}
+	\label{sec:simulations}
+	
+	We use simulation experiments to assess the behavior of the proposed estimator under censoring. The reported tables and figures summarize three aspects: conditional variability, estimation accuracy, and computational performance. In all cases, the results are compared with the original single-imputation procedure of \citet{park2007}, which corresponds to $k=1$.
+	
+All simulations were carried out in \textsf{R}. Data were generated from stationary Gaussian $AR(1)$ model with mean $\mu=0$ and innovation variance $\sigma^2=1$. Right censoring was imposed at thresholds corresponding to complete-case proportions $\alpha \in \{0.50,\,0.70,\,0.85,\,0.95\}$. Unless stated otherwise, the sample size was set to $n=250$, and each scenario was replicated 1000 times. Convergence was declared when the relative change in the parameter estimates fell below $10^{-4}$. The number of imputations per iteration, $k$, was varied to study its impact on stability and accuracy.
+	
+To isolate Monte Carlo variability, we fixed the uncensored part of the data and repeated the algorithm under different random seeds. In this setup, any change in the estimates reflects only the stochastic imputation step. Table~\ref{tab:fixedAR11} and Table~\ref{tab:fixedAR12} report the mean, standard deviation, convergence rate, and tolerance values for the $AR(1)$ model, while Figures~\ref{fig:fixedAR1}show the corresponding empirical distributions.
+	
+The tables and figures show a consistent pattern: increasing $k$ sharply reduces dispersion while leaving the center of the estimates essentially unchanged. For the $AR(1)$ model, the single-update method ($k=1$) produces relatively wide spreads and lower convergence rates under heavy censoring, whereas $k=20$ or larger leads to much tighter distributions and near-perfect convergence. Overall, these results confirm that averaging effectively suppresses Monte Carlo noise without introducing visible bias.
+	
+We next consider unconditional estimation accuracy using freshly generated data at each replication. Table~\ref{tab:MAE} reports the mean absolute error for the model parameters under several censoring levels and values of $k$.
+	
+The MAE results indicate that the averaged estimator is at least as accurate as the ordinary method, and usually better. The gain is modest under light censoring, but it becomes more visible when half of the observations are censored. In the AR(1) case, the reduction in MAE is clear for both positive and negative autoregressive coefficients. These findings suggest that averaging improves finite-sample accuracy mainly by reducing the randomness of the update step.
+	
+Reliable convergence is important for practical implementation. Table~\ref{tab:time1} reports mean run time and convergence rate for the $AR(1)$ model with $\phi_1=0.5$ at two sample sizes and several values of $k$. The single-imputation algorithm is less stable under heavy censoring, while averaging produces a much more reliable convergence pattern. In particular, the convergence rate increases quickly as $k$ grows from 1 to 5, and little is gained beyond moderate values of $k$.
+	
+Figure~\ref{fig:time1} illustrates the trade-off between run time and stability. Although each iteration becomes more expensive as $k$ increases, the total time may decrease because fewer iterations are needed for convergence. In practice, moderate values of $k$ appear sufficient to obtain stable results without a large computational burden.
+	
+Taken together, the simulation results show that the proposed Monte Carlo averaged EM-like estimator is more stable than the ordinary single-update method. The largest gains occur under heavy censoring, where Monte Carlo noise is most influential. The tables and figures consistently indicate lower variability, better convergence, and improved finite-sample accuracy. These findings support the practical value of the proposed estimator for censored ARMA time series.
+\begin{table}[htbp]
+\begin{center}
+\small
+\caption{Mean and standard deviation of AR(1) parameter estimates for $\phi_1 = \pm0.6$ with true parameters $\mu=0$, $\sigma^2=1$, fixed uncensored data, varying censoring rate $\alpha$ and averaging parameter $k$.}
+\label{tab:fixedAR11}
+\begin{tabular}{|c|c|c|cc|cc|cc|c|c|}
+\hline
+$\phi_1$ & $\alpha$ & $k$ & \multicolumn{2}{c|}{$\mu$} & \multicolumn{2}{c|}{$\sigma^2$} & \multicolumn{2}{c|}{$\phi_1$} & $\%\,conv$ & $tol$ \\ \hline
+-0.6 & 0.5 & 1 & -0.223 & 0.022 & 0.565 & 0.029 & -0.620 & 0.020 & 16.0 & $1.61\times10^{-3}$ \\
+-0.6 & 0.5 & 5 & -0.239 & 0.008 & 0.540 & 0.010 & -0.627 & 0.007 & 79.0 & $9.10\times10^{-5}$ \\
+-0.6 & 0.5 & 20 & -0.241 & 0.004 & 0.536 & 0.005 & -0.627 & 0.003 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.5 & 50 & -0.241 & 0.003 & 0.537 & 0.004 & -0.627 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.5 & 100 & -0.241 & 0.002 & 0.537 & 0.003 & -0.627 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\ \hline
+-0.6 & 0.7 & 1 & -0.043 & 0.015 & 0.899 & 0.037 & -0.502 & 0.017 & 17.0 & $1.76\times10^{-3}$ \\
+-0.6 & 0.7 & 5 & -0.044 & 0.006 & 0.897 & 0.016 & -0.500 & 0.007 & 87.0 & $3.70\times10^{-5}$ \\
+-0.6 & 0.7 & 20 & -0.045 & 0.003 & 0.895 & 0.007 & -0.500 & 0.003 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.7 & 50 & -0.045 & 0.002 & 0.895 & 0.005 & -0.501 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.7 & 100 & -0.045 & 0.002 & 0.895 & 0.004 & -0.501 & 0.001 & 100.0 & $3.00\times10^{-6}$ \\ \hline
+-0.6 & 0.85 & 1 & 0.003 & 0.009 & 1.130 & 0.020 & -0.634 & 0.007 & 80.5 & $1.19\times10^{-4}$ \\
+-0.6 & 0.85 & 5 & 0.005 & 0.004 & 1.130 & 0.008 & -0.633 & 0.003 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.85 & 20 & 0.005 & 0.002 & 1.130 & 0.004 & -0.634 & 0.002 & 100.0 & $2.00\times10^{-6}$ \\
+-0.6 & 0.85 & 50 & 0.004 & 0.001 & 1.130 & 0.003 & -0.633 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+-0.6 & 0.85 & 100 & 0.004 & 0.001 & 1.130 & 0.002 & -0.633 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\ \hline
+-0.6 & 0.95 & 1 & -0.035 & 0.003 & 1.000 & 0.011 & -0.641 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+-0.6 & 0.95 & 5 & -0.035 & 0.001 & 1.000 & 0.005 & -0.640 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+-0.6 & 0.95 & 20 & -0.035 & 0.001 & 1.000 & 0.003 & -0.640 & 0.000 & 100.0 & $2.00\times10^{-6}$ \\
+-0.6 & 0.95 & 50 & -0.035 & 0.001 & 1.000 & 0.002 & -0.640 & 0.000 & 100.0 & $1.00\times10^{-6}$ \\
+-0.6 & 0.95 & 100 & -0.035 & 0.000 & 1.000 & 0.001 & -0.640 & 0.000 & 100.0 & $2.00\times10^{-6}$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\begin{center}
+\small
+\caption{Mean and standard deviation of AR(1) parameter estimates for $\phi_1 = \pm0.6$ with true parameters $\mu=0$, $\sigma^2=1$, fixed uncensored data, varying censoring rate $\alpha$ and averaging parameter $k$.}
+\label{tab:fixedAR12}
+\begin{tabular}{|c|c|c|cc|cc|cc|c|c|}
+\hline
+$\phi_1$ & $\alpha$ & $k$ & \multicolumn{2}{c|}{$\mu$} & \multicolumn{2}{c|}{$\sigma^2$} & \multicolumn{2}{c|}{$\phi_1$} & $\%\,conv$ & $tol$ \\ \hline
+0.6 & 0.5 & 1 & -0.082 & 0.018 & 0.595 & 0.024 & 0.552 & 0.014 & 11.0 & $2.23\times10^{-3}$ \\
+0.6 & 0.5 & 5 & -0.026 & 0.012 & 0.641 & 0.013 & 0.582 & 0.008 & 50.5 & $4.64\times10^{-4}$ \\
+0.6 & 0.5 & 20 & -0.003 & 0.007 & 0.658 & 0.007 & 0.596 & 0.005 & 95.5 & $3.20\times10^{-5}$ \\
+0.6 & 0.5 & 50 & 0.002 & 0.005 & 0.661 & 0.005 & 0.599 & 0.003 & 100.0 & $3.00\times10^{-6}$ \\
+0.6 & 0.5 & 100 & 0.004 & 0.004 & 0.662 & 0.003 & 0.600 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\ \hline
+0.6 & 0.7 & 1 & 0.048 & 0.013 & 0.766 & 0.024 & 0.565 & 0.008 & 45.0 & $1.01\times10^{-3}$ \\
+0.6 & 0.7 & 5 & 0.068 & 0.007 & 0.794 & 0.012 & 0.574 & 0.004 & 93.0 & $3.20\times10^{-5}$ \\
+0.6 & 0.7 & 20 & 0.073 & 0.003 & 0.800 & 0.006 & 0.577 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+0.6 & 0.7 & 50 & 0.074 & 0.002 & 0.803 & 0.005 & 0.578 & 0.002 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.7 & 100 & 0.075 & 0.002 & 0.804 & 0.003 & 0.578 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\ \hline
+0.6 & 0.85 & 1 & 0.102 & 0.006 & 1.020 & 0.018 & 0.605 & 0.004 & 96.5 & $2.40\times10^{-5}$ \\
+0.6 & 0.85 & 5 & 0.107 & 0.003 & 1.040 & 0.009 & 0.607 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+0.6 & 0.85 & 20 & 0.108 & 0.002 & 1.040 & 0.005 & 0.608 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.85 & 50 & 0.108 & 0.001 & 1.040 & 0.003 & 0.608 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.85 & 100 & 0.108 & 0.001 & 1.040 & 0.003 & 0.608 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\ \hline
+0.6 & 0.95 & 1 & -0.227 & 0.003 & 0.784 & 0.009 & 0.568 & 0.002 & 100.0 & $3.00\times10^{-6}$ \\
+0.6 & 0.95 & 5 & -0.225 & 0.001 & 0.788 & 0.004 & 0.568 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.95 & 20 & -0.225 & 0.001 & 0.788 & 0.002 & 0.568 & 0.001 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.95 & 50 & -0.225 & 0.001 & 0.788 & 0.002 & 0.568 & 0.000 & 100.0 & $2.00\times10^{-6}$ \\
+0.6 & 0.95 & 100 & -0.225 & 0.000 & 0.788 & 0.001 & 0.568 & 0.000 & 100.0 & $2.00\times10^{-6}$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.1\textwidth]{main//p.1053//Images/Plot_FixedAR1.eps}
+\caption{\footnotesize{Empirical distribution of AR(1) parameter estimates for $\phi_1 = \pm0.6$, varying censoring rates $\alpha$, and different values of $k$ in the algorithm.}}
+\label{fig:fixedAR1}
+\end{center}
+\end{figure}
+
+\begin{table}[htbp]
+\begin{center}
+\small
+\caption{Mean Absolute Error (MAE) for AR(1) parameter estimates with $\mu=0$, $\sigma^2=1$, random uncensored data, varying $\alpha$ and $k$.}
+\label{tab:MAE}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{} & \multicolumn{2}{|c|}{$\alpha=0.50$} & \multicolumn{2}{|c|}{$\alpha=0.70$} & \multicolumn{2}{|c|}{$\alpha=0.85$} & \multicolumn{2}{|c|}{$\alpha=0.95$} \\ \hline
+Model & $k$ & \multicolumn{2}{|c|}{MAE} & \multicolumn{2}{|c|}{MAE} & \multicolumn{2}{|c|}{MAE} & \multicolumn{2}{|c|}{MAE} \\ \hline
+AR(1) & 1 & 0.0725 & 0.0707 & 0.0478 & 0.0460 & 0.0443 & 0.0428 & 0.0413 & 0.0424 \\
+AR(1) & 5 & 0.0718 & 0.0580 & 0.0469 & 0.0434 & 0.0438 & 0.0423 & 0.0410 & 0.0422 \\
+AR(1) & 20 & 0.0714 & 0.0546 & 0.0469 & 0.0431 & 0.0440 & 0.0422 & 0.0412 & 0.0421 \\
+AR(1) & 50 & 0.0715 & 0.0540 & 0.0469 & 0.0433 & 0.0439 & 0.0421 & 0.0412 & 0.0423 \\
+AR(1) & 100 & 0.0713 & 0.0536 & 0.0468 & 0.0430 & 0.0440 & 0.0422 & 0.0412 & 0.0423 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\begin{center}
+\small
+\caption{Mean run time (sec) and convergence rate (\%) for AR(1) with $\phi_1=0.5$, varying $k$.}
+\label{tab:time1}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & $k$ & $\alpha = 0.5$ & $\alpha = 0.7$ & $\alpha = 0.85$ & $\alpha = 0.95$ \\ \hline
+150 & 1 & 4.5 (69.7) & 1.1 (94.3) & 0.3 (100) & 0.1 (100) \\
+150 & 2 & 3.9 (87.4) & 0.7 (99.4) & 0.3 (100) & 0.1 (100) \\
+150 & 3 & 3.1 (93.7) & 0.7 (100) & 0.3 (100) & 0.1 (100) \\
+150 & 5 & 2.2 (100) & 0.7 (100) & 0.3 (100) & 0.1 (100) \\
+150 & 10 & 1.9 (100) & 0.7 (100) & 0.5 (100) & 0.2 (100) \\
+150 & 20 & 1.7 (100) & 0.8 (100) & 0.5 (100) & 0.3 (100) \\ \hline
+250 & 1 & 12.0 (88.0) & 1.6 (100) & 0.3 (100) & 0.1 (100) \\
+250 & 2 & 7.7 (98.3) & 1.1 (100) & 0.3 (100) & 0.1 (100) \\
+250 & 3 & 5.4 (100) & 0.8 (100) & 0.3 (100) & 0.1 (100) \\
+250 & 5 & 3.8 (100) & 0.6 (100) & 0.3 (100) & 0.1 (100) \\
+250 & 10 & 2.7 (100) & 0.7 (100) & 0.3 (100) & 0.2 (100) \\
+250 & 20 & 2.2 (100) & 0.8 (100) & 0.5 (100) & 0.3 (100) \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{main//p.1053//Images/Plot_Time1.eps}
+\caption{\footnotesize{Mean run time and convergence rate for AR(1) with $\phi_1=0.5$ for different $k$.}}
+\label{fig:time1}
+\end{center}
+\end{figure}
+	
+\section*{Discussion and Conclusion}   
+We proposed a Monte Carlo averaged EM-like procedure for censored ARMA models. Averaging stochastic updates reduces variability and improves convergence, especially under heavy censoring. The method preserves simplicity and reduces to the original when $k=1$. Simulations confirm improved stability, accuracy, and a favorable computational trade-off.
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\begin{thebibliography}{9}
+
+\bibitem[Davis et al. (2021)]{davis2021}
+Davis R.A., Fokianos K., Holan S.H., Joe H., Livsey J., Lund R. and Ravishanker N. (2021), Count time series: A methodological review, {\it Journal of the American Statistical Association} 116(535), 1533-1547.
+
+\bibitem[Gong and Schaubel (2018)]{gong2018}
+Gong Q. and Schaubel D.E. (2018), Tobit regression for modeling mean survival time using data subject to multiple sources of censoring, {\it Pharmaceutical Statistics} 17(2), 117-125.
+
+\bibitem[Heinen (2003)]{heinen2003}
+Heinen A. (2003), Modelling time series count data: an autoregressive conditional Poisson model, {\it SSRN Working Paper No. 1117187.}
+
+\bibitem[King and Kowal (2025)]{king2025}
+King B. and Kowal D.R. (2025), Warped dynamic linear models for time series of counts, {\it Bayesian Analysis} 20(1), 29-54.
+
+\bibitem[Park et al. (2007)]{park2007}
+Park J.W., Genton M.G. and Ghosh S.K. (2007), Censored time series analysis with autoregressive moving average models, {\it Canadian Journal of Statistics} 35(1), 151-168.
+
+\bibitem[Pedregal and Trapero (2024)]{pedregal2024}
+Pedregal D.J. and Trapero J.R. (2024), Censored data forecasting: Applying Tobit exponential smoothing with time aggregation, {\it arXiv preprint arXiv:2409.05412.}
+
+\bibitem[Silva et al. (2023)]{silva2023}
+Silva I., Silva M.E., Pereira I. and McCabe B. (2023), Time series of counts under censoring: A Bayesian approach, {\it Entropy} 25(4), 549.
+
+\bibitem[Yilmaz et al. (2019)]{yilmaz2019}
+Yilmaz E., Bal C. and Dogu Z.F.E. (2019), Completing right-censored data in time-series modelling, in {\it 2019 International Artificial Intelligence and Data Processing Symposium (IDAP)}, IEEE, 1-4.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,305 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1330/}{main/p.1330/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{On the asymptotic properties of Liu estimator}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{M. Roozbeh}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue}
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf On the Asymptotic Properties of Liu Estimator}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+M. Roozbeh$^1$\footnote[1]{{\bf Corresponding Author:} {\tt mahdi.roozbeh@semnan.ac.ir }}, M. Amini$^2$   \\
+$^1$Department of Statistics, Faculty of Mathematics, Statistics and Computer
+Sciences, Semnan University, P.O. Box 35195-363, Semnan, Iran \\
+$^2$Department of Statistics, School of Mathematics, Statistics and Computer Science, College of Science,
+University of Tehran, Tehran P.O. Box 14155-6455, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+In traditional regression analysis, ordinary least-squares estimation is
+the optimal approach for deriving regression weights, provided that the
+fundamental assumptions are satisfied. Nevertheless, if the data fail to
+meet certain assumptions, the findings may be deceptive. Outliers
+particularly contravene the assumption of regularly distributed
+residuals in least-squares regression. Therefore, it is essential to
+employ estimating techniques specifically formulated to address these
+issues. In this paper, the Liu estimator and its robust type are
+introduced in the semiparametric linear model when the error terms are
+not independent and some linear constraints are assumed to combat the
+presence of multicollinearity and outlier challenges.~In the literature
+on Liu methodology, the obtaining of biased parameter plays an important
+role in model prediction and estimation. Based on a set of observations
+with a sample size of $n$, and the integer trimming parameter
+$h \leq n$, the LTS estimator computes the hyperplane that
+minimizes the sum of the least $h$ squared residuals. Even though
+LTS estimator is statistically more effective than the widely used least
+median squares (LMS) estimate, it is less complicated computationally
+than LMS. Hereby we propose the robust estimators for the biasing
+parameter of Liu estimation based on the improved LTS obtained by
+semidefinite programming approach. Asymptotic normality of proposed
+robust Liu estimators under some conditions is also proved and a robust
+test is given for testing the symmetry hypothesis $H_0: \boldsymbol R\boldsymbol\beta= \boldsymbol r$. It is shown that these estimators perform better
+than classical Liu estimator. For our proposal, via a Monte-Carlo
+simulation and a real data example, performance of the Liu type of
+robust estimators are compared with the classical ones in restricted
+partially linear models.
+
+\noindent{\bf Keywords:}
+Breakdown point, Least trimmed squares estimator,
+Linear restriction, Multicollinearity, Outlier, Semidefinite
+programming, Semiparametric regression models \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J20$, $\rm , 62G35$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The semiparametric regression model (SRM) is suitable for modeling the
+dataset when the relationship between the dependent variable and certain
+explanatory variables is linear parametric, while the connection between
+the dependent variable and other explanatory variables remains
+ambiguous. Examine the collection of observations referred to as
+$(y_1,x_{1},t_1)$,\ldots, $(y_n,x_{n},t_n)$ which comply to the SRM described by
+\begin{equation}\label{eq11}
+y_i=\boldsymbol x_i^\top\boldsymbol \beta+f(t_i)+\epsilon_i,\quad i=1,\ldots,n,
+\end{equation}
+where {$\boldsymbol x_i^\top=(x_{i1},\ldots, x_{ip})$} is a
+vector of explanatory variables, $\boldsymbol \beta=
+(\beta_1,\ldots,\beta_p)^\top$ is an unknown $p$-dimensional
+vector parameter, $t_i$'s are  design points which belong to some
+bounded domain $D\subset \mathbb{R}$, $f(t)$ is an unknown smooth
+function and $\epsilon_i$'s  are random errors
+which are assumed to be independent of $(\boldsymbol x_i,t_i)$.
+
+SRMs integrate both parametric and nonparametric elements, wherein the response variable is linearly dependent on certain explanatory factors while exhibiting a nonlinear connection with others, offering greater flexibility than conventional linear regression models. Various methods exist to estimate and. Several of the most significant methodologies are presented by Speckman (1988), Ruppert et al. (2003), Yatchew (2003), Arashi and Valizadeh (2015).
+
+
+
+
+Multicollinearity refers to the roughly linear dependency among the columns of the design matrix, which might provide a problem in regression analysis. The matrix $\boldsymbol{X}^\top\boldsymbol{X}$  has one or more tiny eigenvalues, resulting in huge absolute values for the regression coefficient estimations. The condition number is a reliable indicator for identifying multicollinearity. The matrix S is ill-conditioned due to multicollinearity, as its condition number approaches an exceedingly large value. Multicollinearity adversely affects the performance of the ordinary least-squares estimator (OLSE). The presence of multicollinearity in data may result in excessively broad confidence ranges for individual parameters or their linear combinations, potentially leading to erroneous predictions. The application of shrinkage estimators is commonly seen as an effective remedy for the challenges posed by multicollinearity. This work employs the shrinkage estimator proposed by Liu (1993) to address the issue of multicollinearity. Liu (1993) integrated the Stein estimator (Stein; 1956) with the traditional ordinary ridge regression estimator to develop the Liu estimator, as detailed in Akdeniz and Kaçiranlar (1995). Additional potential methods for tackling the issue of multicollinearity are detailed in research papers released by Amini and Roozbeh (2015), Roozbeh (2016) , Akdeniz and Roozbeh (2019), and Roozbeh et al. (2022).
+
+
+In addition to the multicollinearity issue, another common concern in regression analysis is the existence of outliers, which are observations that deviate from the predominant pattern of the data. Outliers can lead to issues such as inflated sums of squares, biased estimates, p-value ambiguity, and further complications. Robust regression approaches are employed to address these issues. The conventional least-squares estimator is significantly influenced by outliers; hence, the least trimmed squares method is employed to estimate both components of SRM in this study.
+
+The breakdown point of an estimator is the essential metric utilized to assess its robustness. The breakdown point idea denotes the proportion of anomalous observations (up to 50 percent) that might indiscriminately compromise the estimate. The exploration of efficient algorithms for reliable estimate techniques is a significant area of research in computational geometry. Numerous scholars have investigated the resilient least median of squares (LMS) technique, which identifies the hyperplane that minimizes the median of squared residuals (Rousseeuw 1984). Despite the prevalence of the LMS estimator in literature about robust estimation within linear models, Rousseeuw and Leroy (1987) have shown that LMS is not the ideal choice owing to its statistical characteristics. They contended that choosing the least trimmed squares is the superior alternative, since both LTS and LMS possess identical breakdown points of around 50\%, although the objective function of LTS is more continuous than that of LMS. Furthermore, because of its rapid convergence and asymptotic normal distribution (Rousseeuw 1984), LTS exhibits enhanced statistical efficiency. Consequently, LTS is a superior option as an initial framework for two-step robust estimators, including the MM-estimator (Rousseeuw and van Driessen 2006).
+
+\section{The Classic Estimation}
+Consider the following
+semiparametric regression model
+\begin{equation}\label{eq21}
+\boldsymbol{y}=\boldsymbol{X}\boldsymbol\beta+\boldsymbol{f}(\boldsymbol t)+\boldsymbol{\epsilon},
+\end{equation}
+where $\boldsymbol{y} = (y_1,\ldots,y_n)^\top$, $\boldsymbol{X}=(\boldsymbol x_1,\ldots,\boldsymbol x_n)^\top$ is a $n\times p$ matrix,
+$\boldsymbol{f}(\boldsymbol t)=(f(t_1),...,f(t_n))^\top~$ and
+$\boldsymbol{\epsilon}=(\epsilon_1,\ldots,\epsilon_n)^\top$. We assume that in general, $\boldsymbol{\epsilon}$ is a vector of disturbances, which is distributed with $E(\boldsymbol{\epsilon})=\boldsymbol0$ and $E(\boldsymbol{\epsilon}^\top\boldsymbol{\epsilon})=\sigma^2\boldsymbol V$, where $\sigma^2$ is an unknown parameter and $\boldsymbol V$ is a symmetric, positive definite known matrix.
+
+In this paper we confine ourselves to the semiparametric kernel smoothing
+estimator of $\boldsymbol\beta$, which attains the usual parametric convergence
+rate $n^{1/2}$ without under smoothing the nonparametric component
+$f(\cdot)$ (see \cite{sp1988}). Assume that $(y_i,\boldsymbol x_{i},t_i),~i=1,\ldots,n$ satisfy model \eqref{eq21}. Since
+$E(\varepsilon_i)=0$, we have $f(t_i)=E(y_i-\boldsymbol{x}^\top_i\boldsymbol\beta)$ for $i= 1,\ldots,n$. Hence, if we know
+$\boldsymbol\beta$, a natural nonparametric estimator of $f(\cdot)$ is
+\begin{equation}\label{eq22}
+\hat{f}(t, \boldsymbol\beta) = \sum_{i=1}^n W_{ni}(t)(y_i -
+\boldsymbol{x}^\top_i\boldsymbol\beta),
+\end{equation}
+where the positive weight functions $W_{ni}(\cdot)$ satisfy three
+conditions below:
+
+\noindent$(i)~ \max_{1\leq i\leq n}\sum_{j=1}^nW_{ni}(t_j) = O(1),$
+
+\noindent$(ii)~\max_{1\leq i,j\leq n}W_{ni}(t_j)=O(n^{-2/3}),$
+
+\noindent$(iii)~ \max_{1\leq i\leq n}\sum_{j=1}^nW_{ni}(t_j)I(|t_i -t_j|> c_n)=O(d_n),$
+
+\noindent where $I$ is the indicator function, $c_n$ satisfies $\limsup_{n\rightarrow\infty}nc_n^3 < \infty$,
+and $d_n$ satisfies $\lim sup_{n\rightarrow\infty}nd_n^3 < \infty$.
+
+The above assumptions guarantee the existence of $\hat f(t,\boldsymbol\beta)$
+at the optimal convergence rate $n^{-4/5}$, in semiparametric regression models with probability one.
+
+To estimate $\boldsymbol\beta$, we use the generalized least squares estimator (GLSE), the best linear unbiased estimator,
+given by
+\begin{eqnarray}\label{eq23}
+\hat{\boldsymbol\beta}_G^{LS}&=&\arg\min_{\boldsymbol\beta} ~(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X}\boldsymbol\beta)^\top\boldsymbol V^{-1}(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X}\boldsymbol\beta)  \nonumber\\
+&=&\boldsymbol C^{-1}\widetilde{\boldsymbol X}^\top\boldsymbol V^{-1}\widetilde{\boldsymbol y},
+\end{eqnarray}
+where $\boldsymbol C=\widetilde{\boldsymbol X}^\top\boldsymbol V^{-1}\widetilde{\boldsymbol X}$,
+$\widetilde{\boldsymbol y}=(\widetilde{y}_1,\ldots,\widetilde{y}_n)^\top$, $\widetilde{\boldsymbol X}
+=(\widetilde{\boldsymbol x}_1,...,\widetilde{\boldsymbol x}_n)^T$, $\widetilde{y}_i=y_i-\sum_{j=1}^n
+W_{nj}(t_i)y_j$ and $\widetilde{\boldsymbol x}_i=\boldsymbol{x}_i-\sum_{j=1}^n
+W_{nj}(t_i)\boldsymbol{x}_j$ for $i= 1,\ldots,n$.
+
+\section{Feasible Robust Liu Estimator in RSRM}
+To solve the drawbacks of multicollinearity, Hoerl and Kennard (1970) suggested ridge estimator in the standard regression model. It has emerged as the predominant technique for addressing the multicollinearity issue that undermines the efficacy of the least squares estimator. The ridge approach addresses the multicollinearity issue by including a minor non-stochastic constant into the diagonal components of $\boldsymbol{X}^\top\boldsymbol{X}$, hence reducing its condition number. In real applications, the biasing parameter in the ridge method is generally rather minor. The condition number of the new design matrix  is evidently a decreasing function of the biasing parameter. Consequently, elevated values of $k$ are required to attain precise control over the condition number of $\boldsymbol{X}^\top\boldsymbol{X}$. Consequently, the modest $k$ used in practice may be inadequate to address the significant multicollinearity issue. The subsequent ridge estimation may remain unstable due to the ill-conditioned nature. Moreover, despite its practical efficacy, the ridge estimator is a complex function of $k$. Despite the Stein-type estimator,  , being a linear function of $c$, the shrinkage applied to each element remains uniform. Liu (1993) introduced a novel biased estimator $\hat{\boldsymbol\beta}_d^{LS}=(\boldsymbol{X}^\top\boldsymbol{X}+\boldsymbol I)^{-1}(\boldsymbol{X}^\top\boldsymbol{y}+d\hat{\boldsymbol\beta}^{LS})$ that integrates the benefits of ridge and Stein-type estimators, thus resolving the ill-conditioning problem in ordinary regression models, where $0 < d < 1$ represents a biasing parameter and $\hat{\boldsymbol\beta}^{LS}=(\boldsymbol{X}^\top\boldsymbol{X})^{-1}\boldsymbol{X}^\top\boldsymbol{y}$.
+
+Simultaneously, we assume that $\boldsymbol\beta$ satisfies a linear non stochastic constraint, i.e.,
+\begin{eqnarray}\label{eq24}
+\boldsymbol R\boldsymbol\beta=\boldsymbol r,
+\end{eqnarray}
+for a given $q\times p$ matrix $\boldsymbol R$ with rank $q<p$ and a given $q\times1$ vector $\boldsymbol r$. In this article, we refer restricted semiparametric regression model (RSRM) to \eqref{eq24}. The full row rank assumption is chosen for convenience and can be justified by the fact that every
+consistent linear equation can be transformed into an equivalent equation with a coefficient matrix of full row rank. Subject
+to the imposed linear restriction, in reality, the matrix $\boldsymbol V$ is unknown. Thus, the $\hat{\boldsymbol\beta}_G^{LS}$ in \eqref{eq23} is non-operational as it depends upon the unknown covariance matrix of the errors and we must define it based on two stage feasible generalized least-squares restricted Liu estimator (FGLSRLE) by replacing the unknown $\boldsymbol V$ with a consistent
+estimator of it as follows:
+\begin{eqnarray}\label{eq25}
+\hat{\boldsymbol\beta}_{FGLSRL}(d)&=&\boldsymbol F_d\hat{\boldsymbol\beta}_{FGLS}-\boldsymbol F_d\boldsymbol C^{*^{-1}}\boldsymbol R^\top\big(\boldsymbol R\boldsymbol C^{*^{-1}}\boldsymbol R^{\top}\big)^{-1}\big(\boldsymbol R\hat{\boldsymbol\beta}_{FGLS}-\boldsymbol r\big),
+\end{eqnarray}
+where $\boldsymbol F_d=(\boldsymbol C^{*}+\boldsymbol I)^{-1}(\boldsymbol C^{*}+d\boldsymbol I)$, $\hat{\boldsymbol\beta}_{FGLS}=\boldsymbol C^{*^{-1}}\widetilde{\boldsymbol X}^\top\boldsymbol S^{-1}\widetilde{\boldsymbol y}$,
+$\boldsymbol C^*=\widetilde{\boldsymbol X}^\top\boldsymbol S^{-1}\widetilde{\boldsymbol X}$, $\boldsymbol S=\frac{1}{n-(p-q)}\big(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X}\hat{\boldsymbol\beta}\big)\big(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X} \hat{\boldsymbol\beta}\big)^\top$ and $\hat{\boldsymbol\beta}^{LS}$ is ordinary least squares estimator, $(\widetilde{\boldsymbol X}^\top\widetilde{\boldsymbol X})^{-1}\widetilde{\boldsymbol X}^\top\widetilde{\boldsymbol y}$.
+%%%%%%%%%%%%%%%%%%%%%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{An Extension of Robust Liu Approach}
+
+We have mentioned that outliers can strongly corrupt the least-squares fit due to their dominant effect on the objective function.
+Least trimmed squares attempts to solve this problem by minimizing the sum of the smallest $h$ squared residuals rather
+than the complete sum of squares. Here, $h$ is a threshold such that the ratio $\alpha=h/n$ represents the percentage of the good observations.
+
+Let $z_i$ be the indicator whether observation $i$ is a good
+observation or not and $\boldsymbol Z$ is the diagonal matrix with diagonal elements $\boldsymbol z=(z_{1},\ldots,z_{n})^\top$.
+In applications, estimation of the Liu parameter plays a key role in Liu estimator. We can estimate it using the following equation:
+$$\hat d_{LTS}=1-\hat\sigma^2_{FGLTSR}\left(\frac{\sum_{j=1}^p\frac{ m_{jj}(\boldsymbol z)}{\lambda_{j}(\boldsymbol z)+1}}{\sum_{j=1}^p\frac{\hat\alpha_{jFGLTSR}(\boldsymbol z)+\hat\sigma^2_{FGLTSR}m_{jj}(\boldsymbol z)  }{(\lambda_{j}(\boldsymbol z)+1)^2}}\right),$$
+where
+$$\sigma^2_{FGLTSR}=\frac{1}{n-(p-q)}\big(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X}\hat{\boldsymbol\beta}_{FGLTSR}(\boldsymbol z)\big)^\top\boldsymbol S^{-1/2}\boldsymbol Z\boldsymbol S^{-1/2}\big(\widetilde{\boldsymbol y}-\widetilde{\boldsymbol X} \hat{\boldsymbol\beta}_{FGLTSR}(\boldsymbol z)\big),$$
+and $\lambda_{j}(\boldsymbol z)$ is the $j$th eigenvalue of matrix $\boldsymbol C^*(\boldsymbol z)=\widetilde{\boldsymbol X}^\top\boldsymbol S^{-1/2}\boldsymbol Z\boldsymbol S^{-1/2}\widetilde{\boldsymbol X}=\boldsymbol\Gamma(\boldsymbol z)\boldsymbol\Lambda(\boldsymbol z)\boldsymbol\Gamma(\boldsymbol z)^\top$, $m_{jj}(\boldsymbol z)$ is the $j$th diagonal element of the matrix $\boldsymbol M(\boldsymbol z)=\boldsymbol\Gamma^\top\boldsymbol H(\boldsymbol z)\boldsymbol\Gamma(\boldsymbol z)$,
+$\boldsymbol H(\boldsymbol z)=\boldsymbol C^{*^{-1}}(\boldsymbol z)\left(\boldsymbol I_p-\boldsymbol R^{\top}\big(\boldsymbol R\boldsymbol C^{*^{-1}}(\boldsymbol z)\boldsymbol R^{\top}\big)^{-1}\boldsymbol R\boldsymbol C^{*^{-1}}(\boldsymbol z)\right)$,  $\hat\alpha_{jFGLTSR}(\boldsymbol z)$ is the $j$th element of $\hat{\boldsymbol\alpha}_{FGLTSR}(\boldsymbol z)=\boldsymbol\Gamma^\top\hat{\boldsymbol\beta}_{FGLTSR}(\boldsymbol z)$ and $\hat{\boldsymbol\beta}_{FGLTS}(\boldsymbol z)=\boldsymbol C^{*^{-1}}(\boldsymbol z)\widetilde{\boldsymbol X}^\top\boldsymbol S^{-1/2}\boldsymbol Z\boldsymbol S^{-1/2}\widetilde{\boldsymbol y}$.
+
+Now, based on the semidefinite programming, the resulting estimate is the feasible generic least trimmed squares restricted Liu estimator (FGLTSRLE) for RSRM, utilizing a two-stage estimator for $d$ and $\boldsymbol\beta$, may be further developed as follows:
+\begin{eqnarray}\label{eq25}
+\hat{\boldsymbol\beta}_{FGLTSRL}(\hat d_{LTS},\boldsymbol z)=\boldsymbol F_{\hat d_{LTS}}(\boldsymbol z)\hat{\boldsymbol\beta}_{FGLTS}(\boldsymbol z)-\boldsymbol F_{\hat d_{LTS}}(\boldsymbol z)\boldsymbol C^{*^{-1}}(\boldsymbol z)\boldsymbol R^\top\big(\boldsymbol R\boldsymbol C^{*^{-1}}(\boldsymbol z)\boldsymbol R^{\top}\big)^{-1}\big(\boldsymbol R\hat{\boldsymbol\beta}_{FGLS}(\boldsymbol z)-\boldsymbol r\big),
+\end{eqnarray}
+where $\boldsymbol F_{\hat d_{LTS}}(\boldsymbol z)=(\boldsymbol C^{*}(\boldsymbol z)+\boldsymbol I)^{-1}(\boldsymbol C^{*}(\boldsymbol z)+d\boldsymbol I)$.
+
+\section{ Asymptotic Normality of Robust Liu Estimators}
+
+In this Section, we devote our attention to testing the hypothesis $\boldsymbol{R}\boldsymbol{\beta}=\boldsymbol{r}$, when $\boldsymbol{r}=\boldsymbol{0}$, i.e., test of symmetry. Indeed, if this hypothesis is not true, then making use of the proposed estimators does not make sense. Before continuing, we introduce some notation and exhibit the asymptotic distributions of the proposed estimators. Let $g(.)$ and $G(.)$ be the density function and cumulative distribution function of $(\sigma^2\boldsymbol{V})^{-1/2}\boldsymbol{\epsilon}$, respectively. Further, let $u_\alpha=G^{-1}(1-\alpha/2)$ be the $(1-\alpha/2)$ upper quantile of $g(.)$ and
+\begin{equation*}
+\kappa_u=\int_{-u_\alpha}^{u_\alpha} z^2\textnormal{d}G(z).
+\end{equation*}
+
+In continuation, we derive the asymptotic distribution of the proposed estimators. For our purpose, we use Theorem 1 of \cite{v2006}. However, the underlying assumption in Theorem 1 of \cite{v2006} is having independent and identical errors. Thus, there is a need to rewrite the model.
+\cite{cizek2005} derived asymptotic properties for the LTS estimator under {dependence}. In the latter study, independent and identical error, but {dependent} design components assumed. Our result, in the following, is also obtained by considering Theorem 4 of \cite{cizek2005}.
+
+For our purpose, let
+\begin{equation*}
+\dot{\boldsymbol{y}}=\dot{\boldsymbol{X}}\boldsymbol\beta+\dot{\boldsymbol{f}}(\boldsymbol t)+\dot{\boldsymbol{\epsilon}},
+\end{equation*}
+where $\dot{\boldsymbol{y}}=(\sigma^2\boldsymbol V)^{-1/2}\widetilde{\boldsymbol y}$, $\dot{\boldsymbol X}=(\sigma^2\boldsymbol V)^{-1/2}\widetilde{\boldsymbol X}$, $\dot{\boldsymbol{f}}(\boldsymbol t)=(\sigma^2\boldsymbol V)^{-1/2}\boldsymbol{f}(\boldsymbol t)$, and $\dot{\boldsymbol{\epsilon}}=(\sigma^2\boldsymbol V)^{-1/2}\boldsymbol{\epsilon}$. Obviously, $E(\dot{\boldsymbol{\epsilon}})=\boldsymbol0$ and $E(\dot{\boldsymbol{\epsilon}}\dot{\boldsymbol{\epsilon}}^\top)=\boldsymbol I_p$.
+
+Now, let the following regularity assumptions hold alongside.
+\begin{enumerate}
+\item[(A1)] $\lim_{n\to\infty}n^{-1}\sigma^2{\dot{\boldsymbol X}}^\top\dot{\boldsymbol X}=\boldsymbol{\Sigma}_x$
+\item[(A2)] $\lim_{n\to\infty}n^{-1}\sigma^2{\dot{\boldsymbol X}}^\top\boldsymbol Z\dot{\boldsymbol X}=\boldsymbol{\Sigma}_x(\boldsymbol z)$,
+\end{enumerate}
+where $\boldsymbol{\Sigma}_x$ and $\boldsymbol{\Sigma}_x(\boldsymbol z)$ are positive definite matrices.
+
+In what follows, we propose the asymptotic distribution of the proposed feasible estimator.
+
+\begin{thm}\label{th1}
+The asymptotic distribution of robust Liu estimator under the linear restriction $\boldsymbol{R}\boldsymbol{\beta}=\boldsymbol{r}$ and regularity condition (A2) can be given by
+\begin{eqnarray}\label{eq335}
+\sqrt n\left(\hat{\boldsymbol\beta}_{FGLTSRL}(d,\boldsymbol z)-\boldsymbol\beta\right)\rightarrow^{\hspace{-.3cm}\mathcal D}\mathcal{N}_p\left(\boldsymbol{0},\kappa_u\big(1-u_\alpha-2u_\alpha g(u_\alpha)\big)^{-2} \boldsymbol{\Sigma}_x(\boldsymbol z)\right).
+\end{eqnarray}
+\end{thm}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Akdeniz and Kacıranlar (1995)]{ak1995} Akdeniz F. and Kacıranlar S. (1995), On the almost unbiased generalized Liu estimator and unbiased estimation of the bias and MSE, {\it Commun. Statist. Theory Methods}, 24(7), 1789–1797.
+\bibitem[Akdeniz and Roozbeh (2019)]{ak2019} Akdeniz F. and Roozbeh M. (2019), Generalized difference-based weighted mixed almost unbiased ridge estimator in partially linear models, {\it Stat. Pap.}, 60, 1717–1739.
+\bibitem[Amini and Roozbeh (2015)]{am2015} Amini M. and Roozbeh M. (2015), Optimal partial ridge estimation in restricted semiparametric regression models, {\it J. Multivar. Anal.}, 136, 26–40.
+\bibitem[Arashi and Valizadeh (2015)]{am2015} Arashi M. and Valizadeh T. (2015), Performance of Kibria’s methods in partial linear ridge regression model, {\it Stat. Pap.}, 56, 231-246.
+
+\bibitem[Cizek (2005)]{cizek2005} Cizek P. (2005), Least trimmed squares in nonlinear regression under dependence, {\it J. Stat. Plann. Inf.}, {136}, 3967-3988.
+
+\bibitem[Hoerl and Kennard (1970)]{ho1970} Hoerl A.E. and Kennard R.W. (1970), Ridge regression: biased estimation for non-orthogonal problems. {\it Technometrics}, 12, 69–82.
+
+\bibitem[Liu (1993)]{li1993} Liu K.J. (1993), A new class of biased estimate in linear regression, {\it Commun. Statist. Theory Methods}, 22, 393–402.
+
+\bibitem[Roozbeh (2016)]{ro2016} Roozbeh M. (2016), Robust ridge estimator in restricted semiparametric regression models, {\it J. Multivar. Anal.}, 147, 127–144.
+\bibitem[Roozbeh and Arashi(2017)]{ro2017} Roozbeh M. and Arashi M. (2017), Least-trimmed squares: asymptotic normality of robust estimator in semiparametric regression models, {\it J. Stat. Comput. Simul.}, 87, 1130–1147.
+\bibitem[Roozbeh et al. (2022)]{ro2022} Roozbeh M., Babaie-Kafaki S. and Aminifard Z. (2022), Improved high-dimensional regression models with matrix approximations applied to the comparative case studies with support vector machines, {\it Optimization Methods and Software}, 37, 1912-1929.
+\bibitem[Rousseeuw (1984)]{ro1984} Rousseeuw P.J. (1984), Least median of squares regression, {\it J. Amer. Statist. Assoc.} 79, 871–880.
+
+\bibitem[Rousseeuw and Leroy (1987)]{ro1987} Rousseeuw P.J. and Leroy A.M. (1987), {\it Robust Regression and Outlier Detection}, Wiley, New York.
+\bibitem[Rousseeuw and van Driessen (2006)]{ro2006} Rousseeuw P.J. and van Driessen K. (2006), Computing LTS regression for large data sets, {\it Data Min. Knowl. Discov.}, 12, 29–45.
+
+\bibitem[Ruppert et al. (2003)]{ru2003} Ruppert D., Wand M.P. and Carroll R.C. (2003), {\it Semiparametric regression}, Cambridge University Press, Cambridge.
+\bibitem[Speckman (1988)]{sp1988} Speckman P. (1988), Kernel somoothing in partial linear models, {\it J. Roy. Statist. Soc. Ser. B}, 50, 413–436.
+\bibitem[V\'{i}sek (2006)]{v2006}  V\'{i}sek J.A. (2006), The least trimmed squares part III: Asymptotic normality, {\it KYBERNETIKA}, {42}, (2006),  203-224.
+\bibitem[Yatchew (2003)]{ya2003} Yatchew A. (2003), {\it Semiparametric regression for the applied econometrican}, Cambridge
+            University Press, Cambridge.
+            
+
+
+
+    
+    
+\bibitem[Craik (2005)]{Craik:2005}
+Craik A.D.D. (2005), Prehistory of Fa\`{a} di Bruno's formula, {\it The American Mathematical Monthly} 112, 2,  119-130.
+\bibitem[Feller (1972)]{Feller:1972}
+Feller W. (1972), {\it An introduction to probability theory and its applications,} New York, John Wiley.
+\bibitem[Genest and  Rivest (1993)]{Genest:Rivest:1993}
+Genest C. and  Rivest L.P. (1993), Statistical inference
+procedures for bivariate Archimedean copulas, {\it J. Amer.
+Statist. Assoc.} 88,  1034 - 1043.
+
+\bibitem[Li et al. (2015)]{LZ15}
+Li K., Zheng W. and Ai M. (2015), Optimal designs for the proportional interference model, {\it The Annals of Statistics}, 43(4), 1596-1616.
+\end{thebibliography}
+
+\end{document}

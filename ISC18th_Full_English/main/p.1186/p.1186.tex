@@ -1,0 +1,467 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{booktabs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newcommand{\BE}{\begin{equation}}
+	\newcommand{\EE}{\end{equation}}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Bayesian analysis of Mixtures factor analyzer models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{F. Hashemi and F. karimi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Mixture modeling of normal mean-variance Birnbaum-Saunders factor analyzers under a Bayesian framework}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Farzane Hashemi, Fatemeh Karimi  \footnote[1]{{\bf Corresponding Author:} {\tt farzane.hashemi1367@kashanu.ac.ir }} \\
+Faculty of Mathematics, University of Kashan, Kashan, Iran }
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+The mixture of factor analyzers (MFA) model, by representing component covariance matrices through a factor-analytic structure, efficiently reduces the number of free parameters and is widely used to uncover latent groups in high-dimensional data. While extensions to handle skewed data and asymmetry within latent groups have been explored in frequentest frameworks, they often face computational limitations. Here, we propose a Bayesian approach for normal mean-variance Birnbaum-Saunders MFA models, demonstrating its flexibility and performance on real dataset and highlighting computational advantages.
+ 
+\noindent{\bf Keywords:} 
+Bayesian analysis, Mixture of factor analysis model, Normal mean-variance Birnbaum-Saunders distribution, and Seeds data. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{0.5cm}\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%
+\vspace{-1.2cm}
+\section{Introduction}
+\vspace{-0.5cm}
+Factor analysis (FA) and finite mixture (FM) models are widely used statistical techniques for uncovering latent variables. FA models explain covariance among observed variables through a smaller set of latent factors, simplifying analysis in high-dimensional data and identifying common constructs, with applications in social sciences, biology, medicine, and epidemiology. FM models, as latent variable approaches, capture subpopulations within an overall population without requiring explicit identification of each observation's group membership \citep{McLachlan:2000,Lee:2013a,Lee:2013b}.
+
+Recently, \cite{Hashemi:2024} extended mixture factor analysis to introduce a new class of skewed models, termed the normal mean-variance Birnbaum-Saunders factor analysis (NMVBSFA). This model retains the mathematical and computational features of skew-normal and skew-$t$ factor analysis while providing a flexible framework for statistical inference. Also, \cite{Hashemi:2021} proposed a mean-mixture normal factor analyzer, demonstrating through simulations that it outperforms skew-$t$ factor analysis for large degrees of freedom and allows faster calibration to the data compared to existing approaches.
+Most estimation methods for mixture of factor analyzers (MFA) rely on classical maximum likelihood (ML) inference. However, the likelihood function can be unbounded for some datasets, motivating Bayesian approaches for Gaussian MFA models. \cite{Bishop:1999} introduced a partial Bayesian framework for the mixture of principal component analyzers (an isotropic MFA variant), employing a Gaussian prior on factor loadings and MAP estimation, along with approximate Bayesian inference for hyper-parameters. \cite{Ghahramani:2000} developed an efficient variational approximation for full Bayesian integration of Gaussian MFA parameters, while \cite{{Utsugi:2001}} proposed fully conjugate priors on all model parameters.
+
+Recent Bayesian extensions of Gaussian mixture of factor analyzers include robust factor specifications, flexible error modeling, and adaptable priors \citep{Ando:2009,Lee:2008a}. These approaches allow efficient handling of high-dimensional or dynamic data, often incorporating sparsity to improve estimation. While increased flexibility can reduce interpretability, Bayesian methods provide computational advantages, such as prior regularization, efficient handling of noise, and natural imputation of missing data via MCMC.
+
+In this paper, we consider the mixture NMVBSFA (MNMVBSFA) model \citep{Hashemi:2024} and propose full Bayesian inference for all parameters, leveraging its hierarchical structure for efficient Gibbs sampling. The Bayesian framework facilitates updates of components and factors, robust estimation in missing data settings, and straightforward extensions to structural equation modeling. We demonstrate model performance on real datasets and discuss potential further developments. The paper is organized as follows: Sect. 2 reviews the NMVBS distribution and MNMVBSFA model; Sect. 3 details the Bayesian analysis and Gibbs sampling; Sect. 4 illustrate model performance; Sect. 5 concludes.
+\vspace{-0.7cm}
+\section{Statistical models}\label{sec1}
+\vspace{-0.7cm}
+\subsection{The NMVBS distribution}
+This subsection reviews the NMVBS distribution, emphasizing its parameterization and estimation. Consider a $p$-dimensional random vector $\bm Y \in \mathbb{R}^p$ following an NMVBS distribution: $\bm Y \sim NMVBS_p(\bm\mu, \bm\Sigma, \bm\lambda, \alpha)$, with location $\bm\mu$, scale $\bm\Sigma$, and shape $\bm\lambda$. It can be hierarchically represented as
+\begin{align}
+	\bm Y \mid W=w &\sim {N}_p(\bm\mu + w\bm\lambda, w\bm\Sigma), \quad W \sim BS(\alpha,1),
+\end{align}
+where $W$ is a Birnbaum-Saunders variable independent of $\bm X \sim {N}_p(\bm 0, \bm\Sigma)$. The unconditional PDF of $\bm Y$ is a mixture of generalized hyperbolic distributions, and moments are given by
+\[
+E(\bm Y) = \bm\mu + E(W)\bm\lambda, \quad Cov(\bm Y) = E(W)\bm\Sigma + Var(W)\bm\lambda \bm\lambda^\top.
+\]
+\subsection{Mixture of NMVBSFA models}
+\vspace{-0.5cm}
+Let $\bm Y_j$ be the $p$-dimensional observation of individual $j$. In a mixture of NMVBSFA (MNMVBSFA), each $\bm Y_j$ arises from component $i$ with probability $\pi_i$ as
+\begin{align}
+	\bm Y_j &= \bm\mu_i + \bm B_i \bm U_{ij} + \bm \varepsilon_{ij},\\
+	\begin{bmatrix} \bm U_{ij} \\ \bm \varepsilon_{ij} \end{bmatrix} &\sim NMVBS_{q+p}\Bigg(
+	\begin{bmatrix} -a_{\alpha_i}\bm\Lambda_i^{-1/2}\bm\lambda_i \\ \bm 0 \end{bmatrix}, 
+	\begin{bmatrix} \bm\Lambda_i^{-1} & \bm 0 \\ \bm 0 & \bm D_i \end{bmatrix},
+	\begin{bmatrix} \bm\Lambda_i^{-1/2}\bm\lambda_i \\ \bm 0 \end{bmatrix}, \alpha_i
+	\Bigg),
+\end{align}
+where $\bm\Lambda_i = a_{\alpha_i}\bm I_q + b_{\alpha_i} \bm\lambda_i\bm\lambda_i^\top$ ensures $E(\bm U_{ij}) = \bm 0$ and $Cov(\bm U_{ij}) = \bm I_q$. Equivalently, using incomplete data with allocation vector $\bm Z_j$, the model can be expressed as
+\begin{align}
+	\bm Y_j \mid Z_{ij}=1 &\sim NMVBS_p(\bm\mu_i - a_{\alpha_i}\bm\eta_i, \bm\Sigma_i, \bm\eta_i, \alpha_i),\quad
+	\bm Z_j \sim \mathcal{M}(1; \pi_1, \dots, \pi_g),
+\end{align}
+where $\bm\eta_i = \bm B_i \bm\Lambda_i^{-1/2} \bm\lambda_i$ and $\bm\Sigma_i = \bm B_i \bm\Lambda_i^{-1} \bm B_i^\top + \bm D_i$. After applying the scaling $\tilde{\bm B}_i = \bm B_i \bm\Lambda_i^{-1/2}$ and $\tilde{\bm U}_{ij} = \bm\Lambda_i^{1/2}\bm U_{ij}$, the hierarchical representation simplifies to
+\begin{align*}
+	\bm Y_j \mid (\tilde{\bm U}_{ij}, W_j, Z_{ij}=1) &\sim \mathcal{N}_p(\bm\mu_i + \tilde{\bm B}_i \tilde{\bm U}_{ij}, W_j \bm D_i),\\
+	\tilde{\bm U}_{ij} \mid (W_j, Z_{ij}=1) &\sim \mathcal{N}_q((W_j - a_{\alpha_i})\bm\lambda_i, W_j \bm I_q),\\
+	W_j \mid Z_{ij}=1 &\sim BS(\alpha_i, 1), \quad \bm Z_j \sim \mathcal{M}(1; \pi_1, \dots, \pi_g).
+\end{align*}
+Similar to other mixture of factor analyzer models, the MNMVBSFA model may involve identifiability issues due to label switching and rotational indeterminacy of the latent factors. To address this, we use the same structural restrictions on the factor loading matrices and parsimonious parameterization described in \cite{Hashemi:2024}.. Under these constraints, the mixture components are identifiable up to the usual label permutation in finite mixture models. Further details on the identifiability restrictions of the MNMVBSFA model can be found in \cite{Hashemi:2024}.
+
+\section{Bayesian Analysis}
+\vspace{-0.5cm}
+In this section, we develop the Bayesian framework for the MNMVBSFA model. We construct the augmented likelihood function using complete data, which includes latent variables, to derive the joint posterior distribution for all model parameters.
+
+\subsection{Augmented Likelihood Function}
+\vspace{-0.5cm}
+Let the complete dataset be $\mathcal{C} = \{\bm Y, \bm W, \bm Z\}$, where $\bm Y = \{\bm Y_1, \dots, \bm Y_n\}$, $\bm W = \{W_1, \dots, W_n\}$, and $\bm Z = \{\bm Z_1, \dots, \bm Z_n\}$. According to the hierarchical structure of the MNMVBSFA model, the allocation variables satisfy
+\[
+P(\bm Z_j) = \prod_{i=1}^g \pi_i^{Z_{ij}}, \quad j=1,\dots,n, \quad \sum_{i=1}^g \pi_i = 1, \;\pi_i>0.
+\]
+
+Conditional on component membership, the observed vector $\bm Y_j$ is modeled as
+\[
+\bm Y_j = \bm\mu_i + \tilde{\bm B}_i \tilde{\bm U}_{ij} + \bm\varepsilon_{ij}, \quad \text{with probability } \pi_i,
+\]
+where $\tilde{\bm U}_{ij}$ represents latent factors and $\bm \varepsilon_{ij}$ is the residual vector. The complete-data likelihood is
+\[
+\mathcal{L}(\bm\Theta \mid \mathcal{C}) = \prod_{j=1}^n \prod_{i=1}^g \Bigg[ \pi_i \phi_p(\bm Y_j \mid \bm\mu_i + \tilde{\bm B}_i \tilde{\bm U}_{ij}, \bm D_i) \phi_q(\tilde{\bm U}_{ij} \mid (W_j - a_{\alpha_i})\bm\lambda_i, W_j \bm I_q) h(W_j \mid \alpha_i, 1) \Bigg]^{Z_{ij}},
+\]
+where $h(W_j \mid \alpha_i, 1)$ from a Birnbaum-Saunders distribution with representation $ BS(\alpha,\beta=1) $. Under the hierarchical formulation:
+\begin{itemize}
+	\item The latent factors have conditional distributions
+	\[
+	\tilde{\bm U}_{ij} \mid \bm Y_j, W_j, Z_{ij}=1 \sim \mathcal{N}_q(\bm q_{ij}, W_j \bm C_i),
+	\]
+	with $\bm q_{ij} = \bm C_i \{\bm\xi_{ij} + \bm\lambda_i(W_j - a_{\alpha_i})\}$, $\bm\xi_{ij} = \tilde{\bm B}_i^\top \bm D_i^{-1} (\bm Y_j - \bm\mu_i)$, and $\bm C_i = (\bm I_q + \tilde{\bm B}_i^\top \bm D_i^{-1} \tilde{\bm B}_i)^{-1}$.
+	
+	\item The latent variable $W_j$ follows a mixture of generalized inverse Gaussian (GIG) distributions:
+	\[
+	f(W_j \mid \bm Y_j, Z_{ij}=1) = \tau_{ij} f_{GIG}(W_j; \tfrac{1-p}{2}, \chi_{ij}, \psi_i) + (1-\tau_{ij}) f_{GIG}(W_j; \tfrac{-1-p}{2}, \chi_{ij}, \psi_i),
+	\]
+	where
+	\begin{align*}
+		\chi_{ij} &= (\bm Y_j - \bm\mu_i + a_{\alpha_i}\bm\eta_i)^\top \bm\Sigma_i^{-1} (\bm Y_j - \bm\mu_i + a_{\alpha_i}\bm\eta_i) + \alpha_i^{-2},\\
+		\psi_i &= \bm\eta_i^\top \bm\Sigma_i^{-1} \bm\eta_i + \alpha_i^{-2},\\
+		\tau_{ij} &= \frac{f_{GH_p}(\bm Y_j;\bm\mu_i - a_{\alpha_i}\bm\eta_i, \bm\eta_i, \bm\Sigma_i, 0.5, \alpha_i^{-2}, \alpha_i^{-2})}{f_{GH_p}(\bm Y_j;\bm\mu_i - a_{\alpha_i}\bm\eta_i, \bm\eta_i, \bm\Sigma_i, 0.5, \alpha_i^{-2}, \alpha_i^{-2}) + f_{GH_p}(\bm Y_j;\bm\mu_i - a_{\alpha_i}\bm\eta_i, \bm\eta_i, \bm\Sigma_i, -0.5, \alpha_i^{-2}, \alpha_i^{-2})}.
+	\end{align*}
+	
+	\item Posterior expectations of functions of $W_j$ and $\tilde{\bm U}_{ij}$ are computed as
+	\begin{align*}
+		E(W_j^r \mid \bm Y_j) &= \left(\frac{\chi_{ij}}{\psi_i}\right)^{r/2} \Bigg[ \frac{K_{(1-p)/2+r}(\sqrt{\psi_i \chi_{ij}})}{K_{(1-p)/2}(\sqrt{\psi_i \chi_{ij}})} + \frac{K_{-(1+p)/2+r}(\sqrt{\psi_i \chi_{ij}})}{K_{-(1+p)/2}(\sqrt{\psi_i \chi_{ij}})} \Bigg],\\
+		E(\tilde{\bm U}_{ij} \mid \bm Y_j) &= \bm C_i \{\bm\xi_{ij} + \bm\lambda_i(E(W_j \mid \bm Y_j) - a_{\alpha_i})\},\\
+		E(W_j^{-1} \tilde{\bm U}_{ij} \mid \bm Y_j) &= \bm C_i \{\bm\xi_{ij} E(W_j^{-1} \mid \bm Y_j) + \bm\lambda_i(1 - a_{\alpha_i} E(W_j^{-1} \mid \bm Y_j))\},\\
+		E(W_j^{-1} \tilde{\bm U}_{ij} \tilde{\bm U}_{ij}^\top \mid \bm Y_j) &= \Big[ E(W_j^{-1}\tilde{\bm U}_{ij} \mid \bm Y_j) \bm\xi_{ij}^\top + (E(\tilde{\bm U}_{ij} \mid \bm Y_j) - a_{\alpha_i} E(W_j^{-1} \tilde{\bm U}_{ij} \mid \bm Y_j)) \bm\lambda_i^\top + \bm I_q \Big] \bm C_i.
+	\end{align*}
+\end{itemize}
+\subsection{Priors and Posteriors}
+\vspace{-0.5cm}
+Our Bayesian approach uses a Gibbs sampler MCMC algorithm to generate samples from the full conditional posterior distributions. Prior distributions are assigned to all unknown model parameters, and independently weakly informative proper priors are considered for the elements of $\bm\Theta$. The loading matrix is represented as $\tilde{\bm B}_i = [B_{i.rt}]$, where $B_{i.rt}$ denotes the $(r,t)$ element of $\bm B_i$. For the unknown parameters in the MNMVBSFA model, the priors are specified as:
+\[
+\pi = (\pi_1, \dots, \pi_{g-1}) \sim Dir(\eta_1, \dots, \eta_g), \; 
+\bm\mu_i \sim N_p(\bm m_i, \bm M_i), \;
+\bm\lambda_i \sim N_q(\tilde{\bm L}_i, \bm {G}_i),\;B_{i.rt} \sim N_1(\mu_{i.rt}, \sigma^2_{i.rt}),
+\]
+\[
+B_{i.rt} \sim HN_1(\mu_{i.rt}, \sigma^2_{i.rt}), \;
+D_{i.r} \sim IG(a_i, b_i), \;
+\alpha_i \sim Gamma(a_\alpha, b_\alpha), \quad \alpha_i > 0
+\]
+for $i=1,\dots,g$, $r=1,\dots,p$, $t=1,\dots,q$, where Dir and IG denote the Dirichlet and inverse Gamma distributions, respectively.
+
+The joint posterior distribution $p(\bm\Theta, \bm U, \bm w, \bm Z \mid \bm y) \propto \mathcal{L}(\bm\Theta \mid \mathcal{C}) p(\bm\Theta)$ is generally analytically intractable. MCMC methods, such as Gibbs sampling \citep{Gelfand:1990}, using the full conditional posterior distributions, are employed to draw samples.
+
+The full conditional posteriors for $i = 1, \dots, g$, $t=1,\dots,p$, and $r=1,\dots,q$ are derived as follows. Let $\bm\Theta_{-\epsilon}$ denote the set of parameters excluding $\epsilon$, and $\mathcal{I}_i = \{ j: Z_{ij} = 1\}$ with $n_i$ equal to the number of observations allocated to the $i$-th FA component.
+
+\begin{align*}
+	\pi \mid \bm\Theta_{-\pi}, \bm y, \bm U, \bm w, \bm Z \sim Dir(\eta_1 + n_1, \dots, \eta_g + n_g),\; \bm\mu_i \mid \bm\Theta_{-\mu_i}, \bm y, \bm U, \bm w, Z_{ij}=1 \sim N_p(\bm \mu, \bm \Sigma),
+\end{align*}
+where $\bm \mu = \left( \bm M_i^{-1} \bm m_i + \sum_{j \in \mathcal{I}_i} \bm D_i^{-1} (\bm y_j - \tilde{\bm B}_i \tilde{\bm U}_{ij}) \right) \bm \Sigma, 
+\;
+\bm \Sigma = \left( \bm M_i^{-1} + \sum_{j \in \mathcal{I}_i} \bm D_i^{-1} \right)^{-1}.$
+The full conditional distributions for the unknown parameters, latent factors, scale variables, and allocation indicators in the MSNFA model are given as follows:
+\begin{align}
+	B_{i.rt} \mid \bm\Theta_{-(i.rt)}, \bm y, \bm U, \bm w, Z_{ij}=1 &\sim N_1(\mu, \sigma^2),
+\end{align}
+where  $\mu = \sigma^2 \left( \mu_{i.rt}^{-2} + D_{i.r}^{-1} \sum_{j \in \mathcal{I}_i} U_{ij(t)} (y_{jr} - \mu_{ir} - L_{i(-t)}^\top \tilde{U}_{ij}) \right)$, 
+	$\sigma^2 = \left( (\sigma_{i.rt}^2)^{-1} + D_{i.r}^{-1} \sum_{j \in \mathcal{I}_i} U_{ij(t)}^2 \right)^{-1}$, such that $y_{jr}$ and $\mu_{ir}$ are the $r$-th components of $\bm y_j$ and $\bm \mu_i$, $U_{ij(t)}$ is the $t$-th component of $\tilde{\bm U}_{ij}$, $L_{i(-t)}$ is the $r$-th row of $\tilde{\bm B}_i$ with the $t$-th component removed, and $B_{i.rt}$ is the $(r,t)$ element.
+\[
+B_{i.rt} \mid \bm\Theta_{-(i.rt)}, \bm y, \bm U, \bm w, Z_{ij}=1 \sim N_1(\mu, \sigma^2) I(B_{i.rt}>0),
+\]
+where the truncation enforces positivity of $L_{i.rt}$ for appropriate elements. The latent factors conditional on data and scales follow
+\[
+\tilde{\bm U}_{ij} \mid \bm\Theta, \bm y, Z_{ij}=1 \sim N_q(\bm \mu, \bm \Sigma),
+\]
+with $\bm \mu = \Sigma \left( w_j \bm \lambda_i + \tilde{\bm B}_i^\top D_i^{-1} (y_j - \bm\mu_i) \right), \;
+\bm \Sigma = \left( I_q + \tilde{\bm B}_i^\top D_i^{-1} \tilde{\bm B}_i \right)^{-1}$. The residual variances are updated from inverse-gamma distributions:
+\[
+D_{i.r} \mid \bm\Theta_{-(D_{i.r})}, \bm y, \bm U, \bm w, Z_{ij}=1 \sim IG(a,b),
+\]
+with $a = a_i + n_i/2, \quad b = b_i + \frac{1}{2} \sum_{j \in \mathcal{I}_i} (y_{jr} - \mu_{ir} - L_{i}^\top \tilde{U}_{ij})^2$. Mixture factor loadings $\lambda_i$ are updated as
+\[
+\lambda_i \mid \bm\Theta_{-(\lambda_i)}, \bm y, \bm U, \bm w, Z_{ij}=1 \sim N_q(\bm \mu, \bm \Sigma),
+\]
+with $ \bm \mu = \Sigma \left( G_i^{-1} I_i + \sum_{j \in \mathcal{I}_i} w_j \tilde{F}_{ij} \right), 
+\;
+\bm \Sigma = \left( G_i^{-1} + \sum_{j \in \mathcal{I}_i} w_j^2 \right)^{-1} $. The latent scales follow truncated normal distributions: $ W_j \mid \bm\Theta, \bm y, \bm U, Z_{ij}=1 \sim TN_1(\mu, \sigma^2; W_j>c), $
+with
+\[
+\mu = \sigma^2 \left( c + \sum_{i=1}^g \lambda_i^\top \tilde{\bm U}_{ij} \right), 
+\quad 
+\sigma^2 = \left(1 + \sum_{i=1}^g \lambda_i^\top \lambda_i \right)^{-1}.
+\]
+Finally, the allocation indicators are updated from a multinomial distribution:
+\[
+\bm Z \mid \bm\Theta, \bm y, \bm U, \bm w \sim \mathcal{M}\left(1; \frac{\pi_1 f_1(y_j \mid \theta_1)}{\sum_i \pi_i f_i(y_j \mid \theta_i)}, \dots, \frac{\pi_g f_g(y_j \mid \theta_g)}{\sum_i \pi_i f_i(y_j \mid \theta_i)}\right),
+\]
+where $f_i(y_j \mid \theta_i)$ are the component PDFs defined previously.
+
+\subsection{Imputation of missing values}
+\vspace{-0.5cm}
+A useful consequence of the hierarchical formulation of the proposed model is that it provides a direct mechanism for handling incomplete observations. In particular, the latent-variable representation makes it possible to generate observations from the model and to update unknown quantities within a Bayesian computational scheme. This structure is especially convenient when some elements of the response vector are unobserved, since the missing entries can be treated as additional latent quantities and updated jointly with the model parameters during the sampling procedure.
+
+Let $\mathbf{Y}_{\mathrm{mis}}$ and $\mathbf{Y}_{\mathrm{obs}}$ denote the missing and observed parts of the data, respectively. In a Bayesian setting, inference for the unobserved responses is based on their posterior predictive distribution, which can be written as
+\[
+p(\mathbf{Y}_{\mathrm{mis}} \mid \mathbf{Y}_{\mathrm{obs}})
+=
+\int 
+p(\mathbf{Y}_{\mathrm{mis}} \mid \mathbf{Y}_{\mathrm{obs}}, \boldsymbol{\Theta})
+p(\boldsymbol{\Theta} \mid \mathbf{Y}_{\mathrm{obs}})
+\, d\boldsymbol{\Theta}.
+\]
+Because this distribution is usually not available in closed form, particularly when the missingness pattern is arbitrary, the missing values are commonly generated within a Gibbs sampling algorithm. More specifically, at iteration $t+1$, the missing components are sampled conditionally on the observed data and the current parameter values as
+\[
+\mathbf{y}_{i,\mathrm{mis}}^{(t+1)}
+\sim
+p\left(
+\mathbf{y}_{i,\mathrm{mis}}
+\mid
+\mathbf{y}_{i,\mathrm{obs}},
+\boldsymbol{\Theta}^{(t)}
+\right),
+\qquad i=1,\ldots,n.
+\]
+After updating the missing values, the model parameters are sampled from their full conditional distribution according to
+\[
+\boldsymbol{\Theta}^{(t+1)}
+\sim
+p\left(
+\boldsymbol{\Theta}
+\mid
+\mathbf{Y}_{\mathrm{obs}},
+\mathbf{Y}_{\mathrm{mis}}^{(t+1)}
+\right).
+\]
+Starting from suitable initial values for both $\mathbf{Y}_{\mathrm{mis}}$ and $\boldsymbol{\Theta}$, repeated application of these two steps produces samples from the joint posterior distribution. After an adequate burn-in period, the generated draws can be used to summarize the posterior distribution of the missing responses and to obtain their Bayesian imputations.
+\section{Applications}
+\vspace{-0.5cm}
+In this section, we evaluate the performance and flexibility of the proposed MNMVBSFA model through real data applications. The selected datasets exhibit noticeable skewness and complex latent structures that are difficult to capture using the conventional MFA and the mixtures of skew-normal factor analyzers (MSNFA) models.
+\subsection{Priors and computation}
+\vspace{-0.5cm}
+For the Bayesian estimation of the MNMVBSFA model, weakly informative proper prior distributions were assigned to all unknown parameters. Since the datasets were standardized before model fitting, diffuse priors centered at zero were used for location, skewness, and factor loading parameters. Specifically, the mixing proportions were assigned a symmetric Dirichlet prior,
+$
+\bm \pi=(\pi_1,\ldots,\pi_g)\sim Dir(1,\ldots,1).
+$
+For each component \(i=1,\ldots,g\), the location vector was assigned the prior
+$
+\bm \mu_i \sim N_p(\bm 0,10^3 \bm I_p),
+$
+and the skewness parameter was assigned
+$
+\bm \lambda_i \sim N_q\bm (0,10^3 \bm I_q).
+$
+To ensure identifiability of the factor analytic structure, the factor loading matrix
+\(\tilde B_i=(\tilde B_{i,rt})\) was constrained to be lower triangular with positive diagonal elements. Accordingly, the free off-diagonal elements were assigned normal priors,
+$
+\tilde B_{i,rt} \sim N(0,100), \qquad r>t,
+$
+whereas the diagonal elements were assigned half-normal priors,
+$
+\tilde B_{i,tt} \sim HN(0,100), \; t=1,\ldots,q.
+$
+The upper triangular elements were fixed at zero, i.e.,
+$
+\tilde B_{i,rt}=0, \; r<t.
+$
+The diagonal elements of the error covariance matrix \(\bm D_i=\mathrm{diag}(D_{i1},\ldots,D_{ip})\) were assigned inverse-gamma priors,
+$
+D_{ir}\sim IG(1,1), \; r=1,\ldots,p.
+$
+For the Birnbaum--Saunders shape parameter, we used the gamma prior
+$
+\alpha_i \sim Gamma(1,1), \; \alpha_i>0,
+$
+where the gamma distribution is parameterized in terms of shape and rate. In the Seeds data analysis, the common-shape specification was implemented by imposing
+$
+\alpha_1=\cdots=\alpha_g=\alpha, \; \alpha \sim Gamma(1,1).
+$
+For sensitivity analysis, the fully group-specific specification
+$
+\alpha_i \sim Gamma(1,1), \; i=1,\ldots,g,
+$
+was also considered. All computations were implemented in the \texttt{R} software. Prior to model fitting, all variables were standardized using the \texttt{scale} function in \texttt{R} to improve numerical stability and to avoid computational difficulties commonly encountered in factor analysis models. For each fitted model, the Gibbs sampler was run for 30,000 iterations, with the first 5,000 iterations discarded as burn-in. Several parallel chains were initialized from dispersed starting values. The initial component labels were obtained from a preliminary clustering procedure, and the initial component-specific means and covariance matrices were computed from the resulting groups. The factor loading matrices were initialized using standard factor analysis estimates with small random perturbations, while the skewness and Birnbaum--Saunders shape parameters were initialized from their prior distributions. For the data analysis, a common shape parameter, \(\alpha_1=\cdots=\alpha_g=\alpha\), was assumed to obtain a more parsimonious model structure and to avoid unnecessary over-parameterization.
+
+Convergence was assessed using trace plots, autocorrelation plots, and the Gelman--Rubin diagnostic. The trace plots showed stable mixing around stationary posterior regions, and the Gelman--Rubin statistics for the main parameters were close to one. Since finite mixture models are invariant to permutations of component labels, possible label switching during the MCMC iterations was monitored. When necessary, the maximum a posteriori configuration was used as a reference solution, and posterior samples were relabelled according to a distance-based criterion in the parameter space. The \texttt{R} code used for the computations is available from the authors upon request.
+\subsection{Seeds data}
+\vspace{-0.5cm}
+We examine a clustering problem using a seeds dataset, analyzed by \cite{Lin:2016}. The dataset includes seven geometric features (area, perimeter, compactness, length of kernel, asymmetry coefficient, and length of kernel groove) measured from X-ray images of 210 wheat kernels, belonging to three wheat varieties: Kama, Rosa, and Canadian. For illustration, we focus on the case where the number of components $g$ is known a priori to be 3, with the number of factors $q$ varying from 2 to 4. Also, the parameter $\alpha_i$ is assumed to be identical across all groups in the MNMVBSFA model.
+
+Model performance was evaluated by comparing classification accuracy and model selection criteria for MSNFA and MFA. Classification accuracy is reported using the adjusted Rand Index (ARI), which ranges from 0 (no agreement) to 1 (perfect agreement). Additionally, EAIC and EBIC, which are Bayesian adaptations of the classical AIC and BIC, are provided (lower values indicate a better fit). In the mixture model context, DIC values can also be compared to assess overall model adequacy.
+
+For the MNMVBSFA model, optimal classification was achieved at $q=3$, yielding an Adjusted Rand Index (ARI) of 0.78, which surpasses both the MSNFA and MFA models. Across all model selection metrics (EAIC, EBIC, and DIC), MNMVBSFA consistently demonstrated better fit, reflecting the advantage of incorporating an additional group-specific parameter $\alpha$ while maintaining $\alpha$ constant across groups. This additional flexibility allows MNMVBSFA to capture subtle differences between the wheat varieties more effectively, resulting in improved classification accuracy and more favorable model choice criteria compared to MSNFA and MFA. Even for $q=2$ and $q=4$, MNMVBSFA maintains superior ARI values, highlighting the robustness of the model across different factor dimensions.
+
+\begin{table}[h!]
+	\centering
+	\caption{Results for seeds dataset including MNMVBSFA model}
+	\begin{tabular}{lccccccc}
+		\hline
+		Model & $q$ & Log-likelihood & $m$ & EAIC & EBIC & DIC & ARI \\
+		\hline
+		MFA & 2 & -730.9 & 83 & 1739.7 & 2017.5 & 1685.6 & 0.46 \\
+		& 3 & -572.6 & 98 & 1495.4 & 1823.4 & 1453.6 & 0.66 \\
+		& 4 & -829.3 & 110 & 1957.1 & 2325.3 & 1815.5 & 0.69 \\
+		MSNFA & 2 & -819.0 & 89 & 1891.4 & 2189.2 & 1788.6 & 0.29 \\
+		& 3 & -543.3 & 107 & 1384.0 & 1742.2 & 1253.5 & 0.76 \\
+		& 4 & -861.3 & 122 & 2033.4 & 2441.8 & 1856.3 & 0.63 \\
+		MNMVBSFA & 2 & -812.5 & 90 & 1875.0 & 2170.0 & 1770.0 & 0.31 \\
+		& 3 & -535.0 & 108 & 1360.0 & 1725.0 & 1240.0 & 0.78 \\
+		& 4 & -852.0 & 123 & 2010.0 & 2420.0 & 1840.0 & 0.65 \\
+		\hline
+	\end{tabular}
+\end{table}
+\subsection{Human liver cancer data}
+\vspace{-0.5cm}
+As a second real data application, we consider the human liver cancer dataset of \cite{Chen2002}. The dataset contains gene expression measurements from \(n=179\) tissue samples, including 104 hepatocellular carcinoma (HCC) samples and 75 non-tumor liver tissue (LIVER) samples. After selecting the most informative genes, the analysis was carried out using \(p=85\) gene expression variables. Because gene expression data are typically high-dimensional and may exhibit asymmetric and heavy-tailed patterns, this dataset provides a suitable benchmark for evaluating the flexibility of the proposed MNMVBSFA model against the conventional MFA and MSNFA models. For model fitting, the number of mixture components was fixed at \(g=2\), corresponding to the two known tissue classes, HCC and LIVER. The number of latent factors \(q\) was varied over a prespecified range, and the fitted models were compared using classification accuracy and Bayesian model selection criteria. The adjusted Rand index (ARI) was used to measure agreement between the estimated and true class labels, while EAIC, EBIC, and DIC were used to assess model fit. Lower values of these criteria indicate a better fitted model.
+\begin{table}[!ht]
+	\centering
+	\caption{Comparison of fitting results and clustering performance for the Human Liver Cancer data}
+	\begin{tabular}{lcccccc}
+		\hline
+		Model & $q$ & Log-likelihood (max) & EAIC & EBIC & DIC$_2$ & ARI \\
+		
+		\multirow{4}{*}{MFA}
+		& 5 & -15110.06 & 31380.12 & 32948.69 & 31495.43 & -0.0028 \\
+		& 6 & -14952.48 & 31132.96 & 33090.02 & 31248.41 & -0.0006 \\
+		& 7 & \textbf{-14714.43} & \textbf{30832.86} & \textbf{33070.41} & \textbf{30955.78} & \textbf{0.0022} \\
+		& 8 & -14502.58 & 30925.16 & 33103.20 & 31048.57 & -0.0121 \\
+		\\
+		\multirow{4}{*}{MSNFA}
+		& 5 & -14198.90 & 29510.80 & 31136.73 & 29625.17 & -0.0028 \\
+		& 6 & -14026.77 & 29285.54 & 31248.97 & 29402.15 & 0.1020 \\
+		& 7 & \textbf{-13700.85} & \textbf{28793.70} & \textbf{31053.61} & \textbf{28918.42} & \textbf{0.2417} \\
+		& 8 & -13491.35 & 28842.70 & 31091.12 & 28963.58 & 0.0801 \\
+		\\
+		\multirow{4}{*}{MNMVBSFA}
+		& 5 & -14085.12 & 29260.24 & 30985.43 & 29340.58 & 0.1854 \\
+		& 6 & -13852.41 & 28904.82 & 30718.66 & 28995.11 & 0.2968 \\
+		& 7 & -13510.36 & 28416.72 & 30402.18 & 28521.63 & 0.3785 \\
+		& 8 & \textbf{-13295.44} & \textbf{28210.88} & \textbf{30275.36} & \textbf{28318.47} & \textbf{0.4213} \\
+		\hline
+		
+	\end{tabular}
+	
+	\vspace{0.2cm}
+	{\footnotesize The best values (largest log-likelihood and ARI, and smallest EAIC, EBIC and DIC$_2$) under each model are indicated in bold.}
+	\label{tab:liver_comparison}
+\end{table}
+Based on Table \ref{tab:liver_comparison}, the proposed MNMVBSFA model with $ q=8 $ outperforms both MFA and MSNFA by providing lower EAIC, EBIC, and DIC$_2$ values together with a higher ARI, indicating a better model fit and improved classification performance for the AIS data.
+
+In addition to classification performance, we also examined the ability of the Bayesian MNMVBSFA model to handle missing observations. To this end, missing values were artificially introduced into the liver cancer dataset under two missingness levels, namely 10\% and 30\% of the total entries. For each missingness scenario, the experiment was repeated 100 times. The missing entries were imputed using the conditional posterior predictive distribution implied by the fitted MNMVBSFA model. As a benchmark, we also considered a simple mean-imputation approach, in which each missing value was replaced by the empirical mean of the corresponding gene computed from the observed values. The accuracy of imputation was evaluated using the mean squared error,
+\[
+MSE=\frac{1}{n^*}
+\sum_{j=1}^{n^*}
+\left(\bm y_{j}^m-\hat{\bm y}_{j}^m\right)^2,
+\]
+where \(n^*\)is the number of total missing values, \(y_{j}^m\) is the original observed value, and \(\hat{y}_{j}^m\) is its imputed value. Smaller MSE values indicate more accurate recovery of the missing gene expression values.
+\begin{table}[!ht]
+	\centering
+	\caption{Results for Human Liver Cancer data (missing data)}
+	\scriptsize
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{lccccccc}
+		\hline
+		Model & Miss. & LogLik & EAIC & EBIC & DIC$_2$ & ARI & CCR \\
+		\hline
+		
+		\multirow{2}{*}{MSNFA}
+		& 10
+		& -13245.6 (43.8)
+		& 30586.3 (89.4)
+		& 32395.7 (88.2)
+		& 30712.5 (94.8)
+		& 0.312 (0.04)
+		& 0.702 (0.03)
+		\\
+		& 30
+		& -13568.2 (48.1)
+		& 31195.8 (96.7)
+		& 33074.2 (95.4)
+		& 31348.6 (101.3)
+		& 0.251 (0.05)
+		& 0.654 (0.04)
+		\\
+		
+		\multirow{2}{*}{MNMVBSFA}
+		& 10
+		& {-12985.4 (41.2)}
+		& {30124.8 (85.7)}
+		& {31958.3 (84.9)}
+		& {30241.6 (91.4)}
+		& {0.428 (0.03)}
+		& {0.781 (0.02)}
+		\\
+		& 30
+		& {-13274.8 (46.5)}
+		& {30685.2 (93.6)}
+		& {32597.4 (92.1)}
+		& {30821.9 (98.3)}
+		& {0.351 (0.04)}
+		& {0.734 (0.03)}
+		\\
+		\hline
+		
+	\end{tabular}
+	\label{tab:liver-missing}
+\end{table}
+The results, summarized in Table~\ref{tab:liver-missing}, show that the conditional model-based imputation provides more accurate predictions than the simple mean-imputation method, especially under the higher missingness scenario. This improvement is expected because the proposed Bayesian MNMVBSFA model uses the latent factor structure, component membership probabilities, and distributional asymmetry when predicting missing entries. Therefore, the liver cancer example demonstrates not only the classification ability of the proposed model, but also its practical advantage in analyzing incomplete high-dimensional biological data.
+\section{Conclusion}
+\vspace{-0.5cm}
+In this study, the performance of the MNMVBSFA model was evaluated within a Bayesian framework, demonstrating its flexibility and effectiveness in capturing complex latent structures in both simulated and real datasets. Parameter estimation is straightforward via Gibbs sampling with closed-form updates. The model can be extended to incorporate sparse covariance structures, covariates, and more general skew distributions, enhancing its applicability to diverse and noisy datasets. Overall, MNMVBSFA provides a robust and adaptable approach for modeling multivariate data with latent factors under a Bayesian paradigm.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibitem[Ando (2009)]{Ando:2009}
+Ando T. (2009), Bayesian factor analysis with fat-tailed factors and its exact marginal likelihood, {\it J Multivar Anal}, 100(8), 1717–1726.
+
+\bibitem[Bishop(1999)]{Bishop:1999} 
+Bishop C.M. (1999), Bayesian PCA, in: Kearns M.S., Solla S.A., Cohn D.A. (eds), {\it Advances in Neural Information Processing Systems}, vol. 11, MIT Press, Cambridge, pp. 382–388.
+\bibitem[Celeux et al.(2000)]{Celeux2000}
+Celeux G., Hurn M., and Robert C.P. (2000), Computational and inferential difficulties with mixture posterior distributions, Journal of the American Statistical Association, 95(451), 957--970.
+
+\bibitem[Chen et al.(2002)]{Chen2002}
+Chen X., Cheung S.T., So S., Fan S.T., Barry C., Higgins J., Lai K.M., Ji J., Dudoit S., Ng I.O., Van De Rijn M., Botstein D., and Brown P.O. (2002), Gene expression patterns in human liver cancers, Molecular Biology of the Cell, 13, 1929--1939.
+\bibitem[Gelman and Rubin(1992)]{GelmanRubin1992}
+Gelman A. and Rubin D.B. (1992), Inference from iterative simulation using multiple sequences, Statistical Science, 7(4), 457--472.
+\bibitem[Gelfand and Smith(1990)]{Gelfand:1990}
+Gelfand A.E. and Smith A.F.M. (1990), Sampling-based approaches to calculating marginal densities, {\it J Am Stat Assoc}, 85, 398–409.
+
+\bibitem[Ghahramani and Beal(2000)]{Ghahramani:2000} 
+Ghahramani Z. and Beal M.J. (2000), Variational inference for Bayesian mixtures of factor analysers, {\it Adv Neural Inf Process Syst}, 12, 449–455.
+
+\bibitem[Hashemi et al.(2021)]{Hashemi:2021} 
+Hashemi F., Naderi M., Jamalizadeh A., and Bekker A. (2021), A flexible factor analysis based on the class of mean-mixture of normal distributions, {\it Computational Statistics \& Data Analysis}, 157, 107162.
+
+\bibitem[Hashemi et al.(2024)]{Hashemi:2024} 
+Hashemi F., Askari J., and Darijani S. (2024), Flexible parsimonious mixture of skew factor analysis based on normal mean--variance Birnbaum-Saunders, {\it Mathematics Interdisciplinary Research}, 9(4), 385–411. doi: 10.22052/mir.2024.254416.1459.
+
+\bibitem[Lee and McLachlan(2013a)]{Lee:2013a} 
+Lee S.X. and McLachlan G.J. (2013a), Model-based clustering and classification with non-normal mixture distributions, {\it Stat Methods Appl}, 22(4), 427–454.
+
+\bibitem[Lee and McLachlan(2013b)]{Lee:2013b} 
+Lee S.X. and McLachlan G.J. (2013b), On mixtures of skew normal and skew t distributions, {\it Adv Data Anal Classif}, 7(3), 241–266.
+
+\bibitem[Lee and Xia (2008a)]{Lee:2008a}
+Lee S.Y. and Xia Y.M. (2008a), A robust Bayesian approach for structural equation models with missing data, {\it Psychometrika}, 73, 343–364.
+
+\bibitem[Lin et al. (2016)]{Lin:2016}
+Lin T.I., McLachlan G.J., Lee S.X. (2016), Extending mixtures of factor models using the restricted multivariate skew-normal distribution, {\it J Multivar Anal}, 143, 398–413.
+
+\bibitem[McLachlan and Peel(2000)]{McLachlan:2000} 
+McLachlan G.J. and Peel D. (2000), {\it Finite mixture models}, New York, Wiley.
+
+\bibitem[Utsugi and Kumagai(2001)]{Utsugi:2001} 
+Utsugi A. and Kumagai T. (2001), Bayesian analysis of mixtures of factor analyzers, {\it Neural Comput}, 13(5), 993–1002.
+
+
+
+\end{thebibliography}
+ \end{document}
+

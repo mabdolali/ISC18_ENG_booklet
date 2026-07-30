@@ -1,0 +1,360 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{$\text{ZIGINAR}_{RC}(1)$ Process}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{R. Nasirzadeh}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf On the Zero-Inflated Geometric INAR(1) Process with Random Coefficient}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+R. Nasirzadeh$^1$ \\
+$^1$Department of Statistics, Faculty of Science, Fasa University, Fasa, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Count time series with overdispersion, excess zeros, and autocorrelation frequently arise in hydrology, epidemiology, and climatology. However, INAR processes with random coefficients have received limited attention, and non-random coefficient models often fail due to ignored random effects. Moreover, neglecting zero inflation causes overdispersion and biased estimates. This paper examines the zero-inflated geometric INAR(1) process with random coefficient ($\text{ZIGINAR}_{RC}(1)$), synthesizing its probabilistic properties, Whittle estimation, sieve bootstrap methods, and Bayesian forecasting. Simulation results show Bayesian prediction achieves superior accuracy, while sieve bootstrap offers good performance with reasonable efficiency. Practical applicability is demonstrated using animal health submission data.
+
+\noindent{\bf Keywords:} 
+Count time series, Zero-inflation, Random coefficient, Estimation methods, Forecasting.
+
+\noindent{\bf Mathematics Subject Classification (2010):} 62M10, 62F10, 62M20. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+\section{Introduction}
+Integer-valued time series analysis has attracted substantial attention due to its applications across epidemiology (influenza cases), climatology (tornado occurrences), econometrics (stock market transactions), and environmental science (precipitation events). The discrete nature of such data renders traditional continuous-valued autoregressive models inappropriate, necessitating specialized methodological frameworks.
+
+The binomial thinning operator, introduced by \cite{Steutel:1979}, provided a fundamental tool for constructing integer-valued autoregressive processes by mimicking scalar multiplication in conventional time series models. Subsequently, \cite{McKenzie:1985} and \cite{AlOsh:1987} formalized the first-order integer-valued autoregressive (INAR(1)) process as $X_t = \alpha \circ X_{t-1} + \epsilon_t$, where $\alpha \in (0,1)$ and the innovation process $\{\epsilon_t\}$ consists of independent and identically distributed non-negative integer-valued random variables, independent of the Bernoulli counting series.
+
+However, many real-world count datasets exhibit two challenging characteristics that standard INAR models inadequately address: (i) overdispersion, wherein the variance substantially exceeds the mean, and (ii) zero-inflation, where a higher proportion of zeros is observed than expected under standard distributions such as Poisson or geometric. Ignoring these features can lead to biased parameter estimates, incorrect standard errors, and invalid inferences \cite{Bakouch:2018}.
+
+\cite{Bakouch:2018} introduced the zero-inflated geometric INAR(1) process with random coefficient ($\text{ZIGINAR}_{RC}(1)$), which simultaneously addresses both issues by incorporating a random thinning coefficient and a zero-inflated geometric marginal distribution. The random coefficient nature allows the autoregressive parameter to vary over time, reflecting the influence of environmental or contextual factors, while the zero-inflated component accommodates excessive zeros through a mixture representation.
+
+Subsequently, \cite{Nasirzadeh:2024} extended this framework by systematically investigating various estimation and prediction techniques, including Whittle estimation, maximum empirical likelihood, sieve bootstrap approaches, and comprehensive Bayesian forecasting methods. Their comparative analysis provided valuable insights into the relative performance of these methodologies across different sample sizes and parameter configurations.
+
+This paper synthesizes these contributions, providing a comprehensive examination of the $\text{\text{ZIGINAR}}_{RC}(1)$ process, its theoretical properties, estimation methodologies, and forecasting procedures. Section 2 presents the model formulation and key probabilistic properties. Section 3 discusses various estimation methods and prediction techniques developed for the model. Section 4 summarizes simulation findings and real-data applications, and Section 5 concludes with discussion of future research directions.
+
+This paper synthesizes these contributions, providing a comprehensive examination of the $\text{ZIGINAR}_{RC}(1)$ process, its theoretical properties, estimation methodologies, and forecasting procedures. Section 2 presents the model formulation and key probabilistic properties. Section 3 discusses various estimation methods and prediction techniques developed for the model. Section 4 summarizes simulation findings and real-data applications, and Section 5 concludes with discussion of future research directions.
+\section{The $\text{ZIGINAR}_{RC}(1)$ Process: Formulation and Properties}
+\begin{dfn}\label{dfn:zig}
+A random variable $X$ follows a zero-inflated geometric (ZIG) distribution with parameters $\mu>0$ and $0\leq p<1$, denoted $\text{ZIG}(p, \mu/(1+\mu))$, if its probability mass function is:
+\begin{eqnarray*}
+P(X=x) = \begin{cases}
+p + (1-p)\dfrac{1}{1+\mu}, & x=0,\\[8pt]
+(1-p)\dfrac{\mu^x}{(1+\mu)^{x+1}}, & x=1,2,\ldots
+\end{cases}
+\end{eqnarray*}
+\end{dfn}
+The probability generating function of the ZIG distribution is $\phi_X(s) = (1+\mu p(1-s))/(1+\mu(1-s))$, with mean $\mu_X = (1-p)\mu$ and variance $\sigma_X^2 = (1-p)\mu((1+p)\mu+1)$. The variance exceeds the mean, indicating overdispersion.
+
+\begin{dfn}\label{dfn:randomthinning}
+Given a non-negative integer-valued random variable $X$ and a binary random variable $\alpha_t$ independent of $X$ with $P(\alpha_t=0)=\beta=1-P(\alpha_t=\alpha)$ for $\alpha,\beta\in(0,1)$, the randomized binomial thinning operator is defined as:
+\[
+\alpha_t \circ X = \begin{cases}
+0, & \text{with probability } \beta,\\
+\alpha \circ X, & \text{with probability } 1-\beta,
+\end{cases}
+\]
+where $\alpha \circ X = \sum_{i=1}^X Y_i$ with $\{Y_i\}$ being an i.i.d. sequence of Bernoulli$(\alpha)$ random variables independent of $X$.
+\end{dfn}
+The following properties hold for the randomized thinning operator.
+\begin{enumerate}
+\item If $X\sim\text{ZIG}(p,\mu/(1+\mu))$, then $\alpha_t\circ X\sim\text{ZIG}(\beta+p(1-\beta),\alpha\mu/(1+\alpha\mu))$.
+\item $P(\alpha_t\circ X=0) > P(\alpha\circ X=0)$, demonstrating the inflation role of $\beta$.
+\item $\alpha_t\circ (X+Y) \stackrel{d}{=} \alpha_t\circ X + \alpha_t\circ Y$ for independent $X,Y$.
+\item $\alpha_{t_1}\circ(\alpha_{t_2}\circ X) \stackrel{d}{=} (\alpha_{t_1}\alpha_{t_2})\circ X$.
+\end{enumerate}
+
+\begin{dfn}\label{dfn:model}
+The $\text{ZIGINAR}_{RC}(1)$ process $\{X_t\}_{t\in\mathbb{Z}}$ is defined by the recursive equation:
+\[
+X_t = \alpha_t \circ X_{t-1} + \epsilon_t, \quad t\geq 1,
+\]
+where $\{\alpha_t\}$ is an i.i.d. sequence of binary thinning coefficients, $\{\epsilon_t\}$ is an i.i.d. innovation sequence, and all sequences are mutually independent. Equivalently:
+\[
+X_t = \begin{cases}
+\epsilon_t, & \text{with probability } \beta,\\
+\alpha \circ X_{t-1} + \epsilon_t, & \text{with probability } 1-\beta.
+\end{cases}
+\]
+The constraint $\alpha > p/(\beta+p(1-\beta))$ is required to ensure the innovation distribution is proper.
+\end{dfn}
+
+\begin{thm}\label{thm:stationarity}
+The $\text{ZIGINAR}_{RC}(1)$ process has a unique strictly stationary solution given by:
+\[
+X_t \stackrel{d}{=} \sum_{i=1}^{\infty} \left(\prod_{l=0}^{i-1}\alpha_{t-l}\right) \circ \epsilon_{t-i} + \epsilon_t,
+\]
+where the infinite sum converges almost surely.
+\end{thm}
+
+The innovation process $\{\epsilon_t\}$ is governed by the following mixture distribution
+\begin{equation*}
+P(\epsilon_t = x) = A \cdot I_{(x=0)} + B \cdot \frac{\mu^x}{(1+\mu)^{x+1}} + C \cdot \frac{(\alpha\mu(\beta+p(1-\beta)))^x}{(1+\alpha\mu(\beta+p(1-\beta)))^{x+1}},\ \ x=0,1,\ldots
+\end{equation*}
+where $A$, $B$, and $C$ are mixing proportions defined in \cite{Bakouch:2018}. The mean and variance of the innovation are:
+\begin{equation*}
+\mu_\epsilon = (1-(1-\beta)\alpha)(1-p)\mu,\ \ 
+\sigma_\epsilon^2 = (1-p)\mu\left[(1-(1-\beta)\alpha^2)((1+p)\mu+1)-(1-\beta)\alpha(1-\alpha)\right].
+\end{equation*}
+The following expressions provide the autocovariance, autocorrelation, spectral density functions, and one-step transition probabilities $P_{ij}$ (from state $i$ to state $j$) for the $\text{ZIGINAR}_{RC}(1)$ process.
+\begin{eqnarray*}
+\text{Cov}(X_t, X_{t-k}) &=& (1-p)\mu((1+p)\mu+1)((1-\beta)\alpha)^k,\\
+\rho_k &=& \text{Corr}(X_t, X_{t-k}) = ((1-\beta)\alpha)^k, \quad k=0,1,2,\ldots \\
+f(\lambda) &=& \frac{(1-p)\mu((1+p)\mu+1)(1-(\alpha(1-\beta))^2)}{2\pi(1+(\alpha(1-\beta))^2-2\alpha(1-\beta)\cos\lambda)}, \quad \lambda\in(-\pi,\pi]\\
+P_{ij}& =& \beta P(\epsilon_t=j) + (1-\beta)\sum_{k=0}^{\min(i,j)} \binom{i}{k}\alpha^k(1-\alpha)^{i-k}P(\epsilon_t=j-k), \quad i,j=0,1,\ldots
+\end{eqnarray*}
+The $k$-step ahead conditional expectation and variance are expressed as follows.
+\begin{eqnarray}
+\label{Expect}
+E(X_{t+k}|X_t=x) &= &((1-\beta)\alpha)^k x + \frac{1-((1-\beta)\alpha)^k}{1-(1-\beta)\alpha}\mu_\epsilon,\\
+\text{Var}(X_{t+k}|X_t) &=& \sum_{j=0}^{k-1}(1-\beta)^j\left[\alpha^j(1-\alpha^j)\mu_\epsilon + \alpha^{2j}\sigma_\epsilon^2\right] + (1-\beta)^k\alpha^k(1-\alpha^k)\sigma_X^2,\nonumber.
+\end{eqnarray}
+As $k\to\infty$, these converge to the unconditional mean $\mu_X$ and variance $\sigma_X^2$, respectively, confirming ergodicity.
+
+\section{Estimation Methods}
+Several estimation approaches have been developed for the $\text{ZIGINAR}_{RC}(1)$ process, each offering distinct advantages in terms of computational efficiency, asymptotic properties, and robustness. Forecasting future observations, a primary objective in time series analysis, has also been addressed using methods ranging from classical point predictors to coherent probabilistic forecasts.
+
+\subsection{Whittle and Taper Spectral Whittle Estimation}
+\cite{Nasirzadeh:2024} introduced frequency domain estimation methods that exploit the spectral density function. The Whittle criterion is:
+\begin{eqnarray*}
+\hat{I}_N(\boldsymbol{\theta}) = \frac{1}{N}\sum_{j=1}^{[N/2]} \left\{\log f(\lambda_j) + \frac{I_N(\lambda_j)}{f(\lambda_j)}\right\},
+\end{eqnarray*}
+where $f(\lambda_j)$ is the spectral density at frequency $\lambda_j = 2\pi j/N$ and $I_N(\lambda) = (2\pi N)^{-1}|\sum_{t=1}^N X_t e^{i\lambda t}|^2$ is the periodogram. The taper spectral version employs a smoothed periodogram:
+\begin{eqnarray*}
+\hat{I}_N^t(\lambda) = \frac{1}{2\pi\sum_{n=1}^N h_n^2}\left|\sum_{n=1}^N h_n (X_n-\bar{X})e^{-i\lambda n}\right|^2,
+\end{eqnarray*}
+with taper weights $h_n$ as proposed by \cite{Riedel:1995}. This smoothing technique reduces variance at the cost of introducing slight bias, thereby providing more stable estimates for finite samples.
+
+\subsection{Sieve Bootstrap Estimation and Prediction}
+The sieve bootstrap method, originally developed by \cite{Buhlmann:1997} for time series, provides a nonparametric resampling approach. The algorithm is implemented through the following steps.
+
+\begin{alg}\label{alg:sieve}
+\textbf{Sieve Bootstrap Estimation}
+\begin{itemize}
+\item Step 1: Obtain initial estimates $\hat{\boldsymbol{\theta}}$ from the realization $X_1,\ldots,X_N$ using a conventional method such as MLE.
+\item Step 2: Generate $\omega_t \sim \text{Bernoulli}(\hat{\beta})$ for $t=2,\ldots,N$ and compute residuals:
+\begin{eqnarray*}
+\hat{\epsilon}_t = X_t - \omega_t(\hat{\alpha}\circ X_{t-1}).
+\end{eqnarray*}
+\item Step 3: Define modified errors $\tilde{\epsilon}_t = [\hat{\epsilon}_t + 0.5]$ where $[\cdot]$ denotes rounding to the nearest integer, and construct the empirical distribution function $\hat{F}_{\tilde{\epsilon}}(x) = (N-1)^{-1}\sum_{t=2}^N I_{(\tilde{\epsilon}_t\leq x)}$.
+\item Step 4: Draw $B$ bootstrap samples $\epsilon_t^b$ from $\hat{F}_{\tilde{\epsilon}}(\cdot)$.
+\item Step 5: Generate $\alpha_t^b = \alpha$ with probability $1-\hat{\beta}$ and $0$ with probability $\hat{\beta}$.
+\item Step 6: Recursively generate $X_t^b = \alpha_t^b \circ X_{t-1}^b + \epsilon_t^b$ for $t=1,\ldots,N$.
+\item Step 7: Estimate $\hat{\boldsymbol{\theta}}^b$ from each bootstrap sample using the method from Step 1.
+\item Step 8: Obtain final estimates as the sample means: $\hat{p}=\sum\hat{p}^b/B$, $\hat{\beta}=\sum\hat{\beta}^b/B$, $\hat{\alpha}=\sum\hat{\alpha}^b/B$, $\hat{\mu}=\sum\hat{\mu}^b//B$.
+\end{itemize}
+\end{alg}
+The forecasting procedure using sieve bootstrap is implemented as follows.
+
+\begin{alg}\label{alg:bootforecast}
+\textbf{Sieve Bootstrap Forecasting}
+\begin{itemize}
+\item Step 1: Estimate parameters $\hat{\boldsymbol{\theta}}$ using the sieve bootstrap method (Algorithm 1).
+\item Step 2: For $h=1,\ldots,H$, generate future bootstrap observations:
+\begin{eqnarray*}
+X_{N+h}^* = \hat{\alpha}_t \circ X_{N+h-1}^* + \epsilon_{N+h}^*,
+\end{eqnarray*}
+where $X_N^* = X_N$, $\epsilon_{N+h}^*$ are drawn from the empirical residual distribution, and $\hat{\alpha}_t = \alpha$ with probability $1-\hat{\beta}$ and $0$ otherwise.
+\item Step 3: Repeat Step 2 $B$ times to obtain $B$ bootstrap forecasts.
+\item Step 4: The point forecast is the average of the $B$ bootstrap predictions.
+\end{itemize}
+\end{alg}
+
+\subsection{conditional mean and median predictors }
+The $h$-step ahead conditional mean predictor, derived from \eqref{Expect}, is:
+\begin{eqnarray*}
+\hat{X}_{N+h} = ((1-\beta)\alpha)^h X_N + \frac{1-((1-\beta)\alpha)^h}{1-(1-\beta)\alpha}\mu_\epsilon = ((1-\beta)\alpha)^h X_N + (1-((1-\beta)\alpha)^h)(1-p)\mu.
+\end{eqnarray*}
+While this predictor minimizes mean squared error, it is not coherent (i.e., not integer-valued) and may produce non-integer predictions. \cite{Freeland:2004} proposed the median predictor, which minimizes expected absolute error and produces integer-valued forecasts. The median predictor is the smallest integer $m$ satisfying $\sum_{i=0}^m f_{X_{N+h}|X_N}(i|j) \geq 0.5$, where $f_{X_{N+h}|X_N}(i|j)$ is the $h$-step ahead conditional distribution. Let $P=[P_{ji}]$ for $j,i=0,1,2,\ldots$ denote the transition probability matrix with elements $P_{ji}=f(X_{t+1}=i|X_t=j)$, and let $P^{(h)}=P^h$ be the $h$-step ahead transition probability matrix. Then $f(X_{t+h}=i|X_t=j)$ is the $(j+1,i+1)$-th element of $P^{(h)}$. Thus, the median $m_{t+h}$ provides a coherent forecast.
+
+\subsection{Bayesian Prediction}
+The Bayesian approach treats the parameter vector $\boldsymbol{\theta}$ as random. Assuming independent priors: $\alpha\sim\text{Beta}(a_1,b_1)$, $p\sim\text{Beta}(a_2,b_2)$, $\beta\sim\text{Beta}(a_3,b_3)$ with $a_i,b_i>0$, and $\mu\sim\Gamma(c,d)$ with $c,d>0$, the joint prior is:
+\begin{eqnarray*}
+\pi(\boldsymbol{\theta}) \propto \alpha^{a_1-1}(1-\alpha)^{b_1-1} p^{a_2-1}(1-p)^{b_2-1} \beta^{a_3-1}(1-\beta)^{b_3-1} e^{-d\mu}\mu^{c-1}.
+\end{eqnarray*}
+The posterior distribution and the Bayesian predictive distribution for $X_{N+h}$ are given by
+\begin{eqnarray*}
+\pi(\boldsymbol{\theta}|\mathbf{X}_N) &\propto & \prod_{t=2}^N P(X_t|X_{t-1};\boldsymbol{\theta}) \cdot \pi(\boldsymbol{\theta})\\
+f_B(X_{N+h}|\mathbf{X}_N) &=& \int_{\Theta} f(X_{N+h}|\boldsymbol{\theta},\mathbf{X}_N)\pi(\boldsymbol{\theta}|\mathbf{X}_N)d\boldsymbol{\theta}.
+\end{eqnarray*}
+
+Due to the complexity of this integral, Markov Chain Monte Carlo methods are employed. The Gibbs sampling algorithm with Adaptive Rejection Metropolis Sampling (ARMS) is used to sample from the full conditional distributions. The Bayesian predictor can be taken as the posterior mean, given by
+\begin{eqnarray*}
+\hat{X}_{N+h} = X_N \hat{E}[(1-\beta)^h\alpha^h|\mathbf{X}_N] + \hat{E}[(1-(1-\beta)^h\alpha^h)(1-p)\mu|\mathbf{X}_N],
+\end{eqnarray*}
+where expectations are estimated via MCMC sample averages.
+
+\subsection{Highest Predicted Probability Intervals}
+For interval forecasting, the $100(1-\alpha)\%$ highest predicted probability interval is defined as $C_h = \{i: p_h(i|j) \geq K_\alpha\}$, where $K_\alpha$ is the largest number such that:
+\begin{eqnarray*}
+P(X_L \leq X_{N+h} \leq X_U | X_N = j) = \sum_{i=X_L}^{X_U} p_h(i|j) \geq 1-\alpha.
+\end{eqnarray*}
+An iterative algorithm that starts with a small $\delta$ and increases $K_\alpha$ until the coverage probability falls below $1-\alpha$ yields the HPP interval, and simulation studies confirm that these intervals maintain coverage probabilities near the nominal level.
+
+\section{Simulation Studies and Real Data Applications}
+\subsection{Simulation Findings}
+Comprehensive simulation studies reported in \cite{Nasirzadeh:2024} evaluated the performance of the proposed estimation and prediction methods across various parameter configurations: $(p,\beta,\alpha,\mu) = (0.2,0.8,0.6,0.5)$, and $(0.5,0.5,0.75,1)$. Sample sizes ranged from $N=50$ to $1000$ with $M=10,000$ replications.
+\begin{table}[h]
+\begin{center}
+\caption{Simulation results for the Bias and SSE (SSE is presented in bold-face-type) of some values for the ZIGINAR$_{RC}(1)$ process.}\label{tabsimu1}
+\scalebox{0.70}{
+\begin{tabular}{|l|l|l|c|l|}
+\hline
+\hline
+  & \multicolumn{2}{c|}{($p=0.2$, $\beta=0.8$, $\alpha=0.6$, $\mu=0.5$)} & \multicolumn{2}{c|}{($p=0.5$, $\beta=0.5$, $\alpha=0.75$, $\mu=1$)} \\
+\hline
+$n$ & TSWE & SBE & TSWE & SBE \\
+\hline
+ 50 & (0.030,0.001, 0.015,-0.016)  & (-0.010,0.002, 0.003,0.004) & (-0.018,-0.052, 0.062,0.026)& (0.022,-0.027, 0.019, 0.011)  \\
+          & {\bf (0.006,0.008,0.008,0.006)} & {\bf (0.003,0.000,0.000,0.003)} & {\bf (0.007,0.006,0.005,0.007)}  & {\bf (0.003, 0.000,0.000,0.004)}\\
+\hline
+   100 &  (0.029,0.001,0.013,-0.017)& (0.008,0.002,0.004,0.005)  & (-0.016,-0.049,0.057,0.023) & (0.016,-0.023,0.012,0.009) \\
+          & {\bf (0.005,0.007,0.008,0.005)}  & {\bf (0.003,0.001,0.000,0.003)}& {\bf (0.006,0.007,0.005,0.001)} & {\bf (0.003,0.002,0.001,0.004)} \\
+\hline
+   500 & (0.016,0.001,0.008,0.011) & (0.004,0.001,0.001,0.004) & (0.012,0.012,0.026,0.017)  & (-0.006,0.007,0.004,0.003)  \\
+            & {\bf (0.002,0.002,0.003,0.002)} &  {\bf (0.001,0.000,0.001,0.001)} & {\bf (0.005,0.004,0.002,0.003)}  & {\bf (0.001,0.001,0.001,0.003)}\\                
+\hline
+1000 & (0.014,0.000, 0.008,0.009) & (-0.005,-0.000, 0.001,0.005)&(0.011, 0.009, 0.001,0.012)  & (-0.003, 0.002, 0.001,0.002) \\
+           & {\bf (0.002,0.004,0.002,0.001)} & {\bf (0.001,0.001,0.001,0.001)} & {\bf (0.004,0.003,0.002,0.002)} & {\bf (0.000,0.001, 0.001,0.002)}\\
+\hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\caption{PMAE for simulated ZIGINAR$_{RC}(1)$ process.}\label{tabsimu2}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|lll|*{4}{c}|*{4}{c}|c|}
+\hline
+\multicolumn{3}{|c|}{} & \multicolumn{4}{c|}{($p=0.2,\beta=0.8,\alpha=0.6,\mu=0.5$)} & \multicolumn{4}{c|}{($p=0.5,\beta=0.5,\alpha=0.75,\mu=1$)} \\
+\cline{4-11}
+$n$ & $h$ & & Median & Bootstrap & Bayesian Mean & Bayesian MCMC & Median & Bootstrap & Bayesian Mean & Bayesian MCMC \\
+\hline
+50   & 1 & & 0.408 & 0.691  & 0.790 & 0.750 & 0.390 & 0.539 & 0.409 & 0.427 \\
+     & 2 & & 0.412 & 0.658  & 0.791 & 0.753 & 0.400 & 0.532 & 0.409 & 0.429\\
+     & 3 & & 0.419 & 0.673  & 0.790 & 0.752 & 0.400 & 0.501 & 0.420 & 0.428\\
+\hline
+100  & 1 & & 0.402 & 0.618  & 0.653 & 0.645 & 0.350 & 0.401 & 0.350  & 0.312\\
+     & 2 & & 0.406 & 0.626  & 0.654 & 0.647 & 0.360 & 0.441 & 0.366 & 0.315\\
+     & 3 & & 0.409 & 0.637  & 0.659 & 0.648 & 0.410 & 0.446 & 0.353 & 0.315\\
+\hline
+500  & 1 & & 0.385 & 0.482  & 0.487 & 0.468 & 0.290 & 0.225  & 0.138 & 0.143\\
+     & 2 & & 0.392 & 0.494  & 0.489 & 0.474 & 0.320 & 0.268  & 0.154 & 0.148 \\
+     & 3 & & 0.393 & 0.507  & 0.492 & 0.492 & 0.320 & 0.280 & 0.175 & 0.169\\
+\hline
+1000 & 1 & & 0.362 & 0.452 & 0.341 & 0.359& 0.120 & 0.118 & 0.073 & 0.062 \\
+     & 2 & & 0.378 & 0.485 & 0.356 & 0.383& 0.130 & 0.156 & 0.093 & 0.086\\
+     & 3 & & 0.385 & 0.492 & 0.360 & 0.409& 0.190 & 0.167 & 0.102 & 0.099\\
+\hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+
+%%
+\begin{table}[h]
+\begin{center}
+\caption{$95\%$ HPP intervals for the prediction of ZIGINAR$_{RC}(1)$ simulated data.}\label{tabsimu5}
+\scalebox{0.75}{
+\begin{tabular}{|l|l|l|c|c|c|c|}
+\hline
+\multicolumn{3}{|c|}{} & \multicolumn{2}{c|}{($p=0.2,\beta=0.8,\alpha=0.6,\mu=0.5$)} & \multicolumn{2}{c|}{($p=0.5,\beta=0.5,\alpha=0.75,\mu=1$)} \\
+\hline
+$n$ & $h$ & & TSWE & Bootstrap & TSWE & Bootstrap \\
+\hline
+$n=50$ & 1 & HPPI (CP) & (0,3.05) {\bf 0.95} & (0,3.10) {\bf 0.96} & (0,3.50) {\bf 0.95} & (0,3.50) {\bf 0.96} \\
+       & 2 & HPPI (CP) & (0,3.15) {\bf 0.97} & (0,3.05) {\bf 0.97} & (0,3.59) {\bf 0.96} & (0,3.63) {\bf 0.97} \\
+       & 3 & HPPI (CP) & (0,3.25) {\bf 0.98} & (0,3.05) {\bf 0.97} & (0,3.63) {\bf 0.97} & (0,3.35) {\bf 0.97} \\
+\hline
+$n=100$ & 1 & HPPI (CP) & (0,3.10) {\bf 0.97} & (0,3.11) {\bf 0.96} & (0,3.27) {\bf 0.97} & (0,3.28) {\bf 0.96} \\
+        & 2 & HPPI (CP) & (0,3.11) {\bf 0.97} & (0,3.06) {\bf 0.96} & (0,3.09) {\bf 0.97} & (0,3.37) {\bf 0.97} \\
+        & 3 & HPPI (CP) & (0,3.25) {\bf 0.97} & (0,3.04) {\bf 0.96} & (0,3.17) {\bf 0.97} & (0,3.31) {\bf 0.97} \\
+\hline
+$n=500$ & 1 & HPPI (CP) & (0,2.97) {\bf 0.97} & (0,2.95) {\bf 0.96} & (0,2.05) {\bf 0.95} & (0,2.05) {\bf 0.97} \\
+        & 2 & HPPI (CP) & (0,2.99) {\bf 0.97} & (0,2.98) {\bf 0.97} & (0,2.09) {\bf 0.95} & (0,2.05) {\bf 0.96} \\
+        & 3 & HPPI (CP) & (0,2.91) {\bf 0.95} & (0,2.97) {\bf 0.97} & (0,2.12) {\bf 0.97} & (0,2.03) {\bf 0.96} \\
+\hline
+$n=1000$ & 1 & HPPI (CP) & (0,2.74) {\bf 0.97} & (0,2.83) {\bf 0.97} & (0,2.10) {\bf 0.97} & (0,2.02) {\bf 0.97} \\
+         & 2 & HPPI (CP) & (0,2.84) {\bf 0.97} & (0,2.86) {\bf 0.96} & (0,2.04) {\bf 0.97} & (0,2.02) {\bf 0.95} \\
+         & 3 & HPPI (CP) & (0,2.85) {\bf 0.97} & (0,2.91) {\bf 0.97} & (0,2.05) {\bf 0.96} & (0,2.01) {\bf 0.96} \\
+\hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+Key findings indicate that both estimation methods perform well, with bias and standard error decreasing as sample size increases. The sieve bootstrap method demonstrates good performance, particularly for moderate to large samples ($N\geq200$). For prediction, Bayesian methods achieve the lowest prediction mean absolute error, while the $95\%$ highest predicted probability intervals maintain coverage probabilities near $95\%$, with interval lengths decreasing as $N$ increases.
+
+\subsection{Anorexia Data Application}
+\cite{Nasirzadeh:2024} analyzed monthly animal health submissions for anorexia, a condition characterized by loss of appetite. The data exhibited overdispersion ($\hat{I}_x=3.525$, critical value $1.324$) and zero-inflation (LRT statistic $5.419$, $p$-value $0.020$). Using the first 80 observations for estimation and the remaining 4 for validation, they found that Bayesian and bootstrap prediction methods produced forecasts nearest to observed values with the shortest $95\%$ HPP intervals.
+\begin{table}[h]
+\begin{center}
+\caption{Prediction analysis of anorexia count time series data.}\label{tabxy}
+\scalebox{0.80}{
+\begin{tabular}{|l|l|c|c|c|c|}
+\hline
+ & & \multicolumn{4}{c|}{Observed values} \\
+\cline{3-6}
+ & & 0 & 0 & 0 & 0 \\
+\hline
+CM & prediction & 0.3302 & 0.5822 & 0.7745 & 0.9212 \\
+(TSW estimation) & (lower,upper) & (0,2) & (0,3) & (0,3) & (0,4) \\
+\hline
+Bayesian & Mean Method & 0 & 0 & 0 & 0 \\
+ & MCMC & 0.0286 & 0.0297 & 0.0298 & 0.0298 \\
+ & (lower,upper) & (0,2.2) & (0,1.4) & (0,2.3) & (0,1.9) \\
+\hline
+Bootstrap & prediction & 0 & 0 & 0 & 0 \\
+(Bootstrap estimation) & (lower,upper) & (0,2) & (0,2) & (0,2) & (0,2) \\
+\hline
+\end{tabular}
+}
+\end{center}
+\end{table}
+\section*{Discussion and Conclusion}
+The $\text{ZIGINAR}_{RC}(1)$ process offers a flexible framework for count time series with overdispersion, zero-inflation, and autocorrelation. Its random coefficient captures time-varying dependence, while the zero-inflated geometric marginal handles excess zeros. Whittle and sieve bootstrap estimation provide consistent estimates, with frequency domain methods advantageous for large samples. Bayesian prediction achieves superior accuracy, though median and sieve bootstrap offer efficient lower-cost alternatives. Real-data applications confirm the model's practical utility. Future extensions may include higher-order processes, covariate incorporation, and Bayesian nonparametric approaches.
+\begin{thebibliography}{9}
+
+\bibitem[Al-Osh and Alzaid(1987)]{AlOsh:1987}
+Al-Osh M.A. and Alzaid A.A. (1987), First-order integer-valued autoregressive (INAR(1)) process, {\it Journal of Time Series Analysis} 8, 261-275.
+
+\bibitem[Bakouch et al.(2018)]{Bakouch:2018}
+Bakouch H.S., Mohammadpour M. and Shirozhan M. (2018), A zero-inflated geometric INAR(1) process with random coefficient, {\it Applications of Mathematics} 63(1), 79-105.
+
+\bibitem[B\"uhlmann(1997)]{Buhlmann:1997}
+B\"uhlmann P. (1997), Sieve bootstrap for time series, {\it Bernoulli} 3, 123-148.
+
+\bibitem[Freeland and McCabe(2004)]{Freeland:2004}
+Freeland R.K. and McCabe B.P. (2004), Forecasting discrete valued low count time series, {\it International Journal of Forecasting} 20, 427-434.
+
+\bibitem[McKenzie(1985)]{McKenzie:1985}
+McKenzie E. (1985), Some simple models for discrete variate time series, {\it Journal of Water Resources Bulletin} 21, 645-650.
+
+\bibitem[Nasirzadeh and Bakouch(2024)]{Nasirzadeh:2024}
+Nasirzadeh R. and Bakouch H. (2024), Comparison of estimation and prediction methods for a zero-inflated geometric INAR(1) process with random coefficients, {\it Journal of Applied Statistics}, 51(12), 2457-2480.
+
+\bibitem[Riedel and Sidorenko(1995)]{Riedel:1995}
+Riedel K.S. and Sidorenko A. (1995), Minimum bias multiple taper spectral estimation, {\it IEEE Transactions on Signal Processing} 43, 188-195.
+
+\bibitem[Steutel and van Harn(1979)]{Steutel:1979}
+Steutel F.W. and van Harn K. (1979), Discrete analogues of self-decomposability and stability, {\it Annals of Probability} 7, 893-899.
+
+\end{thebibliography}
+
+\end{document}

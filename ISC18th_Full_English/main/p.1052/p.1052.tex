@@ -1,0 +1,412 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{multirow}
+\usepackage{comment}
+\usepackage{float}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Likelihood-Based Evidential Comparison}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{F. Yousefzadeh}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Likelihood-Based Evidential Comparison of Classical Goodness-of-Fit Tests}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Fatemeh Yousefzadeh \footnote[1]{{\bf Corresponding Author:} {\tt fyousefzadeh@birjand.ac.ir }} \\
+University of birjand }
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+%The pursuit of an objective measure to assess the strength of evidence in observational data has always been a cornerstone of statistical science. 
+The Law of Likelihood establishes that the strength of statistical evidence favoring one hypothesis over another is represented by their likelihood ratio. Within the framework of evidential statistics, this study compares the performance of several classical goodness-of-fit tests—including the Anderson–Darling, Kolmogorov–Smirnov, Cramér–von Mises, Watson, and Likelihood Ratio Test—based on their ability to yield reliable and interpretable evidence. Simulation results across different sample sizes quantify the probabilities of weak and misleading evidence under both null and alternative models, offering new insights into the evidential performance of these tests.
+ 
+\noindent{\bf Keywords:} 
+Evidential statistics, Goodness-of-fit tests,
+Law of Likelihood, Misleading evidence, Weak evidence.  \\
+\noindent{\bf Mathematics Subject Classification (2010):}  $\rm 62F25 $, $\rm 62G15$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Goodness-of-fit tests are fundamental tools for assessing whether observed data are consistent with a specified probability distribution, and they play an essential role in statistical modeling and inference. Classical goodness-of-fit procedures have been widely studied since the introduction of Pearson’s chi-square test \cite{Pearson:1900}, followed by the development of influential methods such as the Kolmogorov–Smirnov \cite{Kolmogorov:1933,Smirnov:1948}, Cramér–von Mises \cite{Cramer:1928,vonMises:1931}, Anderson–Darling \cite{Anderson:Darling:1952}, and Watson statistics. These tests differ in their sensitivity to various types of departures from the hypothesized distribution, including deviations in tails, scale, and overall distributional shape.
+Despite the widespread use of classical hypothesis testing procedures, traditional statistical methods do not provide a direct and explicit interpretation of statistical evidence in favor of one hypothesis over another \cite{Royall:2000}. Consequently, evidential statistics has emerged as an alternative framework for quantifying the strength of evidence provided by data. Several studies have investigated measures of statistical support and evidence under different settings \cite{Emadi:Arghami:2003,Emadi:et:al:2007,Doostparast:Emadi:2006,Arashi:Emadi:2008,Habibirad:et:al:2006,Hashempour:2017,Sarvari:Doostparast:2025}.
+Finally, the structure of the paper is as follows. In Section 2, the concepts of strong and weak statistical evidence are introduced for goodness-of-fit tests within the likelihood-ratio framework. Section 3 presents the simulation study designed to evaluate the evidential performance of the considered goodness-of-fit statistics under different sample sizes and alternative distributions. In Section 4, the proposed evidential approach is illustrated through an analysis of real data, where the strength of statistical evidence provided by the competing models is examined.
+\section{Evidential goodness-of-fit tests based on likelihood ratios}
+Let \(X_1,\ldots,X_n\) be independent and identically distributed (iid) observations generated from an unknown density \(f\). The likelihood principle states that all information in the data relevant to inference about the model is contained in the likelihood function. For a parametric model indexed by \(\theta\), the likelihood can be written as
+$
+L(\theta \mid x)=p(x\mid \theta)\,c,
+$
+where \(p(x\mid \theta)\) is the joint density (or probability mass function) of the observed sample \(x=(x_1,\ldots,x_n)\) and \(c>0\) is an arbitrary scaling constant. In continuous settings, probabilities are replaced by probability densities. Throughout, the observed data are treated as fixed, while the model (or its parameters) varies.
+In the evidential framework, the basic quantity for comparing two competing hypotheses is the likelihood ratio (LR). Consider two hypotheses \(H_i\) and \(H_j\). The LR of \(H_i\) against \(H_j\) is defined by
+$
+\mathrm{LR}_{i|j}=\frac{p(x\mid H_i)}{p(x\mid H_j)}, \qquad i\neq j .
+$
+Because the same multiplicative constant \(c\) appears in both numerator and denominator, it cancels out, making the LR an intrinsic measure of relative support provided by the data.
+In goodness-of-fit problems, we take the null hypothesis as
+$
+H_0: F=F_0,
+$
+and compare it to an alternative hypothesis \(H_1\) representing departures from \(F_0\). Depending on the application, \(H_1\) may be specified as a simple alternative, a parametric family, or a composite/nonparametric alternative. The evidential analysis then proceeds by evaluating how strongly the data support \(H_0\) relative to \(H_1\) via \(\mathrm{LR}_{0|1}\).
+To operationalize evidential conclusions, it is common to adopt thresholds for strong evidence. Let \(k>1\) denote a user-chosen threshold (depending on the scientific context). Then
+ \(\mathrm{LR}_{i|j}\ge k\) is interpreted as strong evidence in favor of \(H_i\) over \(H_j\);
+ \(\mathrm{LR}_{i|j}\le 1/k\) is interpreted as strong evidence in favor of \(H_j\) over \(H_i\);
+ \(1/k<\mathrm{LR}_{i|j}<k\) corresponds to weak or inconclusive evidence.
+A key feature of the evidential framework is that it distinguishes between (i) obtaining strong evidence for the true hypothesis, (ii) being misled into strong evidence for the false hypothesis, and (iii) obtaining weak evidence. For two hypotheses \(H_i\) and \(H_j\) and threshold \(k>1\)
+ Under \(H_j\), the probability of observing strong evidence for \(H_j\) (i.e., against \(H_i\)) is
+$
+\mathrm{SEV}_{j|j}=P_{H_j}\!\left(\mathrm{LR}_{i|j}<\frac{1}{k}\right).
+$
+Under \(H_j\), the probability of observing misleading evidence in favor of \(H_i\) is
+$
+\mathrm{MEV}_{i|j}=P_{H_j}\!\left(\mathrm{LR}_{i|j}>k\right).
+$
+ Under \(H_i\) (and similarly under \(H_j\)), the probability of obtaining weak evidence is
+$
+W_i=P_{H_i}\!\left(\frac{1}{k}<\mathrm{LR}_{i|j}<k\right).
+$
+These three regions form a partition of the sample space. Consequently, for a fixed \(k\) and \(i\neq j\),
+$
+P_{H_j}\!\left(\mathrm{LR}_{i|j}<\frac{1}{k}\right)
++
+P_{H_j}\!\left(\frac{1}{k}<\mathrm{LR}_{i|j}<k\right)
++
+P_{H_j}\!\left(\mathrm{LR}_{i|j}>k\right)
+=1.
+$
+This decomposition provides an interpretable assessment of the operating characteristics of an evidential goodness-of-fit procedure. It clarifies how frequently the method yields decisive evidence, how often it remains inconclusive, and how often it risks strongly favoring an incorrect model.
+%\vspace{-1cm}
+\section{Simulation study}
+In this ُSection, the evidential performance of several goodness-of-fit statistics, including Anderson–Darling (AD), Cramér–von Mises (CvM), Kolmogorov–Smirnov (KS), Watson, Shapiro–Wilk (SW), and likelihood-ratio (LR) measures, was investigated using an evidence-based framework. Simulation studies were conducted for sample sizes \(n=10,20,30,50,70,100\), and kernel density estimation was employed to approximate the distributions of the statistics under both \(H_0\) and \(H_1\). Based on these estimated densities, LR-based support measures and evidence classifications were obtained for evidence thresholds \(k=8,16,32\).
+The results reported in Table \ref{Total compare} indicate that the AD, CvM, and Watson statistics consistently provide the highest probabilities of correct evidence under both Exponential and Normal null models, while maintaining nearly zero probabilities of misleading evidence. In contrast, the KS statistic shows weak discriminatory power across most scenarios, and the LR statistic demonstrates unstable behavior, particularly under the Normal model. The SW statistic exhibits moderate performance but remains inferior to AD, CvM, and Watson.
+Figure \ref{fig1} illustrates the evolution of strong, weak, and misleading evidence probabilities across different sample sizes. As the sample size increases, AD, CvM, and Watson rapidly achieve high levels of strong correct evidence, whereas KS remains dominated by weak evidence. The LR statistic shows model-dependent instability, and SW provides only moderate decisiveness.
+Furthermore, the proposed upper-bound magnitudes presented in Table \ref{upper} display coherent scaling with increasing evidence thresholds. Among the statistics, AD exhibits the strongest proportional increase with \(k\), reflecting its sensitivity to tail deviations, while CvM and Watson show moderate growth and KS remains relatively stable due to its bounded nature. Overall, the findings demonstrate the superiority of AD, CvM, and Watson as reliable and robust statistics for evidence-based goodness-of-fit inference.
+\begin{table}[ht]
+\centering
+\scriptsize
+\caption{Mean Estimated Probabilities of Evidence Outcomes for Each Statistic } 
+\begin{tabular}{ccccccccc}
+  \hline
+ $H_0$& Statistic &k& $SEV_{1|1}$& $SEV_{0|0}$ & $MEV_{1|0}$ & $MEV_{0|1}$ & $W_{1}$ & $W_{0}$ \\ \hline
+    \multirow{18}{*}{Exponential}  &\multirow{3}{*}{AD} & 8.000 & 0.888 & 0.899 & 0.004 & 0.006 & 0.105 & 0.097 \\ 
+    &  & 16.000 & 0.865 & 0.861 & 0.003 & 0.003 & 0.132 & 0.137 \\ 
+     &  & 32.000 & 0.823 & 0.805 & 0.001 & 0.001 & 0.176 & 0.194 \\  \cline{2-8}
+    & \multirow{3}{*}{CvM} & 8.000 & 0.870 & 0.885 & 0.005 & 0.007 & 0.123 & 0.110 \\ 
+     &  & 16.000 & 0.844 & 0.837 & 0.003 & 0.003 & 0.153 & 0.160 \\ 
+     & & 32.000 & 0.800 & 0.784 & 0.001 & 0.001 & 0.199 & 0.215 \\  \cline{2-8}
+     & \multirow{3}{*}{KS} & 8.000 & 0.196 & 0.261 & 0.007 & 0.007 & 0.796 & 0.732 \\ 
+    &  & 16.000 & 0.148 & 0.210 & 0.002 & 0.003 & 0.850 & 0.788 \\ 
+     &  & 32.000 & 0.110 & 0.167 & 0.001 & 0.001 & 0.889 & 0.832 \\ \cline{2-8}
+     &\multirow{3}{*}{LR} & 8.000 & 0.671 & 0.553 & 0.098 & 0.130 & 0.199 & 0.349 \\ 
+     &  & 16.000 & 0.630 & 0.489 & 0.069 & 0.111 & 0.260 & 0.442 \\ 
+     &  & 32.000 & 0.592 & 0.430 & 0.049 & 0.094 & 0.314 & 0.521 \\  \cline{2-8}
+     & \multirow{3}{*}{Watson} & 8.000 & 0.805 & 0.787 & 0.006 & 0.007 & 0.188 & 0.207 \\ 
+    &  & 16.000 & 0.765 & 0.732 & 0.003 & 0.002 & 0.233 & 0.265 \\ 
+    &  & 32.000 & 0.733 & 0.681 & 0.001 & 0.001 & 0.266 & 0.317 \\ 
+    \hline  \hline
+  \multirow{18}{*}{Normal}  & \multirow{3}{*}{AD} & 8.000 & 0.843 & 0.837 & 0.003 & 0.003 & 0.154 & 0.160 \\ 
+   &  & 16.000 & 0.820 & 0.811 & 0.001 & 0.001 & 0.179 & 0.188 \\ 
+   & & 32.000 & 0.800 & 0.790 & 0.000 & 0.000 & 0.199 & 0.209 \\ \cline{2-8}
+   & \multirow{3}{*}{CvM} & 8.000 & 0.761 & 0.770 & 0.002 & 0.001 & 0.238 & 0.227 \\ 
+   &  & 16.000 & 0.748 & 0.761 & 0.001 & 0.001 & 0.251 & 0.238 \\ 
+  &  & 32.000 & 0.734 & 0.748 & 0.001 & 0.000 & 0.266 & 0.252 \\ \cline{2-8}
+   &\multirow{3}{*}{KS} & 8.000 & 0.285 & 0.292 & 0.012 & 0.008 & 0.707 & 0.696 \\ 
+   &  & 16.000 & 0.207 & 0.216 & 0.004 & 0.002 & 0.790 & 0.779 \\ 
+   &  & 32.000 & 0.143 & 0.165 & 0.002 & 0.000 & 0.857 & 0.833 \\ \cline{2-8}
+   & \multirow{3}{*}{LR} & 8.000 & 0.699 & 0.000 & 0.379 & 0.000 & 0.301 & 0.621 \\ 
+   &  & 16.000 & 0.621 & 0.000 & 0.237 & 0.000 & 0.379 & 0.763 \\ 
+   &  & 32.000 & 0.558 & 0.000 & 0.149 & 0.000 & 0.442 & 0.851 \\ \cline{2-8}
+   & \multirow{3}{*}{ShapiroW} & 8.000 & 0.452 & 0.391 & 0.007 & 0.006 & 0.542 & 0.603 \\ 
+   &  & 16.000 & 0.406 & 0.335 & 0.003 & 0.002 & 0.593 & 0.663 \\ 
+   & & 32.000 & 0.364 & 0.297 & 0.001 & 0.001 & 0.635 & 0.702 \\ \cline{2-8}
+   &  \multirow{3}{*}{Watson} & 8.000 & 0.779 & 0.778 & 0.002 & 0.001 & 0.220 & 0.220 \\ 
+   &  & 16.000 & 0.762 & 0.768 & 0.001 & 0.001 & 0.237 & 0.231 \\ 
+   &  & 32.000 & 0.749 & 0.752 & 0.001 & 0.000 & 0.250 & 0.248 \\ \hline
+\end{tabular}
+\label{Total compare}
+\end{table}
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=15cm,height=9cm]{Images/Fig1-eps-converted-to.pdf}
+\includegraphics[width=15cm,height=9cm]{Images/Fig2-eps-converted-to.pdf}\\
+\vspace{-0.2cm}
+\caption{\footnotesize{Probabilities of Evidence Outcomes by Sample Size}}\label{fig1}
+\end{center}
+\end{figure}
+\begin{table}[ht]
+	\centering
+	\caption{Proposed upper‑bound magnitudes for the four goodness‑of‑fit statistics } 
+	\begin{tabular}{ccccc}
+		\hline
+	k&	 AD &  KS & CvM&Watson
+		 \\ \hline
+	8&	1&0.90&0.2&0.1\\
+	16	&2&0.95&0.4&0.2\\
+	32&	4&0.99&0.8&0.3\\ \hline
+	\end{tabular}\label{upper}
+\end{table}
+\section{Real Data Analysis}
+Table \ref{data} shows times between 48 (in minutes) consecutive telephone calls to a company’s switchboard, due to \cite{Castillo2005}. He showed  that the times between
+the consecutive telephone calls follow the EXP distribution. Based on the comparison with the proposed upper‑bound magnitudes and Table \ref{stat} the goodness‑of‑fit statistics provide strong support for the exponential model, with all values falling well within or far below the expected thresholds. Conversely, the normal model exhibits severe violations across all statistics. Therefore, the results clearly indicate excellent agreement with the exponential distribution and substantial evidence against normality.
+\begin{table}[H]
+	\centering
+	\caption{Times(in minutes) between 48 consecutive calls} 
+	\begin{tabular}{cccccccc}
+		\hline
+ 1.34&0.14&0.33&1.68&1.86&1.31&0.83&0.33\\
+2.20&0.62&3.20&1.38&0.96&0.28&0.44&0.59\\
+0.25&0.51&1.61&1.85&0.47&0.41&1.46&0.09\\
+2.18&0.07&0.02&0.64&0.28&0.68&1.07&3.25\\
+0.59&2.39&0.27&0.34&2.18&0.41&1.08&0.57\\
+0.35&0.69&0.25&0.57&1.90&0.56&0.09&0.28\\ \hline
+\end{tabular}\label{data}
+\end{table}
+\begin{table}[H]
+	\centering
+	\caption{Statistics} 
+	\begin{tabular}{cccccccc}
+		\hline
+       $H_0$    &AD & KS&CvM&Watson &LR \\
+Exponential& 0.544 & 0.893 & 0.085 & 0.085 & 0.106 \\
+Normal& 21.118 &    0.910& 4.172 & 0.908&68880.976 \\ 
+\hline
+\end{tabular}\label{stat}
+\end{table}
+\section*{Discussion and Conclusion}  
+In this paper, we evaluated several classical goodness-of-fit tests for exponential  and normal distributions —namely the Anderson–Darling, Cramér–von Mises, Kolmogorov–Smirnov, Watson, and likelihood ratio tests— within a likelihood-based evidential framework. Using kernel density estimation and extensive simulation under various alternative distributions, we quantified the probabilities of strong, weak, and misleading evidence for both the null and the alternative hypotheses.
+The results show that the Anderson–Darling, Cramér–von Mises, and Watson tests provide the most favorable evidential profiles, combining high probabilities of strong evidence for the true model with very low rates of misleading evidence. In contrast, the Kolmogorov–Smirnov test frequently yields weak or inconclusive evidence, while the likelihood ratio test, although capable of producing strong evidence, is associated with a comparatively higher risk of misleading conclusions. %These findings highlight the practical benefits of an evidential approach based on likelihood ratios and suggest that AD, CvM, and Watson are preferable choices  when the strength and reliability of statistical evidence are of primary importance.
+%\section*{Acknowledgments}   
+%If you wish to include acknowledgments, this section should appear before the references.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+		\bibitem[Anderson and Darling (1952)]{Anderson:Darling:1952}
+	Anderson, T. W., and Darling, D. A. (1952).
+	Asymptotic theory of certain "goodness of fit" criteria based on stochastic processes.
+	\textit{Annals of Mathematical Statistics}, \textbf{23}(2), 193--212.
+	DOI:10.1214/aoms/1177729437.
+	\bibitem[Arashi and Emadi (2008)]{Arashi:Emadi:2008}
+	Arashi, M. and Emadi, M. (2008). Evidential inference based on record data and interrecord times. Statist. Papers, 49, 291-301.
+	\bibitem[Cramér (1928)]{Cramer:1928}
+	Cramér, H. (1928).
+	On the composition of elementary errors.  
+	\textit{Scandinavian Actuarial Journal}, \textbf{1928}(1), 13--74.
+	DOI:10.1080/03461238.1928.10416862.
+	
+	\bibitem[Castillo et al (2005)]{Castillo2005}
+	Castillo, E., Hadi, A. S., Balakrishnan, N.,Sarabia, J. M. (2005), {\it Extreme value and related models with applications
+		in engineering and science}. Wiley, Hoboken.
+	\bibitem[Doostparast and Emadi (2006)]{Doostparast:Emadi:2006}Doostparast, M.  Emadi, M. (2006). Statistical evidence methodology for model acceptance based on record values. J. Korean Statist. Soc., 35, 167-177.
+\bibitem[Emadi et al (2007)]{Emadi:et:al:2007}Emadi, M., Ahmadi, J.  Arghami, N. R., (2007). Comparing of record data and random observation based on statistical evidence. Statist. Papers, 48, 1-21.
+\bibitem[Emadi and Arghami (2003)]{Emadi:Arghami:2003}Emadi, M.  Arghami, N. R. (2003), Some measures of support for statistical hypotheses. J. Stat. Theory Appl., 2, 165-176.
+\bibitem[Habibirad et al (2006)]{Habibirad:et:al:2006}Habibirad, A., Arghami, N. R. and Ahmadi, J. (2006). Statistical evidence in experiments and in record values. Comm. Statist.-Theory Meth., 35, 1971-1983.
+\bibitem[Hashempour (2017)]{Hashempour:2017}
+Hashempour, M. Evidences in lifetimes of sequential r-out-of n systems and optimal sample size determination for Burr XII populations, Statistics Opt. Inform. Comput., vol. 5, pp. 147-157, 2017.
+
+	\bibitem[Kolmogorov (1933)]{Kolmogorov:1933}
+	Kolmogorov, A. N. (1933).
+	Sulla determinazione empirica di una legge di distribuzione.
+	\textit{Giornale dell’Istituto Italiano degli Attuari}, \textbf{4}, 83--91.
+	
+	\bibitem[Pearson (1900)]{Pearson:1900}
+	Pearson, K. (1900).
+	On the criterion that a given system of deviations from the probable in the case of a correlated system of variables is such that it can be reasonably supposed to have arisen from random sampling.
+	\textit{The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science}, \textbf{50}(302), 157--175.
+	DOI:10.1080/14786440009463897.
+\bibitem[Royal (2000)]{Royall:2000} Royall, R. (2000). On the probability of observing misleading statistical evidence. J. Amer. Statist. Assoc., 95, 760-780.
+\bibitem[Sarvari and Doostparast (2025)]{Sarvari:Doostparast:2025}
+Sarvari, M. R., and Doostparast, M. (2025).
+Evidence in directional data coming from circular normal distribution.
+\textit{Journal of Applied Statistics}.
+DOI:10.1080/02664763.2025.2574655.
+	\bibitem[Smirnov (1948)]{Smirnov:1948}
+	Smirnov, N. V. (1948).
+	Table for estimating the goodness of fit of empirical distributions.
+	\textit{Annals of Mathematical Statistics}, \textbf{19}(2), 279--281.
+	DOI:10.1214/aoms/1177730256.
+	
+	\bibitem[von Mises (1931)]{vonMises:1931}
+	von Mises, R. (1931).
+	Wahrscheinlichkeitsrechnung und ihre Anwendung in der Statistik und theoretischen Physik.
+	Leipzig: F. Deuticke.
+	
+	
+	
+	
+
+	\begin{comment}
+		\bibitem[Blume (2002)]{Blume:2002}
+		Arashi, M. and Emadi, M. (2008). Evidential inference based on record data and interrecord times.
+		Statist. Papers, 49, 291-301.
+		Blume, J. D. (2002),  Likelihood Methods for Measuring Statistical Evidence, {\it Statistics in Medicine}, {\bf 21}, 2563–-2599. DOI:10.1002/sim.1216.
+		
+		\bibitem[Corless et al. (1996)]{Corless:1996}
+		Corless, R. M., Gonnet, G. H., Hare, D. E. G., Jeffrey, D. J., and Knuth,
+		D. E. (1996), On the Lambert W Function, {\it Advances in Computational
+			Mathematics}, {\bf 5}, 329–-359. DOI:10.1007/bf02124750....
+			\bibitem[Edwards (1971)]{Edwards:1971}
+			Edwards, A. W. F. (1971). Likelihood, London: Cambridge University Press.
+			
+			\bibitem[Fisher (1956)]{Fisher:1956}
+			Fisher, R. A. (1956), {\it Statistical Methods and Scientific Inference}, Edinburgh:
+			Oliver and Boyd. 
+	
+	\bibitem[Fraser (2019)]{Fraser:2019}
+	Fraser, D. A. S. (2019), The p-value Function and Statistical
+	Inference, {\it The American Statistician}, {\bf 73}, 135–-147. DOI:10.1080/
+	00031305.2018.1556735. 
+	
+	\bibitem[Grzegorz et al (2005)]{Grzegorz:et:al:2005}
+	Grzegorz A. Rempala PhD and Richard A. Derrig PhD (2005)  Modeling hidden exposures in claim severity via the Em Algorithm,{\it North American Actuarial Journal},{\bf 9:2}, 108--128.
+	\bibitem[Hacking (1965)]{Hacking:1965}
+	Hacking, I. (1965),{\it Logic of Statistical Inference}, New York: Cambridge
+	University Press.
+	
+	\bibitem[Held and Ott (2018)]{Held and Ott:2018}
+	Held, L., and Ott, M. (2018), On p-values and Bayes Factors, {\it Annual
+		Review of Statistics and Its Application}, {\bf 5}, 393–-419. DOI:10.1146/
+	annurev-statistics-031017-100307. 
+	\bibitem[Jeffreys (1961)]{Jeffreys:1961}
+	Jeffreys, H. (1961), {\it Theory of Probability} (3rd ed.), Oxford: Clarendon Press.
+	
+	\bibitem[Johnson and Rossell (2010)]{Johnson and Rossell:2010}
+	Johnson, V. E., and Rossell, D. (2010), On the Use of Non-local Prior
+	Densities in Bayesian Hypothesis Tests,{\it Journal of the Royal Statistical
+		Society}, Series B, {\bf 72}, 143–-170. DOI:10.1111/j.1467-9868.2009.00730.x.
+	\bibitem[Rafi and Greenland (2020)]{Rafi and Greenland:2020}
+	Rafi, Z., and Greenland, S. (2020), Semantic and Cognitive Tools to
+	Aid Statistical Science: Replace Confidence and Significance by Compatibility and Surprise,{\it BMC Medical Research Methodology},{\bf 20}, 244.
+	DOI:10.1186/s12874-020-01105-9. 
+	\bibitem[Royall (1997)]{Royall:1997}
+	Royall, R. (1997), {\it Statistical Evidence: A Likelihood Paradigm}, London; New
+	York: Chapman and Hall. [47,48,51,54]
+	
+	\bibitem[Sellke et al. (2001)]{Sellke:2001}
+	Sellke, T., Bayarri, M. J., and Berger, J. O. (2001), “Calibration of p Values for
+	Testing Precise Null Hypotheses,” The American Statistician, 55, 62–71.
+	DOI:10.1198/000313001300339950. [48,51,52]
+
+\bibitem[Wagenmakers (2022)]{Wagenmakers:2022}
+Wagenmakers, E.-J. (2022), {\it Approximate Objective Bayes Factors from
+	P-values and Sample Size: The 3pn Rule}, DOI:10.31234/osf.io/egydq.
+
+\bibitem[Wagenmakers et. al. (2022)]{Wagenmakers:et:al:2022}
+Wagenmakers, E.-J., Gronau, Q. F., Dablander, F., and Etz, A.
+(2022), The Support Interval, {\it Erkenntnis}, {\bf 87}, 589–-601.
+DOI:10.1007/s10670-019-00209-z. 
+
+\bibitem[Rosenblatt (1956)]{Rosenblatt:1956}
+Rosenblatt, M. (1956),
+Remarks on Some Nonparametric Estimates of a Density Function,
+{\it Annals of Mathematical Statistics}, {\bf 27}, 832--837.
+DOI:10.1214/aoms/1177728190.
+
+\bibitem[Parzen (1962)]{Parzen:1962}
+Parzen, E. (1962),
+On Estimation of a Probability Density Function and Mode,
+{\it Annals of Mathematical Statistics}, {\bf 33}, 1065--1076.
+DOI:10.1214/aoms/1177704472.
+
+\bibitem[Silverman (1986)]{Silverman:1986}
+Silverman, B. W. (1986),
+{\it Density Estimation for Statistics and Data Analysis},
+Chapman and Hall, London.
+ISBN: 9780412246203.
+
+\bibitem[Scott (1992)]{Scott:1992}
+Scott, D. W. (1992),
+{\it Multivariate Density Estimation: Theory, Practice, and Visualization},
+Wiley, New York.
+ISBN: 9780471547709.
+
+\bibitem[Wand and Jones (1995)]{Wand:Jones:1995}
+Wand, M. P. and Jones, M. C. (1995),
+{\it Kernel Smoothing},
+Chapman and Hall, London.
+ISBN: 9780412552700.
+
+\bibitem[Tsybakov (2009)]{Tsybakov:2009}
+Tsybakov, A. B. (2009),
+{\it Introduction to Nonparametric Estimation},
+Springer, New York.
+DOI:10.1007/b13794.
+	\end{comment}
+
+
+
+
+%fong, E., and Holmes, C. C. (2020), “On the Marginal Likelihood and Crossvalidation,” Biometrika, 107, 489–496. DOI:10.1093/biomet/asz077.
+
+
+%Gneiting, T., and Raftery, E. (2007), “Strictly Proper Scoring Rules, Prediction, and Estimation,” Journal of the American Statistical Association, 102,359–377. DOI:10.1198/016214506000001437. 
+
+%Good, I. J. (1992), “The Bayes/non-Bayes Compromise: A BriefReview,” Journal of the American Statistical Association, 87, 597–606.DOI:10.1080/01621459.1992.10475256. [51]
+
+%Greenland, S. (2023), “Divergence versus Decision P-values: A DistinctionWorth Making in Theory and Keeping in Practice: Or, How DivergenceP-values Measure Evidence Even When Decision P-values Do Not,”Scandinavian Journal of Statistics, 50, 54–88. DOI:10.1111/sjos.12625.
+
+
+%Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman,S. N., and Altman, D. G. (2016), “Statistical Tests, P Values, ConfidenceIntervals, and Power: A Guide to Misinterpretations,” European Journalof Epidemiology, 31, 337–350. DOI:10.1007/s10654-016-0149-3. 
+
+%Grünwald, P., de Heide, R., and Koolen, W. (2019), “Safe Testing,”DOI:10.48550/ARXIV.1906.07801, preprint. 
+%Grünwald, P. (2023), “The E-posterior,” Philosophical Transactions of theRoyal Society A, 381. DOI:10.1098/rsta.2022.0146. 
+
+
+%Hendriksen, A., de Heide, R., and Grünwald, P. (2021), “Optional Stoppingwith Bayes Factors: A Categorization and Extension of Folklore Results,with an Application to Invariant Situations,” Bayesian Analysis, 16, 961–989. DOI:10.1214/20-ba1234. 
+
+%Hoekstra, R., Morey, R. D., Rouder, J. N., and Wagenmakers, E.-J. (2014),“Robust Misinterpretation of Confidence Intervals,” Psychonomic Bulletin and Review volume, 21, 1157–1164. DOI:10.3758/s13423-013-0572-3.
+
+%Howard, S. R., Ramdas, A., McAuliffe, J., and Sekhon, J. (2021), “TimeUniform, Nonparametric, Nonasymptotic Confidence Sequences,” TheAnnals of Statistics, 49, 1055–1080. DOI:10.1214/20-aos1991. [54]
+
+
+
+%Kass, R. E., and Raftery, A. E. (1995), “Bayes Factors,” Journal ofthe American Statistical Association, 90, 773–795. DOI:10.1080/01621459.1995.10476572. 
+
+%Kass, R. E., and Wasserman, L. (1995), “A Reference Bayesian Testfor Nested Hypotheses and its Relationship to the Schwarz Criterion,” Journal of the American Statistical Association, 90, 928–934.DOI:10.1080/01621459.1995.10476592. 
+
+%Lai, T. L. (1976), “On Confidence Sequences,” The Annals of Statistics, 4,265–280. DOI:10.1214/aos/1176343406. 
+
+%Lindon, M., and Malek, A. (2020), “Sequential Testing of MultinomialHypotheses with Applications to Detecting Implementation Errors andMissing Data in Randomized Experiments,” available at https://arxiv.org/abs/2011.03567v1. 
+
+%Ly, A., Marsman, M., Verhagen, J., Grasman, R. P., and Wagenmakers, E.-J. (2017), “A Tutorial on Fisher Information,” Journal of MathematicalPsychology, 80, 40–55. DOI:10.1016/j.jmp.2017.05.006. [49]
+%O’Hagan, A., and Forster, J. J. (2004), Kendall’s Advanced Theory of Statistics, volume 2B: Bayesian Inference (2nd ed.), London, UK: Arnold.
+
+%Pace, L., and Salvan, A. (2020), “Likelihood, Replicability and Robbins’Confidence Sequences,” International Statistical Review, 88, 599–615.DOI:10.1111/insr.12355. 
+
+%ramanik, S., and Johnson, V. E. (2022), “Efficient Alternatives forBayesian Hypothesis Tests in Psychology,” Psychological Methods.DOI:10.1037/met0000482. 
+
+%R Core Team (2023), R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. https://www.R-project.org/. 
+
+
+%Raftery, A. E. (1999), “Bayes Factors and BIC,” Sociological Methods and Research, 27, 411–427. DOI:10.1177/0049124199027003005.
+
+%RECOVERY Collaborative Group. (2021), “Dexamethasone in HospitalizedPatients with Covid-19,” New England Journal of Medicine, 384, 693–704.DOI:10.1056/nejmoa2021436. [47,48,52,56]
+
+%Robbins, H. (1970), “Statistical Methods Related to the Law of the Iterated Logarithm,” The Annals of Mathematical Statistics, 41, 1397–1409.DOI:10.1214/aoms/1177696786. [54]
+
+
+
+%Shafer, G. (2021), “Descriptive Probability,” working paper 59 (version September 30, 2021). Available at http://probabilityandfinance.com/articles/59.pdf . 
+
+%Spiegelhalter, D. J., Abrams, R., and Myles, J. P. (2004), Bayesian Approachesto Clinical Trials and Health-Care Evaluation, New York: Wiley.
+
+%Vovk, V. G. (1993), “A Logic of Probability, With Application to the Foundations of Statistics,” Journal of the Royal Statistical Society, Series B, 55,317–341. DOI:10.1111/j.2517-6161.1993.tb01904.x. [52]
+
+
+%Wagenmakers, E.-J., and Ly, A. (2023), “History and Nature of the Jeffre ys Lindley Paradox,” Archive for History of Exact Sciences, 77, 25–72.DOI:10.1007/s00407-022-00298-3. 
+
+
+%Wassmer, G., and Brannath, W. (2016), Group Sequential andConfirmatory Adaptive Designs in Clinical Trials, Cham: Springer.DOI:10.1007/978-3-319-32562-0. 
+\end{thebibliography}
+ \end{document}
+

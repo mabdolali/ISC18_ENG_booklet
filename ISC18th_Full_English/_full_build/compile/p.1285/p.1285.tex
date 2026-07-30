@@ -1,0 +1,275 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1285/}{main/p.1285/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\thispagestyle{empty}
+	%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Adaptive Density-Augmented Clustering}
+	%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Ahrari and Behdani}
+	\begin{center}
+		{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+		\vspace*{-1.8cm}
+		%\begin{center}
+		%\color{blue} 
+		%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+		%\end{center}
+		\vspace*{4cm}
+		%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+		{\Large \bf A Density-Augmented Representation Framework for Improving Clustering of Nonlinear Synthetic Data
+		}\\
+		%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+		{\bf
+			Vahideh Ahrari\footnote[1]{{\bf Corresponding Author:} {\tt Vahideh.ahrari@sku.ac.ir }}, Zahra Behdani$^2$   \\
+			$^1$Department of Computer Science, Faculty of Mathematical Sciences, Shahrekord University,
+			Shahrekord, Iran.
+
+			$^2$Department of Statistics, Behbahan Khatam Alanbia University of Technology, Behbahan, Iran.}
+	\end{center}
+	\rule{\textwidth}{0.2mm}\\
+	%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Clustering performance may deteriorate when nonlinear geometry, heterogeneous local density, or outliers make the original feature space insufficiently informative. This paper proposes an Adaptive Hybrid Density-Augmented Clustering (AHDC) framework that enriches standardized original features with local density-based descriptors and controls the contribution of the density-feature block through an observation-specific adaptive weight. Experiments on five synthetic datasets over 20 runs show that AHDC achieves its largest observed gain for nonlinear structures, while its mean ARI remains close to that of raw-feature K-means in the Easy, Hard, and Outlier scenarios. Its performance decreases under strong cluster-size imbalance, where K-means Raw and Spectral clustering achieve higher mean ARI values. These findings indicate that adaptive density augmentation is beneficial under specific geometric conditions rather than uniformly superior across all clustering regimes.
+
+\noindent{\bf Keywords:}
+adaptive clustering, density-aware representation, adaptive feature fusion, neighborhood-based features, nonlinear clustering.
+
+%\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+%\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The rapid growth of data in data science and machine-learning applications has made the extraction of latent structure a fundamental challenge in data analysis. Clustering, as a central unsupervised-learning task, groups similar observations and supports the discovery of hidden patterns. \cite{XuWunsch2005} reviewed its broad use in areas such as bioinformatics, image processing, social-network analysis, and anomaly detection.
+
+Among classical methods, K-means remains widely used because of its simplicity and computational efficiency. Nevertheless, it is sensitive to initialization and favors compact, approximately spherical clusters~\cite{Jain2010}. To address non-spherical structures and noise, \cite{Ester1996} introduced DBSCAN, which identifies connected high-density regions and separates low-density observations as noise. Its effectiveness, however, depends strongly on neighborhood parameters and may decline when cluster densities vary substantially.
+
+\cite{Rodriguez2014} introduced Density Peaks Clustering (DPC), in which cluster centers are characterized by high local density and large relative distance from points of higher density. Its conceptual simplicity and ability to represent non-spherical structures motivated several extensions. \cite{Du2016} and \cite{Wang2025}, for example, investigated improved neighborhood structures, density estimators, and manifold-sensitive distance measures to enhance robustness.
+
+In this paper, we propose AHDC (Adaptive Hybrid Density-Augmented Clustering), a representation framework that combines standardized original coordinates with local distance-based descriptors. The central hypothesis is that these two sources provide complementary information: the original coordinates preserve global position, whereas the density-based descriptors summarize local compactness and neighborhood heterogeneity. The density-feature block is incorporated through an observation-specific adaptive weight determined by local structural heterogeneity, and clustering is then performed in the resulting transformed space. The remainder of the paper is organized as follows. Section 2 reviews related partition-based and density-based methods. Section 3 presents the AHDC framework. Section 4 describes the experimental setup, Section 5 reports and discusses the results, and Section 6 concludes the paper and outlines directions for future work.
+
+\section{Related Work}
+Existing clustering methods can be grouped into partition-based, density-based, and hybrid families. Partition-based algorithms, especially K-means, minimize within-cluster dispersion and are computationally efficient, but their Euclidean objective favors convex clusters and does not naturally accommodate nonlinear geometry~\cite{Jain2010}. Density-based methods instead define clusters as connected dense regions. DBSCAN introduced a noise-aware formulation based on $\varepsilon$ and MinPts~\cite{Ester1996}; however, a single parameter setting may be unsuitable for regions with substantially different densities. HDBSCAN extends this principle by constructing a hierarchy over density levels and selecting stable clusters, thereby reducing dependence on a single global neighborhood radius~\cite{Campello2015}.
+
+DPC represents another important density-based direction. It identifies cluster centers as observations that simultaneously have high local density $\rho_i$ and large distance $\delta_i$ from any point of higher density. Its performance therefore remains linked to the reliability of density and distance estimation~\cite{Rodriguez2014}. Later variants improved robustness through $k$-nearest-neighbor density estimation~\cite{Du2016}, grid screening and mutual neighborhoods~\cite{Chen2022}, and manifold distance with natural nearest neighbors~\cite{Wang2025}. Unlike DPC, AHDC does not use density peaks to select cluster centers; instead, it incorporates local density-based descriptors into an auxiliary representation that is subsequently clustered by K-means.
+
+\section{Proposed Method}
+The proposed Adaptive Hybrid Density-Augmented Clustering (AHDC) framework constructs an enriched representation by combining standardized original coordinates with local density-based descriptors. It consists of four stages: neighborhood construction and descriptor extraction, adaptive feature fusion, feature-space projection, and downstream clustering. The overall workflow is shown in Figure~\ref{fig:pipeline}.
+
+\begin{figure}[t]
+	\centering
+	\begin{tikzpicture}[
+		node distance=1.6cm,
+		block/.style={rectangle, draw, rounded corners, minimum width=3.2cm, minimum height=1cm, align=center},
+		arrow/.style={thick,->,>=stealth}
+		]
+
+		\node (input) [block] {Input Data \\ $X \in \mathbb{R}^{n \times d}$};
+
+		\node (knn) [block, below of=input] {$k$-NN Neighborhood Construction};
+
+		\node (features) [block, below of=knn] {Density Descriptors and Complexity Score\\
+			$\rho_i,\hat{\rho}_i,\sigma_{\mathrm{cv},i},c_i$};
+
+		\node (fusion) [block, below of=features] {Adaptive Fusion\\
+			$z_i^{\mathrm{hybrid}}=[\tilde{x}_i\;|\;w_i z_{\mathrm{den},i}]$};
+
+		\node (pca) [block, below of=fusion] {PCA Projection (5 retained components)};
+
+		\node (cluster) [block, below of=pca] {Downstream Clustering (K-means)};
+
+		\draw [arrow] (input) -- (knn);
+		\draw [arrow] (knn) -- (features);
+		\draw [arrow] (features) -- (fusion);
+		\draw [arrow] (fusion) -- (pca);
+		\draw [arrow] (pca) -- (cluster);
+
+	\end{tikzpicture}
+
+	\caption{Overview of the proposed AHDC framework.}
+	\label{fig:pipeline}
+\end{figure}
+
+\subsection{Density Feature Extraction}
+Let $\mathcal{X}=\{x_1,\ldots,x_n\}\subset\mathbb{R}^d$ denote the input data. For each observation $x_i$, a $k$-nearest-neighbor set $\mathcal{N}_i$ is constructed in the standardized Euclidean feature space. In the main comparative experiments, $k=15$ is used for density estimation, and $\varepsilon=10^{-8}$ is included to prevent numerical instability. If $d_{ij}$ denotes the distance from $x_i$ to its $j$-th nearest neighbor, three descriptors are computed:
+\begin{equation}
+	\rho_i=\frac{1}{\frac{1}{k}\sum_{j=1}^{k}d_{ij}+\varepsilon},\qquad
+	\hat{\rho}_i=\frac{1}{k}\sum_{j=1}^{k}\frac{1}{d_{ij}+\varepsilon},\qquad
+	\sigma_{\mathrm{cv},i}=\frac{\mathrm{std}(d_{i1},\ldots,d_{ik})}{\mathrm{mean}(d_{i1},\ldots,d_{ik})+\varepsilon}.
+	\label{eq:density_features}
+\end{equation}
+These descriptors represent local compactness, inverse-distance aggregation, and relative neighborhood-distance variability, respectively. After z-score standardization, they form $Z_{\mathrm{den}}\in\mathbb{R}^{n\times3}$.
+
+\subsection{Adaptive Feature Fusion}
+AHDC controls the influence of the density-feature block through a local complexity score computed from a smaller neighborhood, $k_c=10$:
+\begin{equation}
+	c_i=\mathrm{std}(d_{i1},\ldots,d_{i,k_c}),\qquad
+	w_i=\mathrm{clip}(\alpha+\beta\tilde{c}_i,0.25,0.85),
+	\label{eq:weight}
+\end{equation}
+where $\tilde{c}_i$ is the standardized complexity score, $\alpha=0.55$, and $\beta=0.18$. The quantity $c_i$ summarizes local heterogeneity in the neighborhood-distance distribution and is used exclusively to determine the observation-specific weight $w_i$; it is not included as an additional component of $Z_{\mathrm{den}}$. Larger values of $c_i$ increase the contribution of the density block, whereas more homogeneous neighborhoods retain greater reliance on the original coordinates. The final hybrid representation is
+\begin{equation}
+	z_i^{\mathrm{hybrid}}=\left[\tilde{x}_i\;\middle|\;w_i z_{\mathrm{den},i}\right]\in\mathbb{R}^{d+3},
+	\label{eq:hybrid}
+\end{equation}
+where $\tilde{x}_i$ is the standardized original feature vector. The same parameter values are used in all main comparisons to avoid dataset-specific tuning.
+\subsection{Feature-Space Projection and Clustering}
+
+The hybrid representation contains $d+3$ features. PCA is applied as a
+common orthogonal projection stage, with the first five principal components
+retained. Because the datasets considered in this study are two-dimensional,
+the resulting hybrid representation contains exactly five features.
+Consequently, retaining all five components preserves the complete
+representation and, in the absence of whitening, preserves its Euclidean
+geometry. Thus, PCA does not reduce dimensionality or account for the
+observed performance differences in the present experiments; it is retained
+to maintain a unified processing pipeline and to support dimensionality
+reduction in future higher-dimensional applications. Clustering is then
+performed using K-means with $K=2$ and
+$n_{\mathrm{start}}=50$ random initializations. AHDC is therefore evaluated
+as a representation framework coupled with K-means, whereas the baseline
+methods are applied independently to the standardized original feature space.
+
+\subsection{Algorithmic Procedure}
+The AHDC procedure is summarized as follows. First, construct the $k$-NN neighborhoods and compute the three standardized density-based descriptors in Equation~\ref{eq:density_features}. Second, estimate the local complexity score and observation-specific weight using Equation~\ref{eq:weight}. Third, concatenate the standardized original coordinates with the weighted density-based descriptors as in Equation~\ref{eq:hybrid}. Finally, apply the PCA projection and cluster the resulting representation using K-means. This design separates representation construction from the downstream clustering stage while maintaining a unified parameter configuration.
+
+\section{Experimental Setup}
+Experiments were conducted on five standardized two-dimensional synthetic datasets, each containing $n=800$ observations from two classes: well-separated Gaussian clusters (\textit{Easy}), strongly overlapping Gaussian clusters (\textit{Hard}), clusters with a 3:1 sample-size ratio (\textit{Imbalanced}), concentric structures (\textit{Nonlinear}), and data contaminated by approximately $6\%$ randomly perturbed observations (\textit{Outlier}). A fixed master seed was used to generate a reproducible sequence of $R=20$ runs. The main AHDC configuration was fixed across all datasets: $k=15$, $k_c=10$, $\alpha=0.55$, $\beta=0.18$, clipping interval $[0.25,0.85]$, five retained PCA components, and K-means with $K=2$ and $n_{\mathrm{start}}=50$. The baselines were K-means Raw, HDBSCAN~\cite{Campello2015}, GMM implemented through \texttt{mclust}~\cite{Scrucca2016}, Spectral clustering, and DBSCAN. Performance was measured by the Adjusted Rand Index (ARI)~\cite{Hubert1985} and is reported as mean $\pm$ standard deviation over the 20 runs.
+
+\section{Results}
+Table~\ref{tab:results} and Figure~\ref{fig:results} show that performance depends strongly on data geometry. In the Easy scenario, K-means Raw achieved the highest observed mean ARI ($0.997\pm0.006$), followed closely by Spectral clustering ($0.995\pm0.007$) and AHDC ($0.989\pm0.005$), indicating that the original coordinates were already highly informative. Under severe overlap, K-means Raw and AHDC produced nearly identical mean ARI values ($0.171\pm0.041$ and $0.170\pm0.042$, respectively). In the Imbalanced scenario, AHDC decreased to $0.715\pm0.062$, below Spectral clustering ($0.946\pm0.036$) and K-means Raw ($0.943\pm0.015$), suggesting that density differences induced by unequal cluster sizes may adversely affect the adaptive representation. 
+The clearest benefit of AHDC appeared in the Nonlinear scenario, where it achieved the highest observed mean ARI ($0.293\pm0.067$), representing absolute improvements of $0.266$ over K-means Raw and $0.048$ over Spectral clustering. Although the absolute ARI remained moderate, the consistently low ARI values across all evaluated methods indicate that the nonlinear scenario was substantially more challenging than the remaining datasets.
+In the Outlier scenario, AHDC remained close to K-means Raw ($0.893\pm0.041$ versus $0.896\pm0.018$), although its larger standard deviation indicates greater run-to-run variability.
+HDBSCAN achieved a high mean ARI in the Easy scenario and an intermediate mean ARI in the Outlier scenario, while GMM and DBSCAN were not consistently competitive across the evaluated settings.
+
+An ablation analysis compared the Original-only, Density-only,
+non-adaptive concatenation, and Full AHDC configurations. The
+Original-only representation performed best in the Easy, Hard,
+Imbalanced, and Outlier scenarios, while density features alone were
+generally insufficient. Full AHDC achieved its clearest improvement in
+the Nonlinear scenario, supporting adaptive density augmentation as a
+complement to the original features rather than a replacement for them.
+
+Sensitivity analysis on the Hard dataset showed that the highest mean
+ARI over 20 runs was obtained at $k=5$ and $\alpha=0.30$. The fixed
+setting $k=15$ and $\alpha=0.55$ was retained in the main experiments
+to ensure consistency across all datasets.
+
+\begin{table}[ht]
+	\centering
+	\caption{Clustering performance measured by ARI mean $\pm$ standard deviation across 20 runs.}
+	\label{tab:results}
+	\scriptsize
+	\setlength{\tabcolsep}{2.0pt}
+	\begin{tabular}{lcccccc}
+		\hline
+		\textbf{Scenario} & \textbf{K-means Raw} & \textbf{AHDC} &
+		\textbf{HDBSCAN} & \textbf{GMM} & \textbf{Spectral} &
+		\textbf{DBSCAN} \\
+		\hline
+		Easy       & $0.997\pm0.006$ & $0.989\pm0.005$ &
+		$0.975\pm0.032$ & $0.664\pm0.284$ & $0.995\pm0.007$ &
+		$0.519\pm0.063$ \\
+
+		Hard       & $0.171\pm0.041$ & $0.170\pm0.042$ &
+		$0.002\pm0.003$ & $0.008\pm0.019$ & $0.117\pm0.079$ &
+		$0.012\pm0.024$ \\
+
+		Imbalanced & $0.943\pm0.015$ & $0.715\pm0.062$ &
+		$0.651\pm0.260$ & $0.018\pm0.120$ & $0.946\pm0.036$ &
+		$0.468\pm0.089$ \\
+
+		Nonlinear  & $0.027\pm0.021$ & $0.293\pm0.067$ &
+		$0.092\pm0.150$ & $0.074\pm0.071$ & $0.245\pm0.133$ &
+		$0.215\pm0.050$ \\
+
+		Outlier    & $0.896\pm0.018$ & $0.893\pm0.041$ &
+		$0.738\pm0.198$ & $0.199\pm0.276$ & $0.110\pm0.312$ &
+		$0.493\pm0.054$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.90\textwidth]{main//p.1285//Images/IM_corrected.png}
+	\caption{Mean Adjusted Rand Index with one standard deviation across 20 experimental runs.}
+	\label{fig:results}
+	\vspace{-0.7em}
+\end{figure}
+
+
+\section{Conclusion}
+AHDC combines standardized original features with adaptively weighted local density-based descriptors to construct a density-aware clustering representation. Its largest observed benefit occurred for nonlinear structure, whereas its mean performance remained close to strong baselines in the Easy, Hard, and Outlier scenarios and declined under cluster-size imbalance. The ablation analysis supports using density information as a controlled complement rather than an independent replacement for the original coordinates. AHDC should therefore be viewed as a geometry-dependent representation enhancement rather than a universally superior clustering method. Future work will investigate imbalance-aware weighting, automatic parameter selection, and validation on real-world datasets.
+\begin{thebibliography}{10}
+	
+	
+	\bibitem[Campello et al. (2015)]{Campello2015}
+	Campello R.J.G.B., Moulavi D., Zimek A. and Sander J. (2015), Hierarchical density estimates for data clustering, visualization, and outlier detection, {\it ACM Transactions on Knowledge Discovery from Data}, 10(1), Article 5.
+	
+	\bibitem[Chen et al. (2022)]{Chen2022}
+	Chen L., Gao S. and Liu B. (2022), An improved density peaks clustering algorithm based on grid screening and mutual neighborhood degree for network anomaly detection, {\it Scientific Reports}, 12(1), 1409.
+	
+	\bibitem[Du et al. (2016)]{Du2016}
+	Du M., Ding S. and Xu X. (2016), A family of density peaks clustering algorithms, {\it Annals of Data Science}, 3(2), 133--147.
+	
+	\bibitem[Ester et al. (1996)]{Ester1996}
+	Ester M., Kriegel H.P., Sander J. and Xu X. (1996), A density-based algorithm for discovering clusters in large spatial databases with noise, {\it Proceedings of KDD}, 226--231.
+	
+	\bibitem[Hubert and Arabie, 1985]{Hubert1985}
+	Hubert L. and Arabie P. (1985), Comparing partitions, {\it Journal of Classification}, 2(1), 193--218.
+	
+	\bibitem[Jain (2010)]{Jain2010}
+	Jain A.K. (2010), Data clustering: 50 years beyond K-means, {\it Pattern Recognition Letters}, 31(8), 651--666.
+	
+	
+	\bibitem[Rodriguez and Laio (2014)]{Rodriguez2014}
+	Rodriguez A. and Laio A. (2014), Clustering by fast search and find of density peaks, {\it Science}, 344(6191), 1492--1496.
+	
+	\bibitem[Scrucca et al. (2016)]{Scrucca2016}
+	Scrucca L., Fop M., Murphy T.B. and Raftery A.E. (2016), mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, {\it The R Journal}, 8(1), 289--317.
+	
+	\bibitem[Wang et al. (2025)]{Wang2025}
+	Wang H., Zhang J., Shen Y., Wang S., Deng B. and Zhao W. (2025), Improved density peak clustering with a flexible manifold distance and natural nearest neighbors for network intrusion detection, {\it Scientific Reports}, 15, 8510.
+	
+	\bibitem[Xu and Wunsch (2005)]{XuWunsch2005}
+	Xu R. and Wunsch D. (2005), Survey of clustering algorithms, {\it IEEE Transactions on Neural Networks}, 16(3), 645--678.
+	
+\end{thebibliography}
+
+\end{document}

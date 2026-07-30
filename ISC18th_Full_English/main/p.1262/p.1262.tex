@@ -1,0 +1,410 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Short Article Title}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Short Authors' Names}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bfNonparametric Bayesian Optimal Design for Exponential-Shift Regression Model with stick breaking method and uniform  distribution as the base measure}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Anita Abdollahi Nanvapisheh $^1$, Atefeh Abdollahi Nanvapisheh  \footnote[2]{{\bf Corresponding Author:} {\tt anita.abdollahi@yahoo.com }} \\
+$^1$Department of Statistics, Razi University, Kermanshah, Iran \\
+$^2$Master's Degree in Mathematics, Faculty of Mathematics, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+\textcolor{red}{In this study, we initially present the shifted exponential regression model and then derive its corresponding optimal experimental designs by employing the Dirichlet Process (DP) as a prior distribution over the parameter space. The resulting optimal design problem is formulated as a nonlinear optimization task, and the final solutions are obtained using the \texttt{Rsolnp} package implemented in the \texttt{R} statistical computing environment.} 
+
+\noindent{\bf Keywords:} 
+ Exponential-Shift Regression, Lifetime Data Analysis, Reliability Modeling, Nonparametric Bayesian Optimal Design, Dirichlet Process. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 60E05$, $\rm60Exx$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The exponential distribution occupies a central position among classical continuous probability distributions, primarily serving to characterize the stochastic waiting time until the occurrence of a specified event. It is particularly appropriate for modeling the lifetimes of systems or components operating under the assumption of a constant hazard rate over time. The corresponding exponential regression model has been widely employed across various quantitative fields, including reliability engineering, survival analysis, queueing theory, and telecommunications.
+
+Due to its analytical tractability and interpretability, the exponential distribution also constitutes a fundamental building block for more general lifetime models, notably the Gamma and Weibull distributions. Nevertheless, in many practical situations, the initiation of an event does not occur immediately at $t = 0$, but rather after a latent delay or threshold period. To accommodate this structural feature, the Exponential-Shift Regression Model is introduced by incorporating a location (shift) parameter, denoted by $\theta$. This parameterization enables the model to effectively capture delayed onset phenomena and threshold-driven mechanisms. 
+
+Mathematically, the Exponential-Shift Regression Model assumes that the response variable $Y$ follows a shifted exponential distribution with cumulative distribution function (CDF) given by:
+\begin{equation}
+F(y; \lambda, \theta) = 1 - \exp\!\big(-\lambda\, (\, y - \theta \log(1+y)\,)\big), \quad y>0, \ \lambda>0, \ \theta \ge 0,
+\end{equation}
+where $\lambda > 0$ denotes the scale parameter and $\theta \ge 0$ represents the shift (location) parameter. The incorporation of the shift parameter $\theta$ allows the model to account for a minimum threshold prior to the occurrence of an event, thereby enhancing its suitability for modeling real-world phenomena in which events do not originate at zero. In comparison with the classical exponential regression framework, the shifted specification offers greater flexibility in modeling time-to-event data and frequently yields improved goodness-of-fit and predictive performance \cite{collett:2015}.
+
+The remainder of this paper is organized as follows. Section 2 presents the model formulation along with its mathematical and statistical properties. Section 3 introduces the nonparametric Bayesian $D$-optimal design methodology. Finally, Section 4 concludes the paper with a summary of findings and concluding remarks.
+
+\section{Model Definition}
+
+If the response variable $Y$ follows a shifted exponential distribution, then for more flexibility, we consider a two-parameter version of this distribution. Its probability density function is given by:
+\begin{equation}
+f(y; \lambda, \theta) = \lambda \left(1 - \frac{\theta}{1+y}\right) \exp\big(-\lambda (y - \theta \log(1+y))\big), \quad y>0, \ \lambda>0, \ \theta \ge 0.
+\end{equation}
+
+In the sequel, we develop the nonparametric Bayesian optimal design for the aforementioned regression model under the special case $\theta = 1$, by adopting the Dirichlet Process as a prior over the underlying parameter space.
+
+\section{Nonparametric Bayesian Optimal Designs for the Exponential-Shift Regression Model with Uniform Distribution as the Base Measure}
+
+As discussed in our previous studies \cite{Abdollahi:2023, Abdollahi:2024, Abdollahi:2025, Nanvapisheh:2024, Nanvapisheh:2025}, the term ``optimal design'' in experimental design theory refers to a class of experimental schemes constructed according to specific statistical optimality criteria. It is well established that an appropriately designed experiment can substantially improve the precision of statistical inference, particularly with respect to the estimation of model parameters and the resulting size of the parametric confidence region \cite{Burghaus:2014, Burkner:2019, Chernoff:1953, Chaloner:1983, Chaloner:1995, Chaloner:1989, Dette:2013, Dette:1996, Dette:1997}.  
+
+In this section, we investigate Bayesian optimal designs for the two-parameter Exponential-Shift Regression (ESR) model under the special case $\theta = 1$. Without loss of generality, we assume a bounded design space defined by $\chi = [0,1]$ and restrict our attention to continuous approximate designs. Our primary objective is to determine optimal designs for efficient inference on the probability density function (pdf) based on observed data. We consider the model presented in equation (2.1) and present the optimal design for this model.
+
+Bayesian optimal designs are obtained by optimizing a specified optimality criterion averaged with respect to a user-defined (continuous) prior distribution on the unknown parameters \cite{collett:2015}. Strictly speaking, such designs are not fully Bayesian in the inferential sense, as they do not require the computation of a posterior distribution. Rather, they incorporate prior information solely at the design stage in order to construct designs that exhibit robustness from a frequentist perspective \cite{Grashoff:2012}. For this reason, they are often referred to as ``pseudo-Bayesian'' designs. In the optimal design literature, Bayesian optimal designs derived under a discrete prior distribution are commonly termed robust designs or optimum-on-average designs \cite{Fedorov:2012, Fedorov:2013}. Comprehensive surveys on optimal design methodologies for nonlinear models can be found in \cite{Firth:1997, Ford:1992}.
+
+Now, let us consider the regression model (2.1). Therefore, the Bayesian D-optimality criterion, denoted as $\Psi_{\Pi}(\xi)$, can be expressed as follows:
+\begin{align}
+\Psi_{\Pi}(\xi)
+&= \mathbb{E}_{\Pi}\!\big[ \psi(\xi;\boldsymbol{\theta}) \big] \nonumber \\
+&= \int_{\Theta} \psi(\xi;\boldsymbol{\theta}) \, d\Pi(\boldsymbol{\theta}) \nonumber \\
+&= \int_{\Theta}
+-\log\!\left(
+\sum_{j=1}^{\ell} w_j
+\left[
+\frac{y}{1+y}
+\exp\!\left(-\lambda\big(y-\log(1+y)\big)\right)
+\left(1-\lambda\big(y-\log(1+y)\big)\right)
+\right]^2
+\right)
+\, d\Pi(\boldsymbol{\theta}),
+\end{align}
+where $\Pi$ is the prior distribution for $\theta$. The Bayesian D-optimal design is attained by minimizing equation (3.1).
+
+In the nonparametric Bayesian framework, we consider $P \sim \text{DP}(\alpha, P_0)$ and its collective representation as $P(\cdot) = \sum_{i=1}^{\infty} p_i \, \delta_{\theta_i}(\cdot)$. In this context, the optimality criterion can be expressed as follows:
+\begin{equation}
+\Psi_{\Pi}(\xi) = \sum_{i=1}^{\infty} p_i \left( -\log\!\left(
+\sum_{j=1}^{\ell} w_j
+\left[
+\frac{y}{1+y}
+\exp\!\left(-\lambda\big(y-\log(1+y)\big)\right)
+\left(1-\lambda\big(y-\log(1+y)\big)\right)
+\right]^2
+\right) \right).
+\end{equation}
+
+Equation (3.2) is a stochastic functional of the Dirichlet Process (DP). According to the original formulation of the DP introduced by \cite{Ferguson:1973}, the direct evaluation of expression (3.2) is analytically intractable. Consequently, to compute the nonparametric Bayesian optimality criterion, approximation techniques are required. One widely used approach is based on the stick-breaking representation of the Dirichlet Process, which provides a constructive mechanism for simulating realizations from the DP. Alternatively, Zarepour and Al-Labadi \cite{Zarepour:2012} proposed an efficient approximation method that offers substantially improved simulation accuracy and computational speed compared to the classical stick-breaking approach \cite{Sethuraman:1994}. 
+
+In this section, we employ a uniform distribution on the interval $[0, B]$ as the base measure in the Dirichlet process, that is, the uniform distribution is assumed as an initial guess for the distribution of $\theta$. The results are obtained by using a nonlinear optimization programming in R via the package \texttt{Rsolnp}. To better understand the effect of the concentration parameter $\alpha$, we tabulate the results for four different values $\alpha = 1, 5, 10, 50$ in Tables 1–4. We also fixed $\epsilon = 10^{-10}$ and the maximum number of iterations to $1000$. In all cases, the algorithm converged successfully before reaching the maximum iterations. 
+
+Without loss of generality, we consider a bounded design space $\chi = [0, 1]$. The results indicate that, for the two-point design, an increase in the concentration parameter $\alpha$ does not substantially alter the location of the support points, while the smallest support point consistently receives the largest weight. Notably, this weight either remains approximately constant or exhibits a slight increase as $\alpha$ grows. For the three-point design, a similar pattern is observed: the smallest support point carries the greatest weight among all points, highlighting its predominant contribution to the information content of the design. For comparisons of these designs with local and Bayesian optimal designs, we refer the reader to \cite{Abdollahi:2023, Abdollahi:2024, Abdollahi:2025, Nanvapisheh:2024, Nanvapisheh:2025}.
+
+\begin{table}[H]
+\centering
+\caption{
+ Nonparametric Bayesian D-optimal design when $\alpha$=1.
+}
+\vspace*{0.5cm}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c |c|ccc}
+
+\hline
+
+$Prior \hspace*{0.1cm} distribution$ & $Design$  & $Two- \hspace*{0.1cm} point $ & $Three-\hspace*{0.1cm} point $ \\   
+\cline{5-7}
+\hline
+
+
+$U[0,300]$& $  x $&$ 0.0791529 \hspace*{1.5cm} 0.1982959  $ &$      0.0677976 \hspace*{1.5cm}0.2267888 \hspace*{1.5cm}  0.2945719 $&\\
+
+$$  & $  w $&$ 0.5643876
+ \hspace*{1.5cm} 0.4356124 $ &$ 0.8095193\hspace*{1.5cm} 0.0463992 \hspace*{1.5cm} 0.1440815 $\\
+\hline
+
+
+$U[0,500] $& $  x $&$ 0.1146462 \hspace*{1.5cm} 0.2053430  $ &$  0.1281988  \hspace*{1.5cm}  0.1912178 \hspace*{1.5cm}  0.3043895 $\\
+
+
+$$  & $  w $&$ 0.5963047 \hspace*{1.5cm}0.4036953 $ &$0.6264344 \hspace*{1.5cm}0.1385105  \hspace*{1.5cm} 0.2350551  $\\
+\hline
+
+$U[0,1000]$& $  x $&$ 0.0977728 \hspace*{1.5cm}  0.2071437$ &$     0.0887368 \hspace*{1.5cm} 0.2383893 \hspace*{1.5cm}   0.3428112&\\
+
+
+$$  & $  w $&$  0.7525403 \hspace*{1.5cm} 0.2474597 $ &$ 0.8893378 \hspace*{1.5cm} 0.1046891 \hspace*{1.5cm} 0.0059731
+ $\\
+\hline
+
+
+
+\end{tabular}}
+\end{table}
+
+
+
+
+
+
+\begin{table}[H]
+\centering
+\caption{
+Nonparametric Bayesian D-optimal design when $\alpha$=5.
+}
+\vspace*{0.5cm}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c |c|ccc}
+
+\hline
+
+$Prior \hspace*{0.1cm} distribution$ & $Design$  & $Two- \hspace*{0.1cm} point $ & $Three-\hspace*{0.1cm} point $ \\   
+\cline{5-7}
+\hline
+
+
+
+$U[0,300]$& $  x $&$ 0.0998063  \hspace*{1.5cm}  0.1970966 $ &$    0.0633383 \hspace*{1.5cm}0.2182173 \hspace*{1.5cm}  0.2273225$&\\
+
+$$  & $  w $&$ 0.5857723
+ \hspace*{1.5cm} 0.4142277   $ &$ 0.8392184 \hspace*{1.5cm} 0.0948853 \hspace*{1.5cm} 0.0658963 $\\
+\hline
+
+
+$U[0,500] $& $  x $&$ 0.1455518 \hspace*{1.5cm} 0.2162569  $ &$  0.1624609  \hspace*{1.5cm}  0.2039106  \hspace*{1.5cm}  0.2377642 $\\
+
+
+$$  & $  w $&$ 0.6872644 \hspace*{1.5cm}0.3127356   $ &$0.5308682 \hspace*{1.5cm}0.4457765 \hspace*{1.5cm} 0.0233553  $\\
+\hline
+
+$U[0,1000]$& $  x $&$ 0.1032305\hspace*{1.5cm}  0.1779363 $ &$   0.0989762  \hspace*{1.5cm}  0.0992607  \hspace*{1.5cm}  0.2909992 $&\\
+
+
+$$  & $  w $&$  0.7587268  \hspace*{1.5cm} 0.2412732  $ &$0.5446086 \hspace*{1.5cm}0.3479780 \hspace*{1.5cm} 0.1074134$\\
+\hline
+
+\end{tabular}}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\centering
+\caption{
+ Nonparametric Bayesian D-optimal design when $\alpha$=10.
+}
+\vspace*{0.5cm}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c |c|ccc}
+
+\hline
+
+$Prior \hspace*{0.1cm} distribution$ & $Design$  & $Two- \hspace*{0.1cm} point $ & $Three-\hspace*{0.1cm} point $ \\   
+\cline{5-7}
+\hline
+
+
+
+$U[0,300]$& $  x $&$ 0.0987798  \hspace*{1.5cm}  0.2094751 $ &$     0.0690625 \hspace*{1.5cm}0.1964153 \hspace*{1.5cm}  0.2087161 $&\\
+
+$$  & $  w $&$ 0.7310348
+ \hspace*{1.5cm} 0.2689652  $ &$ 0.8367505\hspace*{1.5cm} 0.1343421\hspace*{1.5cm} 0.0289074 $\\
+\hline
+
+
+$U[0,500] $& $  x $&$ 0.1572621 \hspace*{1.5cm} 0.2171238  $ &$  0.1545206  \hspace*{1.5cm} 0.1549819 \hspace*{1.5cm}  0.1970688  $\\
+
+
+$$  & $  w $&$ 0.6973037 \hspace*{1.5cm}0.3026963   $ &$0.4578893
+ \hspace*{1.5cm}0.2202517 \hspace*{1.5cm} 0.3218590  $\\
+\hline
+
+$U[0,1000]$& $  x $&$ 0.1045295 \hspace*{1.5cm}  0.1729310 $ &$  0.1063033 \hspace*{1.5cm}  0.1142673 \hspace*{1.5cm}  0.1984041  $&\\
+
+
+$$  & $  w $&$  0.7742314 \hspace*{1.5cm} 0.2257686   $ &$ 0.5364219
+  \hspace*{1.5cm} 0.2922198  \hspace*{1.5cm}0.1713584
+ $\\
+\hline
+
+
+\end{tabular}}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\centering
+\caption{
+ Nonparametric Bayesian D-optimal design when  $\alpha$=50.
+}
+\vspace*{0.5cm}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c |c|ccc}
+
+\hline
+
+$Prior \hspace*{0.1cm} distribution$ & $Design$  & $Two- \hspace*{0.1cm} point $ & $Three-\hspace*{0.1cm} point $ \\   
+\cline{5-7}
+\hline
+
+
+
+$U[0,300]$& $  x $&$ 0.0772121  \hspace*{1.5cm}  0.2082418  $ &$      0.0441288 \hspace*{1.5cm}0.1908809  \hspace*{1.5cm}  0.2127025 $&\\
+
+$$  & $  w $&$ 0.8655116
+ \hspace*{1.5cm}0.1344884  $ &$ 0.9711009\hspace*{1.5cm} 0.0100183 \hspace*{1.5cm} 0.0188808 $\\
+\hline
+
+
+$U[0,500] $& $  x $&$ 0.1813539  \hspace*{1.5cm} 0.2026157  $ &$  0.1522432  \hspace*{1.5cm}  0.1898728 \hspace*{1.5cm}  0.2130834 $\\
+
+
+$$  & $  w $&$ 0.5334783 \hspace*{1.5cm}0.4665217  $ &$0.4557381
+ \hspace*{1.5cm}0.0958608 \hspace*{1.5cm} 0.4557381$\\
+\hline
+
+$U[0,1000]$& $  x $&$ 0.1038622\hspace*{1.5cm}  0.1709913 $ &$    0.0242943 \hspace*{1.5cm}  0.1051686  \hspace*{1.5cm}  0.1453847$&\\
+
+
+$$  & $  w $&$  0.7905179 \hspace*{1.5cm} 0.2094821  $ &$ 0.7198120\hspace*{1.5cm}0.1849891 \hspace*{1.5cm} 0.0951989
+ $\\
+\hline
+
+
+
+\end{tabular}}
+\end{table}
+
+\section{Discussion and Conclusions}
+
+In this work, we treat the prior distribution itself as an unknown entity by employing the Dirichlet Process (DP) to construct nonparametric Bayesian $D$-optimal designs. Our focus is on a univariate nonlinear regression model, specifically the Exponential-Shift Regression Model. 
+
+The simulation results within the explored parameter space reveal several notable patterns. For both two-point and three-point designs, the smallest support point consistently receives the largest weight. Moreover, as the uncertainty in the base measure and the concentration parameter $\alpha$ increases, the locations of the support points remain remarkably stable, while the weight of the smallest point increases, eventually becoming the dominant component. This primary weight either increases monotonically or remains approximately constant with further increases in $\alpha$. 
+
+It is important to note that the methodologies developed herein are flexible and can be readily adapted to alternative optimality criteria. Specifically, \textit{A}-optimality and \textit{E}-optimality may be employed in place of the \textit{D}-optimality criterion to generate the corresponding designs. Novel findings stemming from such extensions will be explored in future work.
+
+\textcolor{red}{\begin{thebibliography}{99}}
+
+
+
+\bibitem[Abdollahi (2023)]{Abdollahi:2023}
+Abdollahi Nanvapisheh, Anita, Habib Jafari, and Soliman Khazaei. 2023. {\it Nonparametric Bayesian optimal designs for unit exponential nonlinear model}.Journal of Statistical Modelling: Theory and Applications.
+
+
+\bibitem[Abdollahi (2024)]{Abdollahi:2024}
+
+Abdollahi Nanvapisheh, Anita, Soleiman Khazaei, and Habib Jafari 2024. {\it Nonparametric Bayesian Optimal Designs for Unit Exponential Regression Model with Respect to Prior Processes (with the Truncated Normal as the Base Measure)}. Statistics in Transition.
+
+\bibitem[Abdollahi (2025)]{Abdollahi:2025}
+Abdollahi Nanvapisheh, Anita, Habib Jafari, and Soleiman Khazaei  2025. {\it "Nonparametric Bayesian optimal designs for unit exponential regression model with respect to prior processes (with Polya Urn scheme as the base measure)."} International Journal of Nonlinear Analysis and Applications.
+
+\bibitem[Burghaus (2014)]{Burghaus:2014}
+Burghaus, I., and H. Dette. 2014. {\it Optimal designs for nonlinear regression models with respect to non-informative priors,}. Journal of Statistical Planning and Inference 154:12–25. doi:10.1016/ j.jspi.2014.05.009.
+
+\bibitem[Burkner (2019)]{Burkner:2019}
+Burkner PC, Schwabe R, Holling H. 2019.{\it Optimal designs for the generalized partial credit model,}. British Journal of Mathematical and Statistical Psychology. doi:10.1111/bmsp. 12148.
+
+
+\bibitem[Chernoff (1953)]{Chernoff:1953}
+Chernoff, H. 1953.{\it  Locally optimal designs for estimating parameters,}. The Annals of Mathematical Statistics 24 (4):586–602. doi:10.1214/aoms/1177728915.
+
+
+
+
+\bibitem[Chaloner (1983)]{Chaloner:1983}
+Chaloner, K. M., and Duncan, G. T. 1983.{\it Assessment of a beta prior distribution:PM elicitation,}. The Statistician, 174-180.
+
+
+\bibitem[Chaloner (1995)]{Chaloner:1995}
+Chaloner, K. and Verdinelli, I. 1995.{\it Bayesian experimental design: a review,}. Statistical Science, 10, 273-304.
+
+\bibitem[Chaloner (1989)]{Chaloner:1989}
+Chaloner, K. and Larentz, K. 1989. {\it Optimal Bayesian design applied to logistic regression experiments}. Journal of Statistical Planning and Inference, 21, 191-208.
+
+
+\bibitem[collett (2015)]{collett:2015}
+ Collett, D. (2015). {\it Modelling Survival Data in Medical Research}, 3rd Edition. CRC Press.
+
+
+
+\bibitem[Dette (2013)]{Dette:2013}
+Dette, H., V. B. Melas, and P. Shpilev. 2013. {\it Robust T-optimal discriminating designs}. The Annals of Statistics 41 (4):1693–715. doi:10.1214/13-AOS1117.
+
+
+\bibitem[Dette (1996)]{Dette:1996}
+Dette, H. and Neugebauer, H. M. 1996.{\it Bayesian optimal one point designs for one parameter nonlinear models,}. Journal of Statistical Planning and Inference, 52(1), 17-31.
+
+
+\bibitem[Dette (1997)]{Dette:1997}
+Dette, H. and Neugebauer, H. M. 1997. {\it Bayesian D-optimal designs for exponential regression models,}. Journal of Statistical Planning and Inference, 60(2), 331-349.
+
+
+\bibitem[Fedorov (2012)]{Fedorov:2012}
+Fedorov V, Hackl P. 2012.{\it Model-Oriented Design of Experiments,}. volume 125. Springer Science and Business Media. doi:10.1007/978-1-4612-0703-0.
+
+
+\bibitem[Fedorov (2013)]{Fedorov:2013}
+Fedorov VV, Leonov SL. 2013. {\it Optimal design for nonlinear response models,}. CRC Press. bability Letters 82 (5):916–24. doi:10.1016/j.spl.2012.01.020.
+
+
+\bibitem[Ferguson (1973)]{Ferguson:1973}
+Ferguson, T. S. 1973. {\it A bayesian analysis of some nonparametric problems,}. The Annals of Statistics 1 (2):209–30. doi:10.1214/aos/1176342360.
+
+
+\bibitem[Firth (1997)]{Firth:1997}
+Firth D, Hinde J. 1997.{\it On Bayesian D-optimum Design Criteria and the Equivalence Theorem in Non-linear Models,}. Journal of the Royal Statistical Society B, 59(4), 793–797. doi:10.1111/1467-9868.00096.
+
+
+
+
+\bibitem[Ford (1992)]{Ford:1992}
+Ford, I., Torsney, B. and Wu, C. F. J. 1992.{\it The use of a canonical form in theconstruction of locally optimal designs for non-linear problems,}.J. Roy. Statist. Soc. (Ser.) B, 54, 569-583.
+
+
+\bibitem[Grashoff (2012)]{Grashoff:2012}
+Grashoff U, Holling H, Schwabe R 2012.{\it Optimal designs for the Rasch model,}. Psychometrika, 77(4), 710–723. doi:10.1007/s11336-012-9276-2.
+
+
+\bibitem[Kiefer (1959)]{Kiefer:1959}
+Kiefer, J. 1959. {\it Optimum experimental designs,}. J.R. Statist. Soc. B. 21, 272-319.
+
+
+
+\bibitem[Kiefer (1959)]{Kiefer:1959}
+Kiefer, J., and Wolfowitz, J. 1959.{\it Optimum designs in regression problems,}. The Annals of Mathematical Statistics, 30(2), 271-294.
+
+
+\bibitem[Kiefer (1974)]{Kiefer:1974}
+Kiefer, J. 1974. {\it General equivalence theory for optimum designs (approximate theory),}. The Annals of Statistics 2 (5):849–79. doi:10.1214/aos/1176342810.
+
+
+\bibitem[Mukhopadhyay (1959)]{Mukhopadhyay:1959}
+Mukhopadhyay, S., and Haines, L. M. 1995.{\it Bayesian D-optimal designs for the exponential growth model,}. Journal of Statistical Planning and Inference, 44(3), 385-397.
+
+
+\bibitem[Nanvapisheh (2024)]{Nanvapisheh:2024}
+Nanvapisheh, Anita Abdollahi, Habib Jafari, and Soleiman Khazaei. 2024.{\it Locally, Bayesian and non parametric Bayesian optimal designs for unit exponential regression model}. Communications in Statistics-Theory and Methods.
+
+\bibitem[Nanvapisheh (2025)]{Nanvapisheh:2025}
+Nanvapisheh, A. A., Khazaei, S., Jafari, H., & Nazari, R. A. (2025). {\it Locally, Bayesian and Nonparametric Bayesian Optimal Designs for Gumbel Regression Model}. Journal of the Indian Society for Probability and Statistics, 1-14.
+
+
+
+\bibitem[Sethuraman (1994)]{Sethuraman:1994}
+Sethuraman, J. 1994.{\it A Constructive De nition of Dirichlet Priors,}. Statis-tica Sinica 4, 639,650.
+
+
+
+\bibitem[Zarepour (2012)]{Zarepour:2012}
+Zarepour, Mahmoud and Al Labadi, Luai. 2012. {\it On a rapid simulation of the Dirichlet process,}. Statistics and Probability Letters 82.5, 916,924.
+
+
+
+
+
+\end{thebibliography}
+\end{document}
+

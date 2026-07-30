@@ -1,0 +1,200 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{url}%
+\usepackage{authblk}%
+\usepackage{amsmath}%
+\usepackage{amsfonts}%
+\usepackage{rotating}%
+\usepackage{mathrsfs}%
+\usepackage{enumitem}%
+\usepackage{hyperref}%
+\usepackage{amssymb}%
+\usepackage{amsthm}%
+\usepackage{caption}%
+\usepackage{longtable}%
+\usepackage{doi}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{SPCSALT based on P-spline and ANN}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{B. Sedighi, E. Khorram, A. Aghamohammadi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Semiparametric Weibull Modeling for Constant Stress Accelerated Lifetime Tests using P-spline Neural Networks}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Bahareh Sedighi\footnote[1]{{\bf Corresponding Author:} {\tt b\_sedighi@aut.ac.ir }}, Esmaile Khorram$^1$ , Ali Aghamohammadi$^2$\\
+$^1$ Department of Mathematics and Computer Sciences, Amirkabir University of Technology, Tehran, Iran\\
+$^2$ Department of Statistics, University of Zanjan, Zanjan, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This study presents a semiparametric modeling approach for constant stress accelerated lifetime tests (CSALT) that utilizes P-spline and its artificial neural network (ANN) representation under a Type-I censoring scheme. In the proposed model, lifetimes are assumed to follow a Weibull distribution. The relationships between accelerated stresses and the characteristics of the lifetime distribution are modeled nonparametrically and additively using a B-spline approach. A penalty component is included in the loss function to regularize the model. To estimate the model parameters, a gradient-based optimization method, such as the Adam algorithm, is employed, while the smoothing parameters are estimated by minimizing the Akaike Information Criterion (AIC). The effectiveness of the proposed model is evaluated through a simulation study.
+
+\noindent{\bf Keywords:} 
+Artificial neural networks, Constant stress accelerated lifetime tests, P-spline, Adam algorithm\\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62N05$, $\rm 62G05$, $\rm 62N01$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Most inferences drawn from accelerated lifetime tests (ALT) primarily focus on parametric ALT models. A parametric ALT model is based on two key assumptions. First, it assumes that the distribution of failure times belongs to the same parametric distribution family across all stress levels. Second, it assumes that there is a known parametric relationship between the accelerated stresses and the lifetime characteristics of the products being tested. One commonly used ALT model is the CSALT, where the stress is held at a constant level throughout the duration of the test. \\
+Common parametric and empirical relationships include the Arrhenius relationship, the log-linear relationship, the inverse power law relationship, the Eyring relationship, and the generalized Eyring relationship. However, \cite{Escobar:Meeker:2006} highlighted that in many practical situations, the true relationship between accelerated stresses and the characteristics of lifetime distributions is often unclear and may be quite complex. Consequently, many existing ALT models that rely on these parametric relationships may not be suitable for a broad range of applications.\\
+ANN models, a subset of machine learning that serves as the foundation for deep learning, are powerful and flexible tools for fitting data and capturing complex, unknown relationships between input (independent) and output (dependent) variables. ANN models have a wide range of applications in reliability engineering, including fault diagnosis and remaining useful life (RUL) prediction, among others. For example, \cite{Freitag:2009} introduced the concept of neural network-based lifetime prediction. In this study, an ANN is used as a model-free method to directly approximate the relationship between accelerated stresses and lifetime based on experimental data. The effectiveness of the ANN approach is validated using the Arrhenius model as a reference. \cite{Jeong:2024} proposed a methodology that combines the ALT with deep neural networks to predict the RUL of capacitors. \cite{colak:2024} optimized and predicted the reliability analysis of lifetime models by integrating ANN modeling with the maximum likelihood estimation method.\\
+The current study aims to introduce a semiparametric CSALT (SPCSALT) model using the Weibull lifetime distribution based on P-splines, and to represent it as an ANN under the Type-I censoring scheme. In the proposed model, failure times are assumed to follow a Weibull lifetime distribution, while the second assumption of the parametric ALT models is relaxed. Using the B-spline approach, the relationships between accelerated stresses and the characteristics of the lifetime distribution are modeled in a nonparametric and additive manner. To address the problem of overfitting, a regularization approach similar to that of classical P-splines is employed. This involves adding a penalty component to the loss function, and a hyperparameter, known as the smoothing parameter, controls the degree of regularization. To fine-tune the smoothing parameter, the AIC is minimized due to its well-established validity. This process requires calculating the effective degrees of freedom for the model. Since second-order derivatives are not available within the deep learning framework, the smoothing matrix used in selecting the smoothing parameter is approximated by linear smoothing approximation. Methods based on ANN typically utilize gradient-based optimization techniques, such as Adam, to enhance scalability and efficiency. The Adam algorithm serves as an adaptive gradient-based optimizer in deep learning and uses the backpropagation method to compute gradients for the model. This ensures stable and robust convergence in high-dimensional and non-convex problems, which traditional optimization methods cannot achieve. In the proposed model, the Adam optimizer is utilized due to its track record of producing stable results.\\
+The paper is organized as follows: Section \ref{sec2} outlines the essential settings, assumptions, and methodology related to the proposed model. Section \ref{sec3} introduces a method for selecting the smoothing parameter based on data. Section \ref{sec4} presents an analysis of simulated datasets to demonstrate the performance and effectiveness of the proposed model. The final section offers concluding remarks.
+
+\section{SPCSALT model based on P-spline Neural Networks}\label{sec2}
+The proposed model assumes that the failure times follow a Weibull distribution at each stress level. As the stress levels increase, both the mean and standard deviation (SD) of the lifetime distribution decrease. Additionally, in an ALT model that incorporates multiple stresses, the different stress levels have an additive effect on the lifetime of the units.\\
+Consider a CSALT with $q$ accelerating stresses, denoted as $\boldsymbol{s}=(s_{1},\ldots,s_{q})^{T}$ and $J$ combined stress levels.\\
+The cumulative density function (CDF) and probability density function (PDF) of the Weibull distribution are, respectively, as follows: 
+\begin{equation*}
+F\big(t \mid \gamma(\boldsymbol{s}), \zeta(\boldsymbol{s}) \big) = 1  - \exp\left\{ -\left(\dfrac{t}{\zeta(\boldsymbol{s})}\right)^{\gamma(\boldsymbol{s})} \right\},
+\end{equation*}
+\begin{equation*}
+f\big(t \mid \gamma(\boldsymbol{s}), \zeta(\boldsymbol{s}) \big) = \dfrac{\gamma(\boldsymbol{s})}{\zeta(\boldsymbol{s})} \: \left(\dfrac{t}{\zeta(\boldsymbol{s})}\right)^{\gamma(\boldsymbol{s}) - 1} \: \exp\left\{ -\left(\dfrac{t}{\zeta(\boldsymbol{s})}\right)^{\gamma(\boldsymbol{s})} \right\},
+\end{equation*}
+where the shape and scale parameters influenced by the accelerated stresses are $\gamma(\boldsymbol{s})$ and $\zeta(\boldsymbol{s})$, respectively. The mean, $\mu(\boldsymbol{s})$, and SD, $\sigma(\boldsymbol{s})$, are used in place of $\gamma(\boldsymbol{s})$ and $\zeta(\boldsymbol{s})$ using \eqref{eq2.1} and \eqref{eq2.2}.
+\begin{equation}\label{eq2.1}
+\mu(\boldsymbol{s}) = \zeta(\boldsymbol{s}) \: \Gamma\left(1 + \frac{1}{\gamma(\boldsymbol{s})}\right),
+\end{equation}
+\begin{equation}\label{eq2.2}
+\sigma(\boldsymbol{s}) = \zeta^2(\boldsymbol{s})\left[\Gamma\left(1 + \frac{2}{\gamma(\boldsymbol{s})}\right) - \Gamma^2\left(1 + \frac{1}{\gamma(\boldsymbol{s})}\right) \right].
+\end{equation}
+In the proposed model, the mean and SD parameters of the lifetime distribution are nonparametrically related to the accelerated stresses through additive models. The overall effects of the multiple accelerated stresses on the mean and SD parameters of the lifetime distribution at each combined stress level, $\boldsymbol{s}_{j}=(s_{1j},\ldots,s_{qj})^{T}$ for $j=1,\ldots,J$, are determined as follows:
+\begin{equation}\label{eq2.3}
+\log \big(\mu(\boldsymbol{s}_{j})\big) = b_{1} + \sum_{i=1}^{q}f_{1i}(s_{ij}) =  b_{1} + \sum_{i=1}^{q} \sum_{p=1}^{L} B^{(M)}_{p}(s_{ij})\: \omega_{1ip} = b_{1} + \sum_{i=1}^{q} \boldsymbol{B}^{(M)}(s_{ij})\: \boldsymbol{\omega}_{1i},
+\end{equation}
+\begin{equation}\label{eq2.4}
+\log\big(\sigma(\boldsymbol{s}_{j})\big) = b_{2} + \sum_{i=1}^{q}f_{2i}(s_{ij}) = b_{2} + \sum_{i=1}^{q} \sum_{p=1}^{L} B^{(M)}_{p}(s_{ij})\: \omega_{2ip} = b_{2} + \sum_{i=1}^{q} \boldsymbol{B}^{(M)}(s_{ij})\: \boldsymbol{\omega}_{2i}.
+\end{equation}
+ The influence of the $i^{\text{th}}$ accelerated stress on the mean and SD parameters of the lifetime distribution at the combined stress level $\boldsymbol{s}_{j}$ is modeled nonparametrically using continuous, smooth, and unknown functions $f_{ki}(s_{ij})$ for $j=1,\ldots,J$, $i=1,\ldots,q$, and $k=1,2$. The B-spline approach is employed to approximate these smooth functions, with $B^{(M)}_{p}(s_{ij})$ for $j=1,\ldots,J$, $i=1,\ldots,q$, and $p=1,\ldots,L$, defined as a $M^{\text{th}}$ order B-spline basis function, and $\boldsymbol{B}^{(M)}(s_{ij})=\big(B^{(M)}_{1}(s_{ij}),\ldots, B^{(M)}_{L}(s_{ij})\big)$. The unknown coefficients of the B-spline basis functions are denoted as $\omega_{1ip}$ and $\omega_{2ip}$. Additionally, $\boldsymbol{\omega}_{ki}=(\omega_{ki1},\ldots,\omega_{kiL_{i}})^{T}$ for $i=1,\ldots,q$, $k=1,2$. Here, $L$ refers to the number of basis functions associated with the $i^{\text{th}}$ accelerated stress, and $b_{1}$ and $b_{2}$ are two constants.\\ 
+According to \cite{De Boor:1978}, non-negativity is an inherent property of all B-spline basis functions. Therefore, $\bigtriangleup^{1}\omega_{kip}=\omega_{kip}-\omega_{ki(p-1)} <0$ is a sufficient condition for the mean and SD parameters to decrease monotonically for $p=1,\ldots, L$, $i=1,\ldots,q$, and $k = 1, 2$. So, the re-parameterization technique is employed as $\boldsymbol{\omega}_{ki}=\boldsymbol{\Sigma}\tilde{\boldsymbol{\beta}}_{ki}$, where $\boldsymbol{\beta}_{ki}=(\beta_{ki1},\ldots,\beta_{kiL})^{T}$, $\tilde{\boldsymbol{\beta}}_{ki}=\big(\beta_{ki1},\exp(\beta_{ki2}),\ldots,\exp(\beta_{kiL})\big)^{T}$.The $\boldsymbol{\Sigma}$ matrix is as $\Sigma_{ru}=0$ if $r<u$; $\Sigma_{ru}=1$ if $u=1$, $r\geq 1$; $\Sigma_{ru}=-1$ if $u\geq 2$, $r\geq u$.\\
+To handle the identifiability issue, the intercept parameter of the monotone smooth functions $f_{ki}$ is set to zero, namely $\omega_{ki1}=\beta_{ki1}=0$ for $i=1,\ldots,q$, $k=1,2$. Hence, one can re-write $\boldsymbol{\beta}_{ki}$ and $\tilde{\boldsymbol{\beta}}_{ki}$ as $\boldsymbol{\beta}_{ki}=(\beta_{ki2},\ldots,\beta_{kiL})^{T}$ and $\tilde{\boldsymbol{\beta}}_{ki}=\big(\exp(\beta_{ki2}),\ldots,\exp(\beta_{kiL})\big)^{T}$, respectively, remove the first column of $\boldsymbol{B}^{(M)}(s_{ij})$, i.e., $\boldsymbol{B}^{(M)}(s_{ij})=\big(B^{(M)}_{2}(s_{ij}),\ldots,B^{(M)}_{L}(s_{ij})\big)$, and delete the first row and column of the $\boldsymbol{\Sigma}$ matrix. So, $\boldsymbol{\beta}_{k}=\big(\boldsymbol{\beta}^{T}_{k1},\ldots,\boldsymbol{\beta}^{T}_{kq}\big)^{T}$, $\boldsymbol{\beta}=\big(\boldsymbol{\beta}^{T}_{1},\boldsymbol{\beta}^{T}_{2}\big)^{T}$, $\tilde{\boldsymbol{\beta}}_{k}=\big(\tilde{\boldsymbol{\beta}}^{T}_{k1},\ldots,\tilde{\boldsymbol{\beta}}^{T}_{kq}\big)^{T}$, and $\tilde{\boldsymbol{\beta}}=\big(\tilde{\boldsymbol{\beta}}^{T}_{1},\tilde{\boldsymbol{\beta}}^{T}_{2}\big)^{T}$. The ANN model is trained over $\boldsymbol{\theta}=\big(\boldsymbol{\theta}_{1}^{T}, \boldsymbol{\theta}_{2}^{T}\big)^{T}$, such that $\boldsymbol{\theta}_{k}=\big(b_{k}, \boldsymbol{\beta}^{T}_{k}\big)^{T}$ and the network weights are $\tilde{\boldsymbol{\beta}}_{k}$ for $k=1,2$. $b_{1}$ and $b_{2}$ are the bias terms. By definition $\boldsymbol{Z}_{ij} = \boldsymbol{Z}(s_{ij})=\boldsymbol{B}^{(M)}(s_{ij})\, \boldsymbol{\Sigma} \in \mathbb{R}^{L-1}$, such that $\boldsymbol{Z}(s_{ij}) = \big(Z_{1}(s_{ij}), \ldots, Z_{L-1}(s_{ij})\big)$, the input layer of the network consists $\boldsymbol{Z}_{j} = \boldsymbol{Z}(\boldsymbol{s}_{j})=\big\{1,\boldsymbol{Z}_{1j},\ldots,\boldsymbol{Z}_{qj}\big\}$ for $j=1,\ldots,J$.\\
+In the proposed model, the dataset is defined as $\mathcal{D} = \left\{\left(t_{jl}, c_{jl}, \boldsymbol{s}_{j}\right): l=1,\ldots,n_{j}, j=1,\ldots, J\right\}$. $t_{jl}$ is the failure time or censoring time. $c_{jl}$ is the censoring indicator, such that $c_{jl} = 1$ if $t_{jl}$ is an observed failure time and $c_{jl} = 0$ if $t_{jl}$ is a censoring time. $n_{j}$ is the number of tested units, such that $\sum_{j=1}^{J}n_{j} = n$.\\
+Given $\mathcal{D}$, the likelihood function is
+\begin{equation}\label{eq2.5}
+L(\boldsymbol{\theta}) = \prod_{j=1}^{J} \prod_{l=1}^{n_{j}} \left[f\left(t_{jl} \mid \boldsymbol{s}_{j}; \boldsymbol{\theta}\right)\right]^{c_{jl}} \left[R\left(t_{jl} \mid \boldsymbol{s}_{j}; \boldsymbol{\theta}\right)\right]^{1-c_{jl}}, 
+\end{equation}
+where $f(t)$ is the PDF of lifetime distribution, and $R(t) = 1- F(t)$ is the reliability function. Based on \eqref{eq2.5}, the log-likelihood function is 
+\begin{equation}\label{eq2.6}
+\mathcal{L}(\boldsymbol{\theta}) = \sum_{j=1}^{J} \sum_{l=1}^{n_{j}} \left[c_{jl} \: \log f\left(t_{jl} \mid \boldsymbol{s}_{j}; \boldsymbol{\theta}\right) + (1 - c_{jl}) \:\log R\left(t_{jl} \mid \boldsymbol{s}_{j}; \boldsymbol{\theta}\right)\right].
+\end{equation}
+To prevent overfitting, a penalty component is incorporated into the loss function. Therefore, the loss function is derived from the negative log-likelihood function with a penalty component $\mathcal{P}_{\boldsymbol{\beta}}$ as
+\begin{equation}   \label{eq2.7}
+\text{Loss}_{pen} = - \mathcal{L}(\boldsymbol{\theta}) + \mathcal{P}_{\boldsymbol{\beta}},
+\end{equation}
+where $\mathcal{P}_{\boldsymbol{\beta}}$ controls the amount of smoothness. The regularization method relies on a penalty that is based on differences
+\begin{equation*}
+\mathcal{P}_{\boldsymbol{\beta}} = \frac{1}{2}\sum_{k=1}^{2}\sum_{i=1}^{q} \lambda_{ki} \: \boldsymbol{\beta}^{T}_{ki}\:\boldsymbol{\Omega}\:\boldsymbol{\beta}_{ki},
+\end{equation*}
+where $\boldsymbol{\Omega}$ is a known, non-negative definite, and symmetric penalty matrix defined as $\boldsymbol{\Omega} = \boldsymbol{D}_{d}^{T}\boldsymbol{D}_{d}$, such that $\boldsymbol{D}_{d}$ represents a finite difference matrix of order $d$. The parameter $\lambda_{ki} \geqslant 0$ is a smoothing parameter that controls the level of smoothness of $f_{ki}$ for $i=1,\ldots,q$, $k=1,2$.\\
+The P-spline model is optimised by minimising the loss function, \eqref{eq2.7}, by the application of gradient-based methods with ANN representations. The Adam algorithm \cite{Kingma:Jimmy:2015} is one of the extensions of the gradient descent algorithm that adaptively modifies the learning rate for each parameter. In all simulation studies, we used the Adam optimizer to update $\boldsymbol{\theta}_{1}$ and $\boldsymbol{\theta}_{2}$, as it provided the most reliable results. For the fixed smoothing parameters, the two outputs of the network’s last layer are $\hat{\mu}(\boldsymbol{s}_{j})$ and $\hat{\sigma}(\boldsymbol{s}_{j})$. Each iteration of the optimization process incorporates a crucial implicit computational step for calculating $\hat{\gamma}(\boldsymbol{s}_{j})$ and $\hat{\zeta}(\boldsymbol{s}_{j})$. The obtained outputs from the network along with the $\hat{\gamma}(\boldsymbol{s}_{j})$ and $\hat{\zeta}(\boldsymbol{s}_{j})$, are then used to update the smoothing parameters.
+
+\section{The smoothing parameters estimation}\label{sec3}
+In the proposed model, the smoothing parameters $\Lambda=\left\{\lambda_{ki}, i=1,\ldots,q, k=1,2\right\}$ are chosen via minimizing the AIC, defined below, using numerical algorithms.
+\begin{equation}\label{eq3.1}
+\text{AIC}\left(\Lambda\right) = -\frac{2}{n}\mathcal{L}\big(\hat{\boldsymbol{\theta}}_{\Lambda} \big) + \frac{2}{n} \text{df}_{\Lambda},             
+\end{equation}
+where $n$ represents the size of the sample, $\mathcal{L}\big(\hat{\boldsymbol{\theta}}_{\Lambda} \big)$ is the value of the estimated log-likelihood function that depends on $\Lambda$, and $\text{df}_{\Lambda}$ is the effective degrees of freedom of the model, which also depends on $\Lambda$.\\
+The effective degrees of freedom of the proposed model can be approximated as
+\begin{equation*}
+\text{df}_{\Lambda} = \sum_{k=1}^{2}\sum_{i=1}^{q}\text{trace}(\textbf{S}_{ki}) + 2,           
+\end{equation*}
+where $\text{trace}(\boldsymbol{S}_{ki})$ for $i=1,\ldots,q$, $k=1,2$, defines the trace of the smoothing matrix $\boldsymbol{S}_{ki}$. The $\boldsymbol{S}_{ki}$ matrix represents the efficacy of the $i^{\text{th}}$ accelerated stress on the mean or SD parameters of the lifetime distribution. In the proposed model, this matrix is not directly computed due to the lack of second-order derivatives within the deep learning framework. Instead, it is approximated using a linear smoother. The smoothing parameter $\lambda_{ki}$ can be transformed using the logarithm, i.e., $\lambda_{ki}=\exp(\tilde{\lambda}_{ki})$ with $\tilde{\lambda}_{ki} \in \mathbb{R}$. This transformation ensures that the constraint \(\lambda_{ki} \geq 0\) is satisfied.\\
+The nested optimization process is as follows: an inner loop uses a constant $\Lambda$ to optimize the parameter vectors $\boldsymbol{\theta}_{1}$ and $\boldsymbol{\theta}_{2}$ during each epoch. Then, the smoothing parameter $\Lambda$ is updated in an outer loop based on the minimization of AIC. \\
+Predicting the lifetime distribution under different stress conditions is an important objective of a CSALT model. Using the estimated $\hat{\boldsymbol{\theta}}$, the mean and SD parameters of the lifetime distribution are estimated at each combined stress level $\boldsymbol{s}_{j}$ for $j = 0, 1, \ldots, J$, respectively, as outlined below. The vector $\boldsymbol{s}_{0} = (s_{10}, \ldots , s_{q0})^{T}$ represents the associated use conditions.
+\begin{equation} \label{eq3.2}
+\hat{\mu}(\boldsymbol{s}_{j}) = \exp\Big(\hat{b}_{1} + \sum_{i=1}^{q}\hat{f}_{1i}(s_{ij}) \Big) 
+=\exp\Big(\hat{b}_{1} + \sum_{i=1}^{q}\boldsymbol{B}^{(M)}(s_{ij})\: \hat{\boldsymbol{\omega}}_{1i} \Big),             
+\end{equation}
+\begin{equation}\label{eq3.3}
+ \hat{\sigma}(\boldsymbol{s}_{j})=\exp\Big(\hat{b}_{2} + \sum_{i=1}^{q}\hat{f}_{2i}(s_{ij}) \Big)
+=\exp\Big(\hat{b}_{2} + \sum_{i=1}^{q}\boldsymbol{B}^{(M)}(s_{ij})\: \hat{\boldsymbol{\omega}}_{2i} \Big). 
+\end{equation}
+
+\section{Simulation study}\label{sec4}
+This section provides the results of a simulation study conducted to evaluate the performance of the proposed model. This model is applicable in scenarios where one or more accelerated stresses are present. The focus of the simulation study is specifically on models that incorporate two accelerated stresses: temperature (denoted as \(s_{1} = \text{temp}\)) and voltage (denoted as \(s_{2} = \text{volt}\)). The aim is to analyze the effects of their combined influence on unit failure. As stated in \cite{Escobar:Meeker:2006}, an empirical relationship as follows is employed to calculate the mean lifetime of a unit subjected to the accelerated stresses of temperature and voltage.
+\begin{equation}
+\mu(\text{temp},\text{volt})=\frac{1}{R(\text{temp},\text{volt})}\big(\frac{\text{volt}}{\delta_{0}}\big)^{\xi_{1}},          
+  \label{eq4.1}
+\end{equation}
+where $\xi_{1}$ and $\delta_{0}$ are unit special parameters and $R(\text{temp},\text{volt})$ is calculated as 
+\begin{equation}
+R(\text{temp},\text{volt})=\xi_{0}\exp\big\{\frac{-E_{a}}{k_{1}\times \text{temp}}\big\} \exp\big\{\xi_{2}\log(\text{volt}) + \frac{\xi_{3} \log(\text{volt})}{k_{1}\times \text{temp}}\big\},       
+      \label{eq4.2}
+\end{equation}
+where $k_{1}$, the ideal gas constant, is equal to $8.414\: J\:mol^{-1}K^{-1}$, $\xi_{0}$, $\xi_{2}$, and $\xi_{3}$ are properties of certain physical or chemical processes.\\
+In practical scenarios, it is often noted that there are correlations between variance and mean. A power function, which has been widely utilized to illustrate the empirical connection between variance and mean, was presented by \cite{Taylor:1961} as
+\begin{equation}
+\sigma(\text{temp},\text{volt})=k_{2}\times\mu^{b}(\text{temp},\text{volt}),           
+  \label{eq4.3}
+\end{equation}
+where the coefficients $k_{2}$ and $b$ are positive. The parameters of the model are specified as $\xi_{1}=\delta_{0}=1$, $E_{a}=10000\:J \:mol^{-1}$, $\xi_{ 0 } =10 ^ {-4}\:h^{-1}$, $\xi_{2}=2$, $\xi_{3}=1000$, $k_{2}=0.1$, and $b = 1.2$.\\
+Five stress levels are set for each accelerated stress; specifically, $s_{1}$ takes values of 350, 365, 380, 395, and 410 (K), while $s_{2}$ takes values of 120, 140, 160, 180, and 200 (V). Thus, there are $5 \times 5 =25$ combinations of stress levels for $s_{1}$ and $s_{2}$. In each combination,
+10 units are tested. The use conditions are specified as $s_{10}=320$ (K) and $s_{20}=100$ (V), and the test at each combined stress level terminates at a distinct, predetermined censoring time. The order and number of B-spline basis functions are set to $M = 4$, which corresponds to a cubic B-spline, and $L=12$, respectively, for both the mean and SD formulations. Additionally, the Adam optimizer is used, and the training process is conducted over 2,000 epochs with a learning rate of \( 0.001 \).\\
+The true mean and SD at the use conditions are $\mu(s_{10},s_{20})=759.7092 \: h$ and $\sigma(s_{10},s_{20})=286.2707 \: h$, respectively. \\
+Based on 1000 simulation replications, the averaged bias terms are $\hat{b}_{1} = 6.3192$ and $\hat{b}_{2} = 5.0314$. Furthermore, Table \ref{tab1} indicates the simulation results for the estimated values of the model parameters, $\hat{\omega}_{kip}$, for $p=2,\ldots, 12$, $i=1,2$, and $k=1,2$.
+\begin{table}[h]
+\begin{center}
+\small
+\caption{Estimated values of the model parameters, $\hat{\omega}_{kip}$.}\label{tab1}%
+\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c |}
+\hline
+& $\hat{\omega}_{kip}$ & $p=2$ & $p=3$ & $p=4$ & $p=5$ & $p=6$ & $p=7$ & $p=8$ & $p=9$ & $p=10$ & $p=11$ & $p=12$ \\ \hline \hline
+$k=1$ & $i=1$ & -0.0591 & -0.1066 & -0.1365 & -0.1652 & -0.1915 & -0.2167 & -0.2383 & -0.2548 & -0.2706 & -0.2867 & -0.3028  \\
+ &  $i=2$ & -0.0897 & -0.1772 & -0.2548 & -0.3282 & -0.4120 & -0.4884 & -0.5640 & -0.6296 & -0.6860 & -0.7394 & -0.7924 \\
+$k=2$ & $i=1$ & -0.0212 & -0.0424 & -0.0623 & -0.0803 & -0.0970 & -0.1132 & -0.1311 & -0.1591 & -0.2073 & -0.2820 & -0.3643\\
+ &  $i=2$ & -0.2307 & -0.3916 & -0.4624 & -0.5404 & -0.5995 & -0.6966 & -0.7512 & -0.8002 & -0.8519 & -0.9076 & -0.9642 \\ 
+\hline
+\end{tabular}
+\end{center}
+\end{table} 
+\\
+By inserting the estimated parameters into \eqref{eq3.2} and \eqref{eq3.3}, the predicted mean and SD of the lifetime distribution at the use conditions are
+calculated as $\hat{\mu}(s_{10},s_{20}) = 775.4351 \: h$ and $\hat{\sigma}(s_{10},s_{20}) = 274.5777 \: h$, respectively. The proposed model produces accurate predictions for the mean and SD that correspond closely to the true values. These results illustrate that employing the proposed model not only improves its efficiency but also enhances the accuracy of predictions of lifetime characteristics under the use conditions.
+
+\section*{Discussion and Conclusion}   
+This study presented an innovative CSALT model in the context of reliability under the Type-I censoring scheme. The model represented the SPCSALT model as an ANN to improve both prediction and interpretability. 
+The analysis of a simulation study demonstrated that the proposed model effectively predicts the characteristics of the lifetime distribution at the use conditions, providing a superior fit in comparison to traditional parametric models.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+\bibitem[Escobar and Meeker (2006)]{Escobar:Meeker:2006}
+Escobar L.A. and Meeker W.Q. (2006), A review of accelerated test models, {\it Statist. Sci.} 21(4), 552 - 577.
+
+\bibitem[Freitag et al. (2009)]{Freitag:2009}
+Freitag S., Beer M., Graf W. and Kaliske M. (2009), Lifetime prediction using accelerated test data and neural networks, {\it Comput. Struct.} 87(19 - 20), 1187 - 1194.
+
+\bibitem[Jeong et al. (2024)]{Jeong:2024}
+Jeong S.H., Park J.W. and Kim H.S. (2024), Deep neural network-based lifetime diagnosis algorithm with electrical capacitor accelerated life test, {\it J. Power Sources.} 599, 234182.
+
+\bibitem[Colak et al. (2024)]{colak:2024}
+Colak A.B., Sindhu T.N., Lone S.A., Akhtar M.T. and Shafiq A. (2024), A comparative analysis of maximum likelihood estimation and artificial neural network modeling to assess electrical component reliability, {\it Qual. Reliab. Eng. Int.} 40(1), 91 - 114.
+
+\bibitem[De Boor (1978)]{De Boor:1978}
+De Boor C. (1978), {\it A Practical Guide to Splines}, New York, Springer-Verlag.
+
+\bibitem[Kingma and Jimmy (2015)]{Kingma:Jimmy:2015}
+Kingma D.P. and Jimmy Ba. (2015), Adam: A method for stochastic optimization, {\it In the 3rd International Conference for Learning Representations, San Diego, \url{http://arxiv.org/abs/1412.6980}}.
+
+\bibitem[Taylor (1961)]{Taylor:1961}
+Taylor L.R. (1961), Aggregation, variance and the mean, {\it Nature} 189, 732 - 735.
+
+
+
+\end{thebibliography}
+ \end{document}
+

@@ -1,0 +1,364 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Stress-Strength with Clayton Copula and GR Marginals}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Yarahmadi et al.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Stress–Strength Reliability with Clayton Copula and Generalized Rayleigh Marginals}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+	Mohammad Yarahmadi$^{1}$, Farshin Hormozinejad$^{1,*}$, Mohammadreza Ghalani$^{1}$, Saralees Nadarajah$^{2}$, Mohammad Khodamoradi$^{3}$ \\[0.3cm]
+	$^{1}$Department of Statistics, Ahv.C., Islamic Azad University, Ahvaz, Iran \\
+	$^{2}$Department of Mathematics, University of Manchester \\
+	$^{3}$Department of Statistics, Izeh.C., Islamic Azad University, Izeh, Iran \\
+	$^{*}$Corresponding author: Farshin.Hormozinejad@iau.ac.ir
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This study estimates stress‑strength reliability when the stress and strength variables are dependent. The dependence is modeled by the Clayton copula, which captures lower‑tail association, and the marginals follow the generalized Rayleigh distribution. A unified framework is developed that includes maximum likelihood estimation, bootstrap confidence intervals, and Bayesian estimation under different loss functions using a Metropolis‑within‑Gibbs sampler. A Monte Carlo simulation evaluates the performance of the estimators, and a real data example shows the practical use of the model. The findings indicate that ignoring dependence can lead to biased reliability estimates.
+
+\noindent{\bf Keywords:} 
+Generalized Rayleigh distribution, Clayton copula, stress-strength reliability, Bayesian inference. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62N05$, $\rm 62F15$, $\rm 62H05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+
+The stress--strength reliability index \(R = P(X < Y)\), with \(X\) and \(Y\) denoting stress and strength, was introduced by Birnbaum \cite{Birnbaum1956} and Birnbaum and McCarty \cite{Birnbaum1958}. Early methods \cite{Mazumdar1970} were extended to censored data \cite{Valiollahi2013,Basirat2015}.
+
+Dependence, often present in practice, is modeled via copulas \cite{Nelsen2006}. Recent advances address multicomponent systems \cite{Wang2024,Zhang2025,Akgul2025,WangYan2025,ZhangYan2025,Cai2023,Alshehri2026}, motivating copula-based frequentist and Bayesian reliability analyses.
+
+The Clayton copula captures lower-tail dependence, relevant in low-strength, high-stress regimes. The generalized Rayleigh (GR) distribution flexibly models skewed reliability data. No study has investigated stress--strength reliability with GR marginals under both dependent and independent structures.
+
+We estimate $R$ for GR marginals with Clayton copula using MLE and Bayesian inference under various loss functions with a Metropolis-within-Gibbs sampler, evaluated via simulations and real data. Contributions are: (i) novel GR--Clayton formulation with lower-tail dependence; (ii) development and comparison of MLE and Bayesian frameworks; (iii) comprehensive simulations; (iv) real-data validation.
+
+Section~2 reviews the Clayton copula. Section~3 presents the GR distribution. Section~4 details estimation. Sections~5 and~6 provide simulations and application. Section~7 concludes.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%asle maghale%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Copula approach}
+
+A copula \( C : [0,1]^2 \rightarrow [0,1] \) is a bivariate distribution with uniform marginals \cite{Sklar1959,Nelsen2006}. By Sklar's theorem, any bivariate distribution \(H\) with continuous marginals \(F(x)\) and \(G(y)\) decomposes as \(H(x, y) = C(F(x), G(y))\), with joint density \(h(x, y) = c(F(x), G(y)) f(x) g(y)\), where \(c(u, v) = \partial^2 C(u, v) / \partial u \partial v\).
+
+We use the Clayton copula \cite{Clayton1978}, an Archimedean copula \cite{Nelsen2006} given by
+\[
+C(u, v; \phi) = \left(u^{-\phi} + v^{-\phi} - 1\right)^{-1/\phi}, \quad \phi \in [-1, \infty) \setminus \{0\},
+\]
+with density
+\begin{equation}
+	c(u, v) = (\phi + 1)(uv)^{-\phi - 1} \left(u^{-\phi} + v^{-\phi} - 1\right)^{-(2\phi + 1)/\phi},
+	\label{eq:clayton-density}
+\end{equation}
+where \(\phi = 2\tau/(1-\tau)\) relates to Kendall's \(\tau\).
+The Clayton copula exhibits lower-tail dependence, desirable when joint low realizations influence failure, unlike Gumbel or Joe (upper-tail) and Frank (no tail dependence) \cite{Nelsen2006}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generalized Rayleigh Distribution}
+
+The two-parameter GR distribution \cite{SurlesPadgett2001} is a special case of the generalized Weibull distribution. A random variable \(X \sim GR(\alpha, \lambda)\) has pdf and cdf
+\begin{equation}
+	f(x; \alpha, \lambda) = 2 \alpha \lambda^{2} x \, e^{-(\lambda x)^2} \left(1 - e^{-(\lambda x)^2} \right)^{\alpha - 1}, \quad x > 0,
+\end{equation}
+\begin{equation}
+	F(x; \alpha, \lambda) = \left(1 - e^{-(\lambda x)^2} \right)^{\alpha}, \quad x > 0,
+	\label{cdfGR}
+\end{equation}
+where \(\alpha, \lambda > 0\) are shape and scale parameters. 
+The distribution is right-skewed, with mode and median decreasing in $\lambda$ and increasing in $\alpha$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimation of \(R\)}
+
+\subsection{Independent case}
+
+For independent \(X \sim GR(\alpha_1, \lambda_1)\), \(Y \sim GR(\alpha_2, \lambda_2)\), \(R_I = \int_0^{\infty} \int_0^y f_X(x) f_Y(y) \, dx \, dy\) is evaluated numerically.
+
+\subsection{Dependent case under Clayton copula}
+
+Under the Clayton copula with parameter \(\phi\), \(F(x) = (1 - e^{-(\lambda_1 x)^2})^{\alpha_1}\), \(G(y) = (1 - e^{-(\lambda_2 y)^2})^{\alpha_2}\),
+\[
+R_C = \int_0^{\infty} \int_0^y c(F(x), G(y)) f(x) g(y) \, dx \, dy,
+\]
+where \(c(u, v)\) is given by (\ref{eq:clayton-density}). Numerical integration uses adaptive Gauss--Kronrod quadrature in {R} (tolerances $10^{-6}$, errors $< 10^{-5}$).
+
+\subsection{MLE of \(R_C\)}
+
+The log-likelihood based on \(\{(x_i, y_i)\}_{i=1}^n\) is
+\begin{align*}
+	L(\boldsymbol{\vartheta}) &= 2n (\ln \lambda_1 + \ln \lambda_2) + n \ln(4 \alpha_1 \alpha_2 (\phi + 1)) + \sum_{i=1}^n (\ln x_i + \ln y_i) - \sum_{i=1}^n [(\lambda_1 x_i)^2 + (\lambda_2 y_i)^2] \\
+	&\quad - (\phi \alpha_1 + 1) \sum_{i=1}^n \ln(1 - e^{-(\lambda_1 x_i)^2}) - (\phi \alpha_2 + 1) \sum_{i=1}^n \ln(1 - e^{-(\lambda_2 y_i)^2}) \\
+	&\quad - \frac{2\phi + 1}{\phi} \sum_{i=1}^n \ln[ (1 - e^{-(\lambda_1 x_i)^2})^{-\phi \alpha_1} + (1 - e^{-(\lambda_2 y_i)^2})^{-\phi \alpha_2} - 1 ],
+\end{align*}
+where \(\boldsymbol{\vartheta} = (\alpha_1, \lambda_1, \alpha_2, \lambda_2, \phi)\). MLEs solve the score equations (standard differentiation; omitted). By invariance, \(\widehat{R}_C = R_C(\widehat{\alpha}_1, \widehat{\lambda}_1, \widehat{\alpha}_2, \widehat{\lambda}_2, \widehat{\phi})\).
+
+\subsection{Bootstrap confidence intervals}
+
+Parametric bootstrap confidence intervals for $R_C$ are constructed by resampling from the fitted Clayton--GR model and re-estimating all parameters via MLE in each replication. Both percentile (Boot-p) and bootstrap-$t$ (Boot-$t$) intervals are obtained; the latter uses a plug-in variance estimate to form Studentized intervals. Full details follow standard procedures.
+
+\subsection{Bayes estimation of \(R_C\)}
+
+With independent uniform priors on bounded intervals, posterior samples are drawn via Metropolis-within-Gibbs MCMC \cite{Metropolis1953}. Estimates under standard loss functions are: posterior mean (SEL), posterior median (AEL), \(\widehat{R}_{C,\mathrm{LIL}} = -\frac{1}{c} \ln E(e^{-c R_C} \mid \text{data})\) (LINEX), and posterior mode (MAP). Entropy loss corresponds to LINEX with \(c = 1\).
+% =======================================================================
+\section{Simulation Study}
+
+A Monte Carlo study evaluates MLE and Bayesian estimators of \(R = P(X < Y)\) under the GR--Clayton model. Paired samples are generated via \(X_i = F^{-1}_{\mathrm{GR},1}(U_i)\), \(Y_i = F^{-1}_{\mathrm{GR},2}(V_i)\) with \((U_i,V_i) \sim C_\phi\). For each setting, 1000 replications are used.
+
+\vspace{0.1cm}
+\noindent \textbf{MLE results} (Table~\ref{tab-biase-mes1}): MLEs exhibit small bias; SD and MSE decrease with \(n\). \(\widehat{R}_C\) has negligible bias, with SD and MSE decreasing systematically.
+
+\vspace{0.1cm}
+\noindent \textbf{Bayesian results} (Table~\ref{tabbayes-biase-mes1}): LINEX achieves the smallest MSE; SEL outperforms AEL, ENL, and MAP; ENL yields the largest MSE.
+
+Overall, Bayesian estimators (LINEX, SEL) achieve lower MSE in small samples; all methods converge as \(n\) increases; \(n \ge 30\) provides reliable performance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[htbp]
+		\centering
+		\caption{Bias and MSE of MLEs and Bootstrap for selected settings.}
+		\label{tab-biase-mes1}
+		\tiny
+		
+		\resizebox{\textwidth}{!}{%
+			\begin{tabular}{c c c c c c c c c c c}
+				\hline
+				$n$ & $\alpha_1$ & $\lambda_1$ & $\alpha_2$ & $\lambda_2$ & $\phi$ & $R_{\text{true}}$ & \multicolumn{2}{c}{MLE} & \multicolumn{2}{c}{Boot} \\
+				\cmidrule(lr){8-9} \cmidrule(lr){10-11}
+				& & & & & & & Bias & MSE & EC & AIL \\
+				\hline
+				\multicolumn{11}{l}{\tiny For each parameter, entries are: SD / Bias / MSE.} \\
+				\hline
+				
+				20 & 1 & 1 & 1 & 1 & 2 & 0.5000 & 0.0092 & 0.0103 & 0.9460 & 0.0202 \\
+				& 0.43/0.16/0.21 & 0.15/0.05/0.02 & 0.15/0.05/0.02 & 0.15/0.06/0.03 & 0.98/0.19/0.99 & & & & & \\
+				\hline
+				
+				20 & 5 & 5 & 1 & 1 & 5 & 0.7143 & -0.0022 & 0.0005 & 0.9460 & 0.0717 \\
+				& 3.54/1.30/14.06 & 0.45/0.16/0.23 & 0.45/0.16/0.23 & 0.14/0.06/0.02 & 2.02/0.55/4.40 & & & & & \\
+				\hline
+				
+				30 & 1 & 1 & 1 & 1 & 2 & 0.5000 & -0.0082 & 0.0058 & 0.9660 & 0.0070 \\
+				& 0.30/0.11/0.10 & 0.11/0.04/0.01 & 0.11/0.04/0.01 & 0.12/0.03/0.02 & 0.74/0.16/0.58 & & & & & \\
+				\hline
+				
+				30 & 5 & 5 & 1 & 1 & 5 & 0.7143 & -0.0018 & 0.0004 & 0.9520 & 0.0640 \\
+				& 2.04/0.84/4.95 & 0.36/0.12/0.14 & 0.36/0.12/0.14 & 0.12/0.04/0.02 & 1.57/0.23/2.52 & & & & & \\
+				\hline
+				
+				40 & 1 & 1 & 1 & 2 & 2 & 0.5000 & 0.0012 & 0.0005 & 0.9620 & 0.0836 \\
+				& 0.25/0.08/0.07 & 0.11/0.03/0.01 & 0.24/0.07/0.06 & 0.19/0.05/0.04 & 0.65/0.10/0.44 & & & & & \\
+				\hline
+				
+				40 & 5 & 5 & 1 & 2 & 5 & 0.7143 & -0.0056 & 0.0026 & 0.9560 & 0.0879 \\
+				& 1.62/0.58/2.97 & 0.33/0.10/0.12 & 0.24/0.07/0.06 & 0.21/0.06/0.05 & 1.33/0.28/1.85 & & & & & \\
+				\hline
+				
+				50 & 1 & 1 & 1 & 2 & 2 & 0.5000 & -0.0007 & 0.0004 & 0.9650 & 0.0062 \\
+				& 0.20/0.06/0.05 & 0.09/0.02/0.01 & 0.20/0.07/0.04 & 0.18/0.05/0.04 & 0.59/0.04/0.35 & & & & & \\
+				\hline
+				
+				50 & 5 & 5 & 1 & 2 & 5 & 0.7143 & -0.0038 & 0.0021 & 0.9400 & 0.1005 \\
+				& 1.34/0.44/1.98 & 0.27/0.07/0.08 & 0.22/0.06/0.05 & 0.19/0.06/0.04 & 1.18/0.23/1.45 & & & & & \\
+				\hline
+				
+			\end{tabular}%
+		}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+	\centering
+	\caption{Bias and MSE of Bayes estimators under different loss functions.}
+	\label{tabbayes-biase-mes1}
+	
+	
+	\setlength{\tabcolsep}{3pt}
+	\renewcommand{\arraystretch}{1.1}
+	
+
+	\footnotesize
+	
+	\begin{tabular}{c c c c c c | c c c c c | c c c c c}
+		\hline
+		$n$ & $\alpha_1$ & $\lambda_1$ & $\alpha_2$ & $\lambda_2$ & $\phi$
+		& \multicolumn{5}{c|}{Bias} & \multicolumn{5}{c}{MSE} \\
+		\cmidrule(lr){7-11} \cmidrule(lr){12-16}
+		& & & & & & Abs & Ent & MAP & Sq & Lin & Abs & Ent & MAP & Sq & Lin \\
+		\hline
+		
+		20 & 1 & 1 & 1 & 1 & 1 & .061 & 1.700 & .248 & .050 & -.015 & .004 & 2.889 & .061 & .003 & .016 \\
+		20 & 1 & 1 & 1 & 1 & 2 & .061 & 1.700 & .248 & .050 & -.015 & .004 & 2.889 & .067 & .003 & .000 \\
+		20 & 1 & 1 & 1 & 1 & 3 & .085 & 1.686 & .268 & .069 & .003 & .007 & 2.843 & .082 & .007 & .000 \\
+		20 & 3 & 3 & 5 & 1 & 3 & .001 & 0.310 & .018 & .001 & .000 & .000 & 0.125 & .003 & .000 & .000 \\
+		20 & 5 & 5 & 1 & 1 & 5 & .090 & 1.632 & .145 & .072 & .004 & .009 & 2.664 & .019 & .007 & .000 \\
+		20 & 3 & 1 & 1 & 1 & 2 & .000 & 5.197 & .019 & .000 & .000 & .000 & 37.012 & .000 & .000 & .000 \\
+		20 & 1 & 3 & 1 & 1 & 2 & .129 & 1.293 & .361 & .110 & -.057 & .017 & 1.672 & .139 & .015 & .003 \\
+		20 & 1 & 1 & 3 & 1 & 2 & .000 & 5.900 & .017 & .000 & .000 & .000 & 34.814 & .005 & .000 & .000 \\
+		20 & 3 & 3 & 5 & 1 & 2 & .000 & 0.140 & .136 & .000 & .000 & .000 & 0.024 & .005 & .000 & .000 \\
+		
+		\hline
+		
+		40 & 1 & 1 & 1 & 1 & 1 & -.056 & 1.475 & .144 & -.058 & -.130 & .003 & 2.177 & .021 & .003 & .000 \\
+		40 & 1 & 1 & 1 & 1 & 2 & .059 & 1.608 & .259 & .058 & -.013 & .004 & 2.587 & .061 & .003 & .000 \\
+		40 & 1 & 1 & 1 & 1 & 3 & .082 & 1.545 & .286 & .080 & .006 & .007 & 2.386 & .079 & .005 & .000 \\
+		40 & 3 & 3 & 5 & 2 & 3 & .001 & 0.420 & .017 & .001 & .000 & .000 & 0.185 & .002 & .000 & .000 \\
+		40 & 5 & 5 & 1 & 2 & 5 & .094 & 1.457 & .125 & .086 & .008 & .008 & 2.123 & .014 & .005 & .000 \\
+		40 & 3 & 1 & 1 & 1 & 2 & .000 & 6.073 & .017 & .000 & .000 & .000 & 27.884 & .000 & .000 & .000 \\
+		40 & 1 & 3 & 1 & 1 & 2 & .125 & 1.248 & .373 & .122 & -.048 & .016 & 1.558 & .120 & .014 & .002 \\
+		40 & 1 & 1 & 3 & 1 & 2 & .134 & 1.196 & .383 & .132 & -.056 & .000 & 1.431 & .002 & .000 & .000 \\
+		40 & 3 & 3 & 5 & 2 & 2 & .000 & 0.190 & .125 & .000 & .000 & .000 & 0.038 & .003 & .000 & .000 \\
+		
+		\hline
+	\end{tabular}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Application to Real Data}
+
+We use UEFA Champions League data (2004--2006) from Meintanis \cite{Meintanis2007}, where $X$ is the time (minutes) of the first goal from a direct kick and $Y$ is the home team's first goal time ($R = P(X < Y)$). The data are:
+
+\noindent
+$X$: 26, 63, 19, 66, 40, 49, 8, 69, 39, 82, 72, 66, 25, 41, 16, 18, 22, 42, 36, 34, 53, 54, 51, 76, 64, 26, 16, 44, 25, 55, 49, 24, 44, 42, 27, 28, 2.
+
+\noindent
+$Y$: 20, 18, 19, 85, 40, 49, 8, 71, 39, 48, 72, 62, 9, 3, 75, 18, 14, 42, 52, 34, 39, 28, 64, 15, 48, 16, 13, 14, 11, 49, 24, 30, 3, 47, 28, 2.
+
+The Pearson correlation is $0.469$ ($p = 0.0034$). Both marginals fit the GR distribution (K-S $p > 0.92$) and the Clayton copula parameter is $\widehat{\phi} = 0.76$ ($p \leq 0.01$; Table~\ref{tab-fit}).
+
+\begin{table}[H]
+	\centering
+	\caption{Fitting real data to the GR and Clayton copula.}
+	\label{tab-fit}
+	\footnotesize
+	\begin{tabular}{lcccc}
+		\toprule
+		Marginal & K-S & $p$-value & $\widehat{\alpha}$ & $\widehat{\lambda}$ \\
+		\midrule
+		$X$ (stress) & 0.0871 & 0.9414 & 1.0117 & 0.0220 \\
+		$Y$ (strength) & 0.0894 & 0.9285 & 0.5721 & 0.0207 \\
+		\bottomrule
+	\end{tabular}
+	\quad
+	\begin{tabular}{lccccc}
+		\toprule
+		Copula & $\widehat{\phi}$ & $p$-value & logLik & AIC & BIC \\
+		\midrule
+		Clayton & 0.76 & $\leq 0.01$ & 3.23 & -4.46 & -2.85 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{Estimations of $R_C$ for the UEFA Champions League data.}
+	\label{estim-R-real}
+	\footnotesize
+	\begin{tabular}{lc}
+		\hline
+		Method & $R_C$ \\
+		\hline
+		MLE & 0.3631 \\
+		Bayesian: MAP & 0.3675 \\
+		Bayesian: Linex & 0.3734 \\
+		Bayesian: Absolute error & 0.3749 \\
+		Bayesian: Entropy & 0.3756 \\
+		Bayesian: Squared error & 0.3778 \\
+		\hline
+	\end{tabular}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+
+This study proposed estimation of $R = P(X < Y)$ under Clayton copula dependence with GR marginals, using MLE, bootstrap (Boot-p, Boot-t), and Bayesian methods under various loss functions. Simulations showed bootstrap and Bayesian methods, particularly LINEX, outperform classical approaches in small samples. Real UEFA Champions League data validated the methodology.
+
+The framework generalizes directly to other Archimedean copulas (Gumbel, Frank) by substituting the copula density in the likelihood, bootstrap, and MCMC procedures, and can be adapted to elliptical copulas (Gaussian, $t$) with appropriate numerical integration, demonstrating broad applicability across reliability, engineering, and applied statistics.
+
+Future work may explore alternative copulas, flexible marginals, and applications in biostatistics or financial risk modeling.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%asle maghale%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+	
+	\bibitem[Alshehri (2026)]{Alshehri2026}
+	Alshehri M. A. (2026), Reliability analysis of parallel systems with dependent components and Archimedean copulas, {\it Journal of Inequalities and Applications}, 2026 Jan 14.
+	
+	\bibitem[Akg\"{u}l (2025)]{Akgul2025}
+	Akg\"{u}l F. G. (2025), Inference for multicomponent stress--strength reliability based on the generalized Lindley distribution, {\it Scientific Reports}, 15(1), 38408.
+	
+	\bibitem[Zhang et al. (2025)]{Zhang2025}
+	Zhang L., Yan R. and Wang J. (2025), Bayesian inference for dependent stress--strength reliability of series--parallel systems based on copulas, {\it Scientific Reports}, 15(1), 29504.
+	
+	\bibitem[Wang and Yan (2025)]{WangYan2025}
+	Wang J. and Yan R. (2025), Semi-parametric estimation of system reliability for multicomponent stress--strength model under hierarchical Archimedean copulas, {\it Probability in the Engineering and Informational Sciences}, 39(2), 278--308.
+	
+	\bibitem[Zhang and Yan (2025)]{ZhangYan2025}
+	Zhang L. and Yan R. (2025), Copula-based reliability estimation of parallel--series systems in the multicomponent stress--strength dependent model, {\it Probability in the Engineering and Informational Sciences}, 39(3), 309--325.
+	
+	\bibitem[Wang and Yan (2024)]{Wang2024}
+	Wang J. and Yan R. (2024), Copula-based reliability estimation with a stress--strength model for bivariate stress under progressive Type-II censoring, {\it Symmetry}, 16(3), 265.
+	
+	\bibitem[Cai et al. (2023)]{Cai2023}
+	Cai J., Yang J. and Zhang Y. (2023), Reliability analysis of s-out-of-k multicomponent stress--strength systems with dependent strength elements based on copula functions, {\it Mathematical Biosciences and Engineering}, 20(5), 9470--9488.
+	
+	
+	\bibitem[Basirat et al. (2015)]{Basirat2015}
+	Basirat M., Baratpour S. and Ahmadi J. (2015), Statistical inferences for stress--strength in the proportional hazard models based on progressive type-II censored samples, {\it Journal of Statistical Computation and Simulation}, 85(3), 431--449.
+	
+	\bibitem[Valiollahi et al. (2013)]{Valiollahi2013}
+	Valiollahi R., Asgharzadeh A. and Raqab M. Z. (2013), Estimation of \(P(Y < X)\) for the Weibull distribution under progressive Type-II censoring, {\it Communications in Statistics: Theory and Methods}, 42, 4476--4498.
+	
+	
+	\bibitem[Meintanis (2007)]{Meintanis2007}
+	Meintanis S. G. (2007), Test of fit for Marshall--Olkin distributions with applications, {\it Journal of Statistical Planning and Inference}, 137, 3954--3963.
+	
+	\bibitem[Nelsen (2006)]{Nelsen2006}
+	Nelsen R. B. (2006), {\it An introduction to copulas}, 2nd ed., Springer.
+	
+	
+	\bibitem[Surles and Padgett (2001)]{SurlesPadgett2001}
+	Surles J. G. and Padgett W. J. (2001), Inference for reliability and stress--strength for a scaled Burr Type X distribution, {\it Lifetime Data Analysis}, 7, 187--200.
+	
+	
+	\bibitem[Clayton (1978)]{Clayton1978}
+	Clayton D. G. (1978), A model for association in bivariate life tables and its application in epidemiological studies of familial tendency in chronic disease incidence, {\it Biometrika}, 65(1), 141--151.
+	
+	\bibitem[Mazumdar (1970)]{Mazumdar1970}
+	Mazumdar M. (1970), Some estimates of reliability using interference theory, {\it Naval Research Logistics Quarterly}, 17(2), 309--320.
+	
+	\bibitem[Sklar (1959)]{Sklar1959}
+	Sklar A. (1959), Fonctions de r\'{e}partition \`{a} n dimensions et leurs marges, {\it Publications de l'Institut Statistique de l'Universit\'{e} de Paris}, 8(1), 229--231.
+	
+	\bibitem[Birnbaum and McCarty (1958)]{Birnbaum1958}
+	Birnbaum Z. W. and McCarty R. C. (1958), A distribution-free upper confidence bound for \(P(Y < X)\), based on independent samples of \(X\) and \(Y\), {\it The Annals of Mathematical Statistics}, 29(2), 558--562.
+	
+	\bibitem[Birnbaum (1956)]{Birnbaum1956}
+	Birnbaum Z. W. (1956), On a use of the Mann-Whitney statistic, {\it Proceedings of the Third Berkeley Symposium on Mathematical Statistics and Probability}, 1, 13--17.
+	
+	\bibitem[Metropolis et al. (1953)]{Metropolis1953}
+	Metropolis N., Rosenbluth A. W., Rosenbluth M. N., Teller A. H. and Teller E. (1953), Equations of state calculations by fast computing machines, {\it The Journal of Chemical Physics}, 21, 1087--1091.
+	
+\end{thebibliography}
+ \end{document}
+

@@ -1,0 +1,285 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Two-Parameter Ridge Estimation in SUR Models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Mehdizadeh Esfanjani et al.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Two-Parameter Ridge Estimation in Seemingly Unrelated Regression Models}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Robab Mehdizadeh Esfanjani$^1$\footnote[1]{{\bf Corresponding Author:} {\tt mehdizadehr@gmail.com}}, Dariush Najarzadeh$^2$ , Hossein Jabbari Khamnei$^2$, Mahnaz Talebi$^1$ \\
+$^1$Neurosciences Research Center, Tabriz University of Medical Sciences, Tabriz, Iran \\
+$^2$Department of Statistics, University of Tabriz, Tabriz, Iran}
+
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Seemingly Unrelated Regression (SUR) models are used when several linear regression equations are investigated simultaneously. To reduce the impact of multicollinearity in SUR models, the one-parameter ridge (Ridge-1) estimator has been proposed. As a generalization, this paper introduces the two-parameter ridge (Ridge-2) estimator for SUR models with multicollinearity. The performance of the proposed estimator is compared with Generalized Least Squares (GLS) and Ridge-1 via simulations. A real dataset on chronic renal failure is used for illustration. The results show that the Ridge-2 estimator outperforms both GLS and Ridge-1 under severe multicollinearity.
+ 
+\noindent{\bf Keywords:} 
+Multicollinearity, One-parameter ridge, Seemingly unrelated regression, Two-parameter ridge, Mean squared error. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J07$, $\rm 62J05$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+
+Multicollinearity among explanatory variables is a well-known problem in linear regression that inflates variances and distorts coefficient estimates. Ridge regression, introduced by \cite{hoerl1970}, addresses this issue by adding a small constant $k > 0$ to the diagonal of the $X'X$ matrix. While effective, the one-parameter ridge (Ridge-1) estimator often suffers from poor model fit. To overcome this limitation, \cite{lipovetsky2005} proposed the two-parameter ridge (Ridge-2) estimator by introducing a second tuning parameter that maximizes the coefficient of determination. \cite{toker2013} derived mean squared error (MSE) superiority conditions for Ridge-2 over both Ridge-1 and generalized least squares (GLS), demonstrating its advantages in ordinary linear models.
+
+In many applied settings, multiple regression equations share correlated error structures, making seemingly unrelated regression (SUR) models, pioneered by \cite{zellner1962}, more appropriate. Multicollinearity in SUR models is particularly problematic, as it degrades the efficiency of GLS estimators. \cite{firinguetti1997} adapted ridge regression to SUR systems, with asymptotic properties established by \cite{firinguetti2008}. \cite{alkhamisi2008} further developed ridge parameter selection methods specifically for SUR models.
+
+To the best of our knowledge, Ridge-2 estimation has not been extended to SUR models with multicollinearity. This paper fills this gap by proposing a two-parameter ridge estimator for SUR systems and deriving conditions under which it outperforms both GLS and Ridge-1 in terms of MSE. Extensive simulations and a real-data application on chronic renal failure demonstrate the superiority of the proposed estimator under severe multicollinearity.
+
+\section{The SUR models and their solutions}
+Consider the system of $g$ equations $Y_i = X_i\beta_i + e_i$ with $E(e_i)=0$ and $E(e_i e'_j)=\sigma_{ij}I_n$ is compactly written as
+\begin{equation}
+Y = X\beta + e, \label{eq:2}
+\end{equation}
+where $X$ is block diagonal and $E(ee')=\Sigma\otimes I_n$. 
+Using the transformation $Y^* = (\Sigma^{-1/2}\otimes I_n)Y$, $X^* = (\Sigma^{-1/2}\otimes I_n)X$, the model becomes the standardized SUR model
+\begin{equation}
+Y^* = X^*\beta + e^*, \label{eq:3}
+\end{equation}
+with uncorrelated, unit-variance errors. 
+The GLS estimator is
+\begin{equation}
+\hat{\beta}^{\text{SUR}}_{\text{GLS}} = D^{-1}c, \label{eq:4}
+\end{equation}
+where $D = X^{*'}X^{*}$ and $c = X^{*'}Y^{*}$. 
+The Ridge-1 estimator is
+\begin{equation}
+\hat{\beta}^{\text{SUR}}_{\text{R1}}(k) = (D + kI_p)^{-1}c, \quad k>0, \label{eq:5}
+\end{equation}
+and the corresponding multiple determination coefficient is
+\begin{equation}
+\hat{R}^{2}_{\text{SUR}}(k) = 2c'(D + kI_p)^{-1}c - c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c, \label{eq:6}
+\end{equation}
+both reducing to the GLS forms when $k=0$.
+
+\subsection{Proposed Ridge-2 Estimator}
+
+The Ridge-2 estimator is presented as:
+\begin{equation}
+\hat{\beta}_{R2}^{SUR}(k,q) = q(D + kI_p)^{-1}c \label{eq:7}
+\end{equation}
+where $q$ is a constant parameter. The coefficient of multiple determination corresponding to the Ridge-2 estimator \eqref{eq:7}, as a function of $(k, q)$, is obtained as
+\begin{equation}
+\hat{R}^{2}_{\text{SUR}}(k, q) = 2q c'(D + kI_p)^{-1}c - q^2 c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c.
+\label{eq:8}
+\end{equation}
+For fixed $k$, maximizing $\hat{R}^{2}_{SUR}(k, q)$ with respect to $q$ yields the optimal second parameter 
+\begin{equation}
+q^{\text{SUR}}_{\text{max}} = \frac{c'(D + kI_p)^{-1}c}{c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c}.
+\label{eq:qmax}
+\end{equation}
+Now, setting $q = q^{\text{SUR}}_{\text{max}}$ in \eqref{eq:7} and \eqref{eq:8} yields
+\begin{equation}
+\hat{\beta}^{\text{SUR}}_{\text{R2}}(k) := \hat{\beta}^{\text{SUR}}_{\text{R2}}(k, q^{\text{SUR}}_{\text{max}}) = \frac{c'(D + kI_p)^{-1}c}{c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c} (D + kI_p)^{-1}c
+\label{eq:betaR2}
+\end{equation}
+and
+\begin{equation}
+\hat{R}^{2}_{\text{SUR}}(k, q^{\text{SUR}}_{\text{max}}) = \frac{\left[c'(D + kI_p)^{-1}c\right]^{2}}{c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c},
+\label{eq:9}
+\end{equation}
+respectively. Since $D > 0$, one can show,
+\begin{equation*}
+\hat{R}^{2}_{SUR}(k, q^{SUR}_{max}) - \hat{R}^{2}_{SUR}(k) = \frac{[c'(D + kI_p)^{-1}c - c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c]^{2}}{c'(D + kI_p)^{-1}D(D + kI_p)^{-1}c} \geq 0.
+\end{equation*}
+Thus, for any fixed $k$, the Ridge-2 model always achieves a higher coefficient of determination than Ridge-1.
+
+\subsection{Unknown covariance case}
+In practice, $\Sigma$ is unknown and must be estimated. Following \cite{firinguetti1997}, we estimate its elements by 
+\begin{equation}
+\hat{\sigma}_{ij} = \frac{Y'_i \left(I_n - X_i (X'_i X_i)^{-1} X'_i\right) \left(I_n - X_j (X'_j X_j)^{-1} X'_j\right) Y_j}{n}, \quad i, j = 1, 2, \ldots, g
+\label{eq:sigma_hat}
+\end{equation}
+Replacing $\Sigma$ with $\hat{\Sigma}$ yields the operational GLS (OGLS), Ridge-1 (OR1), and Ridge-2 (OR2) estimators:
+\begin{align}
+\hat{\beta}^{SUR}_{OGLS} &= \hat{D}^{-1}\hat{c}, \label{eq:10} \\
+\hat{\beta}^{SUR}_{OR1}(k) &= (\hat{D} + kI_p)^{-1}\hat{c}, \label{eq:11} \\
+\hat{\beta}^{SUR}_{OR2}(k) &= \hat{q}^{SUR}_{max} (\hat{D} + kI_p)^{-1}\hat{c}, \label{eq:12}
+\end{align}
+where $\hat{D} = X'(\hat{\Sigma}^{-1} \otimes I_n)X$, $\hat{c} = X'(\hat{\Sigma}^{-1} \otimes I_n)Y$, and $\hat{q}^{SUR}_{max} = \frac{\hat{c}'(\hat{D} + kI_p)^{-1}\hat{c}}{\hat{c}'(\hat{D} + kI_p)^{-1}\hat{D}(\hat{D} + kI_p)^{-1}\hat{c}}$.
+
+\subsection{Choosing $k$}
+We adopt the ridge parameters for Ridge-1 and Ridge-2 from \cite{alkhamisi2008}. The proposed values are functions of $\hat{a} = (Z'Z)^{-1}Z'Y^{*}$, where $Z = X^{*}T$ and $T$ is the eigenvector matrix of $D$:
+\begin{equation}
+\begin{aligned}
+k_{\text{SHK}} &= \left[\max \operatorname{diag}(\hat{a})^2\right]^{-1}, \quad
+k_{\text{Smed}} = \left[\operatorname{median} \operatorname{diag}(\hat{a})^{-2}\right], \\
+k_{\text{Sqarith}} &= \left[\operatorname{mean} \operatorname{diag}(\hat{a})^{-\frac{1}{2}}\right], \quad
+k_{\text{Sqmax}} = \left[\max \operatorname{diag}(\hat{a})^{-\frac{1}{2}}\right], \quad
+k_{\text{Smax}} = \left[\max \operatorname{diag}(\hat{a})^{-2}\right].
+\end{aligned}
+\end{equation}
+When $\Sigma$ is unknown, these quantities are estimated by substituting $\hat{\Sigma}$.
+
+\section{Investigation of the solutions for the SUR models}
+
+We compare Ridge-2 with GLS and Ridge-1 via matrix mean squared error, $\text{MSE}(\hat{\beta}) = \text{Var}(\hat{\beta}) + \text{Bias}(\hat{\beta})\text{Bias}(\hat{\beta})'$. Using the spectral decomposition $D = TKT'$ with $K = \text{diag}(\kappa_1, \ldots, \kappa_p)$, the estimators become $\hat{\beta}_{GLS} = TK^{-1}T'c$, $\hat{\beta}_{R1}(k) = (TKT' + kI_p)^{-1}c$, and $\hat{\beta}_{R2}(k, q) = q(TKT' + kI_p)^{-1}c$. Their MSE matrices are \cite{toker2013}:
+\begin{align}
+\text{MSE}(\hat{\beta}_{GLS}) &= TK^{-1}T', \\
+\text{MSE}(\hat{\beta}_{R1}(k)) &= V_k + b_2 b'_2, \\
+\text{MSE}(\hat{\beta}_{R2}(k, q)) &= q^2 V_k + b_1 b'_1,
+\end{align}
+where $V_k = (TKT' + kI_p)^{-1} TKT' (TKT' + kI_p)^{-1}$, $b_1 = [q(TKT' + kI_p)^{-1} TKT' - I_p]\beta$, and $b_2 = -k(TKT' + kI_p)^{-1}\beta$. The derivations mirror those for ordinary linear models; we state the key results.
+
+\begin{lem}\label{lm1}
+Let $k > (q - 1) \max_{j} (\kappa_j)$ and $b_1 = \text{Bias}(\hat{\beta}_{\text{R2}}(k, q))$. Then $\text{MSE}(\hat{\beta}_{\text{GLS}}) - \text{MSE}(\hat{\beta}_{\text{R2}}(k, q)) > 0$ iff $b'_1 (D^{-1} - q^2 V_k)^{-1} b_1 < 1$.
+\end{lem}
+\begin{lem}\label{lm2}
+Let $b_1 = \text{Bias}(\hat{\beta}_{\text{R2}}(k, q))$ and $b_2 = \text{Bias}(\hat{\beta}_{\text{R1}}(k))$. If $b'_2 V_k^{-1} b_2 < (q^2 - 1)$, then $\text{MSE}(\hat{\beta}_{\text{R2}}(k, q)) - \text{MSE}(\hat{\beta}_{\text{R1}}(k)) > 0$.
+\end{lem}
+\begin{lem}\label{lm3}
+Let $b_1 = \text{Bias}(\hat{\beta}_{\text{R2}}(k, q))$ and $b_2 = \text{Bias}(\hat{\beta}_{\text{R1}}(k))$. Then $\text{MSE}(\hat{\beta}_{\text{R2}}(k, q)) - \text{MSE}(\hat{\beta}_{\text{R1}}(k)) > 0$ iff $b'_2 ((q^2 - 1)V_k + b_1 b'_1) b_1 < 1$.
+\end{lem}
+
+\section{Simulation study}
+A simulation study compares GLS, Ridge-1, and Ridge-2 estimators in SUR models via total MSE: $\text{TMSE}(\hat{\beta}) = \text{trace}\,E[(\hat{\beta} - \beta)(\hat{\beta} - \beta)']$. The simulation parameters used in this study are given in Table~\ref{tab:sim_params}.
+
+\begin{table}[htbp]
+\centering
+\caption{Simulation parameters.}
+\label{tab:sim_params}
+\begin{tabular}{|l|l|l|}
+\hline
+Simulation factor & Symbol & Values \\
+\hline
+Number of observations & $n$ & 10, 50, 100 \\
+Number of equations & $g$ & 2, 3 \\
+Number of explanatory variables & $p_0$ & 10, 50, 100 \\
+The model parameters & $\boldsymbol{\beta}$ & $\mathbf{1}_{p_0 g},\; (\mathbf{1}'_{\frac{p_0 g}{2}},\; 2'_{\frac{p_0 g}{2}})'$ \\
+Correlation among the explanatory variables & $q_x$ & 0.5, 0.98 \\
+Correlation among the response variables & $q_y$ & 0.3, 0.9 \\
+Ridge parameter & $k$ & $k_{\mathrm{SHK}}$, $k_{\mathrm{Skmed}}$, $k_{\mathrm{Sqarith}}$, $k_{\mathrm{Sqmax}}$, $k_{\mathrm{Smax}}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+Design matrices are $X_i = [\mathbf{1}_n \mid X^*_i]$ with rows of $X^*_i$ drawn from $N_{p_0-1}(\mathbf{0},\Sigma_X)$, $\Sigma_X = \rho_x J_{p_0-1} + (1-\rho_x)I_{p_0-1}$. Error covariance is $\Sigma = \rho_y J_g + (1-\rho_y)I_g$, with $e \sim N_{ng}(\mathbf{0}, \Sigma \otimes I_n)$. Each configuration ran 10,000 times per Algorithm~\ref{alg1}.
+
+\begin{alg}\label{alg1}
+Computing the TMSE of GLS, Ridge-1 and Ridge-2 estimators:
+\begin{itemize}
+\item Step 1: Generate $X_1, X_2, \ldots, X_g$ as in the design matrices.
+\item Step 2: Generate $e = (e'_1, \ldots, e'_g)'$ from $N_{ng}(\mathbf{0}_{ng}, \Sigma \otimes I_n)$.
+\item Step 3: Calculate $Y_1, Y_2, \ldots, Y_g$ using $Y_i = X_i\beta_i + e_i$, $i = 1, 2, \ldots, g$.
+\item Step 4: Calculate $\hat{\beta}^{\text{SUR}(r)}_{\text{OGLS}}$, $\hat{\beta}^{\text{SUR}(r)}_{\text{OR1}}(k)$ and $\hat{\beta}^{\text{SUR}(r)}_{\text{OR2}}(k)$ using \eqref{eq:10}, \eqref{eq:11} and \eqref{eq:12}, respectively.
+\item Step 5: Repeat the steps 1--4 for $r = 1, 2, \ldots, 10000$.
+\item Step 6: Calculate the empirical TMSE (ETMSE) of the GLS, Ridge-1 and Ridge-2 estimators as
+\begin{align}
+\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OGLS}}\right) &= \frac{1}{10000} \sum_{r=1}^{10000} \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OGLS}} - \beta\right)' \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OGLS}} - \beta\right), \\
+\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OR1}}(k)\right) &= \frac{1}{10000} \sum_{r=1}^{10000} \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OR1}}(k) - \beta\right)' \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OR1}}(k) - \beta\right), \\
+\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OR2}}(k)\right) &= \frac{1}{10000} \sum_{r=1}^{10000} \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OR2}}(k) - \beta\right)' \left(\hat{\beta}^{\text{SUR}(r)}_{\text{OR2}}(k) - \beta\right),
+\end{align}
+respectively.
+\end{itemize}
+\end{alg}
+
+For all parameter combinations, the ratios
+$\text{R2R1} := \frac{\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OR2}}(k)\right)}{\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OR1}}(k)\right)}$ and $\text{R2GLS} := \frac{\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OR2}}(k)\right)}{\text{ETMSE}\left(\hat{\beta}^{\text{SUR}}_{\text{OGLS}}\right)}$
+were computed for SUR models with $g=2$ and $g=3$ equations, each with $\beta$ equal to $\mathbf{1}_{p_0 g}$ and $(\mathbf{1}'_{\frac{p_0 g}{2}}, 2'_{\frac{p_0 g}{2}})'$.
+
+\textbf{Ridge-2 vs. Ridge-1:} Ridge-2 with $k_{\text{Smax}}$, $k_{\text{Sqarith}}$ and $k_{\text{SHK}}$ uniformly outperforms Ridge-1 across all configurations. Ridge-1 is marginally better only when $\rho_x = 0.5$ with small $p_0$ using $k_{\text{Smed}}$ or $k_{\text{Sqmax}}$. As $\rho_x$ increases to 0.98, Ridge-2's superiority becomes pronounced.
+
+\textbf{Ridge-2 vs. GLS:} Ridge-2 with $k_{\text{Sqmax}}$ slightly surpasses GLS. With $k_{\text{SHK}}$ or $k_{\text{Smed}}$, both perform comparably. Under $k_{\text{Sqarith}}$ or $k_{\text{Smax}}$, Ridge-2 excels in severe multicollinearity but underperforms when multicollinearity is mild. Notably, Ridge-2 dramatically outperforms GLS when $p_0$ approaches $n$.
+
+\textbf{Effect of $\rho_y$:} Ridge-2 performs best under weak cross-equation error correlation ($\rho_y = 0.3$). In summary, Ridge-2 is superior or equivalent to both competitors under high multicollinearity and when $p_0 \approx n$, across all values of $\rho_x$, $\rho_y$, and $k$.
+
+\section{Real Data Application}
+We analyze data from a medical study at Tabriz University of Medical Sciences on the effect of chronic renal failure (CRF) on visual evoked potentials (VEP) in 30 peritoneal dialysis patients. Since optic nerve involvement in CRF is mainly subclinical, VEP is used to evaluate it \cite{fraser1988, burn1998, brouns2004, lacerda2010}. The VEP test assesses optic nerve function via P100 latency (P100lat) and P100 amplitude (P100amp), as renal failure causes accumulation of toxic substances (urea, creatinine, potassium) normally excreted by kidneys, leading to subclinical optic nerve damage detectable only by VEP.
+
+Five laboratory predictors ($p = 6$ with intercept) are included: urea (Ur), creatinine (Cr), potassium (K), hemoglobin (Hb), and hematocrit (Hct). Multicollinearity among these variables makes ordinary least squares problematic. We assess it via variance inflation factor (VIF), defined for variable $X_j$ as $\text{VIF}_j = (1 - R^2_j)^{-1}$, where $R^2_j$ is obtained by regressing $X_j$ on all other predictors, with VIFs exceeding 10 indicating serious multicollinearity.
+\begin{table}[htbp]
+\centering
+\caption{The values of VIF for explanatory variables.}
+\label{tab:vif}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+Factor & Hct & Cr & Hb & K & Ur \\
+\hline
+VIF & 18.166 & 2.232 & 20.095 & 1.177 & 1.776 \\
+\hline
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:vif} confirms severe multicollinearity (VIF $> 10$ for Hct and Hb; correlation = 0.97), causing GLS to yield opposite signs (Table~\ref{tab:coef}) that contradict clinical expectation. We therefore discard GLS in favor of Ridge-1 and Ridge-2.
+
+Based on the simulation study, Ridge-2 with $k = k_{\text{Smax}}$ performed best. We therefore apply GLS, Ridge-1 with $k_{\text{Smax}}$ (SmaxR1), and Ridge-2 with $k_{\text{Smax}}$ (SmaxR2).
+
+\begin{table}[htbp]
+\centering
+\caption{The values of regression coefficients for laboratory factors.}
+\label{tab:coef}
+\begin{tabular}{|l|ccc|ccc|}
+\hline
+& \multicolumn{3}{c|}{P100lat} & \multicolumn{3}{c|}{P100amp} \\
+\cline{2-7}
+& GLS & SmaxR1 & SmaxR2 & GLS & SmaxR1 & SmaxR2 \\
+\hline
+Intercept & 56.6838 & 0.0781 & 1.09126 & 0.1556 & 2.0792 & 0.6959 \\
+Ur & $-$0.2040 & $-$0.1207 & 0.0780 & 2.0154 & 0.5298 & 0.4572 \\
+Cr & 1.0911 & 0.0283 & $-$0.1207 & 0.5988 & 0.3912 & 0.5369 \\
+K & 0.0780 & 1.4002 & 0.0225 & 0.4632 & 0.0191 & 0.7310 \\
+Hb & $-$0.2444 & 1.2281 & 1.4032 & 0.1159 & 0.2542 & 0.0201 \\
+Hct & 0.0226 & 0.6924 & 2.0052 & 0.7697 & 0.0903 & 0.2676 \\
+\hline
+\end{tabular}
+\end{table}
+
+For P100lat, SmaxR2 yields the largest coefficients for Hct (2.0052) and Hb (1.4032), consistent with clinical evidence linking high Hct to visual impairment, while other predictors show small effects. For P100amp, SmaxR2 coefficients indicate a positive association between biochemical factors and P100 amplitude. The SmaxR2 estimator thus provides clinically interpretable results and resolves the sign reversal observed under GLS.
+
+\section*{Discussion and Conclusion}   
+Multicollinearity in SUR models distorts GLS estimates, reversing signs and inflating standard errors. We propose a two-parameter ridge (Ridge-2) estimator, deriving conditions for its superiority over GLS and Ridge-1. Simulations confirm that Ridge-2 with $k = k_{\text{Smax}}$ performs best under severe multicollinearity, making it the recommended choice for SUR estimation with highly correlated predictors.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+\bibitem[Alkhamisi and Shukur (2008)]{alkhamisi2008}
+Alkhamisi, M. A., and G. Shukur. 2008. Developing ridge parameters for SUR model. {\it Communications in Statistics - Theory and Methods} 37:544-564.
+
+\bibitem[Brouns and De Deyn (2004)]{brouns2004}
+Brouns, R., and P. P. De Deyn. 2004. Neurological complications in renal failure: A review. {\it Clinical Neurology and Neurosurgery} 107:1-16.
+
+\bibitem[Burn and Bates (1998)]{burn1998}
+Burn, D. J., and D. Bates. 1998. Neurology and the kidney. {\it Journal of Neurology, Neurosurgery and Psychiatry} 65:810-821.
+
+\bibitem[Firinguetti (1997)]{firinguetti1997}
+Firinguetti, L. 1997. Ridge regression in the context of a system of seemingly unrelated regression equations. {\it Journal of Statistical Computation and Simulation} 56:145-162.
+
+\bibitem[Firinguetti and Rubio (2008)]{firinguetti2008}
+Firinguetti, L., and H. Rubio. 2008. Asymptotic properties of ridge estimators in SUR models. {\it Communications in Statistics - Theory and Methods} 37:2223-2236.
+
+\bibitem[Fraser and Arieff (1988)]{fraser1988}
+Fraser, C. L., and A. I. Arieff. 1988. Nervous system complications in uremia. {\it Annals of Internal Medicine} 109:143-153.
+
+\bibitem[Hoerl and Kennard (1970)]{hoerl1970}
+Hoerl, A. E., and R. W. Kennard. 1970. Ridge regression: Biased estimation for nonorthogonal problems. {\it Technometrics} 12:55-67.
+
+\bibitem[Lacerda et al. (2010)]{lacerda2010}
+Lacerda, G., T. Krummel, and E. Hirsch. 2010. Neurological presentations of renal diseases. {\it Neurologic Clinics} 28:45-59.
+
+\bibitem[Lipovetsky and Conklin (2005)]{lipovetsky2005}
+Lipovetsky, S., and W. M. Conklin. 2005. Ridge regression in two-parameter solution. {\it Applied Stochastic Models in Business and Industry} 21:525-540.
+
+\bibitem[Toker and Ka\c{c}{\i}ranlar (2013)]{toker2013}
+Toker, S., and S. Ka\c{c}{\i}ranlar. 2013. On the performance of two parameter ridge estimator under the mean square error criterion. {\it Applied Mathematics and Computation} 219:4718-4728.
+
+\bibitem[Zellner (1962)]{zellner1962}
+Zellner, A. 1962. An efficient method of estimating seemingly unrelated regressions and tests for aggregation bias. {\it Journal of the American Statistical Association} 57:348-368.
+
+\end{thebibliography}
+\end{document}

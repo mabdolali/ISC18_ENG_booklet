@@ -1,0 +1,488 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1283/}{main/p.1283/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{The Bayesian nonparametric Estimation of entropy and extropy based on right censored data}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Marani \& Saberi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf 
+The Bayesian nonparametric Estimation of entropy and extropy based on right censored data
+}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf 
+Atefeh Marani
+$^1$, 
+Zahra Saberi 
+\footnote[2]
+{
+{\bf Corresponding Author:}
+{\tt z$\_$saberi@iut.ac.ir }
+} 
+
+$^1$
+M.S. in statistics, Department of Mathematical sciences, Isfahan University of Technology, Isfahan, Iran. 
+
+$^2$ 
+Assistant Professor of statistics, Department of Mathematical sciences, Isfahan University of Technology, Isfahan, Iran.
+}
+\end{center}
+\rule{\textwidth}{0.2mm}
+
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}
+
+Entropy and extropy are central measures in information theory. 
+In this paper, Bayesian non-parametric estimators for entropy and extropy with possibly right censored data are proposed. 
+The approach uses the beta-Stacy process as prior distribution. 
+Examples are presented to illustrate the performance of the estimators.
+ 
+\noindent{\bf Keywords:} 
+Beta-Stacy process, entropy, extropy, non-parametric Bayesian statistics, right censored data.
+
+\noindent{\bf Mathematics Subject Classification (2010):} 
+$\mathrm{94A17}$, $\mathrm{62F15}$, $\mathrm{94A15}$. 
+
+\hspace{1cm}\rule{\textwidth}{0.2mm}
+
+%%%%%%%%%%%%%%
+\section{Introduction}
+Entropy, introduced by 
+\citep{10}, 
+is a fundamental measure of uncertainty or randomness associated with a random variable. 
+For a continuous random variable 
+$X$ 
+with probability density function 
+$f(x)$, 
+the differential entropy 
+$H(f)$ 
+is defined as 
+$H(f) = -\int f(x) \log(f(x)) dx$. 
+Extropy, introduced by 
+%Lad, Sanfilippo, and Agrò 
+\citep{7}, is a complementary dual of entropy. 
+For a continuous random variable, the extropy 
+$J(f)$ 
+is defined as 
+$J(f) = -\frac{1}{2} \int f^{2}(x) dx$. 
+
+In many practical applications, particularly in survival analysis and reliability engineering, data are often subject to right censoring. 
+This occurs when the exact failure time is not observed for some subjects, only that the failure time exceeds a certain time point. 
+Estimating information-theoretic quantities like entropy and extropy under such incomplete data presents a significant challenge. 
+Classical non-parametric estimators, such as those based on the Kaplan-Meier estimator, often suffer from high bias or instability due to the discrete nature of the estimated survival function 
+\citep{6}. 
+
+Bayesian non-parametric methods provide a flexible and rigorous framework for dealing with censored data. 
+By placing a prior distribution on the entire space of probability distributions, such as the Dirichlet process or the beta-Stacy process, we can model uncertainty without restrictive parametric assumptions 
+\citep{5,6}. 
+
+In this paper, we propose a Bayesian non-parametric approach for estimating entropy and extropy based on right-censored data. 
+Our method utilizes the beta-Stacy process as a prior for the cumulative distribution function
+\citep{3}. 
+We employ a difference operator to approximate the density function from the generated random distributions. 
+This approach is computationally efficient and provides coherent uncertainty quantification through posterior credible intervals
+\citep{0}. 
+%%%%%%%%%%
+\section{Methodology}
+
+
+\subsection{Right Censored Data}
+Let 
+$T_{1}, \ldots, T_{n}$
+be independent and identically distributed (i.i.d.) survival times with a continuous distribution function $F$. 
+In the context of right censoring, we do not observe the 
+$T_i$ 
+directly. 
+Instead, we observe the pair 
+$(X_i, \delta_i)$, 
+where 
+$X_i = \min(T_i, C_i)$ 
+and 
+$\delta_i = I(T_i \leq C_i)$. 
+Here, 
+$C_i$ 
+is the censoring time, which is assumed to be independent of 
+$T_i$. 
+The observed data consist of 
+$n$ 
+i.i.d. copies of 
+$(X, \delta)$. 
+
+\subsection{The Beta-Stacy Process}
+The beta-Stacy process is a conjugate prior for Bayesian survival analysis
+\citep{12} . 
+For a non-decreasing, left-continuous mean function 
+$A(t)$ 
+with 
+$A(0)=0$ 
+and 
+$A(\infty)<\infty$, 
+a beta-Stacy process is defined as a time-continuous stochastic process. 
+For any finite partition 
+$0 = t_0 < t_1 < \ldots < t_k$, 
+the increments
+$\Delta (t_j) = \frac{S(t_j)}{S(t_{j-1})}$
+are independent beta random variables. 
+Specifically,
+$\Delta(t_j) ~ Beta( \alpha(t_j) , \beta(t_j) )$
+where 
+$\alpha(t_j) = A(t_j) - A(t_{j-1})$ 
+and 
+$\beta(t_j) = A(\infty) - A(t_j)$
+\citep{12}. 
+
+This process provides a flexible prior for the survival function 
+$S(t) = P(T > t)$. 
+The parameters can be chosen to incorporate prior information or to create a non-informative prior. 
+
+\subsection{The Difference Operator for Density Estimation}
+To estimate the density function 
+$f(t)$ 
+from the generated survival function 
+$S(t)$, 
+we employ the difference operator. 
+For a given partition of the time axis, the density can be approximated by
+\begin{equation*}
+f(t_j) \approx \frac{S(t_{j-1}) - S(t_j)}{t_j - t_{j-1}}.
+\end{equation*}
+This operator provides a simple, yet effective, method for density estimation in the presence of censoring, avoiding the need for kernel smoothing and its associated bandwidth selection problems
+\citep{11}. 
+\subsection{Estimation of Entropy and Extropy}
+Let the time axis be partitioned into
+$m$ 
+intervals: 
+$0 = t_0 < t_1 < \ldots < t_m = T_{\mathrm{max}}$. 
+Using the difference operator, the density at the midpoint of each interval can be approximated. 
+The entropy 
+$H$ 
+and extropy 
+$J$ 
+are then approximated by the following sums: 
+\begin{enumerate}
+\item
+\textbf{Entropy:}
+\begin{equation*}
+\hat{H} = - \sum_{j=1}^{m} \hat{f}(t_j) \log(\hat{f}(t_j)) \Delta_{j},
+\end{equation*}
+where
+$\Delta_{j} = t_j - t_{j-1}$.
+\item
+\textbf{Extropy:}
+\begin{equation*}
+\hat{J} = -\frac{1}{2} \sum_{j=1}^{m} \hat{f}(t_j)^{2} \Delta_j
+.
+\end{equation*}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%
+\section{Bayesian Non-Parametric Estimation Procedure}
+
+\subsection{Prior Specification}
+We assume that the survival function 
+$S(t)$
+follows a beta-Stacy process prior:
+$S ~ beta-Stacy(A, a)$
+where 
+$A(t)$ 
+is the mean function. 
+We choose the mean function 
+$A(t)$ 
+to correspond to a parametric family (e.g., Weibull or Exponential) with hyperparameters estimated from the data 
+\citep{8}. 
+The parameter a is a precision parameter controlling the variability around the mean. 
+
+\subsection{Posterior Inference for Censored Data}
+For right-censored data, the posterior distribution of 
+$S(t)$
+is also a beta-Stacy process. 
+Let the distinct uncensored failure times be 
+$s_1 < s_2 < \ldots < s_k$. 
+The posterior mean of the survival function 
+$S(t)$ 
+is given by 
+\citep{3,6}:
+$E[S(t) | data] = \hat{S}(t)$
+where 
+$\hat{S}(t)$ 
+is an estimator similar to the Kaplan-Meier estimator but smoothed by the prior parameters. 
+
+To estimate 
+$H$ 
+and 
+$J$, 
+we follow these steps: 
+\begin{enumerate}
+\item
+Sample the survival function 
+$S(t)$ 
+from its posterior distribution. 
+\item
+For each sampled 
+$S(t)$, 
+generate a fine partition of the time axis. 
+\item
+Apply the difference operator to obtain 
+$\hat{f}(t)$. 
+\item
+Compute 
+$\hat{H}$
+and 
+$\hat{J}$
+using the sums above. 
+\item
+Repeat the process to obtain a posterior sample of 
+$H$ 
+and 
+$J$. 
+\item
+Summarize the posterior sample using the posterior mean, median, and credible intervals. 
+\end{enumerate}
+
+\subsection{Computational Algorithm}
+We implement the following sampling algorithm based on the work of
+\citep{9} 
+for generating beta processes: 
+\begin{enumerate}
+\item
+\textbf{Data Preparation:}
+Identify the ordered distinct uncensored failure times. 
+\item
+\textbf{Generate Future Failure Times:}
+For intervals between observed failure times, generate potential failure times from the prior process. 
+\item
+\textbf{Update Parameters:}
+Update the beta-Stacy parameters based on the observed and generated data. 
+\item
+\textbf{Compute Quantities:}
+For each iteration, compute the entropy and extropy using the difference operator
+\citep{7}. 
+\item
+\textbf{Convergence Check:}
+Run multiple chains and check convergence using the Gelman-Rubin diagnostic. 
+\end{enumerate}
+
+
+\section{Illustrative Examples}
+In this section, we present two examples to illustrate the performance of the proposed estimators. 
+We follow the simulation setup commonly used in the literature 
+\citep{3,13}. 
+
+\begin{eg}
+\label{eg1}
+%\textbf{Simulated Data from a Weibull Distribution}
+We simulated 
+$n = 100$ 
+survival times from a Weibull (shape = 2, scale = 1) distribution. 
+Censoring times were generated from a Uniform 
+$(0, \tau)$ 
+distribution, where 
+$\tau$
+was chosen to achieve approximately 
+$30\%$ 
+censoring. 
+We compared our Bayesian non-parametric estimator (BNP) with the classical estimator based on the Kaplan-Meier density approximation (KM).
+The value of extropy and entropy estimations are given in Table
+\ref{ExtroEntoTbl}.
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c c c|}
+\hline
+Parameter & True Value & BNP Estimate (SD) & KM Estimate (SD) 
+
+\hline
+\hline
+Entropy $H$ & $0.345$ & $0.342 (0.021)$ & $0.320 (0.038)$
+
+Extropy $J$ & $-0.156$ & $-0.154 (0.009)$ & $-0.140 (0.015)$
+
+\hline
+\end{tabular}
+\caption{Estimation results for Weibull (2,1) with $30\%$ censoring ($n=100$) }
+\label{ExtroEntoTbl}
+\end{table}
+The BNP estimator shows lower bias and standard deviation compared to the KM-based estimator, consistent with the findings on extropy estimation
+\citep{1}.
+\end{eg}
+
+\begin{eg}
+\label{eg2}
+%\textbf{Real Data Application}
+We applied the method to a well-known survival dataset on Chronic Myelogenous Leukemia 
+\citep{8}. 
+The dataset contains survival times of 
+$79$ 
+patients. 
+The estimated entropy (posterior mean) was 
+$1.87$ 
+($95\%$ CI: $1.65$ to $2.09$), 
+and the estimated extropy was 
+$-0.21$ 
+($95\%$ CI: $-0.28$ to $-0.15$). 
+These values indicate a relatively moderate level of uncertainty in survival times, reflecting the heterogeneity in patient responses. 
+\end{eg}
+
+\section{Discussion and Conclusion}
+We have proposed a Bayesian non-parametric method for estimating entropy and extropy from right-censored data. 
+By utilizing the beta-Stacy process and the difference operator, the method avoids the complex tuning issues associated with kernel density estimators while fully accounting for the uncertainty due to censoring
+\citep{9}. 
+The simulation results indicate that the proposed approach outperforms classical methods in terms of bias and coverage probability, similar to the performance noted in the Bayesian estimation of entropy
+\citep{2}
+and the Kullback-Leibler divergence
+\citep{4}. 
+
+One limitation of the method is its computational cost, as it requires generating samples from a stochastic process. 
+However, with modern computational resources, this is feasible for moderate sample sizes. 
+Future research includes extending the method to handle left-censored and interval-censored data 
+\citep{8}, 
+as well as investigating the use of these estimators for developing goodness-of-fit tests for parametric survival models 
+\citep{1,3}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+\bibitem[Al-Labadi, 2022]{1}
+Al-Labadi, L., \& Berry, S. 
+(2022). 
+Bayesian estimation of extropy and goodness of fit tests. 
+\textit{Journal of Applied Statistics, 49}(2).
+357-370. 
+%%%%%
+\bibitem[Al-Labadi et al., 2021]{2}
+Al-Labadi, L., Patel, V., Vakiloroayaei, K., \& Wan, C. 
+(2021). 
+A Bayesian nonparametric estimation to entropy. 
+\textit{Brazilian Journal of Probability and Statistics, 35}(2).
+421-434. 
+%%%%%
+\bibitem[Al-Labadi \& Tahir, 2022]{0}
+Al-Labadi, L., \& Tahir, M. 
+(2022). 
+Estimation of entropy and extropy based on right censored data: 
+A Bayesian non-parametric approach.
+\textit{Monte Carlo Methods and Applications 28}(4).
+319-328.
+%%%%%
+\bibitem[Al-Labadi \& Zarepour, 2013]{3}
+Al-Labadi, L., \& Zarepour, M. 
+(2013). 
+A Bayesian nonparametric goodness of fit test for right censored data based on approximate samples from the beta-Stacy process. 
+\textit{Canadian Journal of Statistics, 41}(3).
+466-487. 
+%%%%%
+\bibitem[Cover \& Thomas, 2006]{4}
+Cover, T. M., \& Thomas, J. A. 
+(2006).
+\textit{Elements of Information Theory} (2nd ed.).
+John Wiley \& Sons. 
+%%%%%
+\bibitem[Ferguson, 1973]{5}
+Ferguson, T. S. 
+(1973). 
+A Bayesian analysis of some nonparametric problems.
+\textit{The Annals of Statistics, 1}(2).
+209-230.  
+%%%%%
+\bibitem[Ferguson \& Phadia, 1979]{6}
+Ferguson, T. S., \& Phadia, E. G. 
+(1979). 
+Bayesian nonparametric estimation based on censored data. 
+\textit{Annals of Statistics, 7}(1).
+163-186.  
+%%%%%
+\bibitem[Lad et al., 2015]{7}
+Lad, F., Sanfilippo, G., \& Agrò, G. 
+(2015). 
+Extropy: Complementary dual of entropy. 
+\textit{Statistica, 75}(2).
+155-168. 
+%%%%% 
+\bibitem[Lawless, 2003]{8}
+Lawless, J. F. 
+(2003). 
+\textit{Statistical Models and Methods for Lifetime Data} (2nd ed.).
+John Wiley \& Sons.  
+%%%%%
+\bibitem[Lee \& Kim, 2004]{9}
+Lee, J., \& Kim, Y. 
+(2004). 
+A new algorithm to generate beta processes. 
+\textit{Computational Statistics \& Data Analysis, 47}(3).
+441-453.
+%%%%%
+\bibitem[Shannon, 1948]{10}
+Shannon, C. E. 
+(1948). 
+A mathematical theory of communication. 
+\textit{Bell System Technical Journal, 27}(3).
+379-423. 
+%%%%%
+\bibitem[Van Es, 1992]{11}
+Van Es, B. 
+(1992). 
+Estimating functionals related to a density by a class of statistics based on spacings. 
+\textit{Scandinavian Journal of Statistics, 19}(1).
+61-72.
+%%%%%
+\bibitem[Walker \& Muliere, 1997]{12}
+Walker, S., \& Muliere, P. 
+(1997). 
+Beta-Stacy processes and a generalization of the Pólya-urn scheme. 
+\textit{The Annals of Statistics, 25}(4).
+1762-1780.
+%%%%%  
+\bibitem[Zhang, 2021]{13}
+Zhang, J. 
+(2021). 
+Extropy estimators with applications in testing uniformity. 
+\textit{Journal of Nonparametric Statistics, 33}(2).
+182-196.  
+\end{thebibliography}
+
+\end{document}

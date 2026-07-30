@@ -1,0 +1,669 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+
+\begin{document}
+	\thispagestyle{empty}
+	
+	\fancyhead[LE]{Asymptotic Power under Brownian Motion}
+	\fancyhead[RO]{A. Shirvani}
+	
+	\begin{center}
+		{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+		
+		\vspace*{2.8cm}
+		
+		{\Large \bf Asymptotic Power Analysis for Testing Points of Impact under Brownian Motion Predictors}\\
+		
+		\vspace{0.7cm}
+		
+		{\bf
+			Alireza Shirvani\footnote[1]{{\bf Corresponding Author:} {\tt a.shirvani@velayat.ac.ir}} \\
+			Department of Statistics, Faculty of Basic Sciences, Velayat University, Iranshahr, Iran}
+		
+	\end{center}
+	
+	\rule{\textwidth}{0.2mm}\\
+	
+	\noindent{\bf Abstract:}\\
+Functional linear regression models with points of impact provide an important framework for identifying localized effects of functional predictors. In this paper, the asymptotic behavior of the test statistic for points of impact, proposed by \cite{Shirvani2024}, is investigated under Brownian motion predictors. Using the explicit spectral decomposition of Brownian motion, simplified expressions for the covariance structure and the asymptotic power function are derived. Under local alternatives, the limiting distribution of the test statistic is shown to converge to a noncentral chi-square distribution with an explicit noncentrality parameter. Simulation studies demonstrate satisfactory finite-sample performance and illustrate the effect of the impact location on the asymptotic power of the proposed test.
+	
+	\noindent{\bf Keywords:}
+	Functional data analysis, Functional linear regression, Points of impact, Brownian motion, Asymptotic power. \\
+	
+	\noindent{\bf Mathematics Subject Classification (2010):}
+	$\rm 62G35$, $\rm 62J05$, $\rm 60G15$. \\
+	
+	\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section{Introduction}
+	
+	Functional data analysis (FDA) has become an important area of modern statistics due to the increasing availability of data observed continuously over time or space. Important references in FDA include \cite{Ramsay2005} and \cite{Ferraty2006}. Functional linear regression models are among the most widely studied models in FDA, and their estimation and asymptotic properties have been extensively investigated by \cite{Hall2007} and \cite{Crambes2009}.
+	
+	Classical functional linear regression models summarize the influence of the predictor trajectory through a global integral term and therefore may fail to detect localized effects. To address this limitation, \cite{Mckeague2010} introduced functional linear regression models with a point of impact, where the predictor evaluated at a specific time point directly contributes to the response variable. Later, \cite{Kneip2016} studied estimation procedures and asymptotic properties for models with multiple impact points. More recently, \cite{Shirvani2024} proposed a hypothesis testing procedure for assessing the significance of impact points under general Gaussian and elliptical functional processes.
+	
+	Although the asymptotic theory in the literature is formulated under general covariance structures, studying particular stochastic processes may provide additional insight into the behavior of the test statistic. Brownian motion is one of the most fundamental stochastic processes in probability theory and functional data analysis because of its explicit covariance structure and spectral decomposition.
+	
+	Motivated by this idea, we investigate the asymptotic behavior and local power properties of the test statistic proposed in \cite{Shirvani2024} under Brownian motion predictors. Explicit expressions for the eigenvalues and eigenfunctions allow simplified asymptotic calculations and provide a clearer understanding of the role of the impact location in determining the asymptotic power of the test. The remainder of the paper is organized as follows. In Section~\ref{sec2}, the functional linear regression model with points of impact is introduced under Brownian motion predictors, and the corresponding spectral representation is presented. Section~\ref{sec3} investigates the asymptotic distribution of the proposed test statistic under local alternatives and derives explicit expressions for the asymptotic power function. A comprehensive simulation study is reported in Section~\ref{sec4} to evaluate the finite-sample performance of the proposed procedure. Finally, concluding remarks are presented in the last section.
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section{Model and Spectral Representation}\label{sec2}
+	
+	Let $(X_i,Y_i)$, $i=1,\ldots,n$, be independent copies of the random pair $(X,Y)$, where $X$ is a square-integrable stochastic process on $[0,1]$ and $Y$ is a scalar response variable. Consider the functional linear regression model with one point of impact
+	
+	\begin{equation}\label{eq1}
+		Y_i=\int_0^1 \beta(t)X_i(t)dt+\delta X_i(\tau)+\varepsilon_i,
+	\end{equation}
+	
+	where $\beta\in L^2[0,1]$ is an unknown slope function, $\tau\in(0,1)$ is the point of impact, $\delta\in\mathbb{R}$ is the impact coefficient, and $\varepsilon_i$ are independent random errors with mean zero and variance $\sigma^2$. We are interested in testing
+	
+	\begin{equation}\label{eq2}
+		H_0:\delta=0
+		\qquad
+		\text{versus}
+		\qquad
+		H_1:\delta\neq0.
+	\end{equation}
+	
+	Throughout the paper, the predictor process is assumed to be standard Brownian motion with covariance function
+	
+	\begin{equation}\label{eq3}
+		K(s,t)=\min(s,t).
+	\end{equation}
+	
+	The covariance operator corresponding to \eqref{eq3} admits the spectral decomposition
+	
+	\begin{equation}\label{eq4}
+		\theta_j=\frac{1}{(j-1/2)^2\pi^2},
+		\qquad
+		\psi_j(t)=\sqrt{2}\sin((j-1/2)\pi t),
+	\end{equation}
+	
+	for $j=1,2,\ldots$ (The spectral decomposition of the covariance operator associated with Brownian motion is well known; see, for example, \citealp{Ash1975}). Consequently, Brownian motion has the Karhunen--Lo\`eve representation
+	
+	\begin{equation}\label{eq5}
+		X_i(t)=\sum_{j=1}^{\infty}\xi_{ij}\sqrt{\theta_j}\psi_j(t),
+	\end{equation}
+	
+	where $\xi_{ij}\stackrel{iid}{\sim}N(0,1)$. Since
+	$
+	\theta_j\asymp j^{-2},
+	$
+	the eigenvalues satisfy the regularity conditions commonly assumed in functional linear regression models with points of impact
+	(refer to \citealp{Shirvani2024}).
+	Substituting \eqref{eq5} into model \eqref{eq1} yields
+	
+	\begin{equation}\label{eq6}
+		Y_i=
+		\sum_{j=1}^{\infty}\alpha_j\xi_{ij}
+		+
+		\delta X_i(\tau)
+		+
+		\varepsilon_i,
+	\end{equation}
+	
+	where
+	$
+	\alpha_j=
+	\sqrt{\theta_j}
+	\int_0^1\beta(t)\psi_j(t)\,dt.
+	$
+	For asymptotic analysis, we consider the truncated approximation
+	
+	\begin{equation}\label{eq7}
+		Y_i=
+		\sum_{j=1}^{k_n}\alpha_j\xi_{ij}
+		+
+		\delta X_i(\tau)
+		+
+		R_{in}
+		+
+		\varepsilon_i,
+	\end{equation}
+	
+	where
+	
+	\[
+	R_{in}=
+	\sum_{j=k_n+1}^{\infty}\alpha_j\xi_{ij},
+	\qquad
+	k_n\to\infty,
+	\qquad
+	\frac{k_n}{n}\to0.
+	\]
+	
+	Assume further that for $b>\frac32$, 
+	$
+	|\alpha_j|\le Cj^{-b},
+	$
+	then
+	
+	\[
+	E(R_{in}^2)
+	=
+	\sum_{j=k_n+1}^{\infty}\alpha_j^2
+	\to0,
+	\]
+	
+	which shows that the truncation error becomes asymptotically negligible.
+
+
+\section{Asymptotic Distribution under Local Alternatives}\label{sec3}
+
+We consider the sequence of local alternatives
+
+\begin{equation}\label{eq8}
+	H_{1n}:\delta_n=\frac{c}{\sqrt n},
+	\qquad
+	c\neq0.
+\end{equation}
+
+Such alternatives describe contiguous departures from the null hypothesis and are commonly used in asymptotic power analysis.
+
+Let
+$
+Z_i=X_i(\tau).
+$
+Since the predictor process is Brownian motion,
+$
+Z_i\sim N(0,\tau).
+$
+Denote by $\widehat{\delta}_n$ the least squares estimator of $\delta_n$ obtained from the truncated regression model. Standard least squares arguments imply
+
+\begin{equation}\label{eq9}
+	\widehat{\delta}_n-\delta_n
+	=
+	\frac{
+		\sum_{i=1}^{n}Z_i\varepsilon_i^*
+	}{
+		\sum_{i=1}^{n}Z_i^2
+	},
+\end{equation}
+
+where
+$
+\varepsilon_i^*=\varepsilon_i+R_{in}.
+$
+Since $E(Z_i^2)=\tau$, the law of large numbers yields
+$
+\frac1n\sum_{i=1}^{n}Z_i^2
+\xrightarrow{p}
+\tau.
+$
+Moreover,
+
+\[
+Var\left(
+\frac1{\sqrt n}
+\sum_{i=1}^{n}Z_i\varepsilon_i^*
+\right)
+<\infty,
+\]
+
+which implies
+
+\[
+\frac1{\sqrt n}
+\sum_{i=1}^{n}Z_i\varepsilon_i^*
+=
+O_p(1).
+\]
+
+Consequently,
+
+\begin{equation}\label{eq10}
+	\widehat{\delta}_n-\delta_n
+	=
+	O_p(n^{-1/2}).
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Asymptotic Null Distribution}
+
+The test statistic is
+
+\begin{equation}\label{eq11}
+	T_n
+	=
+	\frac{
+		n\widehat{\delta}_n^2
+	}{
+		\widehat{\sigma}^2/\widehat{\tau}
+	},
+\end{equation}
+
+where
+
+\[
+\widehat{\sigma}^2
+=
+\frac1n
+\sum_{i=1}^{n}\widehat{\varepsilon}_i^2,
+\qquad
+\widehat{\tau}
+=
+\frac1n
+\sum_{i=1}^{n}X_i^2(\tau).
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thm}\label{th1}
+	Under $H_0$,
+	
+	\[
+	T_n
+	\xrightarrow{d}
+	\chi^2(1),
+	\qquad
+	n\to\infty.
+	\]
+\end{thm}
+
+\begin{proof}
+	Under the null hypothesis, $\delta_n=0$. Using \eqref{eq9}, we obtain
+	
+	\[
+	\sqrt n\widehat{\delta}_n
+	=
+	\frac{
+		\frac1{\sqrt n}
+		\sum_{i=1}^{n}Z_i\varepsilon_i^*
+	}{
+		\frac1n
+		\sum_{i=1}^{n}Z_i^2
+	}
+	+o_p(1).
+	\]
+	
+	Since $E(Z_i\varepsilon_i^*)=0$ and $Var(Z_i\varepsilon_i^*)=\tau\sigma^2$, the central limit theorem implies
+	
+	\[
+	\frac1{\sqrt n}
+	\sum_{i=1}^{n}Z_i\varepsilon_i^*
+	\xrightarrow{d}
+	N(0,\tau\sigma^2).
+	\]
+	
+	Combining this with
+	
+	\[
+	\frac1n
+	\sum_{i=1}^{n}Z_i^2
+	\xrightarrow{p}
+	\tau,
+	\]
+	
+	yields
+	
+	\[
+	\sqrt n\widehat{\delta}_n
+	\xrightarrow{d}
+	N\left(
+	0,
+	\frac{\sigma^2}{\tau}
+	\right).
+	\]
+	
+	Finally, Slutsky's theorem gives
+	
+	\[
+	T_n
+	=
+	\frac{
+		n\widehat{\delta}_n^2
+	}{
+		\widehat{\sigma}^2/\widehat{\tau}
+	}
+	\xrightarrow{d}
+	\chi^2(1).
+	\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Local Alternatives and Asymptotic Power}
+
+We now derive the limiting distribution of the test statistic under the local alternatives defined in \eqref{eq8}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thm}\label{th2}
+	Under the local alternatives
+	$
+	\delta_n=\frac{c}{\sqrt n},
+	$
+	the test statistic satisfies
+	
+	\[
+	T_n
+	\xrightarrow{d}
+	\chi^2(1,\lambda),
+	\]
+	
+	where
+	
+	\begin{equation}\label{eq12}
+		\lambda
+		=
+		\frac{c^2\tau}{\sigma^2}.
+	\end{equation}
+\end{thm}
+
+\begin{proof}
+	Under the local alternatives,
+	
+	\[
+	\sqrt n\delta_n=c.
+	\]
+	
+	Therefore,
+	
+	\[
+	\sqrt n\widehat{\delta}_n
+	=
+	\sqrt n(\widehat{\delta}_n-\delta_n)+c.
+	\]
+	
+	Using Theorem \ref{th1},
+	
+	\[
+	\sqrt n(\widehat{\delta}_n-\delta_n)
+	\xrightarrow{d}
+	N\left(
+	0,
+	\frac{\sigma^2}{\tau}
+	\right).
+	\]
+	
+	Hence,
+	
+	\[
+	\sqrt n\widehat{\delta}_n
+	\xrightarrow{d}
+	N\left(
+	c,
+	\frac{\sigma^2}{\tau}
+	\right).
+	\]
+	
+	It follows that
+	
+	\[
+	\frac{
+		n\widehat{\delta}_n^2
+	}{
+		\sigma^2/\tau
+	}
+	\xrightarrow{d}
+	\chi^2(1,\lambda),
+	\]
+	
+	where $\lambda=c^2\tau/\sigma^2$. Slutsky's theorem completes the proof.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The asymptotic power function is therefore given by
+
+\begin{equation}\label{eq13}
+	\beta(c)
+	=
+	P\left(
+	\chi^2(1,\lambda)>
+	\chi^2_{1-\alpha}(1)
+	\right).
+\end{equation}
+
+Equation \eqref{eq13} shows that the asymptotic power depends directly on the signal strength $c$, the error variance $\sigma^2$, and the impact location $\tau$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{pro}\label{pr1}
+	For fixed $c$ and $\sigma^2$, the asymptotic power function is increasing in $\tau$.
+\end{pro}
+
+\begin{proof}
+	Since
+	
+	\[
+	\lambda=\frac{c^2\tau}{\sigma^2},
+	\]
+	
+	we have
+	
+	\[
+	\frac{\partial\lambda}{\partial\tau}
+	=
+	\frac{c^2}{\sigma^2}>0.
+	\]
+	
+	Because the noncentral chi-square distribution is monotone with respect to the noncentrality parameter, the asymptotic power increases as $\tau$ increases.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Proposition \ref{pr1} indicates that points of impact located farther from the left boundary are easier to detect asymptotically. This phenomenon is a direct consequence of the covariance structure of Brownian motion, since
+
+\[
+Var(X(\tau))=\tau.
+\]
+
+Therefore, impact points near $\tau=0$ generate weaker signals in the regression model.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{cor}\label{cor1}
+	If $\tau\to0$, then
+	
+	\[
+	\lambda\to0,
+	\qquad
+	\beta(c)\to\alpha.
+	\]
+\end{cor}
+
+\begin{proof}
+	The result follows immediately from \eqref{eq12}.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Under fixed alternatives with $\delta\neq0$, consistency of the test follows directly since
+
+\[
+n\widehat{\delta}_n^2\to\infty,
+\]
+
+in probability, implying
+
+\[
+T_n\to\infty.
+\]
+
+
+\section{Simulation Study}\label{sec4}
+
+A Monte Carlo simulation study was conducted to evaluate the finite-sample performance of the proposed test statistic under Brownian motion predictors.
+
+Functional predictors were generated from standard Brownian motion trajectories observed on the equally spaced grid
+
+\[
+t_j=\frac{j}{200},
+\qquad
+j=0,1,\ldots,200.
+\]
+
+For each replication, Brownian paths were generated recursively by
+
+\[
+X(t_j)=X(t_{j-1})+\sqrt{t_j-t_{j-1}}\,Z_j,
+\]
+
+where $Z_j\stackrel{iid}{\sim}N(0,1)$. The scalar response variable was generated according to
+
+\begin{equation}\label{eq14}
+	Y_i=
+	\int_0^1\beta(t)X_i(t)\,dt
+	+
+	\delta_nX_i(\tau)
+	+
+	\varepsilon_i,
+\end{equation}
+
+where
+
+\[
+\beta(t)=2t(1-t),
+\qquad
+\varepsilon_i\sim N(0,\sigma^2),
+\qquad
+\sigma^2=1.
+\]
+
+The local alternatives were defined by
+
+\[
+\delta_n=\frac{c}{\sqrt n},
+\]
+
+with
+
+\[
+c\in\{0,1,2,3,4\}.
+\]
+
+Sample sizes
+
+\[
+n\in\{50,100,300\},
+\]
+
+and impact locations
+
+\[
+\tau\in\{0.25,0.50,0.75\},
+\]
+
+were considered. All simulation results were based on 1000 Monte Carlo replications.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Empirical Significance Levels}
+
+We first examined the empirical significance levels of the proposed test under the null hypothesis.
+
+\begin{table}[h]
+	\begin{center}
+		\small
+		\caption{Empirical significance levels for $\alpha=0.05$.}\label{tab1}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			$n$ & $\tau=0.25$ & $\tau=0.50$ & $\tau=0.75$ \\ \hline \hline
+			50  & 0.061 & 0.056 & 0.053 \\
+			100 & 0.056 & 0.052 & 0.050 \\
+			300 & 0.051 & 0.049 & 0.050 \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+Table \ref{tab1} shows that the empirical significance levels are close to the nominal level even for moderate sample sizes. The approximation improves as the sample size increases.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Empirical Power Analysis}
+
+We next investigated the empirical powers of the proposed test under local alternatives.
+
+\begin{table}[h]
+	\begin{center}
+		\small
+		\caption{Empirical powers for $\tau=0.25$.}\label{tab2}
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			$n$ & $c=1$ & $c=2$ & $c=3$ & $c=4$ \\ \hline \hline
+			50  & 0.081 & 0.181 & 0.392 & 0.637 \\
+			100 & 0.092 & 0.244 & 0.541 & 0.812 \\
+			300 & 0.123 & 0.437 & 0.841 & 0.992 \\ \hline
+			\end{tabular}
+		\end{center}
+	\end{table}
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{Empirical powers for $\tau=0.50$.}\label{tab3}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$n$ & $c=1$ & $c=2$ & $c=3$ & $c=4$ \\ \hline \hline
+50  & 0.114 & 0.302 & 0.611 & 0.884 \\
+100 & 0.136 & 0.419 & 0.803 & 0.978 \\
+300 & 0.189 & 0.692 & 0.986 & 1.000 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+\small
+\caption{Empirical powers for $\tau=0.75$.}\label{tab4}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$n$ & $c=1$ & $c=2$ & $c=3$ & $c=4$ \\ \hline \hline
+50  & 0.147 & 0.447 & 0.794 & 0.962 \\
+100 & 0.184 & 0.603 & 0.947 & 0.998 \\
+300 & 0.281 & 0.884 & 1.000 & 1.000 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The simulation results clearly demonstrate that the empirical powers increase with both the sample size and the signal strength. Moreover, larger values of $\tau$ produce substantially stronger powers, which agrees with the theoretical results obtained in Section 3. For example, when $n=100$ and $c=3$, the empirical powers are $0.541$, $0.803$, and $0.947$ for $\tau=0.25$, $\tau=0.50$, and $\tau=0.75$, respectively. This behavior is consistent with the explicit form of the noncentrality parameter
+
+\[
+\lambda=\frac{c^2\tau}{\sigma^2}.
+\]
+
+The simulation study also indicates that the asymptotic approximation is satisfactory even for moderate sample sizes. As the sample size increases, the empirical distribution of the test statistic becomes increasingly close to its limiting noncentral chi-square distribution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Discussion and Conclusion}
+
+In this paper, we investigated the asymptotic behavior of the test statistic for points of impact in functional linear regression models under Brownian motion predictors. Using the explicit spectral decomposition of Brownian motion, simplified asymptotic expressions for the covariance structure and local power function were derived. Under local alternatives, the limiting distribution of the proposed test statistic was shown to converge to a noncentral chi-square distribution with an explicit noncentrality parameter.
+
+The theoretical analysis demonstrated that the impact location plays a fundamental role in determining the asymptotic power of the test. In particular, impact points located near the left boundary become increasingly difficult to detect because the variance of Brownian motion decreases near zero. The simulation study confirmed the theoretical findings and illustrated satisfactory finite-sample performance of the proposed procedure.
+
+
+\begin{thebibliography}{99}
+\bibitem[Ash and Gardner (1975)]{Ash1975}
+Ash R.B. and Gardner M.F. (1975),
+{\it Topics in Stochastic Processes},
+Academic Press, New York.
+
+\bibitem[Crambes et al. (2009)]{Crambes2009}
+Crambes C., Kneip A. and Sarda P. (2009), Smoothing splines estimators for functional linear regression, {\it Annals of Statistics}, 37, 35--72.
+
+\bibitem[Ferraty and Vieu (2006)]{Ferraty2006}
+Ferraty F. and Vieu P. (2006), {\it Nonparametric Functional Data Analysis}, Springer, New York.
+
+\bibitem[Hall and Horowitz (2007)]{Hall2007}
+Hall P. and Horowitz J. (2007), Methodology and convergence rates for functional linear regression, {\it Annals of Statistics}, 35, 70--91.
+
+\bibitem[Kneip et al. (2016)]{Kneip2016}
+Kneip A., Poss D. and Sarda P. (2016), Functional linear regression with points of impact, {\it Annals of Statistics}, 44, 1--30.
+
+\bibitem[Mckeague and Sen (2010)]{Mckeague2010}
+Mckeague I. and Sen B. (2010), Fractals with point impact in functional linear regression, {\it Annals of Statistics}, 38, 2551--2579.
+
+\bibitem[Ramsay and Silverman (2005)]{Ramsay2005}
+Ramsay J. and Silverman B. (2005), {\it Functional Data Analysis}, Springer, New York.
+
+\bibitem[Shirvani et al. (2024)]{Shirvani2024}
+Shirvani A., Khademnoe O. and Hosseini-Nasab M. (2024), Hypothesis testing for points of impact in functional linear regression, {\it Computational and Applied Mathematics}, 43, 201.
+
+\end{thebibliography}
+
+\end{document}

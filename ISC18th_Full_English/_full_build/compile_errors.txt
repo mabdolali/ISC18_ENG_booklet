@@ -1,0 +1,55 @@
+
+==== p.1285 ====
+! LaTeX Error: There's no line here to end.
+l.59 		}\\
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1053 ====
+! Missing $ inserted.
+l.106 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1096 ====
+! Paragraph ended before \hypertarget was complete.
+l.38 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1239 ====
+! Paragraph ended before \text@command was complete.
+l.83 stubbornness}
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1097 ====
+! Paragraph ended before \hypertarget was complete.
+l.38 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1243 ====
+! Missing $ inserted.
+l.135 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1094 ====
+! Paragraph ended before \hypertarget was complete.
+l.38 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1330 ====
+! Missing $ inserted.
+l.166 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1211 ====
+! LaTeX Error: No \title given.
+l.32 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1038 ====
+! Missing $ inserted.
+l.160 
+!  ==> Fatal error occurred, no output PDF file produced!
+
+==== p.1283 ====
+! LaTeX Error: There's no line here to end.
+l.61 }\\
+!  ==> Fatal error occurred, no output PDF file produced!

@@ -1,0 +1,8 @@
+{
+  "included": 112,
+  "arabic_pages": 984,
+  "toc_pages": 10,
+  "full_pages": 994,
+  "method": "original_pdfs_prefer + isc18_compile_for_missing + continuous_pagenums",
+  "output": "i:\\Booklet ENG\\ISC18th_Full_English\\Full-English-new.pdf"
+}

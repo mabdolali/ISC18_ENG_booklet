@@ -1,0 +1,166 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{cite} 
+\usepackage{amsmath,amssymb,amsfonts,amsthm} 
+\usepackage{algorithm} 
+\usepackage{algorithmic} 
+\usepackage{graphicx} 
+\usepackage{booktabs} 
+\usepackage{array} 
+\usepackage{hyperref} 
+\usepackage{caption} 
+\usepackage{subcaption} 
+\usepackage{pgfplots} 
+%\pgfplotsset{compat=1.18}
+
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Stochastic Hypergroups and Applications in Statistics}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{M. A. Dehghanizadeh}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Stochastic Hypergroups and Applications in Statistics}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Mohammad Ali Dehghanizadeh$^1$, {{\bf Corresponding Author:} {\tt Mdehghanizadeh@tvu.ac.ir }} \\
+$^1$Department of Basic Sciences, Technical and Vocational University (TVU),Tehran, Iran. \\
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+
+This note gives a concise but rigorous introduction to hypergroups and stochastic hypergroups, with emphasis on their relevance to statistics. We begin with the precise axiomatic definition of a hypergroup, then introduce stochastic hypergroups as convolution structures in which each convolution product is a probability measure. We present one canonical example and one highly illustrative stochastic example, and then prove three fundamental theorems concerning convolution operators, random-walk transition kernels, and statistical estimation on hypergroup-valued data. Throughout, we follow the standard framework developed in harmonic analysis and probabilistic hypergroup theory; see, for example, \cite{Jewett:1975,BloomHeyer:1995,Voit:2014}.
+ 
+\noindent{\bf Keywords:} 
+Stochastic Hypergroups, Statistical Inference on Manifolds, Harmonic Analysis, Random Walks on Algebraic Structures.  \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 43A62$, $\rm 60B15$, $\rm 62H99$, $\rm 60J10$ \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+Hypergroups arise as a natural generalization of groups in which the product of two points need not be a single point, but may instead be a probability measure. This probabilistic relaxation is particularly well suited to statistical modeling, where uncertainty is intrinsic and where averaging, mixing, and aggregation are often more fundamental than exact algebraic composition. In this sense, hypergroup theory provides a flexible algebraic framework for describing systems with inherent ambiguity, multi-valued interactions, and non-deterministic outcomes.
+The foundational theory was developed in the works of Jewett \cite{Jewett:1975} and Bloom–Heyer \cite{BloomHeyer:1995}, and stochastic versions have since become important tools in harmonic analysis, random walks, and statistical mechanics; see also \cite{Ross:2012,Voit:2014}. Beyond these classical applications, hypergroups have also attracted increasing attention in areas where conventional point-valued structures are too restrictive, including generalized probability models, signal processing, and uncertainty-aware data analysis. Their measure-valued product structure makes them especially suitable for problems involving aggregation over latent states or overlapping categories, where deterministic algebraic operations fail to capture the full complexity of the underlying phenomena.
+\section{Hypergroups}
+
+\begin{dfn}[Hypergroup]
+ A locally compact Hausdorff space $K$ equipped with an associative convolution \[ *: M(K)\times M(K)\to M(K), \] where $M(K)$ denotes the space of bounded regular Borel measures on $K$, is called a hypergroup if the following conditions hold:
+\begin{enumerate}
+\item For each $x,y\in K$, the measure $\delta_x * \delta_y$ is a probability measure with compact support. 
+\item The map $(x,y)\mapsto \delta_x * \delta_y$ is weak$^*$ continuous. 
+\item There exists an identity element $e\in K$ such that $\delta_e * \delta_x = \delta_x * \delta_e = \delta_x$ for all $x\in K$.
+ \item There exists an involution $x\mapsto \bar x$ on $K$ such that \[ e\in \operatorname{supp}(\delta_x * \delta_y)\quad \Longleftrightarrow \quad y=\bar x. \] 
+ \item Convolution is compatible with reversal by involution in the sense that \[ (\delta_x * \delta_y)^\ast = \delta_{\bar y} * \delta_{\bar x}, \] where $\mu^\ast(A)=\mu(\bar A)$ is the pushforward under involution. 
+ \end{enumerate} 
+ \end{dfn} 
+ 
+ \begin{rem} 
+ When $\delta_x * \delta_y = \delta_{xy}$ for all $x,y$, the structure reduces to an ordinary locally compact group. Hypergroups therefore encode a genuine probabilistic extension of groups rather than merely a notational variant \cite{BloomHeyer:1995}. 
+ \end{rem}
+ 
+  \begin{eg}[Orbit hypergroup] 
+  Let $G$ be a compact group acting continuously on a locally compact space $X$. The orbit space $K=X/G$ may carry a hypergroup structure by averaging over orbits: the product of two orbits is the distribution induced by the orbit of a product representative, averaged with respect to Haar measure on stabilizers. This construction appears in several harmonic-analytic settings, including double coset spaces and Gelfand pairs \cite{Jewett:1975,Voit:2014}. 
+  \end{eg} 
+  
+  \section{A stochastic hypergroup} 
+  
+  The term stochastic hypergroup is used here to emphasize the probabilistic nature of the convolution. In the literature, one often works with hypergroups whose translation operators are Markov kernels. We formalize this point of view as follows. 
+  
+ \begin{dfn}[Stochastic hypergroup] A hypergroup $K$ is called stochastic if for every $x\in K$ the map \[ T_x f(y):=\int_K f(z)\, d(\delta_x * \delta_y)(z) \] defines a Markov operator on bounded measurable functions $f$; equivalently, each left translation $T_x$ is positivity preserving and satisfies $T_x \mathbf{1}=\mathbf{1}$. 
+ \end{dfn} 
+  
+ \begin{rem} 
+  This condition is automatic for many standard hypergroups because each point-mass convolution is already a probability measure. The adjective stochastic is useful when one wants to emphasize statistical interpretation: state evolution, random aggregation, and uncertainty propagation all arise from the same convolution law \cite{Ross:2012,Voit:2014}. 
+\end{rem} 
+  
+\begin{eg}[Polynomial hypergroup on $\mathbb{N}_0$] 
+Let $\{P_n\}_{n\ge 0}$ be a family of orthogonal polynomials satisfying a linearization formula \[ P_m(x)P_n(x)=\sum_{k=0}^{m+n} c_{m,n}^k P_k(x), \qquad c_{m,n}^k\ge 0,\qquad \sum_k c_{m,n}^k=1. \] Then the index set $\mathbb{N}_0$ becomes a stochastic hypergroup by setting \[ \delta_m * \delta_n := \sum_k c_{m,n}^k\,\delta_k. \] A particularly attractive example is the ultraspherical or Jacobi polynomial hypergroup, which appears in spectral analysis of random walks and in the study of radial data \cite{BloomHeyer:1995,Voit:2014}. 
+\end{eg} 
+
+
+\begin{thm}[Markov property of hypergroup translations] \label{thm:markov} 
+Let $K$ be a stochastic hypergroup and let $\mu$ be any probability measure on $K$. Define the operator \[ (T_\mu f)(y):=\int_K \left(\int_K f(z)\, d(\delta_x*\delta_y)(z)\right)\, d\mu(x). \] Then $T_\mu$ is a Markov operator on bounded measurable functions. In particular: \begin{enumerate}
+\item $f\ge 0 \implies T_\mu f\ge 0$, 
+\item $T_\mu \mathbf{1}=\mathbf{1}$, 
+\item $T_\mu$ is contraction on $L^\infty(K)$. 
+\end{enumerate} 
+\end{thm} 
+
+\begin{proof} For each fixed $x,y\in K$, the measure $\delta_x*\delta_y$ is a probability measure by definition of hypergroup. Hence if $f\ge 0$, then \[ \int_K f(z)\, d(\delta_x*\delta_y)(z)\ge 0. \] Integrating this with respect to the probability measure $\mu$ preserves nonnegativity, proving (i). For the constant function $\mathbf{1}$, we have \[ \int_K \mathbf{1}(z)\, d(\delta_x*\delta_y)(z)=1 \] because $\delta_x*\delta_y$ has total mass one. Therefore \[ (T_\mu \mathbf{1})(y)=\int_K 1\, d\mu(x)=1, \] which gives (ii). Finally, if $\\mid f\\mid_\infty\le M$, then \[ \mid T_\mu f(y)\mid \le \int_K \int_K \mid f(z)\mid\, d(\delta_x*\delta_y)(z)\, d\mu(x)\le M. \] Thus $\mid T_\mu f\\mid_\infty\le \\mid f\\mid_\infty$, proving (iii). The operator is therefore Markov. This is the basic probabilistic mechanism behind stochastic hypergroup dynamics \cite{BloomHeyer:1995,Voit:2014}. 
+\end{proof} 
+
+\begin{rem} 
+In statistical terms, Theorem \ref{thm:markov} says that hypergroup convolution induces a legitimate noise model: it transforms bounded observables into bounded observables without losing positivity or total mass. 
+\end{rem} 
+
+
+\begin{thm}[Hypergroup random-walk kernel] \label{thm:kernel} 
+Let $K$ be a stochastic hypergroup and fix a probability measure $\mu$ on $K$. Define \[ P_\mu(y,A):=\int_K (\delta_x*\delta_y)(A)\, d\mu(x), \qquad y\in K,\ A\subseteq K \text{ Borel}. \] Then $P_\mu$ is a Markov transition kernel. If $X_0$ is $K$-valued with law $\nu_0$, and $(X_n)_{n\ge 0}$ is defined by \[ \mathbb{P}(X_{n+1}\in A\mid X_n=y)=P_\mu(y,A), \] then the marginal law of $X_n$ is obtained by iterated hypergroup convolution: \[ \nu_{n+1}=\mu * \nu_n, \] where $(\mu*\nu)(A):=\int_K (\delta_x*\nu)(A)\, d\mu(x)$. 
+\end{thm} 
+
+\begin{proof} 
+For fixed $y$, the map $A\mapsto P_\mu(y,A)$ is a probability measure because it is an average of probability measures $\delta_x*\delta_y$ against the probability measure $\mu$. Measurability in $y$ follows from weak continuity of the hypergroup convolution. Now let $\nu_n$ denote the law of $X_n$. By the law of total probability, \[ \nu_{n+1}(A)=\int_K \mathbb{P}(X_{n+1}\in A\mid X_n=y)\, d\nu_n(y) =\int_K P_\mu(y,A)\, d\nu_n(y). \] Substituting the definition of $P_\mu$ yields \[ \nu_{n+1}(A)=\int_K \int_K (\delta_x*\delta_y)(A)\, d\mu(x)\, d\nu_n(y), \] which is exactly the convolution update $\nu_{n+1}=\mu*\nu_n$. Thus hypergroup-valued random walks evolve by convolution, exactly as group random walks do, but now with genuinely probabilistic point-mass multiplication \cite{Ross:2012}. 
+\end{proof} 
+
+\begin{rem} 
+This result is particularly important in statistics because it gives a principled way to build discrete-time stochastic models on non-group state spaces. It also motivates estimation of the driving law $\mu$ from observed transitions. 
+\end{rem} 
+
+
+\begin{thm}[Moment-based identification under character separation] \label{thm:estimation} 
+Let $K$ be a commutative stochastic hypergroup with character space $\widehat K$. Suppose $\mu$ and $\eta$ are two probability measures on $K$ such that \[ \int_K \chi(x)\, d\mu(x)=\int_K \chi(x)\, d\eta(x) \qquad \text{for all } \chi\in \widehat K. \] If characters separate probability measures on $K$ (for example, under the standard regularity assumptions of harmonic analysis on commutative hypergroups), then $\mu=\eta$. Consequently, the law of a hypergroup-valued noise source can be uniquely identified from its character moments. In statistical applications, this provides a consistent method for parameter recovery from spectral data. 
+\end{thm} 
+
+\begin{proof} For commutative hypergroups, the characters play the same role as Fourier modes on an abelian group. Under the separation hypothesis, equality of all character moments implies equality of the associated Fourier transforms: \[ \widehat{\mu}(\chi):=\int_K \chi(x)\, d\mu(x)=\int_K \chi(x)\, d\eta(x)=:\widehat{\eta}(\chi), \qquad \chi\in \widehat K. \] The injectivity of the hypergroup Fourier transform on probability measures then yields $\mu=\eta$. This argument is standard in hypergroup harmonic analysis; see \cite{BloomHeyer:1995,Voit:2014}. The statistical content is that spectral summaries determine the underlying mixing law whenever the dual space is rich enough to identify measures uniquely. 
+\end{proof} 
+
+\section{Statistical applications}
+ 
+The previous theorems suggest several statistical uses of stochastic hypergroups: 
+\begin{enumerate}
+ \item Random-walk modeling. Transition laws generated by hypergroup convolution provide flexible non-Euclidean stochastic processes \cite{Ross:2012}. 
+ \item Spectral inference. Character transforms can be used to estimate unknown mixing laws or noise parameters. 
+ \item Orbit-valued data. When observations are naturally grouped into symmetry classes, hypergroup models avoid artificial coordinate choices. 
+ \item Aggregation under uncertainty. Hypergroup convolution is a natural model for combining uncertain measurements from repeated experiments. 
+ \end{enumerate} 
+ These applications make stochastic hypergroups particularly attractive for modern statistics, especially in problems where the state space has symmetries, constraints, or hidden mixture structure. 
+
+\section*{Discussion and Conclusion}   
+
+Hypergroups generalize groups by replacing pointwise multiplication with convolution of point masses, thereby incorporating probabilistic superposition at the algebraic level. Stochastic hypergroups emphasize the Markovian and statistical aspects of this structure. The three theorems proved above show that such systems naturally generate probability-preserving operators, Markov transition kernels, and identifiable spectral estimators. These features make stochastic hypergroups a mathematically rigorous and statistically meaningful framework for random processes on non-classical state spaces. 
+
+\section*{Acknowledgments} 
+The author considers it his duty to express his gratitude and appreciation to the organizers of the conference and the esteemed judges.
+
+\begin{thebibliography}{9}
+
+\bibitem[BloomHeyer (1995)] {BloomHeyer:1995} 
+Bloom W. R and Heyer H. (1995), Harmonic Analysis of Probability Measures on Hypergroups, {\it de Gruyter Studies in Mathematics} 20, Walter de Gruyter, Berlin. 
+
+
+\bibitem[Jewett (1975)]{Jewett:1975} 
+Jewett R. J. (1975), Spaces with an Abstract Convolution of Measures, {\it Advances in Mathematics} 18, 1-101. 
+
+
+\bibitem[Ross (2012)]{Ross:2012} 
+Ross K. A. (2012), Hypergroups and Random Walks, {\it Probability Measures on Groups and Related Structures}, edited volume.
+
+ \bibitem[Voit (2014)]{Voit:2014} 
+ Voit M. (2014), On Hypergroups Associated with Orthogonal Polynomials, {\it Harmonic Analysis and Applications}. 
+
+\end{thebibliography}
+ \end{document}
+

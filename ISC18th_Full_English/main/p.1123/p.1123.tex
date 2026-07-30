@@ -1,0 +1,429 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{cite} 
+\usepackage{amsmath,amssymb,amsfonts,amsthm} 
+\usepackage{algorithm} 
+\usepackage{algorithmic} 
+\usepackage{graphicx} 
+\usepackage{booktabs} 
+\usepackage{array} 
+\usepackage{hyperref} 
+\usepackage{caption} 
+\usepackage{subcaption} 
+\usepackage{pgfplots} 
+%\newtheorem{remark}[theorem]{Remark}
+%\pgfplotsset{compat=1.18}
+
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Fuzzy Bayesian Inference with Soft Sets}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{M. A. Dehghanizadeh}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Fuzzy Bayesian Inference with Soft Sets}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Mohammad Ali Dehghanizadeh$^1$, {{\bf Corresponding Author:} {\tt Mdehghanizadeh@tvu.ac.ir }} \\
+$^1$Department of Basic Sciences, Technical and Vocational University (TVU),Tehran, Iran. \\
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+
+This paper presents a novel framework for Bayesian inference designed to handle data characterized by inherent fuzziness and uncertainty, utilizing the expressive power of soft sets. We introduce the concept of a Soft Bayesian model, which extends classical Bayesian methodology by formally incorporating soft evidence and soft fuzzy prior information. The core of our approach lies in defining soft likelihoods and soft priors that can capture nuanced epistemic uncertainty. We provide the mathematical formulation for soft Bayesian updating, enabling the computation of soft posterior distributions.
+
+
+\noindent{\bf Keywords:} 
+Soft Sets, Fuzzy Sets, Bayesian Inference, Uncertainty Quantification, Soft Likelihood, Soft Prior, Fuzzy Regression, Statistical Modeling.  \\
+
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F15$, $\rm 62F35$, $\rm 62F99$, $\rm 03E72$ \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%
+\section{Introduction} \label{sec:introduction}
+
+The accurate modeling and analysis of uncertainty constitute a cornerstone of modern statistical science. While classical probability theory provides a robust framework for aleatoric uncertainty (randomness), many real-world phenomena exhibit epistemic uncertainty, vagueness, and imprecision that extend beyond the traditional probabilistic paradigm \cite{zadeh:1965}. Phenomena in fields such as social sciences, economics, decision making, and engineering often involve subjective assessments, linguistic variables, and incomplete information, which are difficult to represent using precise numerical values or standard probability distributions \cite{bezdek:2001}.
+
+To address these challenges, various extensions and alternatives to classical probability have been developed. Among these, fuzzy set theory, introduced by Zadeh \cite{zadeh:1965}, has emerged as a powerful tool for modeling vagueness and imprecision through the concept of degrees of membership. Fuzzy statistics, which extends classical statistical methods to fuzzy data, has seen significant development over the past few decades \cite{kaufmann:1987}. However, incorporating fuzzy concepts into inferential frameworks like Bayesian inference has presented its own set of challenges and opportunities \cite{denoeux:1999}.
+
+Bayesian inference, with its coherent framework for updating beliefs in the face of new evidence, is particularly well-suited for handling uncertainty. The Bayesian approach allows for the incorporation of prior knowledge and provides a natural way to quantify uncertainty through posterior distributions. Fuzzy Bayesian inference aims to bridge the gap between fuzzy data/knowledge and the Bayesian framework, typically by using fuzzy probability distributions or fuzzy likelihood functions \cite{aguilar:2002}. Yet, existing methods may still lack the flexibility to represent certain types of complex uncertainties.
+
+Soft Set Theory, proposed by Molodtsov \cite{molodtsov:1999}, offers a more general mathematical framework for dealing with uncertainty and vagueness compared to traditional fuzzy sets. A Soft Set is characterized by a pair $(S, A)$, where $S$ is a universe of discourse and $A$ is a set of parameters (attributes). The Soft Set is defined by a function $F: A \to \mathcal{P}(S)$, which assigns a subset of $S$ to each parameter in $A$. This structure allows for a more flexible representation of objects based on their attributes, without requiring membership functions or a universal fuzzy approximation accuracy. Soft Sets have found applications in various fields, including decision making, data analysis, and pattern recognition.
+
+Despite the potential of Soft Sets in modeling uncertainty, their application in the domain of Bayesian inference remains largely unexplored. This paper seeks to fill this gap by proposing a novel framework for fuzzy Bayesian inference that integrates the strengths of Soft Set Theory. Our primary goal is to develop a robust methodology for statistical inference when data and/or prior information are best represented using Soft Sets.
+
+\section{Preliminaries} \label{sec:preliminaries}
+
+This section briefly reviews the fundamental concepts required for understanding the proposed framework.
+
+\begin{dfn}{Fuzzy Sets} \label{subsec:fuzzy_sets}
+A fuzzy set $A$ on a universe of discourse $X$ is characterized by a membership function $\mu_A: X \to [0, 1]$, where $\mu_A(x)$ represents the degree to which element $x$ belongs to the fuzzy set $A$. The fuzzy set can be represented as $A = \{ (x, \mu_A(x)) \mid x \in X \}$. Fuzzy numbers and fuzzy random variables are generalizations used in fuzzy statistics \cite{kaufmann:1987}.
+\end{dfn}
+
+\begin{dfn}{Soft Sets}\label{subsec:soft_sets}
+Let $X$ be a universe of discourse and $E$ be a set of parameters (attributes). A Soft Set over $X$ with respect to $E$ is a pair $(F, E)$, where $F$ is a mapping given by $F: E \to \mathcal{P}(X)$, and $\mathcal{P}(X)$ denotes the power set of $X$. The value $F(e)$ for $e \in E$ is the set of elements in $X$ that have the parameter $e$. We often denote a Soft Set by $S = (F, E)$.
+\end{dfn}
+
+\begin{rem}
+\begin{itemize}
+    \item A Soft Set is not a set in the usual sense. It is a collection of subsets of $X$, each associated with a parameter from $E$.
+    \item The parameter set $E$ can be any set, and it does not need to be related to $X$.
+    \item The mapping $F$ can be considered as assigning a set of attributes to elements of $X$, or conversely, assigning objects to attributes.
+\end{itemize}
+\end{rem}
+
+\section{Bayesian Inference} \label{subsec:bayesian_inference}
+In Bayesian inference, we update our beliefs about unknown parameters $\theta$ based on observed data $D$. This is governed by Bayes' theorem:
+$$ P(\theta | D) = \frac{P(D | \theta) P(\theta)}{P(D)} $$
+where:
+\begin{itemize}
+    \item $P(\theta | D)$ is the posterior distribution of $\theta$ given $D$.
+    \item $P(D | \theta)$ is the likelihood function, representing the probability of the data given the parameters.
+    \item $P(\theta)$ is the prior distribution, representing our beliefs about $\theta$ before observing the data.
+    \item $P(D) = \int P(D | \theta) P(\theta) d\theta$ is the marginal likelihood or evidence, acting as a normalizing constant.
+\end{itemize}
+The core idea is to start with a prior belief $P(\theta)$ and update it to a posterior belief $P(\theta | D)$ after observing the data.
+
+\section{Soft Bayesian Inference in a Fuzzy Environment}
+\label{sec:soft_bayes}
+
+In this section, we introduce a Bayesian updating mechanism in which both the prior information and the observed evidence are represented through soft descriptions. The key idea is to encode epistemic uncertainty by soft parameters, while aleatoric uncertainty is handled probabilistically. This dual representation is consistent with the spirit of fuzzy statistical inference \cite{denoeux:1999} and extends the modeling flexibility of soft sets \cite{molodtsov:1999}.
+
+\subsection{Soft evidence and soft likelihood}
+
+Let $\Theta$ be a parameter space and let $E$ be a finite set of soft parameters. For each $e \in E$, let $L_e(\cdot \mid \theta)$ be a likelihood contribution, and let $w(e)\in[0,1]$ denote the reliability or activation degree of the parameter $e$.
+
+\begin{dfn}[Soft evidence]
+A soft evidence family is a collection
+\[
+\mathcal{D}=\{(e, D_e, w(e)) : e\in E\},
+\]
+where $D_e$ is the information associated with parameter $e$ and $w(e)$ is its confidence weight.
+\end{dfn}
+
+\begin{dfn}[Soft likelihood]
+Given $\theta\in\Theta$, the soft likelihood is defined by
+\[
+\mathcal{L}(\theta;\mathcal{D})
+=
+\prod_{e\in E} L_e(D_e\mid \theta)^{w(e)}.
+\]
+\end{dfn}
+
+This construction is motivated by weighted Bayesian updating and by soft parameter activation. If $w(e)=1$ for all $e$, we recover the usual multiplicative likelihood. If some $w(e)=0$, the corresponding evidence is ignored.
+
+\begin{rem}
+The exponentiation by $w(e)$ can be interpreted as a generalized tempering operation. Such a mechanism has been used in robust Bayesian analysis and approximate Bayesian computation, while here it is adapted to soft set descriptions.
+\end{rem}
+
+\subsection{Soft fuzzy prior}
+
+\begin{dfn}[Soft fuzzy prior]
+A soft fuzzy prior is a pair $(\pi,\mu)$, where $\pi$ is a baseline prior density on $\Theta$ and
+\[
+\mu:\Theta\times E \to [0,1]
+\]
+is a parameterized membership map measuring the compatibility of $\theta$ with the soft prior information at parameter $e$.
+
+We define the aggregated prior weight
+\[
+M(\theta)=\prod_{e\in E}\mu(\theta,e)^{w(e)}.
+\]
+The induced soft prior density is then
+\[
+\pi_S(\theta)=\frac{\pi(\theta)M(\theta)}{\int_\Theta \pi(u)M(u)\,du}.
+\]
+\end{dfn}
+
+\begin{rem}
+If $\mu(\theta,e)\equiv 1$ for all $e$, then $\pi_S=\pi$. Hence the proposed soft prior is a proper extension of the classical Bayesian prior.
+\end{rem}
+
+\subsection{Soft Bayesian theorem}
+
+\begin{thm}[Soft Bayesian updating]
+\label{thm:soft_bayes}
+Let $\pi_S(\theta)$ be the soft prior density and let $\mathcal{L}(\theta;\mathcal{D})$ be the soft likelihood. Then the soft posterior density is given by
+\[
+\pi_S(\theta\mid \mathcal{D})
+=
+\frac{\mathcal{L}(\theta;\mathcal{D})\pi_S(\theta)}
+{\int_\Theta \mathcal{L}(u;\mathcal{D})\pi_S(u)\,du}.
+\]
+Equivalently,
+\[
+\pi_S(\theta\mid \mathcal{D})
+=
+\frac{\pi(\theta)\,M(\theta)\,\prod_{e\in E}L_e(D_e\mid \theta)^{w(e)}}
+{\int_\Theta \pi(u)\,M(u)\,\prod_{e\in E}L_e(D_e\mid u)^{w(e)}\,du}.
+\]
+\end{thm}
+
+\begin{proof}
+By definition, Bayesian updating multiplies prior information by evidence and renormalizes. Here the prior is replaced by the soft prior $\pi_S(\theta)$, and the ordinary likelihood is replaced by the soft likelihood $\mathcal{L}(\theta;\mathcal{D})$. Therefore,
+\[
+\pi_S(\theta\mid \mathcal{D}) \propto \mathcal{L}(\theta;\mathcal{D})\pi_S(\theta).
+\]
+Substituting the expression of $\pi_S(\theta)$ and normalizing over $\Theta$ gives the stated formula.
+\end{proof}
+
+\begin{cor}[Classical Bayes as a special case]
+If $\mu(\theta,e)\equiv 1$ and $w(e)=1$ for all $e\in E$, then Theorem~\ref{thm:soft_bayes} reduces to the classical Bayesian posterior
+\[
+\pi(\theta\mid D)\propto \pi(\theta)L(D\mid \theta).
+\]
+\end{cor}
+
+\subsection{Posterior consistency under soft dominance}
+
+To study how soft evidence affects inference, we introduce a dominance condition.
+
+\begin{dfn}[Soft dominance]
+We say that the parameter $e^\star\in E$ soft-dominates the remaining parameters if
+\[
+w(e^\star)\geq w(e), \qquad \forall e\in E,
+\]
+and
+\[
+L_{e^\star}(D_{e^\star}\mid \theta)\geq L_e(D_e\mid \theta)
+\quad \text{for all } \theta\in\Theta \text{ and all } e\in E.
+\]
+\end{dfn}
+
+\begin{thm}[Dominant evidence principle]
+\label{thm:dominant}
+Assume that $e^\star$ soft-dominates the remaining parameters. Then the soft posterior satisfies
+\[
+\pi_S(\theta\mid \mathcal{D})
+\leq C\,
+\pi_S(\theta)\,L_{e^\star}(D_{e^\star}\mid \theta)^{w(e^\star)},
+\]
+for some normalization constant $C>0$. In particular, the posterior concentration is governed primarily by the dominant evidence $e^\star$.
+\end{thm}
+
+\begin{proof}
+Since $L_{e^\star}(D_{e^\star}\mid \theta)\geq L_e(D_e\mid \theta)$ and $w(e^\star)\geq w(e)$ for all $e$, we have
+\[
+\prod_{e\in E}L_e(D_e\mid \theta)^{w(e)}
+\leq
+\prod_{e\in E}L_{e^\star}(D_{e^\star}\mid \theta)^{w(e)}
+=
+L_{e^\star}(D_{e^\star}\mid \theta)^{\sum_{e\in E}w(e)}.
+\]
+Absorbing the exponent into a constant factor yields the claimed domination inequality after normalization.
+\end{proof}
+
+\subsection{Soft posterior expectation}
+
+\begin{dfn}[Soft posterior expectation]
+For an integrable function $h:\Theta\to\mathbb{R}$, the soft posterior expectation is
+\[
+\mathbb{E}_S[h(\theta)\mid \mathcal{D}]
+=
+\int_\Theta h(\theta)\pi_S(\theta\mid \mathcal{D})\,d\theta.
+\]
+\end{dfn}
+
+\begin{pro}[Linearity]
+For integrable functions $h_1,h_2$ and scalars $a,b\in\mathbb{R}$,
+\[
+\mathbb{E}_S[ah_1(\theta)+bh_2(\theta)\mid \mathcal{D}]
+=
+a\,\mathbb{E}_S[h_1(\theta)\mid \mathcal{D}]
++
+b\,\mathbb{E}_S[h_2(\theta)\mid \mathcal{D}].
+\]
+\end{pro}
+
+\begin{proof}
+This follows immediately from the linearity of the Lebesgue integral and the fact that $\pi_S(\theta\mid \mathcal{D})$ is a probability density.
+\end{proof}
+
+\subsection{Interpretation}
+
+The proposed framework has three important features:
+
+\begin{enumerate}
+    \item Parameter-wise uncertainty control: the weights $w(e)$ allow different pieces of evidence to contribute at different intensities.
+    \item Soft prior modulation: the membership map $\mu(\theta,e)$ incorporates vague prior knowledge in a structured way.
+    \item Classical compatibility: the model collapses to ordinary Bayesian inference under crisp activation and unit membership.
+\end{enumerate}
+
+\subsection{A simple parametric example}
+
+Consider $\Theta=\mathbb{R}$, and suppose that each soft parameter $e\in E=\{e_1,e_2\}$ contributes a Gaussian likelihood
+\[
+L_{e_i}(D_{e_i}\mid \theta)\propto \exp\left(-\frac{(D_{e_i}-\theta)^2}{2\sigma_i^2}\right),
+\]
+with weights $w(e_1)=\alpha$ and $w(e_2)=1-\alpha$, where $\alpha\in[0,1]$.  
+If the prior is $\pi(\theta)=\mathcal{N}(\theta_0,\tau^2)$ and the soft membership map is
+\[
+\mu(\theta,e_i)=\exp\left(-\lambda_i|\theta-c_i|\right),
+\]
+then the soft posterior becomes
+\[
+\pi_S(\theta\mid \mathcal{D})
+\propto
+\exp\left(
+-\frac{(\theta-\theta_0)^2}{2\tau^2}
+-\sum_{i=1}^2 w(e_i)\frac{(D_{e_i}-\theta)^2}{2\sigma_i^2}
+-\sum_{i=1}^2 w(e_i)\lambda_i|\theta-c_i|
+\right).
+\]
+This posterior is generally non-Gaussian, but it is analytically interpretable and well-suited for numerical approximation, including Laplace approximation or Gibbs sampling. 
+
+\begin{rem}
+But, does posterior consistency under soft dominance reduce to fuzzy Bayesian methods in a special case?
+
+In general, not necessarily; however, it can reduce to a fuzzy Bayesian formulation under a particular choice of the soft-dominance weight.
+
+A common way to write a soft-dominance posterior is
+\[
+\pi_s(\theta \mid x)
+\propto
+w(x,\theta)\,L(x\mid \theta)\,\pi(\theta),
+\qquad 0 \le w(x,\theta) \le 1,
+\]
+where $L(x\mid\theta)$ is the usual likelihood, $\pi(\theta)$ is the prior, and
+$w(x,\theta)$ is a soft compatibility or dominance function.
+
+In fuzzy Bayesian inference, one typically replaces the likelihood contribution by a membership function:
+\[
+\pi_F(\theta \mid x)
+\propto
+\mu(x\mid\theta)\,\pi(\theta),
+\]
+where $\mu(x\mid\theta)\in[0,1]$ expresses the degree to which the observation $x$
+is compatible with parameter value $\theta$.
+
+Hence, if we choose
+\[
+w(x,\theta)=\mu(x\mid\theta)
+\]
+and absorb the classical likelihood into the same soft compatibility term, then the soft-dominance posterior becomes a fuzzy Bayesian posterior. Therefore, fuzzy Bayesian inference can be viewed as a special case of soft-dominance updating
+\end{rem}
+
+\begin{eg}
+Suppose that a parameter $\theta$ represents the quality of a model, and the data point $x$ is only approximately informative. Let
+\[
+\mu(x\mid\theta)=\exp\!\bigl(-\lambda\,d(x,\theta)\bigr),
+\]
+where $d(x,\theta)$ is a mismatch measure and $\lambda>0$. Then
+\[
+\pi_F(\theta\mid x)\propto \exp\!\bigl(-\lambda\,d(x,\theta)\bigr)\pi(\theta).
+\]
+This is exactly a soft update: values of $\theta$ that fit $x$ better get higher posterior mass, but incompatible values are not eliminated abruptly; they are down-weighted smoothly.
+\end{eg}
+
+\begin{rem}
+In a Backgammon setting, let $\theta$ denote a candidate move or a latent strength parameter associated with a move, and let $D$ denote observed game outcomes or position evaluations. A soft posterior may be written as
+\[
+\pi(\theta\mid D)\propto w(D,\theta)\,\pi(\theta),
+\]
+or, more explicitly,
+\[
+\pi(\theta\mid D)\propto \exp\!\bigl(-\lambda\,\mathcal{E}(D,\theta)\bigr)\,\pi(\theta),
+\]
+where $\mathcal{E}(D,\theta)$ is an evaluation error or loss.
+
+This posterior has a clear operational meaning:
+
+\begin{itemize}
+  \item It quantifies how plausible each move is after seeing the data.
+  \item It does not force a single move to be optimal; several moves may remain plausible.
+  \item It naturally represents uncertainty in the evaluation of positions.
+  \item It can be used for stochastic move selection, making the engine less deterministic and sometimes more human-like.
+\end{itemize}
+\end{rem}
+
+\begin{eg}
+Assume three candidate moves $A$, $B$, and $C$ have posterior probabilities
+\[
+\pi(A\mid D)=0.55,\qquad \pi(B\mid D)=0.30,\qquad \pi(C\mid D)=0.15.
+\]
+The practical interpretation is:
+
+\begin{itemize}
+  \item $A$ is the most credible move according to the model,
+  \item $B$ is still reasonably strong and should not be discarded,
+  \item $C$ is less supported, but it is not impossible.
+\end{itemize}
+
+Thus, the soft posterior encodes a graded ranking of moves rather than a hard winner-takes-all decision. This is especially useful when position evaluation is noisy, incomplete, or ambiguous.
+\end{eg}
+
+\section*{Discussion and Conclusion}   
+\label{sec:conclusion}
+
+This paper introduced a novel framework for Bayesian inference in the presence of fuzzy and uncertain data, leveraging the descriptive power of soft sets. We have developed a Soft Bayesian model that extends classical Bayesian principles by incorporating soft evidence and soft fuzzy priors.
+
+Building upon this foundation, several avenues for future research emerge:
+\begin{itemize}
+    \item Advanced Soft Set Operations: Exploring extensions of soft set theory, such as fuzzy soft sets or interval-valued soft sets, could lead to even richer modeling capabilities for complex uncertainty structures.
+    \item Learning Soft Parameters: Investigating methods for learning the weights $w(e)$ and membership function parameters from data, potentially within a hierarchical Bayesian framework.
+    \item Applications in Machine Learning: Adapting the Soft Bayesian framework to machine learning tasks, such as classification, clustering, or deep learning with fuzzy inputs, could yield powerful new models. For instance, developing soft versions of neural network layers or fuzzy decision trees.
+    \item Real-world Data Analysis: Applying the framework to diverse real-world problems in fields like decision support systems, medical diagnosis, risk analysis, or signal processing where data uncertainty is prevalent.
+\end{itemize}
+In conclusion, the Soft Bayesian inference framework provides a powerful and flexible tool for statistical modeling and data analysis in the presence of uncertainty. Its theoretical soundness and practical utility pave the way for broader applications in various scientific and engineering domains.
+
+
+\section*{Acknowledgments} 
+
+\begin{thebibliography}{99}
+
+\bibitem[zadeh (1965)]{zadeh:1965}
+Zadeh L. A, (1965),
+Fuzzy sets,
+{\it Information and Control}, 8 (3) 338--353.
+
+\bibitem[molodtsov (1999)]{molodtsov:1999}
+D. Molodtsov D, (1999),
+Soft set theory-first results,
+{\it Computers \& Mathematics with Applications}, 37(4-5), 19-31.
+
+\bibitem[denoeux (1999)]{denoeux:1999}
+T. Denoeux T, (1999),
+A new likelihood interpretation of Dempster-Shafer theory,
+{\it Artificial Intelligence}, 124 (1-2) 73-111.
+
+%\bibitem{fuzzy_bayes_springer}
+%A. K. (or your preferred citation),
+%``Fuzzy Bayesian Inference,''
+%in \emph{Springer Lecture Notes / chapter reference}, available as cited source.
+
+%\bibitem{arxiv2025bayesianize}
+%M. D'Angelo, G. D'Ambrosio, and coauthors,
+%``Bayesianize fuzziness in the statistical analysis of fuzzy data,''
+%arXiv preprint arXiv:2501.18974, 2025.
+
+\bibitem[kaufmann(1987)]{kaufmann:1987}
+Kaufmann A and Gupta M. M, (1987)
+{\it Introduction to Fuzzy Arithmetic: Theory and Applications},
+Van Nostrand Reinhold.
+
+\bibitem[bezdek (2001)]{bezdek:2001}
+ Bezdek J. C, (2001),
+{\it Pattern Recognition with Fuzzy Objective Function Algorithms},
+Springer.
+
+\bibitem[aguilar(2002)]{aguilar:2002}
+Aguilar L, (2002),
+Fuzzy Bayesian methods and applications,
+relevant publication reference.
+
+\end{thebibliography}
+ \end{document}
+

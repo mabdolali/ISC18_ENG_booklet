@@ -1,0 +1,203 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{titlesec}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{A Comparative Performance Analysis of Structural Equation Modeling Approaches}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Jamali J}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf A Comparative Performance Analysis of Structural Equation Modeling Approaches: A Monte Carlo Simulation Study}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+ Jamshid Jamali  \footnote[1]{{\bf Jamshid Jamali:} {\tt JamaliJ@mums.ac.ir }} \\
+$^1$Associate Professor, Department of Biostatistics, School of Health, Mashhad University of Medical Sciences, Mashhad, Iran. \\
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This Monte Carlo simulation study compared the performance of three structural equation modeling approaches CB-SEM, PLS-SEM, and GSCA within a mediation model under varying sample sizes, data distributions, and indicator counts. Using full factorial design with 500 replications per scenario, results revealed that CB-SEM provided the most accurate estimates under normality and larger samples \( ( N \ge 250 ) \), yet suffered convergence issues in small or severely non-normal conditions. PLS-SEM demonstrated superior convergence rates and statistical power across all scenarios, albeit with systematic attenuation bias. GSCA offered balanced intermediate performance, particularly robust under distributional violations. Increasing indicators per construct benefited CB-SEM most substantially. No single method proved universally superior; rather, selection should align with research objectives, sample availability, and data characteristics. These evidence-based findings offer practical guidance for biostatisticians and health researchers in choosing appropriate SEM methodologies.
+ 
+\noindent{\bf Keywords:} 
+CB-SEM, PLS-SEM, GSCA, Monte Carlo Simulation,Mediation Analysis. \\
+\noindent{\bf Mathematics Subject Classification (2010):} 62P10. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\vspace{-2\baselineskip}
+\section{Introduction}
+Structural Equation Modeling (SEM) provides a comprehensive framework for simultaneously examining complex relationships among latent and observed variables \cite{JÖRESKOG:1973} and has become integral to behavioral, social, and increasingly biomedical research \cite {MACCALLUM:2000}. In the health sciences, its relevance is underscored by the latent nature of key constructs—such as health-related quality of life, functional status, and treatment adherence—which are measurable only through multiple indicators. Three principal estimation approaches have emerged over the past five decades. Covariance-Based SEM (CB-SEM) aims to reproduce the observed covariance matrix by minimizing the discrepancy between sample and model-implied matrices, typically employing maximum likelihood estimation under multivariate normality assumptions (\cite {BOLLEN:1989}. Partial Least Squares SEM (PLS-SEM), a variance-based approach, maximizes the explained variance in dependent latent variables through iterative ordinary least squares regression, requires no stringent distributional assumptions, and accommodates small samples (Wold, 1982, Hair et al., 2019). Generalized Structured Component Analysis (GSCA), introduced by Hwang and Takane (2004), employs an alternating least squares algorithm for simultaneous estimation of measurement and structural models, offering an integrated framework for both reflective and formative constructs \cite{HWANG:2004}. Despite extensive comparisons between CB-SEM and PLS-SEM \cite{REINARTZ:2009,CIVELEK:2018}, comprehensive evaluation of all three methods within a unified framework—particularly in mediation models—remains limited. Moreover, the role of indicator quantity per latent variable has received insufficient attention in simulation studies, despite classical measurement theory suggesting its impact on reliability and bias reduction \cite{MARSH:1998}. This study addresses these gaps through a comprehensive Monte Carlo simulation comparing CB-SEM, PLS-SEM (with PLSc bias correction), and GSCA within a three-latent-variable mediation model, examining estimation accuracy, convergence rates, indicator quantity effects, and statistical power for detecting indirect effects across varying distributional conditions.
+\vspace{-1\baselineskip}
+\section{Materials and Methods}
+A Monte Carlo simulation with a full factorial design was conducted, manipulating four factors. The estimation method factor comprised CB‑SEM using the lavaan package (v0.6‑18) \cite{ROSSEEL:2012} with ML estimation (switching to robust MLR for non‑normal data); PLS‑SEM using the cSEM package (v0.6.1) \cite{RADEMAKER:2025} with the consistent PLSc algorithm to correct attenuation bias \cite{DIJKSTRA:2015}; and GSCA using the gesca package (v1.0) \cite{KIM:2017} with alternating least squares (maximum 200 iterations, convergence threshold $10^{-5}$). Sample size included five levels ($N = 50$, 100, 250, 500, 1000), and data distribution comprised four conditions: multivariate normal, skewed normal (skewness 1.5, kurtosis 3.0), $t(5)$ (heavy tails), and gamma (shape 2.0, severely asymmetric). The number of indicators per latent variable was set at 3, 5, or 7. The full crossing of these factors produced 180 unique scenarios, each replicated 500 times, yielding 90,000 simulated datasets.
+The theoretical model was a simple mediation with three latent variables---independent ($\xi$), mediator ($\eta_1$), dependent ($\eta_2$)---specified by the structural equations $\eta_1 = \gamma_1 \xi + \zeta_1$ and $\eta_2 = \beta_1 \eta_1 + \gamma_2 \xi + \zeta_2$. True population parameters were $\gamma_1 = 0.6$, $\beta_1 = 0.5$, and $\gamma_2 = 0.3$, giving an indirect effect of $0.3$ and a total effect of $0.6$. Structural errors were drawn from a normal distribution with variance scaled to achieve intended $R^2$ values. All factor loadings were fixed at $0.7$, yielding composite reliabilities between $0.75$ and $0.85$ depending on indicator count, consistent with recommendations for basic research \cite{Nunally and Bernstein:1994}; indicator error variances were $1 - \lambda^2$. Data generation proceeded by first creating factor scores using the Fleishman (1978) power transformation for non‑normal distributions \cite{FLEISHMAN:1978}, applying the Vale and Maurelli (1983) procedure for skewed conditions \cite{VALE:1983}, then computing endogenous variables and generating observed indicators via $X = \Lambda F + \varepsilon$. For each successfully converged replication, estimated path coefficients ($\gamma_1$, $\beta_1$, $\gamma_2$), the indirect effect ($\gamma_1 \times \beta_1$), standard errors, 95\% confidence intervals, $p$‑values, and, for CB‑SEM, fit indices (CFI, RMSEA, SRMR) were extracted. Performance was assessed through relative bias, RMSE, convergence rate, and statistical power for the indirect effect at $\alpha = 0.05$, with acceptable bias defined as $\pm 10\%$ \cite{HOOGLAND:1989}.
+
+\section{Results}
+\textbf{Convergence Rates (Table 1)}: CB‑SEM showed convergence problems at N=50, especially under non‑normality (e.g., 42\% for gamma), while PLS‑SEM exceeded 98\% across all conditions and GSCA remained stable (minimum 87\% at N=50 gamma).
+
+\textbf{Relative Bias:} CB SEM had negligible bias (\(<2\%\)) under normality with \(N \geq 250\), but up to \(-18\%\) at \(N=50\) under non normality. PLS SEM consistently showed attenuation bias (\(\approx -25\%\) at \(N=50\), \(-5\)--\(7\%\) at \(N=1000\)), aligning with known PLS attenuation \cite{DIJKSTRA:2015}. GSCA displayed intermediate bias (\(3\)--\(8\%\) under normality) and outperformed CB SEM under severe non normality.
+
+\textbf{RMSE of Indirect Effect (Table 2):} Increasing indicators from 3 to 7 reduced RMSE by 35–50\%, with CB SEM benefiting most. At N=100, PLS SEM had the lowest RMSE; at N=500 with 7 indicators, CB SEM achieved the best precision (RMSE=0.023).
+\begin{table}[H]
+	\centering
+	\caption{Convergence Rates (\%) for 3 Indicators}
+	\label{tab:convergence}
+	\begin{tabular}{lccccc}  % <-- 5 columns for data (Method is left-aligned, others centered)
+		\toprule
+		\textbf{Method} & \textbf{Sample Size} & \textbf{Normal} & \textbf{Skewed} & \textbf{$t(5)$} & \textbf{Gamma} \\
+		\midrule
+		\multirow{4}{*}{CB-SEM}   % <-- fixed: number of rows (4) and asterisk for natural width
+		& 50   & 76.2 & 68.4 & 59.6 & 42.0 \\
+		& 100  & 94.8 & 91.2 & 88.0 & 79.4 \\
+		& 250  & 99.6 & 98.8 & 97.4 & 94.2 \\
+		& $\geq 500$ & 100  & 99.8 & 99.6 & 98.8 \\
+		\midrule
+		\multirow{2}{*}{PLS-SEM}  % fixed: 2 rows for PLS-SEM
+		& 50   & 99.2 & 98.8 & 98.4 & 97.6 \\
+		& $\geq 100$ & 100  & 100  & 99.8 & 99.6 \\
+		\midrule
+		\multirow{2}{*}{GSCA}     % fixed: 2 rows for GSCA
+		& 50   & 96.4 & 94.2 & 91.8 & 87.2 \\
+		& $\geq 100$ & 99.8 & 99.4 & 99.0 & 97.8 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{RMSE (True indirect effect = 0.3, normal distribution)}
+	\label{tab:rmse}
+	\begin{tabular}{llccc}
+		\toprule
+		\textbf{Indicators} & \textbf{Method} & \textbf{$N=100$} & \textbf{$N=250$} & \textbf{$N=500$} \\
+		\midrule
+		\multirow{3}{*}{3} & CB-SEM   & 0.092 & 0.054 & 0.038 \\
+		& PLS-SEM  & 0.078 & 0.052 & 0.042 \\
+		& GSCA     & 0.085 & 0.056 & 0.040 \\
+		\cmidrule{2-5}
+		\multirow{3}{*}{5} & CB-SEM   & 0.071 & 0.041 & 0.029 \\
+		& PLS-SEM  & 0.065 & 0.044 & 0.036 \\
+		& GSCA     & 0.073 & 0.043 & 0.031 \\
+		\cmidrule{2-5}
+		\multirow{3}{*}{7} & CB-SEM   & 0.058 & 0.033 & 0.023 \\
+		& PLS-SEM  & 0.056 & 0.038 & 0.031 \\
+		& GSCA     & 0.060 & 0.035 & 0.025 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\textbf{Statistical Power:} CB SEM required ~N=200 to reach 80\% power; PLS SEM achieved 0.48 at N=50, 0.71 at N=100, and 80\% power at ~N=140. GSCA had intermediate power (0.63 at N=100, 0.85 at N=250), confirming PLS SEM’s efficiency under sample size constraints (Reinartz et al., 2009).
+\textbf{Effects of Non Normality (Table 3):} Under gamma distribution (N=250, 5 indicators), standard CB SEM (ML) showed –11.5\% bias, exceeding the ±10\% threshold; robust MLR reduced this to –7.2\%. PLS SEM (PLSc) and GSCA displayed stable bias across distributions, with PLS SEM yielding the lowest bias (–4.1\%) under gamma, highlighting its robustness for skewed data.
+
+\begin{table}[H]
+	\centering
+	\caption{Relative Bias (\%) in Estimation of $\beta_1 = 0.5$ at $N = 250$ with 5 Indicators}
+	\label{tab:bias}
+	\begin{tabular}{lcccc}
+		\toprule
+		\textbf{Method} & \textbf{Normal} & \textbf{Skewed} & \textbf{$t(5)$} & \textbf{Gamma} \\
+		\midrule
+		CB-SEM (ML)       & -1.2 & -4.8 & -6.3 & -11.5 \\
+		CB-SEM (MLR)      & -1.3 & -2.9 & -3.7 & -7.2 \\
+		PLS-SEM (PLSc)    & -5.6 & -5.2 & -4.9 & -4.1 \\
+		GSCA              & -3.1 & -3.4 & -3.8 & -4.5 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\textbf{Sensitivity to Indicator Quantity:} In CB SEM, adding indicators enriches the covariance matrix, directly lowering standard errors and RMSE. In PLS SEM and GSCA, improvement mainly occurs through increased composite reliability and attenuation reduction, but at a slower rate. With 7 indicators, CB SEM achieved a $>50\%$ RMSE reduction versus the 3 indicator case, compared to ~35\% for PLS SEM, demonstrating the covariance based method’s greater ability to exploit rich measurement models.
+\section{Discussion}
+\subsection{Interpretation of Key Findings.}
+This first comprehensive three-method SEM simulation confirms that no single approach dominates all conditions. CB-SEM provides the most accurate, minimally biased estimates under ideal conditions (normality, \(N \geq 250\), \(\geq 5\) indicators), consistent with \cite{REINARTZ:2009}. However, performance sharply declines in small samples (\(N < 100\)), with non-convergence exceeding 40\%, and under severe non-normality (gamma bias \(-11.5\%\)), challenging claims of its robustness \cite{REINARTZ:2009}. The robust MLR estimator substantially mitigates this bias. PLS-SEM's strengths are near‑perfect convergence even at \(N = 50\) and superior statistical power, making it ideal for exploratory or sample‑constrained settings \cite{HAIR:2019}, though it consistently exhibits attenuation bias due to reliance on linear composites rather than covariance reproduction \cite{DIJKSTRA:2015}. PLSc correction reduces but does not eliminate this bias, aligning with  \cite{CIVELEK:2018}. GSCA offers a balanced intermediate performance---outperforming standard CB‑SEM under non‑normality and converging more often than CB‑SEM in small samples---but remains limited by lower researcher familiarity and software support.
+\vspace{-1\baselineskip}
+\subsection{Importance of Indicator Quantity.}
+A novel contribution is documenting that CB-SEM benefits substantially more from additional indicators (\(\approx 50\%\) RMSE reduction from 3 to 7 indicators) than does PLS-SEM (\(\approx 35\%\)), because CB-SEM fully exploits the enriched covariance matrix, whereas component‑based methods disregard some of that information. Practically, CB‑SEM users should aim for at least 5--7 indicators, while for PLS‑SEM, increasing beyond 5 yields diminishing returns.
+\vspace{-1\baselineskip}
+\subsection{Limitations and Future Directions.}
+The study used a simple three‑variable mediation model; performance may differ in more complex structures (moderators, multiple mediators, longitudinal designs). Factor loadings were fixed at 0.7, whereas real‑world loadings vary. Complete data were assumed, yet missing data are common and handled differently across methods. Bayesian SEM, despite its advantages for small samples, was not examined. Furthermore, gesca’s bootstrap options are less mature than those of lavaan or cSEM. Future work should extend simulations to more complex models, systematically vary loading quality, evaluate performance under MCAR, MAR, and MNAR mechanisms, and compare Bayesian with frequentist approaches.
+\vspace{-1\baselineskip}
+\subsection{Practical Recommendations.}
+Based on the study findings, the following decision-making guide (Table 4) is proposed for selecting SEM methods:
+
+\begin{table}[H]
+	\centering
+	\caption{Decision Guide for SEM Method Selection}
+	\label{tab:decision}
+	\begin{tabularx}{\textwidth}{X c X}
+		\toprule
+		\textbf{Research Condition} & \textbf{Recommended Method} & \textbf{Considerations} \\
+		\midrule
+		$N \geq 250$, approx.\ normal distribution, theory testing & CB-SEM (ML) & Gold standard; report fit indices \\
+		$N \geq 250$, moderate non-normality & CB-SEM (MLR) & Use robust Huber-White SEs \\
+		$N < 100$, any distribution & PLS-SEM (PLSc) & Interpret as exploratory; account for attenuation bias \\
+		$N = 100$--$250$, severe non-normality & GSCA or PLS-SEM & GSCA balances precision and stability \\
+		3 or fewer indicators & CB-SEM (with caution) & Just-identified model; all methods conservative \\
+		7 or more indicators & CB-SEM & Maximise covariance information \\
+		Prediction or theory development & PLS-SEM & Focus on $R^2$ and predictive relevance, not model fit \\
+		\bottomrule
+	\end{tabularx}
+	
+	\vspace{0.5\baselineskip}
+	\begin{minipage}{\textwidth}
+		\small\emph{Supplementary note:} Where possible, run sensitivity analyses with multiple methods; convergence of CB‑SEM and PLS‑SEM results increases confidence.
+	\end{minipage}
+\end{table}
+
+\vspace{-1\baselineskip}
+\section{Conclusion}
+This Monte Carlo simulation provides evidence-based insights into the performance of CB‑SEM, PLS‑SEM, and GSCA within a mediation model. Four key findings emerge: (1) a precision–stability trade‑off exists—CB‑SEM excels under ideal conditions but struggles in small or severely non‑normal samples, PLS‑SEM ensures convergence at the cost of attenuation bias, and GSCA occupies a middle ground; (2) PLS‑SEM demonstrates superior statistical power, making it ideal for exploratory and sample‑constrained research; (3) measurement design is critical, with CB‑SEM deriving disproportionate benefit from additional indicators; and (4) no method is universally superior, requiring context‑dependent selection based on research objectives, resources, and data characteristics. For biostatisticians and health researchers, the study offers a practical, evidence‑based framework for informed SEM method selection, ultimately contributing to stronger evidence quality in biomedical research.
+\vspace{-1\baselineskip}
+\begin{thebibliography}{9}
+\bibitem[BOLLEN(1989)]{BOLLEN:1989}
+BOLLEN, K. A. 1989. Structural Equations with Latent Variables, New York, John Wiley and Sons.
+\bibitem[CIVELEK(2018)]{CIVELEK:2018} 
+CIVELEK, M. E. 2018. Comparison of covariance-based and partial least square structural equation modeling methods under non-normal distribution and small sample size limitations. Eurasian Academy of Sciences Eurasian Econometrics, Statistics and Empirical Economics Journal, 39-50.
+\bibitem[DIJKSTRA(2015)]{DIJKSTRA:2015}
+DIJKSTRA, T. K. and HENSELER, J. 2015. Consistent partial least squares path modeling. MIS Quarterly, 39, 297-316.
+\bibitem[FLEISHMAN(1978)]{FLEISHMAN:1978}
+FLEISHMAN, A. I. 1978. A method for simulating non-normal distributions. Psychometrika, 43, 521-532.
+\bibitem[HAIR(2019)]{HAIR:2019}
+HAIR, J. F., RISHER, J. J., SARSTEDT, M. and RINGLE, C. M. 2019. When to use and how to report the results of PLS-SEM. European Business Review, 31, 2-24.
+\bibitem[HOOGLAND(1989)]{HOOGLAND:1989}
+HOOGLAND, J. J. and BOOMSMA, A. 1998. Robustness studies in covariance structure modeling: An overview and a meta-analysis. Sociological Methods and Research, 26, 329-367.
+\bibitem[HWANG(2004)]{HWANG:2004}
+HWANG, H. and TAKANE, Y. 2004. Generalized structured component analysis. Psychometrika, 69, 81-99.
+\bibitem[JÖRESKOG(1973)]{JÖRESKOG:1973}
+JÖRESKOG, K. G. 1973. A general method for estimating a linear structural equation system. In: GOLDBERGER, A. S. and DUNCAN, O. D. (eds.) Structural Equation Models in the Social Sciences. New York: Seminar Press.
+\bibitem[KIM(2017)]{KIM:2017}
+KIM, S., CARDWELL, R. and HWANG, H. 2017. Using R Package gesca for generalized structured component analysis. Behaviormetrika, 44, 3-23.
+\bibitem[MACCALLUM(2000)]{MACCALLUM:2000}
+MACCALLUM, R. C. and AUSTIN, J. T. 2000. Applications of structural equation modeling in psychological research. Annual Review of Psychology, 51, 201-226.
+\bibitem[MARSH(1998)]{MARSH:1998}
+MARSH, H. W., HAU, K. T., BALLA, J. R. and GRAYSON, D. 1998. Is more ever too much? The number of indicators per factor in confirmatory factor analysis. Multivariate Behavioral Research, 33, 181-220.
+\bibitem[NUNALLY(1994)]{NUNALLY:1994}
+NUNALLY, J. C. and BERNSTEIN, I. H. 1994. Psychometric Theory, New York, McGraw-Hill.
+\bibitem[RADEMAKER(2025)]{RADEMAKER:2025}
+RADEMAKER, M. E. and SCHUBERTH, F. 2025. cSEM: Composite-Based Structural Equation Modeling. R package version 0.6.1 [Online]. Available: https://CRAN.R-project.org/package=cSEM [Accessed].
+\bibitem[REINARTZ(2009)]{REINARTZ:2009}
+REINARTZ, W., HAENLEIN, M. and HENSELER, J. 2009. An empirical comparison of the efficacy of covariance-based and variance-based SEM. International Journal of Research in Marketing, 26, 332-344.
+\bibitem[ROSSEEL(2012)]{ROSSEEL:2012}
+ROSSEEL, Y. 2012. lavaan: An R package for structural equation modeling. Journal of Statistical Software, 48, 1-36.
+\bibitem[VALE(1983)]{VALE:1983}
+VALE, C. D. and MAURELLI, V. A. 1983. Simulating multivariate nonnormal distributions. Psychometrika, 48, 465-471.
+\bibitem[VALE(1982)]{VALE:1982}
+WOLD, H. 1982. Soft modeling: The basic design and some extensions. In: JÖRESKOG, K. G. and WOLD, H. (eds.) Systems Under Indirect Observation, Part II. Amsterdam: North-Holland.
+\end{thebibliography}
+\end{document}
+

@@ -1,0 +1,161 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Short Article Title}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Short Authors' Names}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Information Loss in Spatial Statistics Analysis: Entropy, Scale, and Uncertainty}\
+
+
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+	Zahra Amini Farsani$^{1,2}$, \footnote[1]{{\bf Corresponding Author:} {\tt Zahra.Farsani@lmu.de }} \\
+	$^1$Spatial and Bayesian Statistics Group, Department of Statistics, Ludwig-Maximilians-Universität München (LMU), Munich, Germany \\
+	$^2$Universitätsklinikum Augsburg, Augsburg, Germany}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\
+Spatial data often contain several layers of information that are not fully represented in final statistical summaries. A spatial field, image, disease map, or set of regional observations may include spatial dependence, local heterogeneity, scale effects, and uncertainty. In statistical practice, however, these complex structures are often reduced to estimated parameters, smoothed surfaces, clusters, risk measures, test results, or prediction errors. Such reductions are useful and sometimes necessary for interpretation, communication, and decision-making, but they may also hide important parts of the original spatial information. This talk discusses information loss in spatial statistics from an entropy-based perspective. Entropy provides a natural way to think about information, uncertainty, and reduction in spatially structured data. The aim is to examine how spatial information changes when data are aggregated, smoothed, classified, or summarized, and to highlight the role of entropy, Bayesian inference, and uncertainty quantification in understanding what is preserved, simplified, or lost during spatial statistical analysis.
+
+\noindent{\bf Keywords:}
+Spatial statistics, Entropy, Information loss, Spatial dependence, Scale effects, Uncertainty quantification. \
+
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62M30$, $\rm 94A17$, $\rm 62F15$. \
+\hspace{1cm}\rule{\textwidth}{0.2mm}\
+
+
+%%%%%%%%%%%%%%%
+%\section{Introduction}
+%This section briefly describes how to write papers for the 18th Iranian Statistical Conference so that those interested in participating in this conference can easily format their papers according to the conference format.
+% 
+%The paper should be a maximum of 8 pages using XePersian software based on this format. Obviously, if the paper is not in the conference format or the number of pages exceeds 8, it will be returned. For consistency, use the default font (this font - without any changes to this file) or the Times New Roman font (and its bold version).
+%\section{Second Section Title}
+%This section includes topics related to the second section, and definitions, examples, lemmas, theorems, proofs, propositions, corollaries, remarks, and algorithms should be written as follows.
+%%%%%%%%%%%%%%%%%%%%%%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{dfn}\label{df1}
+%This is a definition.
+%\end{dfn}
+%%%%%%%%%%%%%%%%%%%%%%%% Example %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{eg}\label{ex1}
+%This is an example.
+%\end{eg} 
+%%%%%%%%%%%%%%%%%%%%%%%% Lemma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{lem}\label{lm1}
+%This is a lemma.
+%\end{lem}
+%%%%%%%%%%%%%%%%%%%%%%%% Theorem and proof  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{thm}\label{th1}
+%This is a theorem.
+%\end{thm}
+%\begin{proof}
+%This is a proof. 
+%\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%  Proposition  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{pro}\label{pr1}
+%This is a proposition.
+%\end{pro}
+%%%%%%%%%%%%%%%%%%%%%%%% Corollary %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{cor}\label{cor1}
+%This is a corollary.
+%\end{cor}
+%%%%%%%%%%%%%%%%%%%%%%%% Remark %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{rem}\label{rm1}
+%You can refer to definition \ref{df1}, lemma \ref{lm1}, theorem \ref{th1}, proposition \ref{pr1}, and
+%corollary \ref{cor1} in the text.
+%\end{rem}
+%%%%%%%%%%%%%%%%%%%%%%%% Algorithm %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{alg}\label{alg1}
+%This algorithm has the following \footnote{Steps}steps:
+%\begin{itemize}
+%\item 
+%Step 1
+%\item
+%Step 2
+%\item
+%Step 3
+%\end{itemize}
+%\end{alg}
+%\section{Formulas}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Unnumbered formula %%%%%%%%%%%%%%%%%%%%%%%
+%A sample unnumbered formula is given below:
+%\begin{equation*}
+%\max\limits_{x \in \mathbb{R}} \ f(x).
+%\end{equation*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Numbered formula %%%%%%%%%%%%%%%%%%%%%%%
+%Here is a sample of a numbered formula: 
+%\begin{equation}\label{eq1}
+%G_F(x)=\frac{1}{B(\alpha,\beta)}\int_{0}^{F(x)} t^{\alpha-1}(1-t)^{\beta-1}\,dt, \qquad \alpha>0, \beta>0.
+%\end{equation}
+%Formula numbering should be based on sections, and only relationships that are referenced in the text should have numbers.
+%Below is a multiline formula that is the derivative of equation \eqref{eq1}:
+%\begin{align}
+%g_F(x)&=\frac{d}{dx} G_F(x)\nonumber\\
+%&=\frac{1}{B(\alpha,\beta)} f(x) \left(F(x)\right)^{\alpha -1} \left(\bar F(x)\right)^{\beta -1}.
+%\end{align}
+%\section{Tables and Figures}
+%Below is a sample table. Table \ref{tab1} contains four rows and three columns.
+%\begin{table}[h]
+%\begin{center}
+%\small
+%\caption{Table title should be here.}\label{tab1}
+%\begin{tabular}{|c|cc|}
+%  \hline
+%  Column One & Column Two & Column Three \\  \hline \hline
+%  1 & 2 & 3 \\
+%  4 & 5 & 6 \\
+%  7 & 8 & 9 \\  \hline
+%\end{tabular}
+%\end{center}
+%\end{table}\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Figure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Below is a sample figure. Figure \ref{fig1} contains two subfigures.
+%\begin{figure}[ht]
+%\begin{center}
+%\includegraphics[width=7cm,height=6cm]{Images/Fig2-eps-converted-to.pdf}
+%\includegraphics[width=7cm,height=6cm]{Images/Fig1-eps-converted-to.pdf}\\
+%\vspace{-0.2cm}
+%\caption{\footnotesize{Figure caption should be placed here.}}\label{fig1}
+%\end{center}
+%\end{figure}
+%\section{How to Cite References}
+%References must be cited in the text. \cite{Craik:2005}, \cite{Feller:1972}, \cite{Genest:Rivest:1993}, and \cite{LZ15} are some examples of English references.
+%\section*{Discussion and Conclusion}   
+%The conclusion of the article should be presented in a maximum of 3 or 4 lines.
+%\section*{Acknowledgments}   
+%If you wish to include acknowledgments, this section should appear before the references.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+	
+	\bibitem[Shannon (1948)]{Shannon:1948}
+	Shannon C.E. (1948), A mathematical theory of communication, {\it The Bell System Technical Journal} 27, 379--423, 623--656.
+	
+	\bibitem[Jaynes (1957)]{Jaynes:1957}
+	Jaynes E.T. (1957), Information theory and statistical mechanics, {\it Physical Review} 106, 620--630.
+	
+	\bibitem[Cressie (1993)]{Cressie:1993}
+	Cressie N.A.C. (1993), {\it Statistics for Spatial Data, Revised Edition}, New York, John Wiley $ \&$ Sons.
+	
+	\bibitem[Wang et al. (2024)]{Wang:2024}
+	Wang Z., Janowicz K., Mai G. and Majic I. (2024), Probing the information theoretical roots of spatial dependence measures, {\it Proceedings of the 16th International Conference on Spatial Information Theory (COSIT 2024)}, Article No. 9, 9:1--9:18.
+	
+\end{thebibliography}
+
+ \end{document}
+

@@ -1,0 +1,385 @@
+\documentclass[10pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathrsfs,mathtools,bm}
+\usepackage{graphicx,xcolor,tikz,booktabs,multirow,tabularx,array,float}
+\usepackage{caption,subcaption,enumitem,setspace,verbatim}
+\usepackage{natbib,hyperref,fancyhdr,geometry,xspace,pdflscape}
+\usepackage{algorithm,algpseudocode}
+\geometry{papersize={16.5cm,23.5cm},top=2cm,bottom=1.5cm,left=1.5cm,right=1.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=magenta,urlcolor=cyan}
+\pagestyle{fancy}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{.01cm}
+\fancyhead[RE,LO]{\thepage}
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{pro}[dfn]{Proposition}
+\newtheorem{rem}[dfn]{Remark}
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{eg}[dfn]{Example}
+\newtheorem{alg}{Algorithm}
+\let\oldtitle\title
+\renewcommand{\bibname}{References}
+\numberwithin{equation}{section}
+\graphicspath{{./}{main/p.1097/}{main/p.1097/Images/}{Images/}}
+\makeatletter
+\def\@maketitle{%
+  \begin{center}
+  \vspace*{1cm}
+  {\Large\bfseries \@title\par}
+  \vspace{0.8em}
+  {\bfseries \@author\par}
+  \vspace{0.5em}
+  \end{center}
+  \rule{\textwidth}{0.2mm}\\
+}
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+
+\begin{quote}
+\includegraphics[width=5.98453in,height=0.99667in]{main//p.1097//vertopal_ac1335cfa57443e7a2c8dbeed75c43ae/media/image1.jpeg}
+\end{quote}
+
+\section{Effective Analysis of Genetic Diversity of Plant Species
+through Artificial Intelligence
+Tools}
+
+\textbf{Naser Sabaghnia}\footnote{\begin{quote}
+  \textbf{Corresponding Author:} sabaghnia@maragheh.ac.ir
+  \end{quote}}
+
+\begin{quote}
+\textbf{University of Maragheh, Iran}
+\end{quote}
+
+\textbf{Abstract:}
+
+Genetic variation within species arises from complex interactions
+between evolutionary processes and environmental factors, often
+reflected in polymorphic patterns of Single-Nucleotide Polymorphisms
+(SNPs). Traditional landscape genetics approaches have primarily focused
+on either broad-scale or local-scale environmental effects, limiting the
+statistical inference of genetic diversity. In this study, we present a
+comprehensive statistical framework integrating supervised machine
+learning, convolutional neural networks (CNNs), and simulation-based
+modeling to quantify the influence of multiple factors on genetic
+variation. Supervised machine learning allows prediction of key genetic
+metrics, such as allelic richness and population differentiation, while
+simultaneously estimating the relative importance of environmental and
+historical drivers. CNNs process SNP alignments as high-dimensional
+data, extracting patterns without requiring predefined summary
+statistics or population assignments. Simulation-based approaches,
+including Approximate Bayesian Computation (ABC), enable robust
+estimation of parameter posteriors under complex evolutionary scenarios.
+By combining these methods, our framework captures both discrete and
+continuous genetic processes, models stochasticity in natural
+populations, and provides interpretable statistical measures of factor
+importance. This approach enhances inference across spatial and temporal
+scales, facilitating hypothesis testing and evolutionary interpretation.
+The framework also has practical applications for conservation planning
+and biodiversity management, allowing researchers to identify
+populations and environmental factors most critical for maintaining
+genetic diversity. This integrative, statistics-driven approach
+represents a significant advancement in molecular ecology, offering
+scalable, interpretable, and robust tools for analyzing genomic
+variation in natural populations.
+
+\textbf{Keywords:} Supervised machine learning, Convolutional neural
+networks, Statistical genomics
+
+\textbf{Mathematics Subject Classification (2010):} 62P10, 62F15, 92D20,
+92D15.
+
+\section{Introduction}
+
+Quantitative understanding of genetic variation in spatial and
+environmental contexts is a central objective of landscape genetics.
+Historically, molecular studies used organellar genes or allelic markers
+such as microsatellites to quantify variation, while sequence-based data
+informed deeper evolutionary inference (Holderegger \& Wagner, 2008).
+Single-Nucleotide Polymorphisms (SNP) data has revolutionized
+statistical genetics by providing dense, genome-wide markers that enable
+hypothesis testing at multiple scales (Eaton \& Overcast, 2020). Despite
+these advances, selecting appropriate analytical methods remains a key
+statistical challenge. Classical population genetics models often assume
+discrete populations, migration-drift equilibrium, and neutrality, which
+may not hold in complex landscapes. Mis-specification of populations or
+unrecognized continuous processes can bias parameter estimation and
+reduce statistical power. Similarly, approximate Bayesian computation
+(ABC) and related model-based approaches require careful selection of
+summary statistics, which can influence posterior estimates and
+confidence intervals (Beaumont et al., 2002).
+
+To overcome these limitations, machine learning methods provide flexible
+statistical tools that integrate multiple data types, model nonlinear
+interactions, and quantify variable importance. By combining simulations
+with supervised learning, researchers can train models to identify
+factors most strongly associated with genetic variation while
+controlling for stochastic effects. Similarly, convolutional neural
+networks (CNNs) allow the statistical extraction of patterns from DNA
+sequence alignments treated as high-dimensional data, enabling inference
+without pre-defined summary statistics or population assignments (Flagel
+et al., 2019).
+
+\section{Statistical methods in genetic
+analysis}
+
+In quantitative genetics, we often partition phenotypic variance into
+genetic and environmental components:
+
+\[\sigma_{P}^{2} = \sigma_{G}^{2} + \sigma_{E}^{2}
+\]
+
+\[h^{2} = \frac{\sigma_{A}^{2}}{\sigma_{P}^{2}}
+\]
+
+\[\text{F}_{ST} = \frac{\sigma_{\text{between~populations}}^{2}}{\sigma_{\text{total}}^{2}}
+\]
+
+\[H = \frac{12}{N(N + 1)}\sum_{i = 1}^{k}n_{i}({\overset{ˉ}{R}}_{i} - \overset{ˉ}{R})^{2}
+\]
+
+\[y = X\beta + Zu + \epsilon
+\]
+
+\[G_{m} = \sum_{k = 1}^{K}p_{mk}(1 - p_{mk})
+\]
+
+\[I_{j} = \frac{1}{T}\sum_{t = 1}^{T}(L_{\text{perm}}(t) - L_{\text{orig}}(t))
+\]
+
+\[P(\theta \mid S_{\text{obs}}) \approx P(\theta \mid \parallel S_{\text{sim}} - S_{\text{obs}} \parallel < \epsilon)
+\]
+
+where \(S_{\text{obs}}\)= observed summary statistics,
+\(S_{\text{sim}}\)= simulated statistics under parameter \(\theta\), and
+\(\epsilon\)= tolerance threshold. Finally, Convolutional Neural
+Networks (CNN), for a single convolution operation is:
+
+\[h_{i,j}^{(l)} = f(\sum_{m = 0}^{M - 1}{\sum_{n = 0}^{N - 1}w_{m,n}^{(l)}}x_{i + m,j + n}^{\left( l-1 \right)} + b^{(l)})
+\]
+
+\section{Supervised machine learning in genetic
+analysis}
+
+Supervised machine learning (ML) is a statistical framework that maps
+input features (e.g., environmental variables, SNP data) to outcomes
+(e.g., allelic richness, heterozygosity) based on labeled datasets. Key
+statistical steps included data preprocessing (normalization, encoding
+of categorical variables, and missing data imputation), model selection
+(algorithms such as random forests, gradient boosting machines, or
+support vector machines), training and validation (k-fold
+cross-validation or bootstrapping to estimate model performance metrics
+like RMSE, R2), and inference estimation of feature importance using
+permutation tests or Gini impurity to identify key drivers of genetic
+variation). This approach allows quantitative integration of
+environmental and historical factors, while simulations can expand
+training datasets to include scenarios not observed in empirical
+samples, increasing statistical robustness.
+
+Integrating discrete environmental factors within a common analytical
+framework allows researchers to pinpoint the elements that significantly
+influence genetic diversity in biological species. This integration
+could take several forms, such as conducting independent polymorphic
+genetic analyses and synthesizing the results statistically, or
+performing a single comprehensive analysis that incorporates
+environmental factors. One potential approach involves developing a full
+likelihood framework, though this is a complex and daunting task due to
+the intricate models required (Beaumont et al., 2002). Alternatively,
+simulation-based methods that generate genetic data in a spatial context
+offer a promising direction. Despite the challenges of applying such
+frameworks to empirical systems; especially those with poorly
+characterized life parameters like generation length and mutation rates,
+the integration of simulations within a supervised machine learning
+framework could streamline the process. Supervised machine learning, a
+subset of artificial intelligence, involves training a predictive model
+using pre-classified datasets. In this context, a model would be trained
+on datasets where only historical or landscape factors are evident.
+Given that both types of factors usually coexist, pretraining can also
+utilize data reflecting the presence of both factors. This approach can
+simplify the development of a framework capable of identifying the
+factors most influential in shaping genetic diversity in the focal
+species (Schrider and Kern, 2018). Integrating discrete environmental
+factors under a supervised machine learning framework offers a robust
+approach to understanding the processes shaping genetic diversity in
+biological species. This method simplifies the complex task of model
+development, providing a practical and efficient tool for researchers to
+identify key influences on genetic variation. By bridging the gap
+between historical and landscape genetics, this framework enhances our
+ability to test hypotheses and interpret genetic data across diverse
+spatial and temporal scales.
+
+\section{Artificial neural network}
+
+Integrating discrete environmental factors within a common analytical
+framework is essential for identifying the influences on genetic
+diversity in biological species. A promising approach involves the use
+of convolutional neural networks, a type of artificial neural network
+that mimics the human brain\textquotesingle s neural connections by
+artificially replicating neuron interactions. Originally developed for
+image and video classification, convolutional neural networks can be
+adapted for genetic data analysis by altering data representation
+methods (Flagel et al., 2019). This simulation-based framework, which
+employs convolutional neural networks, offers a robust method for
+analyzing genetic diversity. By adapting convolutional neural networks
+to process genetic data as images of DNA sequence alignments,
+researchers can avoid the limitations of traditional summary statistics
+and a priori decisions. This approach provides a comprehensive tool for
+identifying the environmental and historical factors that shape genetic
+diversity, bridging the gap between different genetic analysis
+disciplines and enhancing our understanding of genetic variation across
+diverse spatial and temporal scales.
+
+\section{Polymorphic genetics}
+
+Evolutionary genetics is inherently challenging because each species has
+a distinct history and responds uniquely to its environment. This
+uniqueness adds layers of complexity to research, but it also enriches
+the field by presenting a diverse array of questions to explore and
+hypotheses to test. The interplay of factors such as life history,
+habitat specificity, and ecological location shapes genetic patterns in
+ways that are unique to each species. Taxon-specific traits
+significantly influence genetic patterns, and trait-based approaches
+have been instrumental in clarifying the nature of discordant genetic
+patterns (Sullivan et al., 2019). Many species remain poorly understood
+in terms of their ecology, evolution, distribution, and population
+dynamics. This lack of knowledge complicates data analysis, as the
+choice of analytical methods should ideally be guided by comprehensive
+information about the focal species. Without such information,
+researchers risk using inappropriate analytical methods, leading to
+potentially flawed conclusions. Although numerous programs and
+frameworks are available to address scientific questions, selecting the
+right one depends on understanding the species\textquotesingle{} life
+history, distribution, and population dynamics. Initially, polymorphic
+genetics relied on various types of genetic data, including sequence
+data based on gene genealogies. More recently, researchers have used
+summary statistics, such as nucleotide diversity, calculated from
+discrete units (Garrick et al., 2020). In contrast, earlier studies
+based on allelic data, such as microsatellites, often analyzed metrics
+among demes or individuals. The advent of Single-Nucleotide Polymorphism
+data has revolutionized genetic research, as these data are economical
+to generate, even in non-model systems. However, a significant
+distinction remains in how genetic variation is partitioned, whether by
+populations or individuals. This partitioning can impact the
+interpretation of genetic patterns and the subsequent conclusions drawn
+from the data.
+
+The unique genetic patterns observed among taxonomically similar species
+underscore the importance of taxon-specific traits. Understanding these
+traits helps elucidate the reasons behind discordant genetic patterns
+and provides insights into the evolutionary processes at play. Knowledge
+gaps about a species\textquotesingle{} ecology, evolution, distribution,
+and population dynamics have significant implications for the analysis
+of genetic data. Accurate data interpretation requires an informed
+selection of analytical methods, which in turn depends on comprehensive
+species-specific information. Evolutionary genetics is a complex field
+due to the unique histories and environmental responses of each species.
+This complexity, while challenging, also makes research more intriguing
+by offering a wide array of questions and hypotheses. The development
+and application of appropriate analytical methods depend on a thorough
+understanding of the species under study. Advances in genetic data
+collection, such as the use of Single-Nucleotide Polymorphism, have
+improved our ability to study genetic variation, but challenges remain
+in accurately partitioning and interpreting this variation. By focusing
+on taxon-specific traits and leveraging new technologies, researchers
+can continue to uncover the intricate details of evolutionary genetics
+and enhance our understanding of biodiversity.
+
+\section{Approximate Bayesian
+computation}
+
+The complexity of evolutionary genetics requires advanced methods for
+accurate data analysis. While traditional approaches like approximate
+Bayesian computation rely heavily on researcher choices in summarizing
+genetic variation, convolutional neural networks offer a promising
+alternative. By using alignment images, convolutional neural networks
+can enhance the capacity to infer both discrete and continuous genetic
+processes without the biases inherent in traditional methods. The
+approximate Bayesian computation allows researchers to make statistical
+inferences based on simulated data that approximate the observed data.
+However, the effectiveness of approximate Bayesian computation depends
+on how researchers summarize genetic variation. Poor summarization can
+reduce the statistical power of the analysis and lead to biased results.
+This is especially problematic in phylogeography and landscape genetics,
+where model-based methods have become prevalent over the last decades
+(Zamudio et al., 2016). The choice of analytical model often reflects
+the researchers\textquotesingle{} beliefs about the processes shaping
+genetic variation. Since models are inherently simplified
+representations of reality, they can lead to biased or erroneous
+inferences, particularly if important factors like genetic drift,
+selection, hybridization, and biological interactions are overlooked.
+Ignoring environmental-level analyses can result in confirmation bias,
+where findings align with preconceived notions rather than empirical
+evidence. convolutional neural networks provide a robust alternative to
+approximate Bayesian computation by processing genetic data as images of
+DNA sequence alignments. This approach retains the essential features of
+genetic diversity and does not require a priori decisions about
+population structure or summary statistics. The convolutional neural
+networks can capture both discrete and continuous genetic processes,
+offering a more comprehensive and unbiased analysis framework. The
+integration of convolutional neural networks into genetic data analysis
+offers a robust solution to the limitations of traditional methods like
+approximate Bayesian computation. By processing genetic data as images,
+convolutional neural networks can capture the complexity of genetic
+variation without the biases introduced by prior assumptions. This
+approach enhances the capacity to infer discrete and continuous genetic
+processes, providing a more accurate and comprehensive understanding of
+the factors shaping genetic diversity. As the field of evolutionary
+genetics continues to evolve, leveraging advanced techniques like
+convolutional neural networks will be crucial for uncovering the
+intricate details of genetic variation and evolutionary processes.
+
+\section{Conclusion}
+
+Integrating advanced statistical frameworks; supervised machine
+learning, CNNs, and simulation-based inference, into genetic analyses
+enhances our ability to quantify the drivers of genetic diversity. These
+approaches enable robust, scalable, and interpretable inference across
+complex landscapes and evolutionary histories. By combining traditional
+population genetics theory with modern statistical learning methods,
+researchers can obtain actionable insights for conservation,
+biodiversity management, and understanding evolutionary processes.
+
+\section{References}
+
+Beaumont, M. A., Zhang, W., \& Balding, D. J. (2002). Approximate
+Bayesian computation in population genetics. \emph{Genetics,} 162(4):
+2025-2035.
+
+Eaton, D. A., \& Overcast, I. (2020). ipyrad: Interactive assembly and
+analysis of RADseq datasets. \emph{Bioinformatics,} 36(8): 2592-2594.
+
+Flagel, L., Brandvain, Y., \& Schrider, D. R. (2019). The unreasonable
+effectiveness of convolutional neural networks in population genetic
+inference. \emph{Molecular biology and evolution,} 36(2): 220-238.
+
+Fonseca, E. M., Gehara, M., Werneck, F. P., Lanna, F. M., Colli, G. R.,
+Sites Jr, J. W., ... \& Garda, A. A. (2018). Diversification with gene
+flow and niche divergence in a lizard species along the South American
+``diagonal of open formations''. \emph{Journal of Biogeography}, 45(7):
+1688-1700.
+
+Garrick, R. C., Hyseni, C., \& Arantes, Í. C. (2020). Efficient summary
+statistics for detecting lineage fusion from phylogeographic datasets.
+Journal of Biogeography, 47(10): 2129-2140.
+
+Holderegger, R., \& Wagner, H. H. (2008). Landscape genetics.
+\emph{Bioscience,} 58(3): 199-207.
+
+Schrider, D. R., \& Kern, A. D. (2018). Supervised machine learning for
+population genetics: a new paradigm. \emph{Trends in Genetics,} 34(4):
+301-312.
+
+Sullivan, J., Smith, M. L., Espíndola, A., Ruffley, M., Rankin, A.,
+Tank, D., \& Carstens, B. (2019). Integrating life history traits into
+predictive phylogeography. \emph{Molecular ecology,} 28(8): 2062-2073.
+
+Zamudio, K. R., Bell, R. C., \& Mason, N. A. (2016). Phenotypes in
+phylogeography: Species' traits, environmental variation, and vertebrate
+diversification. \emph{Proceedings of the National Academy of Sciences,}
+113(29): 8041-8048.
+
+\end{document}

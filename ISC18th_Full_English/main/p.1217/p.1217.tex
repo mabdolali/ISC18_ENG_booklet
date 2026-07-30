@@ -1,0 +1,311 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Jackknife Ridge Estimation in LMMs}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Shirvani, Rasekh and Babadi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Jackknife Ridge Estimation in Linear Mixed Models with Measurement Error}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Mina Shirvani, Abdolrahman Rasekh, Babak Babadi \footnote{{\bf Corresponding Author:} {\tt b.babadi@scu.ac.ir }} \\
+Department of Statistics, Shahid Chamran University of Ahvaz, Ahvaz, Iran
+}
+\end{center}
+
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This study investigates the problem of bias in linear mixed models (LMMs) when ridge estimation is applied in the presence of measurement errors in fixed-effect variables. First, the ridge estimator for LMMs is described, and then a new estimator, called the jackknife ridge estimator (JRE), is proposed. The performance of the proposed estimator is compared with the conventional ridge estimator, demonstrating improvements in terms of bias and mean squared error. In addition, the asymptotic properties of both estimators are derived. Finally, simulation studies and a numerical example are presented to evaluate the efficiency of the proposed estimator.
+
+ 
+\noindent{\bf Keywords:} 
+Jackknife ridge; Linear mixed models; Measurement error; Bias reduction; Asymptotic properties
+ \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Linear mixed models (LMMs) are widely used for analyzing clustered and correlated data. By incorporating both fixed and random effects, these models provide a flexible framework for modeling complex data structures. In recent years, LMMs have become important tools for analyzing longitudinal and repeated measurements data in many fields such as social sciences, economics, and medical studies. Detailed discussions of LMMs can be found in \cite{DL94}, \cite{Davidian:Giltian:1995}, \cite{ZW00}, \cite{Zare:Rasekh:2011}, \cite{Demidenko:2013}, and \cite{Neuhaus:McCulloch:2014}.
+In regression analysis, reliable inference requires several key assumptions, including the accurate measurement of explanatory variables. However, in many practical situations these variables are subject to measurement error, which may lead to biased and inconsistent parameter estimates and misleading conclusions (\cite{Stefanski:1985}; \cite{Fuller:1987}). Measurement error becomes even more challenging in the context of LMMs, since it can distort the interpretation of model parameters. To reduce this bias, approaches such as the corrected score method have been proposed. \cite{ZF02} studied this method under normality assumptions and established the consistency and asymptotic normality of the resulting estimators.
+Another common issue in regression modeling is multicollinearity among explanatory variables, which can cause instability in least squares estimates. Ridge regression, introduced by \cite{Hoerl:Kennard:1970}, is a well-known technique for addressing this problem by stabilizing parameter estimation through regularization. Several studies have extended ridge estimation to more complex models. For example, \cite{Emami:2018} considered ridge estimation in semiparametric models with measurement error, while \cite{Özkale:Can:2017} and \cite{YR22} investigated ridge-based approaches within LMMs. Although biased estimators such as ridge regression are often used to handle multicollinearity, reducing bias remains an important objective. The Jackknife method, originally proposed by (\cite{Quenouille:1949},\cite{Quenouille:1956}), is a well-known technique for bias reduction and variance estimation. This approach has been applied in various statistical contexts, including regression diagnostics \cite{Cook:1977} and ridge-type estimators (\cite{Nomura:1988}; \cite{Nyquist:1988}; \cite{Özkale:Kuran:2019}).
+Motivated by these developments, this paper proposes a jackknife ridge estimator for linear mixed models in the presence of measurement error. The proposed method aims to improve estimation accuracy by reducing bias while maintaining favorable mean squared error properties.
+The remainder of the paper is organized as follows. Section \ref{Model} presents the model formulation and estimation procedures.
+ Section \ref{Jackknife} introduces the proposed estimator and studies its asymptotic properties. Section \ref{Simulation} reports simulation results, and Section \ref{Numerical} provides a numerical example. Finally, Section \ref{Conclusion} concludes the paper.
+\section{Model Definition and Estimation}\label{Model}
+
+Consider the linear mixed measurement error model:
+\begin{equation}\label{eq1}
+y = Z\beta + Ub + \varepsilon, \quad X = Z + \Delta, 
+\end{equation}
+where $y$ is an $n \times 1$ vector of observations, $\beta$ is a $p \times 1$ vector of fixed-effects parameters, and $U = [U_1 | \dots | U_w]$ is a known design matrix. The random effects are $b \sim N(0, \sigma^2 \Sigma)$, where $\Sigma$ is a block diagonal matrix with blocks $\gamma_i I_{q_i}$ and $\gamma_i = \sigma_i^2 / \sigma^2$. The unobservable $Z$ (rank $p$) is measured as $X = Z + \Delta$, with $\Delta \sim MN(0, I_n \otimes \Lambda)$, where $\Lambda$ is a known $p \times p$ matrix. Errors $\varepsilon \sim N(0, \sigma^2 I_n)$ are independent of $b$ and $\Delta$.
+
+To implement the Jackknife method, we transform 
+\eqref{eq1}
+ into its canonical form.Let\\ $V = I_n + U\Sigma U'$ and $S$ be a nonsingular symmetric matrix such that $S'S = V^{-1}$. Pre-multiplying \eqref{eq1}
+ by $S$ gives:
+\begin{equation}
+y^* = Z^*\beta + U^*b + \varepsilon^*, \quad X^* = Z^* + \Delta^*,
+\end{equation}
+where $y^* = Sy$, $Z^* = SZ$, and $\text{var}(y^*) = \sigma^2 I_n$. Given the symmetry of $Z^{*'}Z^* = Z'V^{-1}Z$, there exists an orthogonal matrix $Q$ such that $Q'Z'V^{-1}ZQ = \Lambda = \text{diag}(\lambda_1, \dots, \lambda_p)$. The canonical model becomes:
+\begin{equation}
+y^{*} = Z^{**}\alpha + \varepsilon^{*}, \quad X^{**} = Z^{**} + \Delta^{**},
+\end{equation}
+where $Z^{**} = Z^*Q$, $\alpha = Q'\beta$, and $Z^{**'}Z^{**} = \Lambda$. 
+
+The ridge estimates for $\alpha$, $\sigma^2$, and $b$ (assuming known $\gamma$) are derived by differentiating the penalized likelihood functions:
+\begin{equation}
+\hat{\alpha}_k = (X^{**'}X^{**} + kI_p)^{-1} X^{**'}y^{*}, \quad \hat{\sigma}^2_k = \frac{1}{n}(y'V^{-1}y - \hat{\beta}_k'X'V^{-1}y), \quad \hat{b}_k = \Sigma U'V^{-1}(y - X\hat{\beta}_k).
+\end{equation}
+
+For unknown variance components $\gamma_i$, we use the iterative ridge estimator:
+\begin{equation}
+\hat{\sigma}_{ki}^2 = \frac{[\hat{b}_{ki}'\hat{b}_{ki} - \text{tr}(\hat{D}_{ki}'\hat{D}_{ki})\hat{\beta}_k'\Lambda\hat{\beta}_k]}{q_i - \text{tr}(T_{ii})}, \quad \hat{D}_{ki} = \gamma_{ki}U_i'\hat{V}_k^{-1}, 
+\end{equation}
+where $T_{ii}$ is the $ii$-th block of matrix $T = (I_q + U'V^{-1}U\Sigma)^{-1}$.
+\section{Jackknife Estimator in Linear Ridge Mixed Measurement Error Models and Asymptotic Properties}\label{Jackknife}
+
+The Jackknife method provides a robust framework for bias reduction. Let $\hat{\alpha}_{k(-i)}$ denote the ridge estimator obtained by excluding the $i$-th observation. Using the Sherman-Morrison-Woodbury theorem, we approximate the jackknife ridge estimator (JRE) as:
+
+\begin{equation}
+\hat{\alpha}_{k(J)} \approx \hat{\alpha}_k + (\mathbf{X^{**}}'\mathbf{X^{**}} - \text{tr}(\mathbf{V}^{-1})\mathbf{\Lambda^{**}} + k\mathbf{I}_p)^{-1} \sum_{i=1}^n \mathbf{x}_i^{**} (y_i^{*} - \mathbf{x}_i^{**'}\hat{\alpha}_k), 
+\end{equation}
+where $\mathbf{x}_i^{**'}$ is the $i$-th row of $\mathbf{X}^{**}$. By simplifying the weighted pseudo-values\\
+ $\Theta_i = \hat{\alpha}_k + n(1-w_{ii})(\hat{\alpha}_k - \hat{\alpha}_{k(-i)})$, the JRE of $\alpha$ is derived as:
+
+\begin{equation}
+\hat{\alpha}_{k(J)} \approx [\mathbf{I}_p - k^2(\mathbf{X^{**}}'\mathbf{X^{**}} - \text{tr}(\mathbf{V}^{-1})\mathbf{\Lambda^{**}} + k\mathbf{I}_p)^{-2}] \hat{\alpha}_k. 
+\end{equation}
+
+Given $\alpha = \mathbf{Q}'\beta$ and $\mathbf{X}^{**'}\mathbf{X}^{**} = \mathbf{Q}'(\mathbf{X}^{*'}\mathbf{X}^*)\mathbf{Q}$, the jackknife ridge estimate for the fixed-effects parameter $\beta$ is:
+
+\begin{equation}
+\hat{\beta}_{k(J)} \approx [\mathbf{I}_p - k^2(\mathbf{X}'\mathbf{V}^{-1}\mathbf{X} - \text{tr}(\mathbf{V}^{-1})\mathbf{\Lambda} + k\mathbf{I}_p)^{-2}] \hat{\beta}_k, 
+\end{equation}
+
+where $\hat{\beta}_k = (\mathbf{X}'\mathbf{V}^{-1}\mathbf{X} - \text{tr}(\mathbf{V}^{-1})\mathbf{\Lambda} + k\mathbf{I}_p)^{-1}\mathbf{X}'\mathbf{V}^{-1}\mathbf{y}$.
+To investigate the asymptotic behavior of the proposed JRE, we rely on the normality of $\xi = n^{-1/2}X^{*'}y^* = n^{-1/2}X'V^{-1}y$. Assuming the existence of the limits for $g = n^{-1}(Z^{*'}Z^*)$ and $D = n^{-1}(Z^{*'}Z^* + kI_p)$, we establish the following theorem:
+
+\begin{theorem}
+As $n \to \infty$, the estimator $\hat{\beta}_{k(J)}$ follows an asymptotic normal distribution,\\ $\sqrt{n}(\hat{\beta}_{k(J)} - \beta) \xrightarrow{d} N(0, \text{Avar}(\hat{\beta}_{k(J)}))$, where the asymptotic covariance matrix is given by:
+\begin{equation}
+\text{Avar}(\hat{\beta}_{k(J)}) = g^{-1}(B + \sigma^2 M^{-1})g^{-1} + k^4 D^{-2}g^{-1}(B + \sigma^2 M^{-1})g^{-1}D^{-2},
+\end{equation}
+with $M = (Z^{*'}Z^*)^{-1}$ and $B = [\text{tr}(V^{-1})\sigma^2 + \beta'(Z'V^{-2}Z)\beta]\Lambda$.
+\end{theorem}
+
+
+\textit{Proof Sketch:} Using the property $\text{var}(\xi)=n^{-1}(B+\sigma^2 M^{-1})$, we expand $\sqrt{n}\hat{\beta}_{k(J)}$ around $\beta$ using a Taylor series expansion. Since $\xi$ is asymptotically normal, the asymptotic variance of $\sqrt{n}\hat{\beta}_{k(J)}$ is obtained via the delta method by propagating the variance of $\xi$ through the transformation defining the estimator.
+
+Furthermore, the asymptotic properties of the standard ridge estimator and the corrected score estimator (CSE) can be recovered as special cases. Specifically, the ridge estimator $\hat{\beta}_k$ has an asymptotic normal distribution with mean $M_k M^{-1}\beta$ and covariance $M_k(B + \sigma^2 M^{-1})M_k$. Similarly, the CSE  estimator $\hat{\beta}$ is asymptotically normal with mean $\beta$ and covariance $M(B + \sigma^2 M^{-1})M$. These results facilitate a direct performance comparison between the proposed JRE and existing estimation methods under measurement error conditions.
+\section{Simulation Study}\label{Simulation}
+
+We conducted a Monte Carlo simulation ($1000$ replications) to evaluate the finite-sample performance of the proposed JRE compared to the ridge  estimator and CSE. We considered factors including sample size ($n$), measurement error variance ($\Lambda$), and cluster variance components $(\sigma^2, \sigma_1^2)$. The performance was assessed using the Estimated Mean Square Error (EMSE) and Absolute Bias (ABIAS).
+
+\begin{table}[htbp]
+\centering
+\caption{Simulated MSE values of CSE  ($\hat{\beta}$), Ridge ($\hat{\beta}_k$), and JRE ($\hat{\beta}_{k(J)}$).}
+\label{tab:mse}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cccccccccc}
+\hline
+& & & \multicolumn{3}{c}{$\rho=0.70$} & \multicolumn{3}{c}{$\rho=0.85$} \\
+ \hline
+$\Lambda$ & $(\sigma^2,\sigma_1^2)$ & $n$ & $MSE(\hat{\beta})$ & $MSE(\hat{\beta}_k)$ & $MSE(\hat{\beta}_{k(J)})$ & $MSE(\hat{\beta})$ & $MSE(\hat{\beta}_k)$ & $MSE(\hat{\beta}_{k(J)})$ \\ 
+\hline
+&& 30 & 0.1840 & 0.2048 & 0.1849 & 0.1781 & 0.1849 & 0.1764 \\
+   0.01 & (0.5,0.8) & 60 & 0.1411 & 0.1562 & 0.1417 & 0.1247 & 0.1333 & 0.1247 \\
+     &           & 90 & 0.1320 & 0.1431 & 0.1323 & 0.1109 & 0.1179 & 0.1110 \\
+     \hline
+     &   & 30 & 0.2203 & 0.2412 & 0.2206 & 0.2116 & 0.2130 & 0.2074 \\
+    0.01 & (1,2)       & 60 & 0.1542 & 0.1730 & 0.1550 & 0.1401 & 0.1495 & 0.1397 \\
+     &           & 90 & 0.1419 & 0.1567 & 0.1425 & 0.1197 & 0.1280 & 0.1197 \\
+
+\hline
+&& 30 & 0.1830 & 0.2016 & 0.1836 & 0.1769 & 0.1803 & 0.1748 \\
+0.04 & (0.5,0.8) & 60 & 0.1379 & 0.1522 & 0.1384 & 0.1231 & 0.1309 & 0.1231 \\
+     &           & 90 & 0.1284 & 0.1390 & 0.1286 & 0.1086 & 0.1152 & 0.1087 \\
+\hline
+     &   & 30 & 0.2211 & 0.2389 & 0.2208 & 0.2157 & 0.2135 & 0.2109 \\
+0.04 & (1,2) & 60 & 0.1517 & 0.1693 & 0.1524 & 0.1394 & 0.1475 & 0.1389 \\
+     &       & 90 & 0.1388 & 0.1528 & 0.1392 & 0.1180 & 0.1256 & 0.1180 \\
+\hline
+&& 30 & 0.1825 & 0.1972 & 0.1825 & 0.1816 & 0.1804 & 0.1788 \\
+0.09 & (0.5,0.8) & 60 & 0.1329 & 0.1457 & 0.1332 & 0.1210 & 0.1272 & 0.1208 \\
+     &           & 90 & 0.1225 & 0.1323 & 0.1228 & 0.1051 & 0.1107 & 0.1051 \\
+\hline
+     &   & 30 & 0.2239 & 0.2361 & 0.2226 & 0.2253 & 0.2161 & 0.2151 \\
+0.09 & (1,2) & 60 & 0.1480 & 0.1635 & 0.1484 & 0.1389 & 0.1447 & 0.1382 \\
+     &       & 90 & 0.1337 & 0.1466 & 0.1341 & 0.1157 & 0.1219 & 0.1155 \\
+\hline
+\end{tabular}
+}
+\end{table}
+\begin{table}[htbp]
+\centering
+\caption{Simulated ABIAS values of CSE  ($\hat{\beta}$), Ridge ($\hat{\beta}_k$), and JRE ($\hat{\beta}_{k(J)}$).}
+\label{tab:abias}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cccccccccc}
+\hline
+& & & \multicolumn{3}{c}{$\rho=0.70$} & \multicolumn{3}{c}{$\rho=0.85$} \\
+\hline
+$\Lambda$ & $(\sigma^2,\sigma_1^2)$ & $n$ & $ABIAS(\hat{\beta})$ & $ABIAS(\hat{\beta}_k)$ & $ABIAS(\hat{\beta}_{k(J)})$ & $ABIAS(\hat{\beta})$ & $ABIAS(\hat{\beta}_k)$ & $ABIAS(\hat{\beta}_{k(J)})$ \\ 
+\hline
+&& 30 & 1.1572 & 1.2000 & 1.1617 & 1.2384 & 1.2690 & 1.2411 \\
+0.01 & (0.5,0.8)         & 60 & 1.2043 & 1.2263 & 1.2054 & 1.2473 & 1.2628 & 1.2479 \\
+     &           & 90 & 1.1915 & 1.2046 & 1.1920 & 1.2720 & 1.2822 & 1.2722 \\
+     \hline
+ &&30 & 1.1475 & 1.2028 & 1.1548 & 1.2180 & 1.2603 & 1.2230 \\
+    0.01 & (1,2)           & 60 & 1.2251 & 1.2535 & 1.2270 & 2.1858 & 2.1653 & 2.1547 \\
+     &           & 90 & 1.2399 & 1.2586 & 1.2407 & 1.2337 & 1.2497 & 1.2343 \\
+\hline
+     &           & 30 & 1.1506 & 1.1929 & 1.1549 & 1.1396 & 1.1758 & 1.1428 \\
+0.04 & (0.5,0.8) & 60 & 1.1986 & 1.2204 & 1.1997 & 1.2427 & 1.2580 & 1.2433 \\
+     &           & 90 & 1.1860 & 1.2008 & 1.1865 & 1.2678 & 1.2779 & 1.2681 \\
+\hline
+     &           & 30 & 1.1406 & 1.1955 & 1.1477 & 1.2123 & 1.2540 & 1.2172 \\
+0.04 & (1,2)     & 60 & 1.2195 & 1.2477 & 1.2214 & 2.1902 & 2.1699 & 2.1591 \\
+     &           & 90 & 1.2348 & 1.2535 & 1.2357 & 1.2291 & 1.2449 & 1.2297 \\
+\hline
+     &           & 30 & 1.1390 & 1.1803 & 1.1431 & 1.1286 & 1.1638 & 1.1316 \\
+0.09 & (0.5,0.8) & 60 & 1.1888 & 1.2101 & 1.1899 & 1.2348 & 1.2497 & 1.2353 \\
+     &           & 90 & 1.1766 & 1.1911 & 1.1771 & 1.2607 & 1.2705 & 1.2609 \\
+\hline
+     &           & 30 & 1.1287 & 1.1826 & 1.1356 & 1.2023 & 1.2431 & 1.2070 \\
+0.09 & (1,2)     & 60 & 1.2098 & 1.2376 & 1.2116 & 2.1977 & 2.1778 & 2.1667 \\
+     &           & 90 & 1.2262 & 1.2446 & 1.2270 & 1.2212 & 1.2367 & 1.2218 \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+ As evidenced by the results in Tables \ref{tab:mse} and \ref{tab:abias}, the proposed JRE consistently yields smaller EMSE and ABIAS values across various parameter combinations. Notably, while the CSE shows significant bias under multicollinearity and measurement error, the JRE successfully mitigates this bias, outperforming the standard ridge estimator. These findings confirm the robustness of our approach in complex linear mixed models.
+
+\newpage
+\section{Numerical Example}\label{Numerical}
+
+To further validate the performance of the proposed JRE, we applied it to the well-known Boston Housing dataset. Following the setup by \cite{ZF02}, we analyzed 132 census tracts treated as repeated measurements. The model addressed severe multicollinearity among the fixed-effect variables, as evidenced by a condition number of $354.25$ (\cite{Ghapani:2019}), and accounted for measurement error in the pollution variable (NOX). Using the estimated ridge parameter\\
+ $k=0.0031$, we compared the Ridge Estimator (RE) and the proposed Jackknife Ridge Estimator (JRE).
+
+
+\begin{table}[h!]
+\centering
+\caption{Parameter estimates and performance metrics for the Boston Housing dataset.}
+\label{tab:boston}
+\begin{tabular}{lcc|lcc}
+\toprule
+\textbf{Variable} & \textbf{RE} & \textbf{JRE} & \textbf{Variable} & \textbf{RE} & \textbf{JRE} \\
+\hline
+Intercept & 8.9724 & 9.0678  & CRIM & -0.0073 & -0.0074 \\
+RM        & -0.0015 & -0.0015 & CHAS & -0.0282 & -0.0281 \\
+AGE       & 0.0011 & 0.0008  & NOX  & -0.0095 & -0.0103 \\
+DIS       & 0.1082 & 0.0831  & SMSE & 0.1626 & 0.1555 \\
+B         & 0.4517 & 0.4559  & ABIAS & 0.1328 & 0.0015 \\
+LSTAT     & -0.5431 & -0.5358 &      &        &        \\
+\hline
+\end{tabular}
+\end{table}
+
+
+The results in Table \ref{tab:boston} indicate that the JRE consistently yields lower SMSE and ABIAS values compared to the RE, confirming its superior predictive accuracy and reduced bias.
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=6cm,height=5cm]{Images/fig1}
+\includegraphics[width=6cm,height=5cm]{Images/fig2}\\
+\vspace{-0.2cm}
+\caption{Comparison of SMSE and ABIAS of CSE , Ridge, and JRE estimators versus the ridge parameter $k$.}\label{fig_smse_abias}
+\end{center}
+\end{figure}
+
+Figure \ref{fig_smse_abias} illustrates the behavior of the estimators over the interval $k \in [0, 1]$. As shown in this figure, the JRE consistently maintains a smaller SMSE than the standard ridge estimator. Furthermore, the same figure highlights that the JRE significantly reduces the absolute bias (ABIAS) compared to the RE across all values of $k$. These empirical findings strongly support the theoretical properties established in Section 4, demonstrating that the JRE is an effective alternative for estimation in the presence of multicollinearity and measurement errors.
+
+
+\section{Conclusion}\label{Conclusion}
+In this study, we proposed the Jackknife Ridge Estimator (JRE) as an effective alternative to the traditional Ridge Estimator (RE) within the framework of linear mixed measurement error models. Given the sensitivity of parameter estimation to both multicollinearity and measurement errors, our approach leverages the jackknife technique to mitigate bias while maintaining a competitive Mean Squared Error (MSE). The theoretical development of the estimator, supported by its asymptotic properties, provides a robust foundation for its application. Furthermore, the results from both the simulation study and the analysis of the Boston Housing dataset consistently demonstrate that the JRE significantly outperforms the standard RE by providing more accurate parameter estimates and lower bias. These findings suggest that the JRE is a reliable tool for practitioners dealing with complex longitudinal data structures subject to measurement error and collinearity issues. Future work may focus on extending this methodology to non-linear mixed models or incorporating robust estimation techniques.
+
+\begin{thebibliography}{99}
+
+\bibitem[Cook (1977)]{Cook:1977}
+Cook, R. D. (1977). Detection of influential observations in linear regression.  \textit{Technometrics}, 19(1) 18-19.  
+
+%\bibitem[Cook (1979)]{Cook:1979}
+%Cook, R. D. (1979). Influential observations in linear regression. \textit{Journal of the American Statistical Association}, 74(365), 169-174.
+
+\bibitem[Davidian (1995)]{Davidian:Giltian:1995}
+Davidian, M ., & Giltian, D.M. (1995). \textit{Nonlinear models for repeated measurement data}. Chapman and Hall. 
+
+\bibitem[Demidenko (2013)]{Demidenko:2013}
+Demidenko, E. (2013). \textit{Mixed models: theory and applications with R}. John Wiley \& Sons.
+
+\bibitem[Diggle et al. (1994)]{DL94}
+Diggle, P. J., Liang, K. Y., \& Zeger, S. L. (1994). \textit{Analysis of Longitudinal Data}. Clarendon Press.
+
+\bibitem[Emami (2018)]{Emami:2018}
+Emami, H. (2018). Ridge estimation in semiparametric linear measurement error models. \textit{Linear Algebra and Its Applications}, 552, 127-146.
+
+\bibitem[Fuller (1987)]{Fuller:1987}
+Fuller, W. A. (1987). \textit{Measurement error models}. John Wiley \& Sons.
+
+\bibitem[Ghapani (2019)]{Ghapani:2019}
+Ghapani, F. (2019). Stochastic restricted Liu estimator in linear mixed measurement error models. Communications in Statistics-Simulation and Computation, 51(3): 1220-1233. 
+
+\bibitem[Hoerl and Kennard (1970)]{Hoerl:Kennard:1970}
+Hoerl, A. E., \& Kennard, R. W. (1970). Ridge regression: Biased estimation for nonorthogonal problems. \textit{Technometrics}, 12(1), 55-67.
+
+\bibitem[Neuhaus and McCulloch (2014)]{Neuhaus:McCulloch:2014}
+Neuhaus, J. M., \& McCulloch, C. E. (2014). Covariate decomposition methods for longitudinal missing-at-random data. \textit{Australian \& New Zealand Journal of Statistics}, 56(4), 331-345.
+
+\bibitem[Nomura (1988)]{Nomura:1988}
+Nomura, M. (1988). On the almost unbiased ridge regression estimator. \textit{Communications in Statistics-Simulation and Computation}, 17(3), 729-743.
+
+\bibitem[Nyquist (1988)]{Nyquist:1988}
+Nyquist, H. (1988). Applications of the jackknife procedure in ridge regression. \textit{Computational Statistics \& Data Analysis}, 6(2), 177-183.
+
+\bibitem[Özkale and Can (2017)]{Özkale:Can:2017}
+Özkale, M. R., \& Can, F. (2017). An evaluation of ridge estimator in linear mixed models: an example from kidney failure data. \textit{Journal of Applied Statistics}, 44(12), 2251-2269.
+
+\bibitem[Özkale and Kuran (2019)]{Özkale:Kuran:2019}
+Özkale, M. R., \& Kuran, Ö. (2019). Adaptation of the jackknifed ridge methods to the linear mixed models. \textit{Journal of Statistical Computation and Simulation}, 89(18), 3413-3452.
+
+\bibitem[Quenouille (1949)]{Quenouille:1949}
+Quenouille, M. H. (1949). Approximate tests of correlation in time-series. \textit{Mathematical Proceedings of the Cambridge Philosophical Society}, 45(3), 483-484.  
+
+\bibitem[Quenouille (1956)]{Quenouille:1956}
+Quenouille, M. H. (1956). Notes on bias in estimation. \textit{Biometrika}, 43(3-4), 353-360.
+
+\bibitem[Stefanski (1985)]{Stefanski:1985}
+Stefanski, L. A. (1985). The effects of measurement error on parameter estimation. \textit{Biometrika}, 72(3), 583-592.
+
+\bibitem[Yavarizadeh et al. (2022)]{YR22}
+Yavarizadeh, B., Rasekh, A., Ahmed, S. E., \& Babadi, B. (2022). Ridge estimation in linear mixed measurement error models. \textit{Communications in Statistics-Simulation and Computation}, 51(6), 3037-3053.
+
+\bibitem[Zare and Rasekh (2011)]{Zare:Rasekh:2011}
+Zare, K., \& Rasekh, A. (2011). Diagnostic measures for linear mixed measurement error models. \textit{SORT}, 35(2), 125-144.
+
+\bibitem[Zhong et al. (2000)]{ZW00}
+Zhong, X. P., Wei, B. C., \& Fung, W. K. (2000). Influence analysis for linear measurement error models. \textit{Annals of the Institute of Statistical Mathematics}, 52, 367-379.
+
+\bibitem[Zhong et al. (2002)]{ZF02}
+Zhong, X. P., Fung, W. K., \& Wei, B. C. (2002). Estimation in linear models with random effects and errors-in-variables. \textit{Annals of the Institute of Statistical Mathematics}, 54, 595-606.
+
+\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \end{document}
+

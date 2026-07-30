@@ -1,0 +1,255 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+
+% Additional packages for math and formatting
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{graphicx, booktabs, hyperref, chngcntr}
+\numberwithin{equation}{section}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Enhanced Bivariate FGM Copulas}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{H. Bekrizadeh}
+
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Enhanced Bivariate FGM Copulas for Accurate Dependency Analysis}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf Hakim Bekrizadeh \footnote[1]{{\bf Corresponding Author:} {\tt Bekrizadeh@pnu.ac.ir}} \\
+Department of Statistics, Payame Noor University, Tehran, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+A new class of bivariate FGM copulas is proposed, extending existing models. Its properties and association measures are derived, and applications to medical data show improved correlation and tail dependence. A simulation method is developed and validated to reproduce the original dependency structure.
+
+\noindent{\bf Keywords:} FGM Copula, Measures of Dependence. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62H05$, $\rm 62H20$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+\section{Introduction}
+The study of copulas and their application has developed significantly in recent decades as a tool to describe the dependence of random variables (see, e.g., surveys by \cite{Joe1997, Nelsen2006}). Copulas play a crucial role in mathematical modeling and simulation, making the construction of diverse copula families highly meaningful. One of the most popular parametric families, studied by \cite{Farlie1960}, \cite{Gumbel1960}, and \cite{Morgenstern1956}, is the Farlie-Gumbel-Morgenstern (FGM) copula, defined by
+\begin{equation}\label{eq1}
+C^{\text{FGM}}(s,t) = st\left[1 + \theta(1-s)(1-t)\right], \quad \theta \in [-1, 1], \quad \forall(s,t) \in [0,1]^2,
+\end{equation}
+where $\theta$ is the association parameter. The FGM copula is PQD for $\theta \in (0, 1]$. However, this copula is somewhat limited. For the dependence parameter $\theta \in [-1, 1]$, the Spearman's rho and Kendall's tau are $\rho_S = \theta/3 \in [-1/3, 1/3]$ and $\tau_k = 2\theta/9 \in [-2/9, 2/9]$, respectively.
+
+Due to the limited correlation range of the FGM copula, several generalizations have been proposed to improve its applicability. Symmetric semi-parametric and polynomial-type extensions were introduced by \cite{Rodriguez2004}, \cite{HuangKotz1999}, and others, extending both correlation bounds and dependence properties. Further studies explored positive quadrant dependence, bivariate uniform distributions, and Spearman's correlation. More recent work by \cite{Bekrizadeh2012, Bekrizadeh2015} and \cite{Pathak2016} proposed generalized FGM copulas with wider correlation ranges, improving upon earlier FGM families.
+
+This paper introduces a new generalized class of FGM copulas, extending recent models including \cite{Bekrizadeh2012}, with a more efficient correlation range. Key contributions include presenting its main properties, deriving general formulas for association measures, and offering a flexible framework for modeling a wider range of dependencies. The new class enhances potential applications across various scientific fields.
+
+\section{Definition}
+A non-decreasing and right-continuous bivariate function $C: [0,1]^2 \to [0,1]$ is called a copula if it satisfies the following conditions:
+\begin{itemize}
+\item[P1.] $C(s,0)=C(0,t)=0$ and $C(s,1)=s$, $C(1,t)=t$, $\forall s,t \in [0,1]$,
+\item[P2.] For all $s_1, s_2, t_1, t_2 \in [0,1]$ with $s_1 \le s_2$ and $t_1 \le t_2$,
+\begin{equation}
+C(s_2,t_2) - C(s_2,t_1) - C(s_1,t_2) + C(s_1,t_1) \ge 0.
+\end{equation}
+\end{itemize}
+For twice differentiable copulas, the 2-increasing property can be replaced by the condition
+\begin{equation}\label{eq2}
+c(s,t) = \frac{\partial^2 C(s,t)}{\partial s \partial t} \ge 0,
+\end{equation}
+where $c(s,t)$ is the copula density.
+
+\begin{dfn}\label{df1}
+Suppose that the strictly continuous function $\psi: [0,1]^2 \to [0,1]$ is differentiable on $(0,1)$. A function $C_{\psi,\theta}^p$ on $[0,1]^2$ is defined as
+\begin{equation}\label{eq3}
+C_{\psi,\theta}^p(s,t) = st\left[1 + \theta \psi(s,t)\right]^p, \quad p \in [1, \infty), \quad (s,t) \in [0,1]^2,
+\end{equation}
+for $\theta \in \Theta \subseteq [-1, 1]$.
+\end{dfn}
+
+\begin{thm}\label{th1}
+Let $\psi$ be differentiable, non-negative and monotonically decreasing, or non-positive and monotonically increasing on $[0,1]$. If
+\begin{itemize}
+\item[A1.] $\psi(x,0)=\psi(0,x)=0$, $\forall x \in [0,1]$,
+\item[A2.] i. If $\psi'_x(x)$ and $\psi'_s(s,t)$ have the same sign for every $x \in [0,1]$ and $(s,t) \in [0,1]^2$, then $C_{\psi,\theta}^p$ is a copula for $\theta \in [0, 1]$; i.e., $\Theta = [0, 1]$.
+\item[] ii. If $\psi'_x(x)$ and $\psi'_s(s,t)$ do not have the same sign for every $x \in [0,1]$ and $(s,t) \in [0,1]^2$, then $C_{\psi,\theta}^p$ is a copula for every $\theta \in [-1, 0]$; i.e., $\Theta = [-1, 0]$.
+\end{itemize}
+\end{thm}
+\begin{proof}
+The proof involves two steps.
+\end{proof}
+
+\begin{cor}\label{cor1}
+Let $\psi: [0,1]^2 \to [0,1]$ be differentiable and monotonic on $[0,1]$, fulfilling the conditions
+\begin{itemize}
+\item[B1.] $\psi(x,0)=\psi(0,x)=0$, $\forall x \in [0,1]$,
+\item[B2.] $|s \psi'_s(s,t)| \le 1$, $|t \psi'_t(s,t)| \le 1$, and $|st \psi'_{st}(s,t)| \le 1$, $\forall (s,t) \in [0,1]^2$.
+\end{itemize}
+Then, the function $C_{\psi,\theta}^p$ is a copula for every $\theta \in [-1, 1]$; i.e., $\Theta = [-1, 1]$.
+\end{cor}
+
+As an example, the function $\psi(s,t) = (1-s)^\alpha (1-t)^\alpha$, for every $\alpha \ge 0$ and the admissible range of parameter $\theta \in \left[-\frac{1}{p}, \frac{1}{p-1}\right]$, yields the family $C_{\psi,\theta}^p$ discussed by \cite{Bekrizadeh2012}.
+
+\section{Key Properties}
+\begin{pro}\label{pr1}
+The family $C_{\psi,\theta}^p$ includes some known families of FGM copulas introduced by researchers in recent years, which are as follows:
+\begin{itemize}
+\item[i.] If $\psi(s,t) = (1-s)(1-t)$, $(s,t) \in [0,1]^2$, and $p=1$, the family reduces to the symmetric FGM copula discussed by \cite{Farlie1960, Gumbel1960, Morgenstern1956}.
+\item[ii.] If $\psi(s,t) = (1-s)^\alpha (1-t)^\alpha$, $(s,t) \in [0,1]^2$, $\alpha \ge 0$, and $p=1$, it reduces to the symmetric extended FGM copula introduced by \cite{HuangKotz1999}.
+\item[iii.] If $\psi(s,t) = (1-s)^q (1-t)^q$, $(s,t) \in [0,1]^2$, $q \ge 1$, and $p=1$, it reduces to the symmetric extended FGM copula introduced by \cite{LaiXie2000}.
+\item[iv.] If $\psi(s,t) = (1-s)^\lambda (1-t)^\gamma$, $(s,t) \in [0,1]^2$, $\gamma \ge 0, \lambda \ge 1$, and $p=1$, it reduces to the symmetric extended FGM copula introduced by \cite{BairamovKotz2002}.
+\item[v.] If $\psi(s,t) = \phi(s)\phi(t)$, where $\phi$ is defined on $[0,1]$ such that $\phi(0)=\phi(1)=0$, and $p=1$, the family reduces to the class introduced by \cite{Rodriguez2004}.
+\item[vi.] If $\psi(s,t) = (1-s)^\alpha (1-t)^\alpha$, $(s,t) \in [0,1]^2$, $\alpha \ge 0$, and $p=n$, where $n=0,1,2,\dots$, it reduces to the asymmetric extended FGM copula introduced by \cite{Bekrizadeh2012}.
+\item[vii.] If $\psi(s,t) = f(s)^n g(t)^n$, $(s,t) \in [0,1]^2$, with $f(1)=g(1)=0$, and $p=n$, where $n=1,2,3,\dots$, it reduces to the asymmetric extended FGM copula introduced by \cite{Pathak2016}.
+\end{itemize}
+\end{pro}
+
+\begin{pro}\label{pr2}
+$\lim_{\theta \to 0} C_{\psi,\theta}^p(s,t) = st = \Pi(s,t)$, where $\Pi(s,t)$ is the independent copula.
+\end{pro}
+
+\section{Measures of Dependence}
+Measures of dependence are common instruments to summarize a complicated dependence structure in the bivariate case. For a historical review, see \cite{Joe1997, Nelsen2006}. In this section, we compute the measures of dependence for the family $C_{\psi,\theta}^p$. Based on the binomial expansion, the family $C_{\psi,\theta}^p$ in \eqref{eq3}, for every $p \in [1, \infty)$ may also be written as
+\begin{equation}\label{eq4}
+C_{\psi,\theta}^p(s,t) = st \sum_{k=0}^{p} \binom{p}{k} \theta^k \psi^k(s,t) = st + st \sum_{k=1}^{p} \binom{p}{k} \theta^k \psi^k(s,t).
+\end{equation}
+
+\subsection{Spearman's rho}
+Let $X$ and $Y$ be continuous random variables whose copula is $C$. Then the population version of Spearman's rho is given by
+\begin{equation}
+\rho_S = 12 \int_0^1 \int_0^1 (C(s,t) - st) \, ds \, dt.
+\end{equation}
+Note that $\rho_S$ coincides with the correlation coefficient between the uniform marginal distributions.
+
+\begin{pro}\label{pr3}
+Let $(X,Y)$ be a pair of random variables with distribution belonging to the family $C_{\psi,\theta}^p$. The Spearman's rho for the family is given by
+\begin{equation}\label{eq5}
+\rho_S = 12 \sum_{k=1}^{p} \binom{p}{k} \theta^k d(\psi, k),
+\end{equation}
+where $d(\psi, k) = \int_0^1 \int_0^1 \psi^k(s,t) \, ds \, dt$.
+\end{pro}
+\begin{proof}
+By using \eqref{eq4}, the Spearman's rho can be expanded as
+\begin{align*}
+\rho_S &= 12 \int_0^1 \int_0^1 \left[ st + st \sum_{k=1}^{p} \binom{p}{k} \theta^k \psi^k(s,t) - st \right] ds \, dt \\
+&= 12 \sum_{k=1}^{p} \binom{p}{k} \theta^k \int_0^1 \int_0^1 st \psi^k(s,t) \, ds \, dt.
+\end{align*}
+Following the definition $d(\psi,k) = \int_0^1 \int_0^1 \psi^k(s,t) ds dt$, we obtain \eqref{eq5}.
+\end{proof}
+
+\subsection{Kendall's tau}
+In terms of copula, Kendall's tau $\tau_k$ is defined as \cite{Nelsen2006}
+\begin{equation}
+\tau_k = 4 \int_0^1 \int_0^1 C(s,t) c(s,t) \, ds \, dt - 1.
+\end{equation}
+
+\begin{pro}\label{pr4}
+Let $(X,Y)$ be a pair of random variables with the family $C_{\psi,\theta}^p$ and the density $c_{\psi,\theta}^p$; then Kendall's tau can be expanded as
+\begin{equation}\label{eq6}
+\tau_k = 4 \sum_{k=0}^{p-1} \binom{p}{k} \theta^{k+1} \left[ (k+1)d(\psi, k+1) + \theta \sum_{j=0}^{p-k-1} \binom{p-k-1}{j} \theta^j d(\psi, k+1+j) - d(\psi, k) d(\psi, k+1) \right] - 1.
+\end{equation}
+\end{pro}
+\begin{proof}
+The proof of this proposition is deferred to Appendix B.
+\end{proof}
+
+\begin{eg}\label{ex1}
+In the family $C_{\psi,\theta}^p$, let $\psi(s,t) = (1-s)(1-t)$. Then the family leads to a new symmetric generalized FGM copula with $\theta \in \left[-\frac{1}{p}, \frac{1}{p-1}\right]$. Since $\int_0^1 \int_0^1 (1-s)^k(1-t)^k \, ds \, dt = \frac{1}{(k+1)^2}$, we have by using \eqref{eq5} that
+\begin{equation}
+\rho_S = 12 \sum_{k=1}^{p} \binom{p}{k} \frac{\theta^k}{(k+1)^2},
+\end{equation}
+where the upper bound of $\rho_S$ can be increased up to approximately $0.3805$ as $p \to \infty$, while the lower bound $-0.3333$ remains unchanged.
+\end{eg}
+
+\begin{eg}\label{ex2}
+In the family $C_{\psi,\theta}^p$, let $\psi(s,t) = (1-s)^\alpha (1-t)^\alpha$, $\alpha \ge 0$. Then the family leads to a new symmetric generalized Huang-Kotz family with $\theta \in \left[-\frac{1}{\max\{1,p\}}, \frac{1}{p-1}\right]$. Since $\int_0^1 \int_0^1 (1-s)^{\alpha k}(1-t)^{\alpha k} \, ds \, dt = \frac{1}{(\alpha k + 1)^2}$, we have
+\begin{equation}\label{eq7}
+\rho_S = 12 \sum_{k=1}^{p} \binom{p}{k} \frac{\theta^k}{(\alpha k + 1)^2}.
+\end{equation}
+Taking $\alpha \cong 1.85$ and $p > 500$ in \eqref{eq7}, we have $\max \rho_S \cong 0.43$. Similarly, taking $\alpha \cong 0.1$ and $p > 500$, we obtain $\min \rho_S \cong -0.50$.
+\end{eg}
+
+\subsection{Tail Dependence}
+The concept of tail dependence relates to the amount of dependence in the upper-right and lower-left quadrant tails of a bivariate distribution. It is relevant for studying dependence between extreme values. For a bivariate copula $C$, if
+\begin{equation}\label{eq8}
+\lambda_U = \lim_{s \to 1^-} \frac{1 - 2s + C(s,s)}{1-s}
+\end{equation}
+exists, then $C$ has upper tail dependence if $\lambda_U \in (0, 1]$, and upper tail independence if $\lambda_U = 0$. The lower tail dependence is defined similarly:
+\begin{equation}\label{eq9}
+\lambda_L = \lim_{s \to 0^+} \frac{C(s,s)}{s}.
+\end{equation}
+
+\begin{pro}\label{pr5}
+Let $(X,Y)$ be a pair of random variables with distribution belonging to the family $C_{\psi,\theta}^p$; then for the copula $C_{\psi,\theta}^p$, we have
+\begin{equation}\label{eq10}
+\lambda_U = 1 - 2p\theta \psi(1,1), \quad \lambda_L = 0.
+\end{equation}
+\end{pro}
+\begin{proof}
+Clearly, the upper tail dependence coefficient can be simplified using L'Hôpital's rule and the derivative structure of $C_{\psi,\theta}^p(s,s)$. The lower tail dependence vanishes as $s \to 0$ due to the boundary conditions $\psi(s,0)=\psi(0,s)=0$.
+\end{proof}
+
+\begin{cor}\label{cor2}
+Let $(X,Y)$ be a pair of random variables with the family $C_{\psi,\theta}^p$ and $\psi(s,1)=\psi(1,s)=0$, for every $s \in [0,1]$. Thus, $0 \le \lambda_U \le 1$ and this bound is reached within the sub-families, while for the standard FGM copula $\lambda_U = 0$.
+\end{cor}
+
+\begin{eg}\label{ex3}
+Choosing $\psi(s,t)$ as the cumulative distribution function of the uniform distribution on $[0, \theta]$, $\theta \le 1$, introduced by \cite{HuangKotz1999}, gives the new family of copulas
+\[ C_{\psi,\theta}^p(s,t) = st\left[1 + \theta \min(s,t)\right]^p, \quad p \in [1, \infty), \quad 0 \le \theta \le \frac{1}{p}. \]
+By using \eqref{eq10}, in this new family, we have $\lambda_U = \theta^p \in [0, 1]$.
+\end{eg}
+
+\begin{eg}\label{ex4}
+Consider the function $\psi(s,t) = f(\min(s,t), \max(s,t))$, $(s,t) \in [0,1]^2$, where $f(1)=0$; this leads to a new copula. By using the tail dependence definition, in this new family, we have $\lambda_U = -\theta p f'(1)$.
+\end{eg}
+
+\section*{Discussion and Conclusion}
+This paper successfully extended the classical FGM copula family by introducing a flexible polynomial-type generator $\psi(s,t)$ and a power parameter $p$. The proposed framework significantly widens the admissible ranges for Spearman's rho and Kendall's tau, while enabling non-zero upper tail dependence. The theoretical properties, dependence measures, and limiting cases demonstrate the model's robustness and potential for practical applications in reliability, finance, and medical data analysis.
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{thebibliography}{9}
+\bibitem[Bairamov and Kotz (2002)]{BairamovKotz2002}
+Bairamov I. and Kotz S. (2002), Dependence structure and symmetry of Huang-Kotz FGM distributions and their extensions, {\it Metrika} 56, 55-72.
+
+\bibitem[Bekrizadeh et al. (2012)]{Bekrizadeh2012}
+Bekrizadeh H., Parham G. A. and Zadkarmi M. R. (2012), The New Generalization of Farlie Gumbel Morgenstern Copulas, {\it Applied Mathematical Sciences} 71, 3527-3533.
+
+\bibitem[Bekrizadeh et al. (2015)]{Bekrizadeh2015}
+Bekrizadeh H., Parham G. A., Zadkarami M. R. (2015), An asymmetric generalized FGM copula and its properties, {\it Pakistan Journal of Statistics} 31(1), 95-106.
+
+\bibitem[Coles et al. (2011)]{Coles2011}
+Coles S., Currie J. and Tawn J. (2011), Dependence measures for extreme value analyses, {\it Extremes} 2, 339-365.
+
+\bibitem[Farlie (1960)]{Farlie1960}
+Farlie D. G. J. (1960), The performance of some correlation coefficients for a general Bivariate distribution, {\it Biometrika} 47, 307-323.
+
+\bibitem[Gumbel (1960)]{Gumbel1960}
+Gumbel E. J. (1960), Bivariate exponential distributions, {\it J. Am. Stat. Assoc.} 55, 698-707.
+
+\bibitem[Gr\"obmab (2007)]{Grobmab2007}
+Gr\"obmab T. (2007), Copulae and Tail Dependence, Diploma thesis, Center for Applied Statistics and Economics, Berlin.
+
+\bibitem[Huang and Kotz (1999)]{HuangKotz1999}
+Huang J. S. and Kotz S. (1999), Modifications of the Farlie-Gumbel-Morgenstern distributions, a tough hill to climb, {\it Metrika} 49, 135-145.
+
+\bibitem[Joe (1997)]{Joe1997}
+Joe H. (1997), {\it Multivariate Models and Dependence Concepts}, London: Chapman \& Hall.
+
+\bibitem[Lai and Xie (2000)]{LaiXie2000}
+Lai C. D. and Xie M. (2000), A new family of positive quadrant dependent bivariate distributions, {\it Statist. Probab. Letters} 46, 359-364.
+
+\bibitem[Nelsen (2006)]{Nelsen2006}
+Nelsen R. B. (2006), {\it An Introduction to Copulas}, New York: Springer Series in Statistics, Springer, second edition.
+
+\bibitem[Morgenstern (1956)]{Morgenstern1956}
+Morgenstern D. (1956), Einfache beispiele zweidimensionaler verteilungen, {\it Mitteilungsblatt f\"ur Mathematische Statistik} 8, 234-235.
+
+\bibitem[Pathak and Vellaisamy (2016)]{Pathak2016}
+Pathak A. K. and Vellaisamy P. (2016), A note on generalized Farlie-Gumbel-Morgenstern copulas, {\it Journal of Statistical Theory and Practice} 10, 40-58.
+
+\bibitem[Rodriguez-Lallena and \'Ubeda-Flores (2004)]{Rodriguez2004}
+Rodriguez-Lallena J. A. and \'Ubeda-Flores M. (2004), A new class of bivariate copulas, {\it Statistics and Probability Letters} 66, 315-325.
+\end{thebibliography}
+\end{document} 

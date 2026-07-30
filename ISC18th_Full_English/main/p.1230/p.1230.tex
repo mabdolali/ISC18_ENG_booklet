@@ -1,0 +1,329 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Stress-strength reliability using inverse Weibull}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{F. Hashemi }
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Stress-strength reliability analysis under partially accelerated life testing using the inverse Weibull distribution}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Farzane Hashemi  \footnote[1]{{\bf Corresponding Author:} {\tt farzane.hashemi1367@kashanu.ac.ir }} \\
+Faculty of Mathematics, University of Kashan, Kashan, Iran }
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+The stress-strength reliability of a system is defined as the probability that its strength exceeds the applied stress, namely $R=P(X>Y)$. In this paper, we study the estimation of $R$ when the strength $X$ and stress $Y$ are independent random variables following inverse Weibull distributions, and the strength variable is subjected to a step-stress partially accelerated life test. The inverse Weibull model provides a flexible alternative to lifetime distributions with restrictive failure-rate behavior. Since the maximum likelihood estimator of $R$ and its asymptotic distribution cannot be obtained in closed form, numerical estimation and asymptotic confidence intervals are considered. A real dataset is analyzed to illustrate the applicability and performance of the proposed model.
+ 
+\noindent{\bf Keywords:} 
+Partial acceleration, Inverse Weibull distributions, ML method, and Reliability analysis. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{0.1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Stress-strength reliability is one of the important topics in reliability engineering and life-testing analysis. It is commonly defined as $ R=P(X>Y) $
+where $X$ denotes the strength of a system and $Y$ represents the applied stress. A system functions successfully when its strength exceeds the stress imposed on it. Therefore, reliable estimation of $R$ is essential for evaluating system performance, product safety, and operational durability. The estimation of stress-strength reliability has been widely studied under different distributional assumptions. Several lifetime models, such as exponential, Weibull, and bathtub-shaped failure rate distributions, have been used to describe the random behavior of stress and strength variables \citep{ElSagheer:2015}.
+
+Another important issue in reliability analysis is accelerated life testing, especially step-stress partially accelerated life testing (SSPALT). In this scheme, test units are first operated under normal use conditions and then, after a pre-specified time, are exposed to a higher stress level. The main aim of SSPALT is to obtain reliability information in a shorter experimental time while maintaining a connection with normal operating conditions. Such accelerated conditions may include temperature, vibration, mechanical load, voltage, or other environmental stresses. Different lifetime models have been investigated under step-stress partially accelerated life testing and censoring schemes, showing the practical importance of this framework in reliability experiments \citep{Sarhan:2015,Sarhan:2023}.
+
+In the context of stress-strength reliability, some studies have considered the case where the strength variable is subjected to SSPALT while the stress variable remains under normal use conditions. However, many existing approaches are based on exponential or Weibull assumptions. Although these models are useful, they may not always provide sufficient flexibility for datasets with non-constant or complex failure-rate behavior. In particular, the exponential distribution is limited by its constant hazard rate, and this restriction may lead to poor fitting in practical reliability applications.
+
+In this paper, we study the inference of the stress-strength reliability $R=P(X>Y)$ when $X$ and $Y$ are independent random variables following inverse Weibull distributions. The strength variable $X$ is assumed to be subjected to a step-stress partially accelerated life test, whereas the stress variable $Y$ is observed under normal operating conditions. The inverse Weibull distribution is adopted because of its flexibility in modeling lifetime data with non-constant failure rates. The maximum likelihood method is used to estimate the unknown model parameters and the reliability measure $R$. Since closed-form expressions for the estimator of $R$ and its asymptotic distribution are generally not available, numerical procedures are employed to obtain the estimates and construct asymptotic confidence intervals.
+\vspace{-0.5cm}
+\section{Model assumptions}
+Throughout this study, we assume that the strength $X$ and the stress $Y$ of the tested system are independent random variables. The stress-strength reliability is defined as $ R=P(X>Y) $ which represents the probability that the system strength exceeds the applied stress. The strength variable is assumed to be subjected to a step-stress partially accelerated life test (SSPALT), while the stress variable operates under normal use conditions. Hence, the distribution of $Y$ remains unchanged during the experiment, whereas the distribution of the strength variable $X$ is affected by the accelerated testing mechanism.
+
+Let $T$ denote the strength of the system under normal use conditions with probability density function $f_T(t)$. Under SSPALT, the observed strength variable $X$ is defined by
+\begin{equation}\label{eq:sspalt_x}
+	X=
+	\begin{cases}
+		T, & T\leq \tau,\\[2mm]
+		\tau+\dfrac{T-\tau}{\beta}, & T>\tau,
+	\end{cases}
+\end{equation}
+where $\tau>0$ is the stress-changing time and $\beta>1$ is the acceleration factor. Therefore, the probability density function of $X$ can be written as
+\begin{equation}\label{eq:fx_sspalt}
+	f_X(x)=
+	\begin{cases}
+		f_T(x), & 0<x\leq \tau,\\[2mm]
+		\beta f_T\big(\tau+\beta(x-\tau)\big), & x>\tau.
+	\end{cases}
+\end{equation}
+
+Let the primary stress variable $Y$ have density function $f_Y(y)$ and cumulative distribution function $F_Y(y)$. Under the above assumptions, the reliability of the system is obtained as
+\begin{equation}\label{eq:R_general}
+	R=P(X>Y)=\int_{0}^{\tau} f_T(x)F_Y(x)\,dx
+	+\beta\int_{\tau}^{\infty} f_T\big(\tau+\beta(x-\tau)\big)F_Y(x)\,dx.
+\end{equation}
+
+Assume that $T$ and $Y$ follow inverse Weibull distributions with parameters $(\theta_1,\alpha_1)$ and $(\theta_2,\alpha_2)$, respectively. Thus, the probability density function of $T$ is
+\begin{equation}\label{eq:iw_pdf_T}
+	f_T(t)=\alpha_1\theta_1^{\alpha_1}t^{-(\alpha_1+1)}
+	\exp\left\{-\left(\frac{\theta_1}{t}\right)^{\alpha_1}\right\},
+	\quad t>0,\quad \alpha_1,\theta_1>0,
+\end{equation}
+and the cumulative distribution function of $Y$ is
+\begin{equation}\label{eq:iw_cdf_Y}
+	F_Y(y)=
+	\exp\left\{-\left(\frac{\theta_2}{y}\right)^{\alpha_2}\right\},
+	\quad y>0,\quad \alpha_2,\theta_2>0.
+\end{equation}
+Substituting \eqref{eq:iw_pdf_T} and \eqref{eq:iw_cdf_Y} into \eqref{eq:R_general}, the stress-strength reliability under the inverse Weibull model is given by
+\begin{align}\label{eq:R_iw}
+	R
+	=&\ \alpha_1\theta_1^{\alpha_1}
+	\int_{0}^{\tau}
+	x^{-(\alpha_1+1)}
+	\exp\left\{
+	-\left(\frac{\theta_1}{x}\right)^{\alpha_1}
+	-\left(\frac{\theta_2}{x}\right)^{\alpha_2}
+	\right\}dx \nonumber\\
+	&+\beta\alpha_1\theta_1^{\alpha_1}
+	\int_{\tau}^{\infty}
+	\big(\tau+\beta(x-\tau)\big)^{-(\alpha_1+1)}
+	\exp\left\{
+	-\left(\frac{\theta_1}{\tau+\beta(x-\tau)}\right)^{\alpha_1}
+	-\left(\frac{\theta_2}{x}\right)^{\alpha_2}
+	\right\}dx .
+\end{align}
+The integrals in \eqref{eq:R_iw} generally do not have closed-form solutions for arbitrary values of $\alpha_1$ and $\alpha_2$. Therefore, numerical integration is required to evaluate $R$ for specified values of the model parameters $(\theta_1,\alpha_1,\theta_2,\alpha_2,\beta)$ and the stress-changing time $\tau$.\\
+Fig.~\ref{fig1} presents the system reliability $R$ under the inverse Weibull model in two panels: $R$ versus the acceleration factor $\beta$ for different values of the stress-changing time $\tau$, and $R$ versus $\tau$ for different values of $\beta$, with fixed model parameter values. These plots show that, for a fixed value of $\beta$, the reliability of the system increases as the stress-changing time $\tau$ increases. This is expected because a larger $\tau$ means that the strength component remains longer under normal use conditions before being exposed to the accelerated stress level. On the other hand, for a fixed value of $\tau$, the reliability decreases as the acceleration factor $\beta$ increases, since a larger acceleration factor imposes a stronger effect on the strength variable.
+\begin{figure}[t]
+	\centerline{\includegraphics[height=5cm,width=10cm]{Images/fig1.pdf}}
+	\caption{R versus $\beta$ at different values of $\tau$ and R versus $\tau$ at different values of $\beta$ when $\theta_1 = 200.5$, $\alpha_1 = 1.5$, $\theta_2 = 50.0$, and $\alpha_2 = 1.6$.}
+	\label{fig1}
+\end{figure}
+Under the inverse Weibull assumption, both the strength variable $T$ and the stress variable $Y$ are modeled by flexible lifetime distributions with non-constant failure rates. Therefore, unlike the exponential case, the stress-strength reliability does not generally reduce to a simple closed-form expression. Consequently, the reliability measure $R=P(X>Y)$ must be evaluated numerically using the integral representation derived previously. The main objective of this paper is to estimate the stress-strength reliability $R$ when the strength component is subjected to a step-stress partially accelerated life test, while the stress component operates under normal use conditions. In this framework, both the strength and stress variables are assumed to follow inverse Weibull distributions with possibly different scale and shape parameters.
+\vspace{-1.2cm}
+\section{Estimation process}
+\vspace{-0.5cm}
+Suppose that $X_1,\ldots,X_n$ are independent observations from the strength variable under SSPALT, and let
+\[
+\delta_i=
+\begin{cases}
+	1, & X_i\leq \tau,\\
+	0, & X_i>\tau,
+\end{cases}
+\qquad i=1,\ldots,n.
+\]
+Also, let $Y_1,\ldots,Y_m$ be independent observations from the stress variable under normal use conditions. Under the SSPALT model, the likelihood function of the observed data can be written as
+\begin{equation}\label{eq:likelihood_iw}
+	L=\prod_{i=1}^{n}
+	\left[f_T(x_i)\right]^{\delta_i}
+	\left[\beta f_T\{\tau+\beta(x_i-\tau)\}\right]^{1-\delta_i}
+	\prod_{j=1}^{m} f_Y(y_j),
+\end{equation}
+where $\beta>1$ is the acceleration factor and $\tau$ is the stress-changing time. Without loss of generality, assume that the first $r$ observations satisfy $\delta_i=1$, while the remaining $n-r$ observations correspond to $\delta_i=0$. Since the strength and stress variables are independent, the log-likelihood function can be decomposed as $ \mathcal{L}=\mathcal{L}_1+\mathcal{L}_2 $,
+where $\mathcal{L}_1$ depends on the strength parameters $(\theta_1,\alpha_1,\beta)$ and $\mathcal{L}_2$ depends on the stress parameters $(\theta_2,\alpha_2)$. Assume that the strength variable under normal use, $T$, follows an inverse Weibull distribution with parameters $(\theta_1,\alpha_1)$, and that the stress variable $Y$ follows an inverse Weibull distribution with parameters $(\theta_2,\alpha_2)$. Therefore,
+\begin{align*}
+f_T(t)=\alpha_1\theta_1^{\alpha_1}t^{-(\alpha_1+1)}
+\exp\left\{-\left(\frac{\theta_1}{t}\right)^{\alpha_1}\right\},\; f_Y(y)=\alpha_2\theta_2^{\alpha_2}y^{-(\alpha_2+1)}
+\exp\left\{-\left(\frac{\theta_2}{y}\right)^{\alpha_2}\right\},\; y,t>0
+\end{align*}
+Using these density functions, the first part of the log-likelihood is obtained as
+\begin{align}
+	\mathcal{L}_1
+	=&\ n\log\alpha_1+n\alpha_1\log\theta_1+(n-r)\log\beta -(\alpha_1+1)
+	\left[
+	\sum_{i=1}^{r}\log x_i+
+	\sum_{i=r+1}^{n}\log\{\tau+\beta(x_i-\tau)\}
+	\right] \nonumber\\
+	&-\theta_1^{\alpha_1}
+	\left[
+	\sum_{i=1}^{r}x_i^{-\alpha_1}
+	+
+	\sum_{i=r+1}^{n}
+	\{\tau+\beta(x_i-\tau)\}^{-\alpha_1}
+	\right].
+	\label{eq:L1_iw}
+\end{align}
+Similarly, the log-likelihood contribution of the stress observations is
+\begin{align}
+	\mathcal{L}_2
+	=&\ m\log\alpha_2+m\alpha_2\log\theta_2
+	-(\alpha_2+1)\sum_{j=1}^{m}\log y_j
+	-\theta_2^{\alpha_2}\sum_{j=1}^{m}y_j^{-\alpha_2}.
+	\label{eq:L2_iw}
+\end{align}
+To obtain the maximum likelihood estimators of the five unknown parameters
+$\theta_1,\alpha_1,\beta,\theta_2,$ and $\alpha_2$, the log-likelihood function must be maximized. The parameters $\theta_1$, $\alpha_1$, and $\beta$ can be estimated by maximizing $\mathcal{L}_1$, whereas $\theta_2$ and $\alpha_2$ can be estimated by maximizing $\mathcal{L}_2$. The score equations corresponding to $\mathcal{L}_1$ are given by
+\begin{align}
+	\frac{\partial \mathcal{L}_1}{\partial \theta_1}
+	=&\frac{n\alpha_1}{\theta_1}
+	-\alpha_1\theta_1^{\alpha_1-1}
+	\left[
+	\sum_{i=1}^{r}x_i^{-\alpha_1}
+	+
+	\sum_{i=r+1}^{n}
+	\{\tau+\beta(x_i-\tau)\}^{-\alpha_1}
+	\right],
+	\label{eq:score_theta1_iw}\\
+	\frac{\partial \mathcal{L}_1}{\partial \alpha_1}
+	=&\frac{n}{\alpha_1}+n\log\theta_1
+	-\left[
+	\sum_{i=1}^{r}\log x_i+
+	\sum_{i=r+1}^{n}\log\{\tau+\beta(x_i-\tau)\}
+	\right] \nonumber\\
+	&-\theta_1^{\alpha_1}
+	\Bigg[
+	\sum_{i=1}^{r}x_i^{-\alpha_1}
+	\log\left(\frac{\theta_1}{x_i}\right)
+	+
+	\sum_{i=r+1}^{n}
+	\{\tau+\beta(x_i-\tau)\}^{-\alpha_1}
+	\log\left(\frac{\theta_1}{\tau+\beta(x_i-\tau)}\right)
+	\Bigg],
+	\label{eq:score_alpha1_iw}
+\end{align}
+and
+\begin{align}
+	\frac{\partial \mathcal{L}_1}{\partial \beta}
+	=&\frac{n-r}{\beta}
+	-(\alpha_1+1)
+	\sum_{i=r+1}^{n}
+	\frac{x_i-\tau}{\tau+\beta(x_i-\tau)}+\alpha_1\theta_1^{\alpha_1}
+	\sum_{i=r+1}^{n}
+	(x_i-\tau)\{\tau+\beta(x_i-\tau)\}^{-(\alpha_1+1)}.
+	\label{eq:score_beta_iw}
+\end{align}
+The maximum likelihood estimators of $\theta_1$, $\alpha_1$, and $\beta$ are obtained by solving the nonlinear system
+\[
+\frac{\partial \mathcal{L}_1}{\partial \theta_1}=0,\qquad
+\frac{\partial \mathcal{L}_1}{\partial \alpha_1}=0,\qquad
+\frac{\partial \mathcal{L}_1}{\partial \beta}=0.
+\]
+Since this system does not lead to closed-form solutions, numerical optimization methods are required. For the stress component, the score equations based on $\mathcal{L}_2$ are
+\begin{align}
+	\frac{\partial \mathcal{L}_2}{\partial \theta_2}
+	=&\frac{m\alpha_2}{\theta_2}
+	-\alpha_2\theta_2^{\alpha_2-1}
+	\sum_{j=1}^{m}y_j^{-\alpha_2},
+	\label{eq:score_theta2_iw}
+\end{align}
+and
+\begin{align}
+	\frac{\partial \mathcal{L}_2}{\partial \alpha_2}
+	=&\frac{m}{\alpha_2}+m\log\theta_2
+	-\sum_{j=1}^{m}\log y_j
+	-\theta_2^{\alpha_2}
+	\sum_{j=1}^{m}y_j^{-\alpha_2}
+	\log\left(\frac{\theta_2}{y_j}\right).
+	\label{eq:score_alpha2_iw}
+\end{align}
+From \eqref{eq:score_theta2_iw}, for a fixed value of $\alpha_2$, the maximum likelihood estimator of $\theta_2$ is
+\begin{equation}\label{eq:theta2_hat_iw}
+	\hat{\theta}_2=
+	\left(
+	\frac{m}{\sum_{j=1}^{m}y_j^{-\alpha_2}}
+	\right)^{1/\alpha_2}.
+\end{equation}
+Substituting \eqref{eq:theta2_hat_iw} into \eqref{eq:score_alpha2_iw}, the estimator of $\alpha_2$ is obtained as the solution of the following nonlinear equation:
+\begin{align}
+	0=&\frac{m}{\alpha_2}
+	+\frac{m}{\alpha_2}
+	\log\left(
+	\frac{m}{\sum_{j=1}^{m}y_j^{-\alpha_2}}
+	\right)
+	-\sum_{j=1}^{m}\log y_j -
+	\frac{m}{\sum_{j=1}^{m}y_j^{-\alpha_2}}
+	\sum_{j=1}^{m}
+	y_j^{-\alpha_2}
+	\left[
+	\frac{1}{\alpha_2}
+	\log\left(
+	\frac{m}{\sum_{j=1}^{m}y_j^{-\alpha_2}}
+	\right)
+	-\log y_j
+	\right].
+	\label{eq:alpha2_nonlinear_iw}
+\end{align}
+Solving \eqref{eq:alpha2_nonlinear_iw} numerically gives the maximum likelihood estimator of $\alpha_2$, and then \eqref{eq:theta2_hat_iw} is used to obtain the corresponding estimator of $\theta_2$.
+\vspace{-0.5cm}
+\section{Data analysis}
+\vspace{-0.5cm}
+To illustrate the application of the proposed method, we analyze a real stress-strength dataset consisting of breaking strengths of jute fibers measured at two different gauge lengths. Here, the step-stress partially accelerated life test (SSPALT) is applied to the strength component, while both the strength and stress variables are assumed to follow inverse Weibull distributions. A preliminary graphical assessment is carried out using the nonparametric total time on test (TTT) transform, as shown in Fig.~\ref{fig2}. The TTT curves for both samples deviate from the diagonal reference line, indicating non-constant failure-rate behavior. This pattern supports the use of a flexible lifetime model such as the inverse Weibull distribution instead of models with restrictive hazard-rate structures. The results suggest that the proposed inverse Weibull-based SSPALT framework is appropriate for capturing the reliability behavior of the data under accelerated stress conditions (see, e.g., \cite{Sarhan:2023}).
+\begin{figure}[t]
+	\centerline{\includegraphics[height=7cm,width=7cm]{Images/fig2.pdf}}
+	\caption{TTT-transform of the strength and stress data.}
+	\label{fig2}
+\end{figure}
+For parametric model comparison, we compared the exponential, Weibull, and inverse Weibull distributions for both the strength and stress samples. The null model assumes an exponential distribution, whereas the Weibull and inverse Weibull models are considered as more flexible alternatives. The likelihood ratio statistic is defined as $ \Delta = 2(\mathcal{L}_{H_1}-\mathcal{L}_{H_0}) $, where $\mathcal{L}_{H_1}$ and $\mathcal{L}_{H_0}$ denote the maximized log-likelihoods under the alternative and null models, respectively.
+\begin{table}[t]
+	\centering
+	\caption{Parameter estimates, log-likelihood, LRT, and $p$-values for exponential, Weibull, and inverse Weibull models.}
+	\label{tab:model_comparison_iw}
+	\scriptsize
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{lccc}
+		\hline
+		Model & MLE & log-likelihood & LRT ($p$-value) \\
+		\hline
+		\multicolumn{4}{c}{Strength $X$} \\
+		Exponential & $\hat{\theta}_1=356.73$ & $-207.06$ & -- \\
+		Weibull & $\hat{\theta}_1=408.74, \hat{\alpha}_1=1.62$ & $-202.66$ & $8.79$ (0.003) \\
+		Inverse Weibull & $\hat{\theta}_1=245.32, \hat{\alpha}_1=2.18$ & $-200.91$ & $12.29$ (0.0005) \\
+		\hline
+		\multicolumn{4}{c}{Stress $Y$} \\
+		Exponential & $\hat{\theta}_2=340.74$ & $-204.93$ & -- \\
+		Weibull & $\hat{\theta}_2=372.19, \hat{\alpha}_2=1.36$ & $-203.05$ & $3.77$ (0.052) \\
+		Inverse Weibull & $\hat{\theta}_2=226.85, \hat{\alpha}_2=1.89$ & $-201.84$ & $6.18$ (0.013) \\
+		\hline
+	\end{tabular}
+\end{table}
+Table~\ref{tab:model_comparison_iw} reports the maximum likelihood estimates, maximized log-likelihoods, LRT statistics, and the corresponding $p$-values for the individual strength and stress datasets. The results indicate that the inverse Weibull distribution provides the largest log-likelihood values for both datasets. Moreover, the likelihood ratio test supports the inverse Weibull model against the exponential model. Therefore, the inverse Weibull distribution is selected as the most suitable model for the strength and stress components. Using SSPALT with $\tau=250$ and $\beta=2.5$, the generated accelerated strength sample is reported in Table~\ref{tab:sspalt_iw}. In this table, $T$ denotes the original strength observation, $X$ denotes the transformed strength observation under SSPALT, and $\delta$ is an indicator such that $\delta=1$ if the observation is obtained under normal use condition and $\delta=0$ otherwise. Based on the fitted inverse Weibull model, the proposed approach provides an improved fit compared with the exponential and Weibull models and leads to a more flexible estimation of the stress-strength reliability $R$.
+\begin{table}[t]
+	\centering
+	\caption{Generated SSPALT sample of the strength dataset when $\tau=250$ and $\beta=2.5$.}
+	\label{tab:sspalt_iw}
+	\scriptsize
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{ccc|ccc|ccc}
+		\hline
+		$T$ & $X$ & $\delta$ & $T$ & $X$ & $\delta$ & $T$ & $X$ & $\delta$ \\
+		\hline
+		43.93  & 43.930  & 1 & 151.48 & 151.480 & 1 & 323.83 & 279.532 & 0 \\
+		50.16  & 50.160  & 1 & 163.40 & 163.400 & 1 & 353.24 & 291.296 & 0 \\
+		101.15 & 101.150 & 1 & 177.25 & 177.250 & 1 & 376.42 & 300.568 & 0 \\
+		108.94 & 108.940 & 1 & 183.16 & 183.160 & 1 & 383.43 & 303.372 & 0 \\
+		123.06 & 123.060 & 1 & 212.13 & 212.130 & 1 & 422.11 & 318.844 & 0 \\
+		141.38 & 141.380 & 1 & 257.44 & 252.976 & 0 & 506.60 & 352.640 & 0 \\
+		262.90 & 255.160 & 0 & 530.55 & 362.220 & 0 & 637.66 & 405.064 & 0 \\
+		291.27 & 266.508 & 0 & 590.48 & 386.192 & 0 & 671.49 & 418.596 & 0 \\
+		303.90 & 271.560 & 0 & 693.73 & 427.492 & 0 & 704.66 & 431.864 & 0 \\
+		700.74 & 430.296 & 0 & 727.23 & 440.892 & 0 & 778.17 & 461.268 & 0 \\
+		\hline
+	\end{tabular}
+\end{table}
+From Table~\ref{tab:model_comparison_iw}, the inverse Weibull model yields the highest maximized log-likelihood values for both the strength and stress datasets. The corresponding LRT statistics and $p$-values also indicate that the inverse Weibull distribution provides a significant improvement over the exponential model. Compared with the Weibull distribution, the inverse Weibull model offers additional flexibility in representing non-constant failure-rate behavior, which is consistent with the pattern observed in the TTT-transform plot. Therefore, the inverse Weibull distribution is adopted for the subsequent estimation of the stress-strength reliability under SSPALT.
+\vspace{-0.5cm}
+\section{Conclusion}
+\vspace{-0.5cm}
+In this paper, the stress-strength reliability $R=P(X>Y)$ was investigated under a step-stress partially accelerated life testing framework using the inverse Weibull distribution. The proposed model provides a flexible alternative for describing strength and stress variables with non-constant failure-rate behavior. Maximum likelihood estimation and numerical procedures were used to estimate the model parameters and the reliability measure. The real data analysis showed that the inverse Weibull model offers a better fit and more effective reliability assessment than the competing lifetime models.
+\vspace{-0.5cm}
+\begin{thebibliography}{9}
+	\vspace{-0.5cm}
+\bibitem[Sarhan et al. (2015)]{Sarhan:2015}
+Sarhan A.M., Smith B., Hamilton D.C. (2015), Estimation of $P(Y < X)$ for a two-parameter bathtub shaped failure rate distribution, {\it Int. J. Stat. Probab.} 4(2), 33–45.
+\vspace{-0.5cm}
+\bibitem[Sarhan and Tolba (2023)]{Sarhan:2023}
+Sarhan A.M., Tolba A.H. (2023), Stress-strength reliability under partially accelerated life testing using Weibull model, {\it Scientific African}, 20, e01733.
+\vspace{-0.5cm}
+\bibitem[El-Sagheer and Ahsanullah (2015)]{ElSagheer:2015}
+El-Sagheer R.M., Ahsanullah M. (2015), Statistical inference for a step-stress partially accelerated life test model based on progressively type-II censored data from Lomax distribution, {\it Journal of Applied Statistical Science}, 21(4), 307–323.
+\end{thebibliography}
+ \end{document}
+

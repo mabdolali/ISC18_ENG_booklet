@@ -1,0 +1,146 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Stochastic Anchor Points in Multiobjective Optimization}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Javad Koushki}
+\begin{center}
+\includegraphics [height=25mm, width=150.3mm] {Images/isc18E} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+\Large \bf {Stochastic Anchor Points in Multiobjective Optimization}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+\bf
+Javad Koushki \footnote[1]{{\bf Corresponding Author: Javad Koushki} {\tt j.koushki@kntu.ac.ir }} \\
+$^1$ K. N. Toosi University of Technology 
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Proper efficiency is a foundational solution concept in deterministic multiobjective optimization. Recently, the notion of \textit{anchor points} was introduced to classify properly efficient solutions that solve a weighted sum scalarization problem where at least one objective weight is zero. In practical applications, however, objectives are frequently corrupted by stochastic uncertainty. This paper generalizes the concept of anchor points to the framework of Stochastic Multiobjective Optimization (SMOP) using a probabilistic expected value approach. We introduce the concept of Stochastic Anchor Points and characterize them via properties of the stochastic objective space, the stochastic tangent cone, and the stochastic normal cone.
+ 
+\noindent{\bf Keywords:}
+Stochastic multiobjective optimization; Anchor points; Proper efficiency; Expected value scalarization; Normal cone; Uncertainty analysis. \\
+%\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+%\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+In real-world decision-making problems, human operators and engineers rarely face a single criterion. Multiobjective Optimization Problems (MOPs) naturally arise across various disciplines, ranging from economics to industrial design \cite{miettinen1999}. Among the solution types in MOPs, properly efficient solutions play a pivotal role because they prevent an unbounded trade-off between competing objectives. 
+
+A recent breakthrough by Koushki and Soleimani-damaneh \cite{koushki2018} classified properly efficient points into three distinct classes based on their relationship with the classical weighted sum scalarization technique. The third class, termed \textit{anchor points}, comprises properly efficient solutions that optimize a weighted sum problem where at least one objective weight vanishes ($\lambda_i = 0$). Geometrically, these points sit on the boundary where the efficient frontier transitions into the free-disposability portion of the objective space.
+
+While the deterministic characterization of anchor points provides elegant geometric insights, it fundamentally assumes perfect information. In reality, objective functions are almost always subject to random perturbations, environmental fluctuations, or noisy data. For instance, in supply chain management, minimizing cost and minimizing carbon emissions depend heavily on random demands and fluctuating fuel prices.
+
+To bridge this gap, this paper extends the deterministic theory of anchor points to \textbf{Stochastic Multiobjective Optimization (SMOP)} utilizing a probabilistic perspective. By adopting an expected value formulation, we transform the random objective vectors into a deterministic objective space governed by probability measures. We redefine proper efficiency and anchor points in this stochastic setting and prove that the core structural theorems—namely, the closure boundary characterization and the normal cone characterization—still hold under appropriate probabilistic convexity assumptions. Crucially, we highlight the risky nature of \textit{Stochastic Anchor Points}: since they assign a weight of zero to certain objectives, they fundamentally ignore the variance and tail risks of those specific random criteria, leading to potentially catastrophic outcomes under severe uncertainty.
+
+The rest of this paper is organized as follows: Section 2 outlines the probabilistic preliminaries and formalizes the SMOP model. Section 3 introduces the mathematical definition of stochastic anchor points and establishes their main characterization theorems. Section 4 provides an analytical discussion on their risk sensitivity, and Section 5 concludes the paper.
+
+\section{Preliminaries and Problem Formulation}
+Let $(\Xi, \mathcal{F}, \mathbb{P})$ be a complete probability space, where $\Xi$ is the support of the random vector, $\mathcal{F}$ is the $\sigma$-algebra of events, and $\mathbb{P}$ is the underlying probability measure. Let $X \subseteq \mathbb{R}^n$ denote the deterministic feasible set of decisions. 
+
+We consider the following Stochastic Multiobjective Optimization Problem (SMOP):
+\begin{equation}
+\min_{x \in X} \quad f(x, \xi) = \left( f_1(x, \xi), f_2(x, \xi), \dots, f_p(x, \xi) \right)
+\end{equation}
+where each $f_i: \mathbb{R}^n \times \Xi \rightarrow \mathbb{R}$ is a random variable for each fixed $x \in X$. To model this problem under an expected value approach, we assume that the expectation $\mathbb{E}_{\mathbb{P}}[f_i(x, \xi)]$ exists and is finite for all $i = 1, \dots, p$ and all $x \in X$. Thus, the expected multiobjective mapping $F: X \rightarrow \mathbb{R}^p$ is defined as:
+\begin{equation}
+F(x) := \mathbb{E}_{\mathbb{P}}[f(x, \xi)] = \left( \mathbb{E}_{\mathbb{P}}[f_1(x, \xi)], \dots, \mathbb{E}_{\mathbb{P}}[f_p(x, \xi)] \right)
+\end{equation}
+
+The stochastic objective space (or mean objective space) is denoted by $Y_S := F(X) \subseteq \mathbb{R}^p$. Correspondingly, we define the standard vector cones:
+$$\mathbb{R}^p_{\geqq} := \{y \in \mathbb{R}^p : y_i \ge 0,~i=1,2,\cdots ,p \},$$
+$$\mathbb{R}^p_{\geq} := \{y \in \mathbb{R}^p : y\neq 0,~~y_i \ge 0,~i=1,2,\cdots ,p \},$$
+$$\mathbb{R}^p_{>} := \{y \in \mathbb{R}^p : y_i > 0,~i=1,2,\cdots ,p \}.$$
+
+\begin{dfn}
+	A feasible solution $\bar{x} \in X$ is called a Stochastically Properly Efficient Solution (in the expectation sense) if:
+	\begin{equation}
+	\text{cl}\left( \text{cone}\left( Y_S + \mathbb{R}^p_{\ge} - F(\bar{x}) \right) \right) \cap (-\mathbb{R}^p_{\ge}) = \{0\}
+	\end{equation}
+\end{dfn}
+The set of all stochastically properly efficient decisions is denoted by $X_{SPE}$, and its image in the objective space is $Y_{SPN} = F(X_{SPE})$.
+
+The expected value weighted sum scalarization problem associated with SMOP is defined for a weight vector $\lambda \in \mathbb{R}^p_{\ge}$ as:
+\begin{equation}
+(SP_\lambda): \quad \min_{x \in X} \lambda^T F(x) = \sum_{i=1}^p \lambda_i \mathbb{E}_{\mathbb{P}}[f_i(x, \xi)]
+\end{equation}
+
+By invoking Fubini's theorem and the linearity of expectation, $(SP_\lambda)$ can be equivalently written as minimizing the expected value of the aggregate random objective: 
+$$\min_{x \in X} \mathbb{E}_{\mathbb{P}}[\sum_{i=1}^p \lambda_i f_i(x, \xi)].$$
+
+\section{Stochastic Anchor Points: Definition and Characterization}
+Following the classification of Koushki and Soleimani-damaneh \cite{koushki2018}, we define the stochastic analog of anchor points in the expectation space.
+
+\begin{dfn}
+	A vector $\bar{x} \in X_{SPE}$ is called a Stochastic Anchor Solution of the SMOP if $\bar{x}$ solves the expected weighted sum problem $(SP_\lambda)$ for some weight vector $\lambda \in \mathbb{R}^p_{\ge} \setminus \mathbb{R}^p_{>}$. 
+\end{dfn}
+
+Equivalently, a point $\bar{y} \in Y_{SPN}$ is a Stochastic Anchor Point of the set $Y_S$ if there exists $\lambda \in \mathbb{R}^p_{\ge} \setminus \mathbb{R}^p_{>}$  such that $\lambda^T \bar{y} \le \lambda^T y$ for all $y \in Y_S$. The sets of stochastic anchor solutions and points are denoted by $X_{SA}$ and $Y_{SA}$ respectively. Any point in $Y_{SPN} \setminus Y_{SA}$ is termed a Stochastic Nonanchor Point ($Y_{SNA}$).
+
+\subsection{Boundary and Topological Characterization}
+We first characterize stochastic anchor points as limits of sequences of stochastically weakly nondominated points that are prone to domination. Let $(Y_S)_N$ and $(Y_S)_{WN}$ denote the stochastically nondominated and weakly nondominated sets of $Y_S$, respectively.
+
+\begin{thm}
+	Let $\bar{y} \in Y_{SPN}$.
+	\begin{itemize}
+		\item[(i)] If $\bar{y} \in Y_{SA}$, then $\bar{y} \in \text{cl}\left( (Y_S + \mathbb{R}^p_{\ge})_{WN} \setminus Y_S \right)$.
+		\item[(ii)] Conversely, if $Y_S$ is $\mathbb{R}^p_{\ge}$-convex, then any $\bar{y} \in \text{cl}\left( (Y_S + \mathbb{R}^p_{\ge})_{WN} \setminus Y_S \right) \cap Y_{SPN}$ is a Stochastic Anchor Point.
+	\end{itemize}
+\end{thm}
+
+
+
+\subsection{Stochastic Normal Cone Characterization}
+We can also characterize stochastic nonanchor points using the normal cone to the extended expected objective space. Recall that the normal cone to a set $\Omega$ at $\bar{y}$ is defined via the polar of the tangent cone: $N_\Omega(\bar{y}) = (T_\Omega(\bar{y}))^*,$ where
+$$
+T_{\Omega}(\bar{y}) = \left\{ d \in X \; \middle| \; 
+\exists\, \{t_n\} \subset \mathbb{R}_{\geq},\; t_n \to 0,\;
+\exists\, \{y_n\} \subset \Omega,\; y_n \to \bar{y},\;
+\frac{y_n - \bar{y}}{t_n} \to d \right\}.
+$$
+
+\begin{thm}
+	Let $\bar{y} \in Y_{SPN}$. Assume that the stochastic objective space $Y_S$ is $\mathbb{R}^p_{\ge}$-convex. Then, $\bar{y}$ is a Stochastic Nonanchor Point ($\bar{y} \in Y_{SNA}$) if and only if:
+	\begin{equation}
+	N_{Y_S + \mathbb{R}^p_{\ge}}(\bar{y}) \subseteq -\mathbb{R}^p_{>} \cup \{0\}
+	\end{equation}
+\end{thm}
+
+
+
+\section{Risk and Sensitivity Implications of Stochastic Anchor Points}
+The extension of anchor points to the stochastic domain reveals a vital vulnerability regarding risk management. In a deterministic framework, an anchor point implies that a certain objective is costless to ignore at the margin. However, in the presence of the random vector $\xi$, assigning $\lambda_i = 0$ means the decision maker completely ignores the probabilistic behavior of $f_i(x, \xi)$.
+
+Let us decompose the stochastic objective using its mean and variance. Suppose a decision maker evaluates a risk-adjusted objective vector $F_\sigma(x) = \mathbb{E}[f(x, \xi)] + \sigma \text{Var}(f(x, \xi))$. If a point $\bar{x}$ is selected as a Stochastic Anchor Point based solely on the expected value framework (where $\lambda_i = 0$), then under an unexpected probability shift or a heavy-tailed distribution of $\xi$, the actual variance of the $i$-th objective can grow arbitrarily large without altering the optimality of $\bar{x}$ in $(SP_\lambda)$. 
+
+Thus, while Stochastic Anchor Points are mathematically efficient, they represent high-risk operations in real-world scenarios. It is recommended that when a stochastic optimization test detects an anchor point, a secondary risk-filtering mechanism (such as Conditional Value-at-Risk, CVaR) should be applied specifically to the objectives that carry zero weights.
+
+\section{Conclusion}
+In this paper, we successfully generalized the theory of anchor points from deterministic multiobjective optimization to stochastic multiobjective optimization under an expected value framework. We demonstrated that Stochastic Anchor Points can be characterized via the boundary of the stochastically weakly nondominated objective space and bounded strictly within the interior of the negative polar normal cone under the assumption that the stochastic objective space is convex. Finally, we discussed the engineering and financial risks inherent to stochastic anchor points, noting that a zero weight completely blinds the optimization process to the volatility of ignored random constraints. Future research will focus on expanding these characterizations to distributionally robust multiobjective formulations.
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+	\bibitem[Koushki and Soleimani-damaneh (2018)]{koushki2018}
+Koushki J. and Soleimani-damaneh M. (2018), Anchor points in multiobjective optimization: definition, characterization and detection,
+{\it Optimization Methods and Software} 33, 4-6, 1111--1125.
+
+\bibitem[Miettinen (1999)]{miettinen1999}
+Miettinen K. (1999), {\it Nonlinear Multiobjective Optimization}, Springer Science \& Business Media.
+
+\bibitem[Shapiro et al. (2021)]{shapiro2021}
+Shapiro A., Dentcheva D. and Ruszczy{\'n}ski A. (2021), {\it Lectures on Stochastic Programming: Modeling and Theory}, SIAM, 3rd edition.
+
+\end{thebibliography}
+ \end{document}
+

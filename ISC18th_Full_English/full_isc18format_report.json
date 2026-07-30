@@ -1,0 +1,26 @@
+{
+  "output": "i:\\Booklet ENG\\ISC18th_Full_English\\Full-English-isc18format.pdf",
+  "included": 112,
+  "failed_excluded": 0,
+  "blanks": 35,
+  "arabic_pages": 1010,
+  "toc_pages": 10,
+  "full_pages": 1020,
+  "odd_starts_ok": true,
+  "methods": {
+    "isc18_wrap": 9,
+    "isc18_wrap_after_native_fail": 2,
+    "native": 100,
+    "pdf_only_isc18stamp": 1
+  },
+  "marked_summary": {
+    "marked_total": 12,
+    "no_tex": 1,
+    "tex_compile_failed": 0,
+    "wrapped_to_isc18": 9,
+    "other_marks": {
+      "NATIVE_FAIL_WRAPPED": 2
+    }
+  },
+  "marked_report": "i:\\Booklet ENG\\ISC18th_Full_English\\marked_papers_report.json"
+}

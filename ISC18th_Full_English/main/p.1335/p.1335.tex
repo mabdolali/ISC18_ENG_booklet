@@ -1,0 +1,493 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\usepackage{amsmath}
+\usepackage{booktabs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{MCP Variable Selection for Time-Dependent Cox Models}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Ramezani, Rabiei, Arashi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Efficient MCP-Penalized Variable Selection for Time-Dependent Cox Models with Counting-Process Data}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Rohollah Ramezani$^1$, Mohammad Reza Rabiei  \footnote[1]{{\bf Corresponding Author: } {\tt rabiei\_stat@shahroodut.ac.ir }}, Mohammad Arashi$^2$ \\
+
+$^1$ Department of Statistics, Faculty of Mathematical Sciences, Shahrood University of Technology, Shahrood, Iran \\
+$^2$Department of Statistics, Faculty of Mathematical Sciences, Ferdowsi University of Mashhad, P. O. Box 1159, Mashhad 91775, Iran.}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+	This paper proposes an MCP-penalized approach for variable selection in time-dependent Cox regression models with counting-process data. The proposed algorithm enables efficient estimation in moderate- and high-dimensional settings. Simulation results show that MCP substantially reduces false negatives and is computationally more efficient than LASSO. An analysis of the Mayo Clinic PBC dataset further demonstrates that MCP achieves predictive performance comparable to LASSO while requiring less computation time and producing less shrinkage of important covariate effects.
+	
+	
+	
+\noindent{\bf Keywords:} 
+Time-Dependent Cox Model, Minimax Concave Penalty (MCP), Variable Selection, and Counting-Process Data. \\
+
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62N02$, $\rm 62J07$, $\rm 62J12$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+The Cox proportional hazards model \cite{cox1972regression} is one of the most widely used methods for analyzing survival data. In many contemporary applications, a large number of covariates are collected, making variable selection essential for improving model interpretability and prediction accuracy. Moreover, in numerous longitudinal studies, covariate values evolve over time and should be appropriately incorporated into the analysis through time-dependent Cox models. Recent developments have investigated efficient estimation strategies and computational approaches for time-dependent Cox models under different estimation frameworks \cite{Ramezani2026a}.
+
+Penalized regression techniques have become important tools for variable selection in high-dimensional survival analysis. Among these methods, the least absolute shrinkage and selection operator (LASSO) \cite{tibshirani1996regression} has been extensively studied because it simultaneously performs coefficient estimation and variable selection. Efficient computational algorithms have also been developed for LASSO-penalized Cox regression \cite{simon2011regularization,Ramezani2026b}. However, LASSO is known to introduce substantial shrinkage bias for large regression coefficients and generally does not satisfy the oracle property \cite{fan2001variable}.
+
+To overcome these limitations, folded-concave penalties have been proposed as attractive alternatives. In particular, the minimax concave penalty (MCP) \cite{zhang2010nearly} reduces the estimation bias associated with LASSO while retaining sparsity in the estimated model. Bradic et al. \cite{bradic2011regularization} established a theoretical framework for folded-concave penalization in high-dimensional Cox regression. However, their work primarily focused on standard Cox models, and the practical performance of MCP under time-dependent covariate structures remains relatively unexplored.
+
+Motivated by these considerations, this study investigates MCP-penalized estimation for time-dependent Cox models using a Local Linear Approximation (LLA) algorithm based on the penalized Breslow partial likelihood. The performance of MCP is compared with that of LASSO through simulation studies and a real data application. The competing methods are evaluated with respect to variable selection accuracy, estimation bias, variability of coefficient estimates, mean squared error, and computational efficiency.
+
+The main contributions of this work are threefold. First, we develop an efficient computational procedure for MCP-penalized estimation in time-dependent Cox regression models. Second, we conduct a comprehensive empirical comparison between MCP and LASSO under various simulation settings. Third, we assess the estimation accuracy and variable selection performance of the competing methods, providing practical insights into the use of MCP for time-dependent survival analysis.
+
+
+\section{Methodology}
+
+\subsection{Time-Dependent Cox Model}
+Let $T_i$ denote the survival time and $C_i$ the censoring time for the $i$-th subject, $i = 1, \ldots, n$. We observe $(Y_i, \Delta_i, \boldsymbol{X}_i(t))$, where $Y_i = \min(T_i, C_i)$ is the observed time, $\Delta_i = I(T_i \leq C_i)$ is the event indicator, and $\boldsymbol{X}_i(t)$ is a $p$-dimensional vector of possibly time-dependent covariates.
+
+The time-dependent Cox proportional hazards model is defined as
+\[
+h(t \mid \boldsymbol{X}_i(t)) = h_0(t)\exp\big(\boldsymbol{X}_i(t)^\top \boldsymbol{\beta}\big),
+\]
+where $h_0(t)$ is an unspecified baseline hazard function and $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ is the vector of regression coefficients.
+
+The partial likelihood estimator is based on the Breslow-type partial log-likelihood:
+\[
+\ell^{B}(\boldsymbol{\beta})
+=
+\sum_{i=1}^{n}
+\Delta_i
+\left[
+\boldsymbol{X}_i(t_i)^\top\boldsymbol{\beta}
+-
+\log
+\left\{
+\sum_{j\in\mathcal{R}(t_i)}
+\exp\left(
+\boldsymbol{X}_j(t_i)^\top\boldsymbol{\beta}
+\right)
+\right\}
+\right],
+\]
+where $\mathcal{R}(t)$ denotes the risk set at time $t$. The function $\ell^{B}(\boldsymbol{\beta})$ is concave in $\boldsymbol{\beta}$, but in high-dimensional settings it leads to unstable estimates, motivating the use of penalized likelihood approaches.
+
+
+
+
+\subsection{MCP Penalty and Theoretical Remarks}
+\label{subsec:mcp_theory}
+
+Penalized estimation is based on maximizing $Q(\boldsymbol{\beta})
+=
+\ell^{B}(\boldsymbol{\beta})
+-
+\sum_{j=1}^{p}
+p_{\lambda}(|\beta_j|)$, where $p_{\lambda}(\cdot)$ is a penalty function indexed by the tuning parameter $\lambda$. Following \citet{bradic2011regularization}, the scaled penalty is defined as
+$\rho(t;\lambda)
+=
+\lambda^{-1}p_{\lambda}(t).$
+A penalty is said to be folded-concave if $\rho(t;\lambda)$ is increasing and concave on $[0,\infty)$ and has a continuous derivative satisfying $\rho'(0^+;\lambda)>0$.
+
+In this study, we focus on the Minimax Concave Penalty (MCP) proposed by \citet{zhang2010nearly}, defined as
+$p_{\lambda}(t)
+=
+\lambda
+\int_{0}^{t}
+\left(
+1-\frac{x}{\gamma\lambda}
+\right)_+
+dx,
+\quad t\ge0,
+$
+where $\lambda>0$ is the regularization parameter and $\gamma>1$ controls the degree of concavity. The corresponding derivative is
+$
+p_{\lambda}'(t)
+=
+\lambda
+\left(
+1-\frac{t}{\gamma\lambda}
+\right)_+.
+$
+Unlike LASSO, the MCP penalty applies progressively less shrinkage to large coefficients, thereby reducing estimation bias while preserving sparsity.
+
+Theoretical results for folded-concave penalized Cox regression suggest that, under suitable regularity conditions, MCP estimators can achieve oracle-type properties in high-dimensional settings \citep{bradic2011regularization}. Since the primary objective of this study is the computational implementation and empirical evaluation of MCP for time-dependent Cox regression, detailed asymptotic developments are omitted.
+
+
+
+
+
+\subsection{Estimation Procedure for MCP-Penalized Cox Regression}
+\label{sec:mcp_estimation}
+
+To estimate the MCP-penalized time-dependent Cox model, we employ an iterative computational procedure that combines local linear approximation, active set strategy,coordinate descent optimization, and EBIC-based tuning parameter selection. At iteration $k$, the MCP penalty is locally approximated by
+\[
+p_{\lambda}(|\beta_j|)
+\approx
+p_{\lambda}(|\beta_j^{(k)}|)
++
+p_{\lambda}'(|\beta_j^{(k)}|)
+\left(
+|\beta_j|-|\beta_j^{(k)}|
+\right),\quad
+p_{\lambda}'(t)
+=
+\lambda
+\left(
+1-\frac{t}{\gamma\lambda}
+\right)_+,
+\qquad
+\gamma>1.
+\]
+This approximation transforms the original optimization problem into the weighted $\ell_1$-penalized objective function
+\[
+Q^{(k)}(\boldsymbol{\beta})
+=
+\ell^{B}(\boldsymbol{\beta})
+-
+\sum_{j=1}^{p}
+w_j^{(k)} |\beta_j|,
+\qquad
+w_j^{(k)}
+=
+p_{\lambda}'\bigl(|\beta_j^{(k)}|\bigr).
+\]
+
+The resulting weighted problem is solved using coordinate descent. Based on a quadratic approximation of the Breslow partial log-likelihood, the coordinate-wise update is given by
+\[
+\beta_j^{(k+1)}
+=
+\mathcal{S}
+\left(
+\beta_j^{(k)}
++
+\frac{
+	U_j(\boldsymbol{\beta}^{(k)})
+}{
+	I_{jj}(\boldsymbol{\beta}^{(k)})
+},
+\;
+\frac{
+	w_j^{(k)}
+}{
+	I_{jj}(\boldsymbol{\beta}^{(k)})
+}
+\right),\quad
+\mathcal{S}(x,\eta)
+=
+\mathrm{sign}(x)(|x|-\eta)_+
+\]
+denotes the soft-thresholding operator, and
+$U_j(\boldsymbol{\beta})$ and
+$I_{jj}(\boldsymbol{\beta})$
+represent the score component and the diagonal element of the observed information matrix, respectively.
+
+The complete iterative estimation scheme, including the updating strategy, warm-start initialization, active set strategy and convergence criterion, is summarized in Figure~\ref{fig:mcp_algorithm}. To select the regularization parameter, the final model is determined using the extended Bayesian information criterion (EBIC),
+\[
+\mathrm{EBIC}(\lambda)
+=
+-2\,\ell^{B}
+\bigl(
+\widehat{\boldsymbol{\beta}}(\lambda)
+\bigr)
++
+\log(d)\,df(\lambda)
++
+2\gamma_{\mathrm{EBIC}}
+\log(p)\,df(\lambda),
+\]
+where $d$ denotes the number of observed events and $df(\lambda)$ is the number of selected variables. The optimal tuning parameter is then chosen as
+$
+\widehat{\lambda}
+=
+\arg\min_{\lambda}
+\mathrm{EBIC}(\lambda).
+$
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\textwidth]{images/algorithm.png}
+	\caption{Estimation procedure for MCP-penalized time-dependent Cox regression.}
+	\label{fig:mcp_algorithm}
+\end{figure}
+
+
+
+\section{Simulation Study}
+\label{sec:simulation}
+
+A Monte Carlo simulation study was conducted to evaluate the finite-sample performance of the proposed MCP-penalized estimator for variable selection in time-dependent Cox regression and to compare it with LASSO. Data were generated under the counting-process formulation 
+$(\mathrm{start},\mathrm{stop},\mathrm{status})$,
+assuming a constant baseline hazard function, $h_0(t)=1$.
+
+The true coefficient vector included six active predictors,
+$
+\boldsymbol{\beta}_{01}
+=
+(1.2,0.8,0.5,-0.5,-0.8,-1.2)^T,
+$
+while the remaining coefficients were set to zero. Simulation scenarios considered sample sizes
+$n\in\{200,500\}$ 
+and predictor dimensions
+$p\in\{0.5n,1.5n\}$,
+covering moderate- to high-dimensional survival settings. Covariate processes were generated from multivariate normal distributions with an AR(1) correlation structure,
+$
+\mathrm{Cov}(Z_{ij},Z_{ik})=\rho^{|j-k|},
+$
+where $\rho\in\{0,0.5\}$.
+
+Time-dependent covariates were generated over follow-up intervals, and censoring was introduced to obtain approximately 20\% censored observations. MCP estimation was carried out using the proposed estimation procedure described in Section~2.3, while LASSO estimation was implemented using the \texttt{glmnet} package \cite{simon2011regularization}. Each simulation setting was repeated $m=50$ times.
+
+Table~\ref{tab:sim} reports the Monte Carlo means and standard errors of false positives (FP), false negatives (FN), and runtime for MCP and LASSO under different sample sizes, dimensions, and correlation structures.
+
+
+\begin{table}[h]
+	\centering
+	\tiny
+	\setlength{\tabcolsep}{2pt}
+	
+	\caption{Comparison of MCP and LASSO in terms of FP, FN and runtime across different n, p and $\rho$ structures. Entries are reported as Mean(SE).}
+	\label{tab:sim}
+	
+	\begin{tabular}{|c|c|ccc|ccc|ccc|ccc|}
+		\hline
+		$n$ & $p$
+		&
+		\multicolumn{3}{c|}{MCP ($\rho=0$)}
+		&
+		\multicolumn{3}{c|}{MCP ($\rho=0.5$)}
+		&
+		\multicolumn{3}{c|}{LASSO ($\rho=0$)}
+		&
+		\multicolumn{3}{c|}{LASSO ($\rho=0.5$)}
+		\\
+		\cline{3-14}
+		
+		&
+		&
+		FP & FN & RunTime
+		&
+		FP & FN & RunTime
+		&
+		FP & FN & RunTime
+		&
+		FP & FN & RunTime
+		\\
+		\hline\hline
+		
+		100 & 50
+		& 1.19(.45) & 2.17(1.07) & 0.09(.02)
+		& 1.25(.17) & 2.04(.67) & 0.09(.02)
+		& 0.60(.21) & 3.00(1.20) & 7.67(.64)
+		& 0.45(.10) & 2.97(.86) & 7.55(.85)
+		\\
+		\hline
+		
+		100 & 100
+		& 0.79(.52) & 2.98(1.20) & 0.24(.04)
+		& 0.97(.29) & 2.55(.80) & 0.22(.04)
+		& 0.58(.34) & 3.91(1.19) & 9.05(1.29)
+		& 0.40(.09) & 3.37(.95) & 8.95(1.47)
+		\\
+		\hline
+		
+		100 & 150
+		& 0.74(.41) & 3.32(1.14) & 0.40(.08)
+		& 0.77(.22) & 2.87(.94) & 0.36(.07)
+		& 0.52(.25) & 4.18(1.07) & 8.88(1.34)
+		& 0.39(.19) & 3.71(1.03) & 8.86(1.44)
+		\\
+		\hline
+		
+		300 & 150
+		& 2.21(.40) & 0.43(.34) & 1.94(.70)
+		& 1.89(.55) & 1.01(.52) & 1.93(.73)
+		& 0.28(.08) & 1.35(.73) & 14.36(1.89)
+		& 0.24(.10) & 1.75(.37) & 14.64(1.72)
+		\\
+		\hline
+		
+		300 & 300
+		& 2.22(.52) & 0.53(.39) & 4.12(1.31)
+		& 1.43(.51) & 1.15(.56) & 3.97(1.36)
+		& 0.23(.09) & 1.44(.79) & 21.58(3.39)
+		& 0.05(.03) & 1.97(.46) & 21.46(3.69)
+		\\
+		\hline
+		
+		300 & 450
+		& 2.16(.38) & 0.49(.37) & 6.71(1.95)
+		& 1.53(.49) & 1.24(.56) & 6.20(1.89)
+		& 0.16(.03) & 1.59(.86) & 21.42(2.12)
+		& 0.16(.04) & 2.11(.49) & 21.43(2.50)
+		\\
+		\hline
+		
+		600 & 300
+		& 3.09(.40) & 0.01(.01) & 11.39(4.56)
+		& 2.07(.75) & 0.62(.39) & 11.54(5.07)
+		& 0.07(.02) & 0.53(.33) & 26.45(3.94)
+		& 0.07(.02) & 1.33(.51) & 27.23(3.42)
+		\\
+		\hline
+		
+		600 & 600
+		& 2.88(.45) & 0.08(.08) & 23.41(9.41)
+		& 2.01(.69) & 0.76(.46) & 23.46(9.95)
+		& 0.06(.03) & 0.63(.46) & 47.65(10.48)
+		& 0.04(.02) & 1.42(.57) & 49.49(11.06)
+		\\
+		\hline
+		
+		600 & 900
+		& 2.77(.52) & 0.09(.08) & 36.13(14.21)
+		& 1.94(.99) & 0.81(.49) & 36.38(15.09)
+		& 0.10(.02) & 0.69(.44) & 48.97(4.87)
+		& 0.04(.02) & 1.50(.49) & 51.14(5.80)
+		\\
+		\hline
+		
+	\end{tabular}
+\end{table}
+
+
+Overall, the two methods exhibit distinct variable-selection behaviors. LASSO consistently yields lower FP counts than MCP, reflecting its tendency to produce sparser models. For example, under $(n,p)=(600,900)$ with independent covariates $(\rho=0)$, the average FP was 0.10 for LASSO compared with 2.77 for MCP.
+
+In contrast, MCP generally produces substantially fewer false negatives, particularly as the sample size increases. Under $(n,p)=(600,900)$ and $\rho=0$, the average FN was 0.09 for MCP versus 0.69 for LASSO. Similar patterns were observed across most moderate- and high-dimensional settings, indicating that MCP is more effective in retaining truly active predictors, whereas the stronger shrinkage imposed by LASSO may lead to the omission of important variables.
+
+The reported standard errors suggest that the results are reasonably stable across Monte Carlo replications. In particular, the variability of FN decreases with increasing sample size, with this reduction being especially pronounced for MCP, indicating improved reliability in recovering active covariates in larger samples.
+
+Correlation among covariates increased the difficulty of identifying active predictors, resulting in higher FN values in several correlated scenarios. Nevertheless, MCP continued to achieve lower FN rates than LASSO in most moderate- and large-sample settings.
+
+From a computational perspective, the proposed MCP implementation demonstrated a clear advantage over LASSO. In the setting $(n,p)=(100,50)$, MCP required approximately 0.09 seconds, whereas LASSO required more than 7 seconds. This advantage persisted as the problem dimension increased. Even in the largest scenario considered, $(n,p)=(600,900)$, MCP completed estimation in approximately 36 seconds, compared with 49--51 seconds for LASSO. These findings indicate that the proposed estimation strategy, combining local linear approximation, coordinate descent, active-set updates, and warm starts, scales efficiently to high-dimensional time-dependent Cox regression problems.
+
+Taken together, the results indicate that the proposed MCP procedure provides a favorable balance between variable-selection accuracy and computational efficiency. Although LASSO produces sparser models with fewer false positives, MCP substantially reduces false negatives and more effectively recovers truly active predictors while consistently achieving superior computational efficiency.
+
+\section{Mayo Clinic PBC Data Analysis}
+\label{sec:realdata}
+
+The proposed MCP-penalized method was evaluated using the Mayo Clinic primary biliary cirrhosis (PBC) dataset \cite{Therneau2015}. After removing observations with missing values, 312 patients with longitudinal follow-up information were analyzed. The data were transformed into counting-process format using the \texttt{tmerge()} function to accommodate time-dependent covariates.
+
+Continuous covariates were modeled using natural cubic splines and standardized prior to model fitting. MCP estimation was performed using the procedure described in Section~2.3, whereas LASSO estimation was implemented using the \texttt{glmnet} package \cite{simon2011regularization}. Predictive performance was evaluated using Harrell's concordance index and time-dependent AUC at selected follow-up horizons.
+
+Table~\ref{tab:performance} shows that both MCP and LASSO achieved comparable predictive accuracy, with nearly identical C-index and AUC values. However, MCP required substantially less computational time, completing estimation in approximately 1.46 seconds compared with 18.27 seconds for LASSO.
+\begin{table}[h]
+	\begin{center}
+		\small
+		\caption{Predictive performance and computational time of MCP and LASSO methods on the PBC dataset.}
+		\label{tab:performance}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			Method & Runtime (s) & C-index & AUC$_{1yr}$ & AUC$_{3yr}$ & AUC$_{5yr}$ \\ 
+			\hline \hline
+			MCP 
+			& 1.457 
+			& 0.8796 
+			& 0.8990 
+			& 0.9002 
+			& 0.8551 \\ 
+			
+			LASSO 
+			& 18.266 
+			& 0.8796 
+			& 0.8998 
+			& 0.9004 
+			& 0.8553 \\ 
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+The estimated coefficients in Table~\ref{tab:coef} indicate similar selection patterns for both methods. Important predictors included the nonlinear bilirubin effect, albumin, and histologic stage. MCP generally produced slightly larger coefficient estimates than LASSO, particularly for bilirubin and albumin, suggesting reduced shrinkage bias. Overall, MCP provided comparable predictive performance while improving computational efficiency and preserving stronger effects for selected predictors.
+\begin{table}[h]
+	\begin{center}
+		\small
+		\caption{Estimated coefficients for selected covariate effects in the PBC dataset. Entries are reported as Estimate (SE).}
+		\label{tab:coef}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Variable & MCP & LASSO \\ \hline \hline
+			
+			$\log(\texttt{bili})$, basis 3
+			& $1.145^{**}\,(0.122)$
+			& $1.089^{**}\,(0.122)$ \\
+			$\log(\texttt{protime})$, basis 2
+			& $-0.263\,(0.167)$
+			& $-0.230\,(0.166)$ \\
+			albumin, basis 1
+			& $-0.814^{**}\,(0.138)$
+			& $-0.779^{**}\,(0.138)$ \\
+			stage
+			& $0.313^{*}\,(0.137)$
+			& $0.288^{*}\,(0.137)$ \\
+			edema
+			& $0.184\,(0.101)$
+			& $0.184\,(0.100)$ \\
+			sex (female)
+			& $-0.178\,(0.094)$
+			& $-0.160\,(0.094)$ \\
+			\hline
+		\end{tabular}
+		
+		\vspace{1mm}
+		\footnotesize
+		$^{*}p<0.05$, $^{**}p<0.01$.
+	\end{center}
+\end{table}
+
+
+\begin{thebibliography}{9}
+
+\bibitem[Bradic et al. (2011)]{bradic2011regularization}
+Bradic J., Fan J. and Jiang J. (2011), Regularization for Cox's Proportional Hazards Model with NP-Dimensionality, {\it The Annals of Statistics} 39, 6, 3092--3120.
+
+\bibitem[Cox (1972)]{cox1972regression}
+Cox D.R. (1972), Regression Models and Life-Tables, {\it Journal of the Royal Statistical Society: Series B} 34, 2, 187--220.
+
+\bibitem[Fan and Li (2001)]{fan2001variable}
+Fan J. and Li R. (2001), Variable Selection via Nonconcave Penalized Likelihood and its Oracle Properties, {\it Journal of the American Statistical Association} 96, 456, 1348--1360.
+
+
+\bibitem[Ramezani et al. (2026a)]{Ramezani2026a}
+Ramezani R., Rabiei M. R. and Arashi M. (2026), Integrating Preliminary Test and Stein-Type Techniques to Improve Estimation in the Time-Dependent Cox Model, {\it PLOS ONE} 21, 6, e0345123.
+
+\bibitem[Ramezani et al. (2026b)]{Ramezani2026b}
+Ramezani R., Rabiei M. R. and Arashi M. (2026), An Efficient LASSO Estimation for Time-Dependent Cox Models via Adaptive Active-Set Coordinate Descent, {\it Analytical and Numerical Solutions for Nonlinear Equations}, 11, 2, in press.
+
+\bibitem[Simon et al. (2011)]{simon2011regularization}
+Simon N., Friedman J., Hastie T. and Tibshirani R. (2011), Regularization Paths for Cox's Proportional Hazards Model via Coordinate Descent, {\it Journal of Statistical Software} 39, 5, 1--13.
+
+\bibitem[Therneau and Lumley (2015)]{Therneau2015}
+Therneau T. M. and Lumley T. (2015), 
+\textit{survival: Survival Analysis}, 
+R package version, R Foundation for Statistical Computing.
+
+
+\bibitem[Tibshirani (1996)]{tibshirani1996regression}
+Tibshirani R. (1996), Regression Shrinkage and Selection via the Lasso, {\it Journal of the Royal Statistical Society: Series B} 58, 1, 267--288.
+
+
+
+\bibitem[Zhang (2010)]{zhang2010nearly}
+Zhang C.-H. (2010), Nearly Unbiased Variable Selection under Minimax Concave Penalty, {\it The Annals of Statistics} 38, 2, 894--942.
+
+
+
+
+
+
+
+\end{thebibliography}
+ \end{document}
+

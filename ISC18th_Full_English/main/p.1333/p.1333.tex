@@ -1,0 +1,85 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Short Article Title}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Short Authors' Names}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf An unified view of probabilistic inference under incomplete information: Maximum Entropy and Bayesian Updating . }\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+
+Ishan Datta\footnote{\textbf{Corresponding Author:}
+\texttt{Ishan.Datta@campus.lmu.de}}\\
+LMU, Munich
+%$^2$Second Author's Affiliation}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+Statistical inference under incomplete information involves two complementary but distinct tasks: assigning an initial probability distribution when knowledge is limited to partial constraints, and updating that distribution when observations become available. Maximum Entropy addresses the first task by selecting a distribution consistent with the known moment conditions, thereby avoiding assumptions unsupported by the available information. Bayesian inference addresses the second by using the likelihood to revise prior probabilities in light of observed data. Recent work connects these roles within a single Bayesian framework: moment constraints determine the prior weighting of candidate distributions, while observations modify those weights through the likelihood. When the constraint-based prior is sharply concentrated around the entropy-maximizing distribution, the Bayesian result approaches the Maximum Entropy solution. This review examines this connection and illustrates the resulting probabilistic updating process through a numerical experiment. 
+
+ 
+
+ 
+\noindent{\bf Keywords:} 
+Maximum Entropy, Bayesian Inference, and Entropic Priors.  \\
+%\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm %99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+
+\bibitem[Gull (1988)]{Gull:1988}
+Gull S.F. (1988), Bayesian inductive inference and maximum entropy,
+in {\it Maximum Entropy and Bayesian Methods in Science and Engineering},
+Vol. 1, Springer, 53--74.
+
+\bibitem[Caticha and Preuss (2004)]{Caticha:Preuss:2004}
+Caticha A. and Preuss R. (2004), Maximum entropy and Bayesian data analysis:
+Entropic prior distributions, {\it Physical Review E}, 70, 046127.
+
+\bibitem[Caticha and Giffin (2007)]{Caticha:Giffin:2007}
+Caticha A. and Giffin A. (2007), Updating Probabilities with Data and Moments,
+{\it AIP Conference Proceedings}, 954, 74--84.
+
+\bibitem[Caticha (2021)]{Caticha:2021}
+Caticha A. (2021), Entropy, Information, and the Updating of Probabilities,
+{\it Entropy}, 23(7), 895.
+
+\bibitem[Cover and Thomas (2006)]{Cover:Thomas:2006}
+Cover T.M. and Thomas J.A. (2006),
+{\it Elements of Information Theory},
+2nd ed., Wiley
+
+
+
+\bibitem[Foley and Scharfenaker (2025)]{Foley:Scharfenaker:2025}
+Foley D.K. and Scharfenaker E. (2025), Bayesian inference and the principle of maximum entropy,
+{\it The American Statistician}, 79(4), 467--473.
+
+\bibitem[Giffin (2009)]{Giffin2009}
+Giffin A. (2009),
+\emph{Maximum Entropy: The Universal Method for Inference},
+Ph.D. Thesis, University at Albany, State University of New York.
+
+\end{thebibliography}
+
+
+ \end{document}
+

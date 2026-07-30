@@ -1,0 +1,269 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Dynamic Cumulative Past Fisher Information}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Sharafi and Kharazmi}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Time‑Dependent Cumulative Past Fisher Information: \\ Bounds, Orderings, and Mixture Representations}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Maryam Sharafi$^1$  \footnote{{\bf Corresponding Author:} {\tt mmaryamsharafi@gmail.com, m.sharafi@razi.ac.ir }} , Omid Kharazmi $^2$\\
+$^1$ Department of Statistics, Faculty of Science, Razi University, Kermanshah, Iran\\
+$^2$ Department of Statistics, Vali-e-Asr University of Rafsanjan, Rafsanjan, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This paper develops dynamic versions of cumulative past Fisher information measures for the past lifetime and inactivity time of a system. The proposed information functionals evolve over time and capture uncertainty from a retrospective viewpoint. We express them in terms of the reversed hazard rate and the mean inactivity time, derive sharp lower bounds using Cauchy–Schwarz and convexity arguments, and link them to reliability aging notions such as decreasing mean inactivity time and log‑convexity. Stochastic orders based on the new dynamic information measure are introduced and characterized. Explicit formulas are obtained for the proportional reversed hazards model and for arithmetic mixture models, where the Fisher information is shown to equal four times a power mean of chi‑square distances. Nonparametric estimators are also provided.\\
+\noindent{\bf Keywords:} 
+Cumulative past entropy, Mean inactivity time, Mixture models, Reversed hazard rate, Stochastic orders. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62N05$, $\rm 94A17$, $\rm 62B10$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}\label{intro}
+The study of information measures for random lifetimes has become a cornerstone of reliability theory, survival analysis, and information theory. Traditional approaches primarily focus on the residual (future) lifetime of a system, which is natural when predicting remaining life. However, many practical scenarios—such as a system found failed at an inspection time—require understanding the past: the actual failure time that occurred before inspection, or the inactivity period that elapsed since failure. This retrospective viewpoint has motivated the development of cumulative past entropy \cite{di2009cumulative} and cumulative past Fisher information \cite{balakrishnan2022cumulative}, which aggregate information from the entire past distribution.
+
+Parallel to these static measures, dynamic versions that evolve with time have proven useful for capturing aging effects. For residual lifetimes, the dynamic cumulative residual Fisher information was introduced by \cite{kharazmi2021cumulative}. In the context of cumulative entropy, \cite{rao2004cumulative} proposed cumulative residual entropy as an alternative to Shannon entropy, and \cite{asadi2007dynamic} extended it to the dynamic case. For the past domain, however, dynamic counterparts of cumulative past Fisher information have remained largely unexplored. This paper fills that gap by proposing dynamic cumulative past Fisher (DCPF) information measures that depend on the inspection time $t$ and summarize the information contained in the past lifetime up to $t$.
+
+Our contributions are threefold. First, we define DCPF and its relative version (DRCPF) and derive simple representations in terms of the reversed hazard rate and mean inactivity time. Second, we establish sharp lower bounds using the Cauchy–Schwarz inequality and convexity arguments, and we connect these bounds to reliability notions such as decreasing mean inactivity time and log‑convexity. Third, we introduce a new stochastic order based on DCPF and characterize its relationship with the reversed hazard rate order \cite{gupta2001reversed}, the mean inactivity time order, and the usual stochastic order. Explicit results for the proportional reversed hazards model and for arithmetic mixture models are provided, including a novel representation that expresses the DCPF of a mixture as four times a power mean of chi‑square distances. Nonparametric estimators are also sketched for practical implementation.
+
+The remainder of the paper is organized as follows. Section \ref{intro} recalls necessary preliminaries. Section \ref{pre} defines DCPF and presents its properties and lower bounds. Section \ref{DRCP} introduces DRCPF and treats the proportional reversed hazards model. Section \ref{st} discusses stochastic orderings. Section \ref{mix} covers mixture models and nonparametric estimation. Section \ref{conc} concludes.
+
+
+
+\section{Preliminaries}\label{pre}
+
+Let $X$ be a non‑negative absolutely continuous random variable with cumulative distribution function (CDF) $F(x)$, probability density function (PDF) $f(x)$, and survival function $\bar{F}(x)=1-F(x)$. The \emph{reversed hazard rate} is
+$$
+\tilde{r}_F(x)=\frac{f(x)}{F(x)},\quad F(x)>0.
+$$
+For a system that has failed by time $t>0$, the past lifetime is $X_{(t)}=[X\mid X\le t]$ with CDF
+$$
+F_t(x)=\frac{F(x)}{F(t)},\qquad 0\le x\le t.
+$$
+The \emph{inactivity time} is $\overleftarrow{X}_t = t-X_{(t)}$, and the \emph{mean inactivity time (MIT)} function is
+\begin{equation}
+\tilde{\mu}(t)=\mathbb{E}[t-X\mid X\le t]=\frac{1}{F(t)}\int_0^t F(x)\,dx. \tag{1}
+\end{equation}
+The static cumulative past entropy \cite{di2009cumulative} and the cumulative past Fisher information \cite{balakrishnan2022cumulative} are
+$$
+\mathcal{CE}(X)=-\int_0^\infty F(x)\log F(x)\,dx,\qquad 
+\mathcal{CZ}(F)=\int_0^\infty \bigl(\tilde{r}_F(x)\bigr)^2 F(x)\,dx.
+$$
+\section{Dynamic Cumulative Past Fisher Information}
+
+\begin{dfn}
+	The \emph{dynamic cumulative past Fisher (DCPF) information} for $X_{(t)}$ is
+	\begin{equation}
+	\mathcal{CI}(F,t)=\int_0^t \left(\frac{\partial}{\partial x}\log F_t(x)\right)^2 F_t(x)\,dx. \tag{2}
+	\end{equation}
+\end{dfn}
+
+\begin{pro}
+	The DCPF information can be expressed as the conditional expectation of the reversed hazard rate:
+	\begin{equation}
+	\mathcal{CI}(F,t)=\mathbb{E}\bigl[\tilde{r}_F(X)\mid X\le t\bigr]. \tag{3}
+	\end{equation}
+\end{pro}
+\begin{proof}
+	Since $\frac{\partial}{\partial x}\log F_t(x)=\tilde{r}_F(x)$ and $F_t(x)=F(x)/F(t)$,
+	$$
+	\mathcal{CI}(F,t)=\int_0^t (\tilde{r}_F(x))^2\frac{F(x)}{F(t)}\,dx
+	=\int_0^t \tilde{r}_F(x)\frac{f(x)}{F(t)}\,dx = \mathbb{E}[\tilde{r}_F(X)\mid X\le t].
+	$$
+\end{proof}
+
+Using the known relation between reversed hazard rate and MIT (see \cite{di2009cumulative}):
+\begin{equation*}
+\tilde{r}_F(x)=\frac{1-\tilde{\mu}'(x)}{\tilde{\mu}(x)}, \tag{4}
+\end{equation*}
+we obtain an alternative representation.
+\begin{cor}
+	\begin{equation*}
+	\mathcal{CI}(F,t)=\mathbb{E}\left[\frac{1-\tilde{\mu}'(X)}{\tilde{\mu}(X)}\;\Big|\;X\le t\right]. \nonumber
+		\end{equation*}
+\end{cor}
+\subsection{Lower Bounds via Mean Inactivity Time}
+
+\begin{thm}
+	If $\tilde{\mu}(t)$ is decreasing, then
+	\begin{equation}
+	\mathcal{CI}(F,t)\ge \frac{1}{\mathcal{CE}(X;t)}, \tag{6}
+	\end{equation}
+	where $\mathcal{CE}(X;t)=\mathbb{E}[\tilde{\mu}(X)\mid X\le t]$ is the dynamic cumulative past entropy.
+\end{thm}
+\begin{proof}
+	Decreasing MIT implies $\tilde{\mu}'(x)\le0$; thus from (4), $1-\tilde{\mu}'(x)\ge1$ and $\tilde{r}_F(x)\ge1/\tilde{\mu}(x)$. Taking conditional expectation gives $\mathcal{CI}(F,t)\ge\mathbb{E}[1/\tilde{\mu}(X)\mid X\le t]$. Jensen’s inequality for the convex function $\phi(x)=1/x$ yields $\mathbb{E}[1/\tilde{\mu}(X)\mid X\le t]\ge 1/\mathbb{E}[\tilde{\mu}(X)\mid X\le t]=1/\mathcal{CE}(X;t)$.
+\end{proof}
+
+The next bound is sharp and relies on the Cauchy–Schwarz inequality.
+\begin{thm}
+	For any $t>0$ with $F(t)>0$,
+	\begin{equation}
+	\label{tag7}
+	\mathcal{CI}(F,t)\ge \frac{1}{\tilde{\mu}(t)}. \tag{7}
+	\end{equation}
+	Equality holds if and only if the reversed hazard rate is constant (i.e., the past lifetime distribution is exponential).
+\end{thm}
+\begin{proof}
+	Define $u(x)=\dfrac{f(x)}{\sqrt{F(x)F(t)}}$ and $v(x)=\sqrt{\dfrac{F(x)}{F(t)}}$. Then
+	$$
+	\int_0^t u(x)^2dx = \int_0^t \frac{f^2(x)}{F(x)F(t)}dx,\quad
+	\int_0^t v(x)^2dx = \tilde{\mu}(t),\quad
+	\int_0^t u(x)v(x)dx = \int_0^t \frac{f(x)}{F(t)}dx =1.
+	$$
+	By Cauchy–Schwarz, $1^2 \le \bigl(\int_0^t u^2\bigr)\tilde{\mu}(t)$, hence $\int_0^t \frac{f^2}{F F(t)} \ge 1/\tilde{\mu}(t)$. But $\frac{f^2}{F F(t)} = \tilde{r}_F(x)\frac{f(x)}{F(t)}$, whose integral equals $\mathcal{CI}(F,t)$.
+\end{proof}
+\begin{rem}
+	The bound (\ref{tag7}) is intuitive: a larger mean inactivity time $\tilde{\mu}(t)$ implies less precise information about the failure time, hence lower Fisher information.
+\end{rem}
+\section{Dynamic Relative Cumulative Past Fisher Information}\label{DRCP}
+
+\begin{dfn}
+	For two lifetimes $X$ and $Y$ with CDFs $F$ and $G$, the \emph{dynamic relative cumulative past Fisher (DRCPF) information} is
+	\begin{equation}
+	\mathcal{CD}(F_t,G_t)=\int_0^t \bigl(\tilde{r}_F(x)-\tilde{r}_G(x)\bigr)^2 \frac{F(x)}{F(t)}\,dx. \tag{8}
+	\end{equation}
+\end{dfn}
+
+\begin{pro}
+	\begin{equation}
+		\mathcal{CD}(F_t,G_t)=\mathbb{E}\left[\frac{(\tilde{r}_F(X)-\tilde{r}_G(X))^2}{\tilde{r}_F(X)}\;\Big|\;X\le t\right].\nonumber \tag{9}
+	\end{equation}
+\end{pro}
+\subsection{Proportional Reversed Hazards Model}
+
+Let $F^\theta(x)=[F(x)]^\theta$ with $\theta>0$ (proportional reversed hazards). Then the conditional distribution becomes $F_t^\theta(x)=[F_t(x)]^\theta$.
+\begin{thm}
+	For the PRH model we have:
+	\begin{align}
+	\mathcal{CD}(F_t,F_t^\theta) &= (\theta-1)^2\,\mathcal{CI}(F,t), \tag{10}\\
+	\mathcal{CD}(F_t^\theta,F_t) &= \frac{(\theta-1)^2}{\theta^2}\,\mathcal{CI}(F^\theta,t). \tag{11}
+	\end{align}
+	Moreover,
+	\begin{equation}
+		0<\theta<1 \;\Longrightarrow\; \mathcal{CI}(F^\theta,t)\ge \theta^2\mathcal{CI}(F,t),\qquad
+	\theta\ge 1 \;\Longrightarrow\; \mathcal{CI}(F^\theta,t)\le \theta^2\mathcal{CI}(F,t). \nonumber
+	\end{equation}
+\end{thm}
+\begin{proof}
+	The identities (10)–(11) follow directly from $\frac{\partial}{\partial x}\log F_t^\theta(x)=\theta\tilde{r}_F(x)$. For (12), note that when $0<\theta<1$, $[F_t(x)]^\theta\ge F_t(x)$ because $F_t(x)\in[0,1]$. Hence
+	\[
+	\mathcal{CI}(F^\theta,t)=\theta^2\int_0^t \tilde{r}_F(x)^2 [F_t(x)]^\theta dx \ge \theta^2\int_0^t \tilde{r}_F(x)^2 F_t(x)dx = \theta^2\mathcal{CI}(F,t).
+	\]
+	The case $\theta\ge1$ is analogous with reversed inequality.
+\end{proof}
+\section{Stochastic Ordering Results}\label{st}
+
+We propose a new stochastic order based on DCPF.
+
+\begin{dfn}
+	$X$ is said to be smaller than $Y$ in the \emph{DCPF information order} (denoted $X\le_{\text{DCPF}} Y$) if
+	\[
+	\mathcal{CI}(F,t)\le \mathcal{CI}(G,t)\quad\text{for all } t>0. \tag{13}
+	\]
+\end{dfn}
+Recall the reversed hazard rate order: $X\le_{\text{rh}} Y$ if $\tilde{r}_F(t)\le\tilde{r}_G(t)$ for all $t>0$, and the mean inactivity time order: $X\le_{\text{mit}} Y$ if $\tilde{\mu}_F(t)\le\tilde{\mu}_G(t)$ for all $t>0$.
+
+\begin{thm}
+	If $X\le_{\text{rh}} Y$ and $F$ is log‑convex (so that $\tilde{r}_F$ is increasing), then $X\le_{\text{DCPF}} Y$.
+\end{thm}
+\begin{proof}
+	Log‑convexity implies $\tilde{r}_F$ is increasing. Then, using the usual stochastic order for the conditional distributions (which follows from $X\le_{\text{rh}}Y$),
+	\[
+	\mathcal{CI}(F,t)=\mathbb{E}[\tilde{r}_F(X)\mid X\le t]\le \mathbb{E}[\tilde{r}_F(Y)\mid Y\le t]\le \mathbb{E}[\tilde{r}_G(Y)\mid Y\le t]=\mathcal{CI}(G,t).
+	\]
+\end{proof}
+\begin{thm}
+	If $X\le_{\text{mit}} Y$ and both $\tilde{\mu}_F,\tilde{\mu}_G$ are decreasing, then $X\le_{\text{DCPF}} Y$.
+\end{thm}
+\begin{proof}
+	The decreasing MIT condition together with $X\le_{\text{mit}}Y$ yields $\tilde{r}_F(x)\ge 1/\tilde{\mu}_F(x)\ge 1/\tilde{\mu}_G(x)$ and similarly for $\tilde{r}_G$. Combining these via the conditional expectation arguments gives the result. Details follow the same lines as in \cite{balakrishnan2022cumulative}.
+\end{proof}
+\section{Applications to Mixture Models and Nonparametric Estimation}\label{mix}
+
+\subsection{Arithmetic Mixture Model}
+Consider the arithmetic mixture $F_p(x)=pF_1(x)+(1-p)F_2(x)$ with $p\in(0,1)$. Let $F_{p,t}(x)=F_p(x)/F_p(t)$. The chi‑square distance between two conditional CDFs is $\chi^2(F_{p,t},F_{1,t})=\int_0^t \frac{(F_{p,t}(x)-F_{1,t}(x))^2}{F_{p,t}(x)}dx$.
+
+\begin{thm}
+	The DCPF information for the mixture admits the representation
+	\begin{equation}
+	\mathcal{CI}(F_p,t)=4\,M_{1/2}\Bigl(\chi^2(F_{p,t},F_{1,t}),\;\chi^2(F_{p,t},F_{2,t})\Bigr), \tag{14}
+	\end{equation}
+	where $M_{1/2}(a,b)=\bigl(\frac{\sqrt{a}+\sqrt{b}}{2}\bigr)^2$ is the power mean of exponent $1/2$.
+\end{thm}
+\begin{proof}
+	(Sketch) One first shows that $\mathcal{CI}(F_p,t)=\frac{1}{F_p(t)}\int_0^t \frac{(pf_1+(1-p)f_2)^2}{F_p}\,dx =: \frac{I(t)}{F_p(t)}$. Then compute $\chi^2(F_{p,t},F_{1,t})=\frac{(1-p)^2}{F_p(t)}I(t)$ and $\chi^2(F_{p,t},F_{2,t})=\frac{p^2}{F_p(t)}I(t)$. Solving for $I(t)/F_p(t)$ yields (14).
+\end{proof}
+This result shows that the Fisher information in a mixture is directly linked to the chi‑square divergences of its components.
+\subsection{Nonparametric Estimation}
+Given an i.i.d. sample $X_1,\dots,X_n$ from $F$, define the empirical CDF $\widehat{F}_n(t)=\frac1n\sum_{i=1}^n\mathbf{1}_{\{X_i\le t\}}$ and $n_t=\sum_{i=1}^n\mathbf{1}_{\{X_i\le t\}}$. Using a kernel density estimator $\widehat{f}_n(x)=\frac{1}{nh}\sum_{i=1}^n K\bigl(\frac{x-X_i}{h}\bigr)$ with a Gaussian kernel and bandwidth $h$, the reversed hazard rate is estimated by $\widehat{\tilde{r}}_F(x)=\widehat{f}_n(x)/\widehat{F}_n(x)$. Then a Monte Carlo estimator of DCPF is
+\begin{equation}
+\widehat{\mathcal{CI}}(F,t)=\frac{1}{n_t}\sum_{i:X_i\le t}\widehat{\tilde{r}}_F(X_i).
+\end{equation}
+This estimator is completely nonparametric and allows tracking the evolution of DCPF over time.
+\section{Conclusion}\label{conc}
+
+We have introduced and studied dynamic cumulative past Fisher information measures for the past lifetime and inactivity time. Key results include: (i) a representation as conditional expectation of the reversed hazard rate; (ii) sharp lower bounds involving the mean inactivity time; (iii) a new stochastic order $\le_{\text{DCPF}}$; (iv) exact formulas for the proportional reversed hazards model and for arithmetic mixtures; (v) a nonparametric estimator. These measures extend the reliability engineer’s toolbox by providing a retrospective information‑theoretic perspective on system aging. Future work will address hypothesis testing based on DCPF and its application to real failure data.
+\section*{Acknowledgments}
+
+The authors gratefully acknowledge the support and encouragement received from the organizers and the scientific committee of the 18th Statistics Conference. We also thank the reviewers for their constructive feedback, which significantly enhanced the presentation of this work.
+
+\begin{thebibliography}{99}
+	
+	\bibitem[Asadi and  Zohrevand (2007)]{asadi2007dynamic}
+	 Asadi M. and  Zohrevand. Y.  (2007),
+	 On the dynamic cumulative residual entropy.
+	{\it Journal of Statistical Planning and Inference}, 137(6):1931–1941.
+	
+	\bibitem[Balakrishnan and Kharazmi (2022)]{balakrishnan2022cumulative}
+	 Balakrishnan N. and  Kharazmi O. (2022),
+	 Cumulative past Fisher information measure and its extensions.
+	{\it Brazilian Journal of Probability and Statistics}, 36(3):540–559.
+	
+	\bibitem[Di Crescenzo and Longobardi (2009)]{di2009cumulative}
+	Di Crescenzo A.  and  Longobardi. M. (2009),
+	 On cumulative entropies.
+	{\it Journal of Statistical Planning and Inference}, 139(12):4072–4087.
+	
+	\bibitem[Kharazmi and  Balakrishnan(2021)]{kharazmi2021cumulative}
+	Kharazmi O.  and  Balakrishnan.N. (2021),
+ Cumulative residual and relative cumulative residual Fisher information and their properties.
+	{\it IEEE Transactions on Information Theory}, 67(10):6306–6312.
+	
+	\bibitem[Müller and  Stoyan (2002)]{muller2002comparison}
+	 Müller A. and  Stoyan D. (2002),
+	{\it Comparison Methods for Stochastic Models and Risks}.
+	 Wiley.
+	 
+	 \bibitem[Gupta and A. K. Nanda. (2001)]{gupta2001reversed}
+	  Gupta R. C. and Nanda.  A. K. (2001),
+	  Some results on reversed hazard rate ordering.
+	 {\it Communications in Statistics-Theory and Methods}, 30(11):2447–2457.
+	 
+	\bibitem[Rao and Et.al (2004)]{rao2004cumulative}
+	 Rao, M. Chen,  Y.  Vemuri, B. C. and  Wang. F. (2004),
+	 Cumulative residual entropy: a new measure of information.
+	{\it IEEE Transactions on Information Theory}, 50(6):1220–1228.
+	
+	\bibitem[Shaked (2007)]{shaked2007stochastic}
+	 Shaked M. and J. G. Shanthikumar. (2007),
+	{\it Stochastic Orders}.
+	 Springer.
+	
+\end{thebibliography}
+ \end{document}

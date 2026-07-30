@@ -1,0 +1,305 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{rotating}
+\usepackage{lscape}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{E-Bayesian Estimation Based on Record Values}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{MirMostafaee}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf  E-Bayesian Estimation for the Lomax Distribution Under the Precautionary Loss Function Based on Record Values}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+ S.M.T.K. MirMostafaee\footnote{{\bf Corresponding Author:} {\tt m.mirmostafaee@umz.ac.ir }}  \\
+Department of Statistics,
+University of Mazandaran, P.O. Box 47416-1467, Babolsar, Iran 
+%$^2$Second Author's Affiliation
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+This paper addresses E‑Bayesian estimation of the Lomax distribution parameter within the framework of the precautionary loss function, using upper record values. The E‑posterior risks of the proposed estimators are derived. A simulation study is carried out to compare and evaluate the estimators. A simulated data example is also given. The paper concludes with a discussion.
+
+\noindent{\bf Keywords:} 
+Precautionary loss function, E-Bayesian estimation, Upper record values, and E-posterior risk. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62F10$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+	%% \linenumbers
+The Lomax distribution has been proved to be useful in engineering, industry and medical science \citep{Okasha:et:al:2021}.
+Suppose $X$ follows a Lomax distribution with shape parameter $\theta$. We denote this by $X\sim$ Lomax$(\theta)$. The probability density function (PDF), and cumulative distribution function(CDF) of $X$ are 
+$
+f(x;\theta)=\theta\, (1+x)^{-(\theta +1)},
+$
+and  
+$
+F(x;\theta)=1-(1+x)^{-\theta }, 
+$
+respectively, where $x>0,$ and $\theta  >0$. 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Record values arise naturally in many practical settings. Consider a sequence $\{X_i; i\geq 1\}$ of independent and identically distributed continuous random variables with common PDF $f(x)$ and CDF $F(x)$. An observation $X_j$ is said to be an upper record value if it is greater than all previous observations $X_1, \ldots, X_{j-1}$. By convention, $X_1$ is taken as the first lower record. If $R_n$ denotes the $n$th upper record value, %then its PDF is (see  \cite{Arnold:et:al:1998})
+%\begin{equation}
+%f_{R_m}(x)=\dfrac{[-\ln (1-F(x))]^{m-1}}{\Gamma(m)}\ f(x), \quad x\in \mathbb{R}.
+%\end{equation}
+then the joint PDF of the first $n$ upper records, $R_1,\cdots R_m$, is also given by (see  \cite{Arnold:et:al:1998})
+\begin{equation}\label{like}
+f_{R_1,\cdots, R_m}(r_1,\cdots, r_m)=f(r_m)\prod_{i=1}^{m-1}\dfrac{f(r_i)}{1-F(r_i)}, \quad r_1<\cdots < r_m.
+\end{equation}
+Lower record values are defined similarly. For further details on the theory and applications of record values, see \cite{Arnold:et:al:1998}.
+
+Bayesian inference generally requires specifying a prior distribution and a loss function. Here, we adopt the precautionary loss function (PLF), given by \cite{Norstorm:1996}, defined as
+%\begin{eqnarray}\label{deg}
+$	\displaystyle L(\theta,\delta)= \frac{(\theta-\delta)^2}{\delta},$
+%\end{eqnarray}
+where $\delta$ denotes an estimator of $\theta$. Although some practitioners assume that a single prior distribution can be elicited, prior information is frequently vague in practice, meaning that any elicited prior is merely an approximation (see \cite{Alhamaidah:et:al:2023}). A useful approach to address this issue is the E-Bayesian method introduced by \cite{Han:1997}; see also \cite{Alhamaidah:et:al:2023} for a recent study. 
+
+In the following sections, we derive the E‑Bayesian estimator for the Lomax parameter under the precautionary loss function using upper record data. The associated E‑posterior risks are also obtained. A simulation study is conducted to compare and assess the performance of the estimators. An example based on simulated data is also presented.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Main Results}
+Let ${\boldsymbol R}=(R_1, \ldots, R_m)$ represent the vector of the  first $m$ upper record values   from a Lomax distribution with parameter $\theta$. Then, from (\ref{like}), the joint PDF of $R_1, \ldots, R_m$ is  
+\begin{equation}\label{like0}
+f_{R_1,\cdots, R_m}(r_1,\cdots, r_m;\theta)=\theta^m  \, \exp\big(-\theta\ln(1+r_m)\big) \prod_{i=1}^m\dfrac{1}{1+r_i}, \quad r_1<\cdots < r_m.
+\end{equation}
+The maximum likelihood (ML) estimate of $\theta$ is given by $\displaystyle\hat{\theta}_M=\frac{m}{\ln(1+r_m)}$, found by maximizing (\ref{like0}) with respect to $\theta$.
+
+
+For Bayesian inference, we assume the following gamma prior for the parameter $\theta$
+\begin{equation}\label{prior}
+	\pi(\theta )=\frac{b^a}{\Gamma(a)} \theta^{a-1} {\rm e}^{-b\theta},\qquad \theta >0,\quad a>0,\, b>0.
+\end{equation}
+%A key advantage of the gamma prior distribution is that it yields simple closed-form expressions for both its mean and variance. As a result, the hyperparameters $a$ and $b$ can be conveniently specified using prior information about the mean and/or variance of $\xi$.
+Using (\ref{like0}) and (\ref{prior}), the posterior density of $\theta$ given the observed records ${\boldsymbol r}=(r_1,\cdots,r_m)$ is obtained as a gamma distribution with parameters $m+a$ and $b+\ln(1+r_m)$, which is given by
+\begin{align*} 
+	\pi(\theta |{\boldsymbol r})
+	=\frac{[b+\ln(1+r_m)]^{m+a}}{\Gamma(m+a)} \, \theta^{m+a-1} {\rm e}^{-\theta\, [b+\ln(1+r_m)]}.
+\end{align*}
+Now, under the PLF, the Bayesian estimator of $\theta$ is derived as follows:
+\begin{align*} 
+	\widetilde{\theta}_B=\sqrt{E(\theta^2|{\boldsymbol R})}=\frac{\sqrt{(m+a)(m+a+1)}}{b+\ln(1+R_m)}.
+\end{align*}
+
+Next, we obtain the posterior risk of $\widetilde{\theta}_B$, denoted as $PR(\widetilde{\theta}_B)$. We have
+	\begin{align}\nonumber\label{PR}
+	 PR(\widetilde{\theta}_{B})&=\int_0^\infty   \frac{(\theta-\widetilde{\theta}_B)^2}{\widetilde{\theta}_B}   \pi(\theta|{\boldsymbol r}) \mathrm{d}\theta
+		=\frac{1}{\widetilde{\theta}_B}\int_0^\infty  \big({\widetilde{\theta}_B}^2 + \theta^2 -2\, \widetilde{\theta}_B \, \theta\big)  \pi(\theta|{\boldsymbol r})  \mathrm{d}\theta
+\\
+		&=\widetilde{\theta}_B+\frac{E(\theta^2|{\boldsymbol r})}{\widetilde{\theta}_B}-2\,E(\theta |{\boldsymbol r})=
+\frac{2\, \big(\sqrt{(m+a)(m+a+1)}-(m+a)\big)}{b+\ln(1+r_m)}.
+	\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{E-Bayesian Estimation}
+Let $\widetilde{\theta}_B$ denote the Bayes estimator of $\theta$ obtained under the prior specified in \eqref{prior}, and let $\pi^*(a,b)$ denote the joint prior density of the hyperparameters $a$ and $b$. Then, as defined by \cite{Han:1997}, the E-Bayesian estimator of $\theta$ is
+\begin{equation*}\label{ebayes}
+	\widetilde{\theta}_{EB}=\iint_{\mathbb D} \widetilde{\theta}_B\,\,  \pi^*(a,b) \,{\rm d}a{\rm d}b,
+\end{equation*}
+where $\mathbb{D}$ is the domain of $a$ and $b$.% Consequently, from  \eqref{Bayes} and (\ref{ebayes}), the E-Bayesian estimator for $\xi$ under the BSE loss function is %given by
+
+As suggested by \cite{Han:1997}, the hyperparameters $a$ and $b$ should be specified to ensure that the prior density is a decreasing function of $\theta$. Differentiating \eqref{prior} shows that this holds for $b > 0$ and $0 < a < 1$. On the other hand, it must be pointed out that excessively large values of $b$ can undermine robustness, leading us to restrict $b \le c$ \citep{Berger:1985}. We thus adopt the following three joint priors for $a$ and $b$:
+\begin{eqnarray}\label{b1}
+\pi_1(a,b)&=&\dfrac{1}{c},\quad  0<a<1, \quad 0<b<c,\\
+\pi_2(a,b)&=&\dfrac{2(c-b)}{c^2},\quad  0<a<1, \quad 0<b<c, \label{b2}\\
+\pi_3(a,b)&=&\dfrac{2b}{c^2},\quad  0<a<1, \quad 0<b<c. \label{b3}
+\end{eqnarray}
+
+
+	Now, using the prior in (\ref{b1}), the E-Bayesian estimator of $\theta$ under the PLF is obtained as
+		\begin{align}\nonumber
+	 \widetilde{\theta}_{EB_1}&=\int_0^c \int_0^1 \frac{ \sqrt{(m+a)(m+a+1)}}{b+\ln(1+R_m)}\times  \dfrac{1}{c} \,\mathrm{d}a  \,\mathrm{d}b 
+		\\ \nonumber
+		&= \frac{1}{c}\int_0^c    \frac{1}{b+\ln(1+R_m)}  \mathrm{d}b  \int_0^1  \sqrt{(m+a)(m+a+1)} \,\, \mathrm{d}a 
+	\\&=\frac{1}{c}\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg) \int_0^1  \sqrt{(m+a)(m+a+1)} \, \,\mathrm{d}a.\label{eb1}
+	\end{align}
+Similarly, using the priors in (\ref{b2}), and (\ref{b3}), the E-Bayesian estimators of $\theta$ under the PLF are obtained as
+		\begin{align}\nonumber
+	 \widetilde{\theta}_{EB_2}&=\frac{2}{c^2}\int_0^c    \frac{c-b}{b+\ln(1+R_m)} \, \mathrm{d}b  \int_0^1 \sqrt{(m+a)(m+a+1)} \, \, \mathrm{d}a 
+	\\&=\frac{2}{c^2}\bigg[\big(c+\ln(1+R_m)\big)\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg) -c\bigg]\int_0^1 \sqrt{(m+a)(m+a+1)}\, \, \mathrm{d}a,\label{eb2}
+	\end{align}
+and
+		\begin{align}\nonumber
+	 \widetilde{\theta}_{EB_3}&=\frac{2}{c^2}\int_0^c    \frac{b}{b+\ln(1+R_m)} \, \mathrm{d}b  \int_0^1  \sqrt{(m+a)(m+a+1)} \, \,\mathrm{d}a 
+	\\&=\frac{2}{c^2}\bigg[c- \ln(1+R_m)\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg)\bigg]\int_0^1  \sqrt{(m+a)(m+a+1)}\, \, \mathrm{d}a,\label{eb3}
+	\end{align}
+respectively.
+
+The E-posterior risk was originally defined by \cite{Han:2019} under the squared error loss function, where it was called the expected mean square error (E-MSE). The current terminology was later adopted by \cite{Han:2020a} and \cite{Han:2020b}.
+
+Let $\widetilde{\theta}_{B}$ be the Bayesian estimator of $\theta$ under the PLF, and denote its posterior risk by $PR(\widetilde{\theta}_{B})$. Let $\widetilde{\theta}_{EB}$ be the corresponding E-Bayesian estimator, obtained using the joint prior $\pi^*(a,b)$ for the hyperparameters $a$ and $b$. The E-posterior risk of $\widetilde{\theta}_{EB}$ is then defined as
+\begin{equation}\label{epost}
+EP(\widetilde{\theta}_{EB}) = \iint_{\mathbb D} PR(\widetilde{\theta}_{B}) \, \pi^*(a,b) \, {\rm d}a \, {\rm d}b,
+\end{equation}
+where $\mathbb{D}$ represents the parameter space of $(a,b)$.
+
+
+ Now, from (\ref{PR}), and (\ref{epost}), the E-posterior risks of the E-Bayesian estimators for parameter $\theta$, given in (\ref{eb1}), (\ref{eb2}), and (\ref{eb3}) under the PLF are given by
+		\begin{align*}\nonumber
+	 EP(\widetilde{\theta}_{EB_1})&=\int_0^c \int_0^1 \frac{2\, \big(\sqrt{(m+a)(m+a+1)}-(m+a)\big)}{b+\ln(1+R_m)}\times  \dfrac{1}{c} \,\mathrm{d}a \, \mathrm{d}b 
+	\\&=\frac{2}{c}\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg) \bigg[\int_0^1   \sqrt{(m+a)(m+a+1)} \, \,\mathrm{d}a-\dfrac{2m+1}{2}\bigg],
+\\
+	 EP(\widetilde{\theta}_{EB_2})&=\frac{4}{c^2}\bigg[\big(c+\ln(1+R_m)\big)\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg) -c\bigg]
+	 \bigg[\int_0^1   \sqrt{(m+a)(m+a+1)} \, \,\mathrm{d}a-\dfrac{2m+1}{2}\bigg],
+	\end{align*}
+and
+		\begin{align*}\nonumber
+	 EP(\widetilde{\theta}_{EB_3})=\frac{4}{c^2}\bigg[c- \ln(1+R_m)\ln\bigg(\dfrac{c+\ln(1+R_m)}{\ln(1+R_m)}\bigg)\bigg]\bigg[\int_0^1   \sqrt{(m+a)(m+a+1)} \, \,\mathrm{d}a-\dfrac{2m+1}{2}\bigg],
+	\end{align*}
+respectively.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{A Simulation Study}	
+We conduct a simulation study with $S=3000$ replications to evaluate the suggested estimators. We set $\theta \in \{2,3,5\}$, $m \in \{3,4,5\}$, and $c \in \{1,2,5\}$. For Bayesian estimation, following \cite{Ghasabani:et:al:2026}, we  set $a=0.5$, and   choose $b=a/\theta$ so that the prior mean equals the true $\theta$.
+In each replication, we generate $m$ upper records from Lomax$(\theta)$ and compute the ML, Bayesian, and E-Bayesian estimators of $\theta$.  The estimated risk (ER) of an estimator $\hat{\theta}$ is defined as
+\[
+ER(\hat{\theta}) = \frac{1}{S} \sum_{i=1}^{S} \frac{(\hat{\theta}_i - \theta)^2}{\hat{\theta}_i},
+\]
+where $\hat{\theta}_i$ denotes the estimator obtained in the $i$-th replication. We also compute the average E-posterior risks (AEPRs) for the E-Bayesian estimators. The associated results are reported in Table~\ref{t1}. From Table~\ref{t1}, we draw the following conclusions:
+\begin{itemize}
+\item The E-Bayesian estimators under prior (\ref{b3}) yield the smallest AEPRs, while those under prior (\ref{b2}) produce the largest AEPRs.
+\item In terms of ER, the E-Bayesian estimators  for $c=1$ and $c=2$ outperform both the ML and Bayesian estimators in most cases. However, for $c=5$, the E-Bayesian estimators under prior (\ref{b3}) yield the largest ERs in all cases,  and those under prior (\ref{b1}) produce the second largest ERs for most cases.
+\item The Bayesian estimators consistently outperform the ML estimators in terms of ER across all cases.
+\item Both ER and AEPR decrease as $m$ increases, as expected. Moreover, AEPR decreases with respect to $c$.
+\end{itemize}
+
+\begin{sidewaystable}[htbp]
+\centering
+\caption{{\small The ERs and AEPRs of the ML, Bayesian and E-Bayesian estimators for different values of $\theta$, $c$ and $m$.}}
+\scalebox{.9}{  \begin{tabular}{cclccccccccccccc}
+\hline
+              &   &    &                    &     &   E-Bayes     & $c=1$ &   &&  E-Bayes & $c=2$ &  && E-Bayes & $c=5$&\\ 
+\cline{6-8}\cline{10-12}\cline{14-16} 
+$\theta$  & $m$ &&ML&Bayes & $\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$ & $\widetilde{\theta}_{EB_3}$ &&$\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$& $\widetilde{\theta}_{EB_3}$&&$\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$& $\widetilde{\theta}_{EB_3}$\\
+\hline 
+2          & 3 & ER    & 1.04021& 0.66826  &   0.47196 &    0.65044   &  0.32889   &&  0.32692   &  0.41708  &   0.34772   &&  0.66794  &   0.39372    &  1.39212\\
+            &   &  AEPR  & &                          &   0.59545 &     0.67328 &    0.51761  &&   0.46843  &   0.55693 &    0.37993 &&    0.30725    & 0.39370    & 0.22080\\
+            & 4 & ER  & 0.67732 &0.51802     &    0.38027&     0.48933 &    0.29277 &&    0.28013 &    0.33974   &  0.29113&&     0.53834   &  0.33039   &  1.04901\\
+            &   &  AEPR  & &                          &    0.45935  &   0.50377   &  0.41492  &&   0.37735   &  0.43356   &  0.32115 &&    0.26097   &  0.32304   &  0.19889\\
+            & 5 & ER    & 0.49424 & 0.41771 &    0.32131 &    0.39160 &    0.26542  &&   0.25163  &   0.29153  &   0.26044  &&   0.45810 &    0.29258 &    0.84167\\
+            \vspace{2mm}
+            &    & AEPR & &                         & 0.37157   &  0.39958  &   0.34355  &&   0.31497 &    0.35339  &   0.27656  &&   0.22708   &  0.27387  &   0.18029\\
+3          & 3 & ER    & 1.56031 & 1.00239   &  0.54218   &  0.75434  &   0.43454  &&   0.56103  &   0.51936  &   0.91672 &&    1.75089  &   0.89394 &    3.81503\\
+            &   &  AEPR  & &                          &   0.78269   &  0.91048    & 0.65489  &&   0.59150   &  0.72646   &  0.45654  &&   0.36903   &   0.48904 &    0.24903\\
+            & 4 & ER    & 1.01599 & 0.77704   &  0.45778  &   0.59439  &   0.38645 &&    0.47055  &   0.43796  &   0.70814  &&   1.40137  &   0.73404  &   2.89857\\
+            &   &  AEPR  & &                            &   0.61930   &  0.69702   &  0.54158   &&  0.48830  &   0.57909  &   0.39752  &&   0.31981  &   0.40998  &   0.22964\\
+            & 5 & ER    &  0.74136 & 0.62656  &   0.40392  &   0.49504  &   0.35721 &&    0.41759  &   0.38853    & 0.59084   &&  1.17460 &    0.63428 &    2.32333\\
+\vspace{2mm}
+            &   &  AEPR  & &                           &   0.51009   &  0.56148   &  0.45870   &&  0.41533  &    0.48025  &   0.35041 &&    0.28294 &    0.35351  &   0.21238\\ 
+5          & 3 & ER    & 2.60052 & 1.67066  &   0.84107   &  0.92260   &  1.15415   &&  1.66986   &    0.98429   &   3.48030   &&  5.68379  &   2.88319  &  12.54792\\
+            &   &  AEPR  & &                            &   1.06830  &   1.29277   &  0.84383    && 0.76812   &  0.98425    &  0.55200   &&  0.45238   &  0.62446  &   0.28029\\
+            & 4 & ER    & 1.69331 & 1.29506   &  0.71593   &  0.76837   &  0.91820   &&  1.34585    & 0.82597    & 2.62253   &&  4.58687  &   2.34555  &   9.68886\\
+            &   &  AEPR  & &                          &   0.87239   &  1.01963    & 0.72516   &&  0.65242   &  0.80761   &  0.49723    && 0.40071   &  0.53650   &  0.26492\\
+            & 5 & ER    & 1.23560  & 1.04426  &   0.64231   &  0.67319  &   0.78900   &&  1.14524  &   0.73145 &    2.10417   &&  3.84716  &   1.99152  &   7.84223\\
+            &   &  AEPR  & &                          &    0.73579 &    0.83898  &   0.63259  &&   0.56771  &   0.68468   &  0.45074 &&    0.36113  &   0.47187 &    0.25039\\
+\hline
+\end{tabular}\label{t1}}
+\end{sidewaystable}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{An example}
+Here, we generate 5 upper records from Lomax$(3)$. The simulated records are 0.4092635, 2.0785400, 3.0170122, 6.4595842, 8.2539605. Under the settings stated in the previous section, we compute the ML, Bayesian, and E-Bayesian estimators of $\theta$. The results are given as follows:
+\begin{center}
+\small
+\begin{tabular}{lllllll}
+  \hline
+  &&&& E-Bayes & $c=1$&\\
+  \cline{5-7}
+  ML  & Bayes &&& $\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$ & $\widetilde{\theta}_{EB_3}$    \\  \hline  
+2.24714&2.49993&&&2.21925&2.35622&2.08228\\
+\hline \hline
+  E-Bayes & $c=2$&&& E-Bayes & $c=5$&\\
+  \cline{1-3}\cline{5-7}
+$\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$ & $\widetilde{\theta}_{EB_3}$ &&$\widetilde{\theta}_{EB_1}$ & $\widetilde{\theta}_{EB_2}$ & $\widetilde{\theta}_{EB_3}$ \\  
+ \hline
+ 1.91705&2.12054&1.71355&&1.40840&1.67868&1.13813
+\\ \hline
+\end{tabular}
+\end{center}
+We see that the ML, Bayes and E-Bayesian estimates for $c=1$ are rather close to the true value of $\theta$ in this example.
+\section*{Discussion and Conclusion}   
+In this paper, we studied E-Bayesian estimation of the Lomax distribution parameter under the precautionary loss function, based on upper record values. We obtained the corresponding\linebreak E-posterior risks for the E-Bayesian estimators. The simulation study demonstrated that the \linebreak E-Bayesian estimators can perform better than the ML and Bayesian estimators with respect to estimated risk. All numerical results were computed using R \citep{R:Core:Team:2026}.
+\section*{Acknowledgments}   
+AI tools were used only for language editing. The author is responsible for the scientific content and conclusions.
+\begin{thebibliography}{9}
+%\bibitem[Ahmadi et al. (2016)]{Ahmadi:et:al:2016}
+%Ahmadi, J., Basiri, E. and MirMostafaee, S.M.T.K. (2016), Optimal random sample size based on Bayesian prediction of exponential lifetime and application to real data, {\it Journal of the Korean Statistical Society}, {45}(2), 221-237. % Informative sample size is random
+
+%\bibitem[Ahmadi et al. (2012)]{Ahmadi:et:al:2012}
+%Ahmadi, J., MirMostafaee, S.M.T.K. and Balakrishnan, N. (2012), Bayesian prediction of $k$-record values based on progressively censored data from exponential distribution,
+%{\it Journal of Statistical Computation and Simulation}, {82}(1), 51-62.
+
+\bibitem[Alhamaidah et al.(2023)]{Alhamaidah:et:al:2023}
+Alhamaidah, A., Naghizadeh Qomi, M. and  Kiapour, A. (2023), Comparison of E-Bayesian estimators in Burr XII model using E-PMSE based on record values, 
+{\it Statistics, Optimization \& Information Computing},  {11}(3), 709-718.
+
+
+\bibitem[Arnold et al.(1998)]{Arnold:et:al:1998} 
+Arnold, B.C., Balakrishnan, N. and Nagaraja, H.N. (1998), {\it Records}, New York, John Wiley \& Sons.
+
+
+\bibitem[Berger(1985)]{Berger:1985}
+Berger, J.O. (1985), {\it Statistical decision theory and Bayesian analysis}, 2nd edn., New York, Springer-Verlag.
+
+\bibitem[Ghasabani et al. (2026)]{Ghasabani:et:al:2026}
+Ghasabani, R., MirMostafaee, S.M.T.K., Naghizadeh Qomi, M. and  Basiri, E. (2026), E-Bayesian estimation in the proportional hazard rate family based on progressively Type II censored data with fixed and random sample sizes, {\it Journal of the Indian Society for Probability and Statistics}, 27(1), 61-107.
+
+\bibitem[Han(1997)]{Han:1997}
+Han, M. (1997), The structure of hierarchical prior distribution and its applications, {\it Chinese Operations Research and Management Science},  {6}(3), 31-40.
+
+\bibitem[Han(2019)]{Han:2019}
+Han, M. (2019), E-Bayesian estimation and its E-MSE under the scaled squared error loss function, for exponential distribution as example.   {\it Communications in Statistics-Simulation and Computation}, \textbf{48}(6), 1880-1890.
+
+\bibitem[Han(2020a)]{Han:2020a}
+Han, M. (2020a), E-Bayesian estimation and its E-posterior risk of the exponential distribution parameter based on complete and type I censored samples, {\it Communications in Statistics-Theory and Methods}, {49}(8), 1858-1872.
+
+\bibitem[Han(2020b)]{Han:2020b}
+Han, M. (2020b), E-Bayesian estimations of the reliability and its E-posterior risk under different loss functions, {\it Communications in Statistics-Simulation and Computation}, {49}(6), 1527-1545.
+
+
+\bibitem[Norstorm(1996)]{Norstorm:1996}
+Norstorm, J.G. (1996), The use of precautionary loss function in risk analysis, {\it IEEE Transactions on Reliability}, 45(3), 400-403.
+
+\bibitem[Okasha et al.(2021)]{Okasha:et:al:2021}
+Okasha, H., Lio, Y. and Albassam, M. (2021), On reliability estimation of Lomax distribution under adaptive type-I progressive hybrid censoring scheme, {\it  Mathematics}, 9(22), 2903.
+
+\bibitem[R Core Team(2026)]{R:Core:Team:2026}
+R Core Team (2026), {\it R: A language and environment for statistical computing}, R Foundation for Statistical Computing, Vienna, Austria.
+
+
+   \end{thebibliography}
+ \end{document}
+
+

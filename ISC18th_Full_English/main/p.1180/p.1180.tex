@@ -1,0 +1,346 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{multirow}
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{EndSurvGAN for Synthetic Survival Data}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Z.Esfandiar}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf EndSurvGAN: End-to-End Survival-Aware Generative Modeling of Censored Time-to-Event Data
+}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Zahra Esfandiar$^{1,2}$  {{\bf Corresponding Author:} {\tt z.esfandiar@ut.ac.ir }} \\
+$^1$School of Mathematics, Statistics and Computer Science, University of Tehran , Iran$^1$\\
+$^2$Strategic Analyst, Saman Electronic Payment Company,Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent\textbf{Abstract:}
+Generating realistic synthetic survival data remains a challenging task due to the complex dependencies among covariates, survival times, and censoring indicators. Existing approaches often rely on stage-wise frameworks that separately model feature generation and survival outcomes, potentially weakening the coherence of the underlying joint survival distribution.
+
+In this paper, we propose \textbf{EndSurvGAN}, an end-to-end survival-aware generative adversarial network designed to jointly model covariates, survival times, and censoring indicators within a unified framework. By directly learning the joint survival distribution, the proposed model preserves both survival dynamics and censoring mechanisms during data generation.
+
+The proposed framework is evaluated on three benchmark survival datasets, namely SUPPORT, ACTG, and Rotterdam. Experimental results indicate improved distributional fidelity, better preservation of Kaplan Meier survival curves, and enhanced downstream predictive utility compared with existing tabular and survival-specific generative models. These findings suggest that end-to-end survival-aware generative modeling provides an effective framework for synthetic censored survival data generation.
+
+\noindent{\bf Keywords:} 
+Survival Analysis, Synthetic Data Generation, Generative Adversarial Networks, Censored Survival Data, Deep Survival Learning, Healthcare Analytics \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+\section{Introduction}
+Survival analysis is widely used to model time-to-event outcomes in healthcare, biomedical research, and reliability engineering. Despite substantial advances in survival modeling, access to high quality survival datasets remains limited due to privacy concerns, regulatory restrictions, and the high cost of data collection. Consequently, synthetic survival data generation has become an increasingly important research direction for privacy-preserving data sharing and methodological benchmarking.
+
+Recent generative models such as CTGAN and TVAE have demonstrated strong performance in synthetic tabular data generation \cite{Xu2019}. However, these methods are not specifically designed for censored survival data and often fail to preserve the complex dependencies among covariates, survival times, and censoring indicators. Moreover, existing survival-oriented generators commonly adopt stage-wise architectures that separately model covariates and survival outcomes, potentially weakening the coherence of the learned joint distribution.
+
+To address these limitations, we propose \textbf{EndSurvGAN}, an end-to-end survival aware generative adversarial network that jointly generates covariates, survival times, and censoring indicators within a unified framework. By directly modeling the joint survival distribution, the proposed framework is designed to preserve both survival dynamics and censoring mechanisms during data generation.
+The main contributions of this work are summarized as follows:
+\begin{itemize}
+	\item We propose \textbf{EndSurvGAN}, an end-to-end generative framework for synthetic censored survival data generation.
+	\item We incorporate survival aware and censoring aware regularization mechanisms to improve the coherence of generated survival samples.
+	\item Extensive experiments on three benchmark survival datasets demonstrate the effectiveness of the proposed framework compared with existing tabular and survival oriented generative models.
+\end{itemize}
+\section{Related Work}
+
+\subsection{Survival Analysis Models}
+Survival analysis methods aim to model time-to-event outcomes in the presence of censoring. Classical approaches such as the Cox proportional hazards model remain widely used in biomedical and clinical applications due to their interpretability and strong empirical performance \cite{Cox1972,Kleinbaum2012}. More recently, deep learning methods including DeepSurv and DeepHit have improved survival prediction by capturing complex nonlinear relationships between covariates and survival outcomes \cite{Katzman2018,Lee2018}.
+
+Despite their predictive strength, these models are primarily designed for survival risk estimation rather than synthetic data generation. Consequently, they do not explicitly address the problem of generating realistic censored survival data while preserving the joint relationships among covariates, survival times, and censoring indicators.
+\subsection{Synthetic Survival Data Generation}
+Recent advances in generative modeling, including GAN- and VAE-based approaches, have significantly improved synthetic tabular data generation \cite{Goodfellow2014,Kingma2014,Xu2019}. Representative models such as Gaussian Copula, CTGAN, and TVAE have demonstrated strong performance on heterogeneous tabular datasets \cite{Xu2019}. However, these methods are not specifically designed for censored survival data and therefore do not explicitly model survival times, censoring mechanisms, or survival-related dependencies.
+Several studies have extended generative modeling to survival analysis by combining feature generation with separate survival prediction procedures \cite{Gong2021,Lopez2023}. Nevertheless, most existing approaches adopt stage-wise architectures that model covariates and survival outcomes independently, potentially weakening the coherence of the learned joint survival distribution.
+Among survival-specific approaches, SurvivalGAN represents one of the earliest frameworks designed for synthetic censored survival data generation \cite{Norcliffe2023}. However, its sequential architecture does not directly optimize the joint distribution of covariates, survival times, and censoring indicators. These limitations motivate the development of end-to-end survival-aware generative models capable of directly learning the complete survival distribution within a unified framework.
+\section{Problem Formulation}
+Let
+\[
+\mathcal{D}
+=
+\left\{
+(\mathbf{x}_i,t_i,\delta_i)
+\right\}_{i=1}^{N}
+\]
+denote a survival dataset, where \(\mathbf{x}_i\in\mathbb{R}^{d}\) represents the covariate vector, \(t_i\in\mathbb{R}^{+}\) is the observed survival time, and \(\delta_i\in\{0,1\}\) denotes the event indicator. Here, \(\delta_i=1\) indicates an observed event, while \(\delta_i=0\) corresponds to a right-censored observation.
+Under the standard right-censoring framework, the observed time and event indicator are defined as
+\[
+T=\min(Y,C),
+\qquad
+\Delta=\mathbb{1}(Y\leq C),
+\]
+where \(Y\) and \(C\) denote the latent event time and censoring time, respectively, and \(\mathbb{1}(\cdot)\) is the indicator function.
+The objective of synthetic survival data generation is to learn the joint distribution
+\[
+P(\mathbf{X},T,\Delta)
+\]
+and generate synthetic samples
+\[
+(\mathbf{x}^{*},t^{*},\delta^{*})
+\sim
+P_G(\mathbf{X},T,\Delta),
+\]
+where \(P_G\) denotes the distribution learned by the generator. The generated samples should preserve the statistical structure, survival dynamics, and censoring patterns of the original dataset.
+\subsection{Training Objective}
+The objective of EndSurvGAN is to learn the joint distribution of covariates, survival times, and censoring indicators while preserving realistic survival dynamics and censoring mechanisms. The overall optimization objective combines adversarial learning with survival aware and censoring aware regularization terms:
+\begin{equation}
+	\mathcal{L}_{total}
+	=
+	\mathcal{L}_{adv}
+	+
+	\lambda_{surv}\mathcal{L}_{surv}
+	+
+	\lambda_{cens}\mathcal{L}_{cens},
+\end{equation}
+where \(\mathcal{L}_{adv}\) denotes the adversarial loss, \(\mathcal{L}_{surv}\) represents the survival-consistency regularization term, \(\mathcal{L}_{cens}\) corresponds to the censoring aware regularization term, and \(\lambda_{surv}\) and \(\lambda_{cens}\) control their relative contributions.
+For stable adversarial training, EndSurvGAN adopts the Wasserstein GAN with Gradient Penalty (WGAN-GP) objective \cite{Gulrajani2017}:
+\begin{equation}
+	\mathcal{L}_{adv}
+	=
+	\mathbb{E}_{\mathbf{s}^{*}\sim P_G}
+	\left[
+	D(\mathbf{s}^{*})
+	\right]
+	-
+	\mathbb{E}_{\mathbf{s}\sim P_{\mathrm{data}}}
+	\left[
+	D(\mathbf{s})
+	\right]
+	+
+	\lambda_{gp}
+	\mathbb{E}_{\hat{\mathbf{s}}}
+	\left(
+	\left\|
+	\nabla_{\hat{\mathbf{s}}}
+	D(\hat{\mathbf{s}})
+	\right\|_2
+	-1
+	\right)^2,
+\end{equation}
+where
+\[
+\mathbf{s}=(\mathbf{x},t,\delta)
+\]
+denotes a survival sample and \(\hat{\mathbf{s}}\) represents interpolated observations used for gradient penalty computation.
+To preserve the dependency between covariates and survival outcomes, a survival consistency regularization term is introduced:
+\begin{equation}
+	\mathcal{L}_{surv}
+	=
+	D_{KL}
+	\Big(
+	P_{\mathrm{data}}(T|\mathbf{X})
+	\,\Vert\,
+	P_G(T^{*}|\mathbf{X}^{*})
+	\Big),
+\end{equation}
+where \(D_{KL}(\cdot)\) denotes the Kullback Leibler divergence computed between empirical conditional distributions estimated from mini batch samples.
+Similarly, a censoring aware regularization term is defined as
+\begin{equation}
+	\mathcal{L}_{cens}
+	=
+	D_{KL}
+	\Big(
+	P_{\mathrm{data}}(\Delta|\mathbf{X})
+	\,\Vert\,
+	P_G(\Delta^{*}|\mathbf{X}^{*})
+	\Big),
+\end{equation}
+which encourages the generated samples to reproduce realistic censoring patterns observed in the original dataset.
+By jointly optimizing these objectives, EndSurvGAN generates synthetic survival samples that preserve both the statistical structure and survival characteristics of the underlying population.
+\section{Experimental Setup}
+EndSurvGAN was evaluated on three benchmark survival datasets: SUPPORT, ACTG, and Rotterdam. Table~\ref{tab:dataset_characteristics} summarizes their characteristics after preprocessing.
+\begin{table}[ht]
+	\centering
+	\caption{Characteristics of the benchmark survival datasets after preprocessing.}
+	\label{tab:dataset_characteristics}
+	\small
+	\begin{tabular}{lccc}
+		\hline
+		Dataset & Samples & Features & Censoring (\%) \\
+		\hline
+		SUPPORT   & 9,105 & 14 & 32 \\
+		ACTG      & 2,467 & 17 & 64 \\
+		Rotterdam & 2,982 & 7  & 57 \\
+		\hline
+	\end{tabular}
+\end{table}
+\paragraph{Baselines}
+EndSurvGAN was compared against Gaussian Copula, TVAE \cite{Xu2019}, CTGAN \cite{Xu2019}, and SurvivalGAN \cite{Norcliffe2023}. For Gaussian Copula, TVAE, and CTGAN, survival outcomes were treated as ordinary tabular variables, whereas SurvivalGAN and EndSurvGAN explicitly model survival related dependencies.
+\paragraph{Evaluation Metrics.}
+Performance was assessed using distributional fidelity (KS/JS), survival structure preservation (Kaplan Meier distance), and downstream predictive utility measured by the C-index of a Cox model trained on synthetic data and evaluated on real data.
+\paragraph{Implementation Details.}
+All models were implemented in PyTorch. The generator and discriminator consisted of three hidden layers with 256 units each. Training was performed using Adam with learning rate \(2\times10^{-4}\), batch size 256, latent dimension 128, and WGAN-GP regularization \((\lambda_{gp}=10)\). All models were trained for 200 epochs.
+\section{Results}
+Table~\ref{tab:main_results} reports the performance of all methods across the three benchmark datasets. Lower values indicate better performance for KS/JS and KM-Distance, whereas higher values indicate better performance for C-index.
+\begin{table*}[t]
+	\centering
+	\caption{Comparison of synthetic data generation methods across benchmark survival datasets. Lower values are better for KS/JS and KM-Distance, while higher values are better for C-index.}
+	\label{tab:main_results}
+	\small
+	\begin{tabular}{llccc}
+		\hline
+		Dataset & Method & KS/JS$\downarrow$ & KM-Distance$\downarrow$ & C-index$\uparrow$ \\
+		\hline	
+		\multirow{5}{*}{SUPPORT}
+		& Gaussian Copula & 0.182 & 0.145 & 0.60 \\
+		& TVAE            & 0.134 & 0.118 & 0.63 \\
+		& CTGAN           & 0.118 & 0.107 & 0.65 \\
+		& SurvivalGAN     & 0.101 & 0.086 & 0.68 \\
+		& \textbf{EndSurvGAN} & \textbf{0.082} & \textbf{0.061} & \textbf{0.71} \\
+		\hline
+		\multirow{5}{*}{ACTG}
+		& Gaussian Copula & 0.165 & 0.138 & 0.61 \\
+		& TVAE            & 0.128 & 0.112 & 0.64 \\
+		& CTGAN           & 0.109 & 0.101 & 0.66 \\
+		& SurvivalGAN     & 0.095 & 0.081 & 0.69 \\
+		& \textbf{EndSurvGAN} & \textbf{0.078} & \textbf{0.058} & \textbf{0.72} \\
+		\hline
+		\multirow{5}{*}{Rotterdam}
+		& Gaussian Copula & 0.174 & 0.121 & 0.64 \\
+		& TVAE            & 0.121 & 0.103 & 0.67 \\
+		& CTGAN           & 0.113 & 0.094 & 0.69 \\
+		& SurvivalGAN     & 0.097 & 0.079 & 0.71 \\
+		& \textbf{EndSurvGAN} & \textbf{0.081} & \textbf{0.063} & \textbf{0.74} \\
+		\hline
+	\end{tabular}
+\end{table*}
+EndSurvGAN achieved the best overall performance across all datasets, yielding lower KS/JS and KM-Distance values and higher C-index scores than competing methods.
+\subsection{Ablation Study}
+Table~\ref{tab:ablation} shows that both survival aware and censoring aware regularization contribute to performance improvements, while the two-stage architecture produces the weakest results.
+\begin{table}[h]
+	\centering
+	\caption{Ablation study on the SUPPORT dataset.}
+	\label{tab:ablation}
+	\small
+	\begin{tabular}{lc}
+		\hline
+		Model Variant & C-index$\uparrow$ \\
+		\hline
+		Two-Stage Generator & 0.67 \\
+		EndSurvGAN w/o Censoring Loss & 0.69 \\
+		EndSurvGAN w/o Survival Loss & 0.68 \\
+		Full EndSurvGAN & \textbf{0.71} \\
+		\hline
+	\end{tabular}
+\end{table}
+\section{Conclusion}
+This paper proposed \textbf{EndSurvGAN}, an end-to-end survival aware generative adversarial network for synthetic censored survival data generation. By jointly modeling covariates, survival times, and censoring indicators, the proposed framework overcomes limitations of stage-wise approaches and preserves important survival characteristics of the original data.
+Experiments on three benchmark datasets demonstrated improvements in distributional fidelity, survival structure preservation, and downstream predictive utility. Future work will investigate competing risk, recurrent event, and privacy preserving extensions of the proposed framework.
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+	
+	\bibitem[Cox(1972)]{Cox1972}
+	Cox, D. R.
+	Regression Models and Life-Tables.
+	\textit{Journal of the Royal Statistical Society Series B}, 1972.
+	
+	\bibitem[Kleinbaum and Klein(2012)]{Kleinbaum2012}
+	Kleinbaum, D. G., and Klein, M.
+	\textit{Survival Analysis: A Self-Learning Text}.
+	Springer, 2012.
+	
+	\bibitem[Therneau and Grambsch(2000)]{Therneau2000}
+	Therneau, T. M., and Grambsch, P. M.
+	\textit{Modeling Survival Data: Extending the Cox Model}.
+	Springer, 2000.
+	
+	\bibitem[Katzman et~al.(2018)]{Katzman2018}
+	Katzman, J. L., et~al.
+	DeepSurv: Personalized Treatment Recommender System Using a Cox Proportional Hazards Deep Neural Network.
+	\textit{BMC Medical Research Methodology}, 2018.
+	
+	\bibitem[Lee et~al.(2018)]{Lee2018}
+	Lee, C., Zame, W. R., Yoon, J., and van der Schaar, M.
+	DeepHit: A Deep Learning Approach to Survival Analysis with Competing Risks.
+	In \textit{Proceedings of AAAI}, 2018.
+	
+	\bibitem[Gensheimer and Narasimhan(2019)]{Gensheimer2019}
+	Gensheimer, M. F., and Narasimhan, B.
+	A Scalable Discrete-Time Survival Model for Neural Networks.
+	\textit{PeerJ Computer Science}, 2019.
+	
+	\bibitem[Lee and van der Schaar(2020)]{Lee2020}
+	Lee, C., and van der Schaar, M.
+	Dynamic-DeepHit: A Deep Learning Approach for Dynamic Survival Analysis.
+	\textit{IEEE Journal of Biomedical and Health Informatics}, 2020.
+	
+	\bibitem[Ren et~al.(2022)]{Ren2022}
+	Ren, Y., et~al.
+	DeepTime: Survival Analysis with Recurrent Networks.
+	\textit{Pattern Recognition}, 2022.
+	
+	\bibitem[Goodfellow et~al.(2014)]{Goodfellow2014}
+	Goodfellow, I., et~al.
+	Generative Adversarial Nets.
+	In \textit{Proceedings of NeurIPS}, 2014.
+	
+	\bibitem[Kingma and Welling(2014)]{Kingma2014}
+	Kingma, D. P., and Welling, M.
+	Auto-Encoding Variational Bayes.
+	\textit{arXiv:1312.6114}, 2014.
+	
+	\bibitem[Xu et~al.(2019)]{Xu2019}
+	Xu, L., Skoularidou, M., Cuesta-Infante, A., and Veeramachaneni, K.
+	Modeling Tabular Data Using Conditional GAN.
+	In \textit{Proceedings of NeurIPS}, 2019.
+	
+	\bibitem[Yoon et~al.(2019)]{Yoon2019}
+	Yoon, J., Jarrett, D., and van der Schaar, M.
+	Time-series Generative Adversarial Networks.
+	In \textit{Proceedings of NeurIPS}, 2019.
+	
+	\bibitem[Yoon et~al.(2020)]{Yoon2020}
+	Yoon, J., Jarrett, D., and van der Schaar, M.
+	Adversarially Learned Privacy Preservation for Health Data.
+	\textit{IEEE Journal of Biomedical and Health Informatics}, 2020.
+	
+	\bibitem[Zhang et~al.(2017)]{Zhang2017}
+	Zhang, J., et~al.
+	PrivBayes: Private Data Release via Bayesian Networks.
+	\textit{ACM Transactions on Database Systems}, 2017.
+	
+	\bibitem[Gondara and Wang(2018)]{Gondara2018}
+	Gondara, L., and Wang, K.
+	MIDA: Multiple Imputation Using Denoising Autoencoders.
+	In \textit{Proceedings of the IEEE International Conference on Data Mining Workshops}, 2018.
+	
+	\bibitem[Gong et~al.(2021)]{Gong2021}
+	Gong, T., et~al.
+	Synthetic Survival Data Generation via Adversarial Learning.
+	\textit{IEEE Transactions on Artificial Intelligence}, 2021.
+	
+	\bibitem[Lopez et~al.(2023)]{Lopez2023}
+	Lopez, E., et~al.
+	Generative Survival Modeling for Biomedical Data.
+	\textit{Pattern Recognition Letters}, 2023.
+	
+	\bibitem[Chen et~al.(2024)]{Chen2024}
+	Chen, L., et~al.
+	DeepSyn: End-to-End Synthetic Survival Data Generation for Clinical Prediction.
+	\textit{IEEE Transactions on Medical Imaging}, 2024.
+	
+	\bibitem[Tang et~al.(2024)]{Tang2024}
+	Tang, Q., et~al.
+	MedFuseGAN: Multi-Modal Generative Model for Survival Analysis.
+	In \textit{Proceedings of ICML}, 2024.
+\bibitem[Norcliffe et~al.(2023)]{Norcliffe2023}
+Norcliffe, A., Cebere, B., Imrie, F., Li\`o, P., and van der Schaar, M.
+SurvivalGAN: Generating Time-to-Event Data for Survival Analysis.
+\textit{arXiv preprint arXiv:2302.12749}, 2023.
+
+\end{thebibliography}
+
+
+ \end{document}
+

@@ -1,0 +1,312 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{adjustbox}
+\usepackage{placeins}
+\usepackage{float}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Feature Ranking and Incremental Selection for High-Dimensional Classification}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Feature Ranking and Incremental Selection for High-Dimensional Classification}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+
+
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+High-dimensional datasets in genomics pose classification challenges due to the curse of dimensionality and redundant features. Feature selection addresses this by identifying informative subsets to improve model interpretability, efficiency, and performance. However, many existing feature selection methods lack stability, meaning that small changes in the data can lead to drastically different selected feature subsets. This paper introduces an integrated stability-ranked feature selection (ISRS) framework designed to address this limitation. ISRS combines ensemble-based feature ranking with a novel stability metric to identify a predictive feature subset. We evaluate ISRS on two real datasets, demonstrating its superior stability and competitive or improved classification accuracy compared to established regularized methods like Lasso and Elastic Net.
+ 
+\noindent{\bf Keywords:} 
+Feature ranking, Feature selection, Selection stability, Support vector machine. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 62J07 $, $\rm 62F07$, $\rm 62H30$. \\ 
+\hspace{1cm}\rule{\textwidth}{0.2mm}  
+%%%%%%%%%%%%%%
+\section{Introduction}
+
+The proliferation of high-dimensional data in scientific research and industry has made feature selection an indispensable step in building effective machine learning models. Datasets with a large number of features compared to samples, often termed ``high-dimensional," can lead to overfitting, increased training times, and reduced model interpretability \citep{hastie2009elements}. The primary goal of feature selection is to identify a subset of relevant features that are most predictive of the outcome variable, thereby simplifying the model and potentially improving its generalization performance.
+
+A critical, yet often overlooked, aspect of feature selection is its stability. A stable feature selection method produces consistent results when applied to slightly different subsets of the data or when the data is perturbed. Instability can arise from various sources, including the inherent randomness in iterative algorithms, sensitivity to initial conditions, or the presence of highly correlated features. Unstable feature selection can lead to unreliable model building, as the identified feature sets may not be representative of the underlying data structure \citep{meinshausen2010stability}.
+
+Existing feature selection techniques often fall into three categories: filter, wrapper, and embedded methods. Filter methods assess feature relevance independently of any learning algorithm, typically using statistical measures. Wrapper methods employ a specific learning algorithm to evaluate feature subsets, optimizing for predictive performance. Embedded methods integrate feature selection within the model training process, often through regularization. While many of these methods achieve good predictive accuracy, their stability can be a concern, especially in high-dimensional settings. For instance, penalized regression methods like Lasso \citep{Tibshirani1996}, Elastic Net \citep{Zou2005}, SCAD \citep{Fan2001}, and MCP \citep{Zhang2010} are popular embedded methods that perform feature selection by shrinking some coefficients to zero. However, their stability can be compromised by the presence of highly correlated predictors. When groups of correlated features are nearly equally predictive, Lasso tends to arbitrarily select one from the group, leading to instability. Elastic Net attempts to mitigate this by performing group-wise shrinkage, but its stability can still be sensitive to parameter choices and data variations.
+
+In this paper, we propose an Integrated Stability-Ranked Feature Selection (ISRS) framework. Our method leverages the power of ensemble learning to generate multiple feature rankings and then employs a robust stability metric to select a final feature subset. The core idea is to identify features that are consistently ranked highly across different data subsamples and exhibit high predictive power, thereby ensuring both efficacy and reliability. 
+
+
+\section{Proposed Method}
+The Integrated Stability-Ranked Feature Selection (ISRS) framework is designed to identify a stable and predictive subset of features for high-dimensional classification tasks. Our approach is grounded in the principle that features consistently deemed important across multiple perturbed versions of the dataset are more likely to be genuinely informative and contribute to robust model performance. ISRS comprises two main components: (1) an ensemble-based frequency ranking of features, and (2) a stability-driven selection mechanism.
+
+\subsection{Ensemble-Based Frequency Ranking}
+
+In this stage, an ensemble procedure is implemented by repeating the following steps $B$ times: 
+(i) partitioning the dataset into training and test sets, 
+(ii) fitting a penalized logistic regression model (e.g., LASSO, Elastic Net, SCAD) to the training set, and
+(iii) identifying the selected features. Upon completion of $B$ iterations, each feature is assigned a frequency score, defined as the proportion of resamples in which the feature was selected. Specifically, the frequency score $F_j$ for feature $j$ is given by:
+\begin{equation}
+F_j = \frac{1}{B} \sum_{b=1}^B \mathbb{I}(j \in S^{(b)}),
+\end{equation}
+where $\mathbb{I}(\cdot)$ denotes the indicator function and $S^{(b)}$ represents the set of features selected in the $b$-th random split. This ensemble approach prioritizes features that demonstrate both predictive power and selection stability across different subsamples.
+
+\subsection{Stability-Driven Feature Selection}
+
+Once a stable ranking of features has been obtained, the next step is to select a subset of features. A common strategy is to choose the top $k$ features from the ranked list. However, determining the optimal value of $k$ is often challenging and typically requires cross-validation, which can be computationally expensive in high-dimensional settings. To address this issue, we introduce a stability-driven selection mechanism that accounts for both ranked importance and consistency of feature selection. Specifically, we incrementally evaluate the ranked features using a chosen classifier. Starting with the top-ranked feature, we construct models by progressively adding one feature at a time according to the ranking. For each subset size $\ell$, the classifier's performance is assessed across $R$ repeated train--test splits using a chosen metric (e.g., AUC, accuracy, sensitivity, or specificity). The final subset $S^{*}$ is selected as the one that achieves the best average performance, or, alternatively, the smallest subset whose performance is comparable to the best.
+ 
+\begin{algorithm}[h!]
+	\caption{Integrated Stability-Ranked Feature Selection(ISRS)}
+	\label{Alg1}
+	\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+	\Input{Dataset $\textbf{D}=\{(\mathbf{X}_i,y_i)\}_{i=1}^n$ with $p$ features; Number of penalized logistic regression repetitions $B$; Classifier for post-selection (e.g. SVM);
+		Evaluation metric to choose final subset $ m $ (e.g. AUC); evaluation repeats in classification step $R$  
+	}
+	\Output{Ranked features $\mathbf{X}^{*}=(X_{1}^{*},\dots,X_{p}^{*})$; final subset $S^*$}
+	\BlankLine
+	% Stage A
+	Initialize counts $\mathbf{c}=(c_1,\dots, c_p)= \mathbf{0}_p$\;
+	\For{$b\leftarrow 1$ \KwTo $B$}{
+		Stratified random split $D \rightarrow (D^{\text{train}}_b, D^{\text{test}}_b)$\;
+		Fit penalized logistic regression on $D^{\text{train}}_b$, select $\lambda$ by CV, obtain coefficients $\boldsymbol{\beta}^{(b)}$\;
+		$S^{(b)} \leftarrow \{ j : \beta^{(b)}_j \neq 0 \}$\;
+		\ForEach{$j \in S^{(b)}$}{ $c_j \leftarrow c_j + 1$ }
+	}
+	Compute frequencies $f_j \leftarrow \dfrac{c_j}{N} $ for $j=1,\dots,p$\;
+	Sort features by $f_j$ in descending order to produce ranked features  $\textbf{X}^{*}=(X_{1}^{*},\dots,X_{p}^{*})$\;
+	\BlankLine
+	% Stage B
+	$best \leftarrow 0$, $S^* \leftarrow \emptyset$\;
+	\For{$\ell \leftarrow 1$ \KwTo $p$}{
+		$S_\ell \leftarrow \{X_{1}^{*},\dots,X_{\ell}^{*}\}$\;
+		\tcc{Evaluation of subset $S_\ell$}
+		Let $\{m_t\}_{t=1}^R \leftarrow \varnothing$\;
+		\For{$t \leftarrow 1$ \KwTo $R$}{
+			Stratified split $D \rightarrow (D^{\text{train}}_t, D^{\text{test}}_t)$\;
+			Train a classifier (e.g. SVM, KNN, Na\"ive Bayes)  on $D^{\text{train}}_t$ using features $S_\ell$\;
+			Compute metric $m_t$ on $D^{\text{test}}_t$\;
+		}
+		$\bar m_\ell \leftarrow \frac{1}{R}\sum_{t=1}^R m_t$\;
+		\If{$\bar m_\ell > best$ \textbf{or} ($|\bar m_\ell - best|<\varepsilon$ and $|S_\ell| < |S^*|$)}{
+			$best \leftarrow \bar m_\ell$\;
+			$S^* \leftarrow S_\ell$\;
+		}
+	}
+	\Return{$\mathbf{X}^{*}, S^*$}
+\end{algorithm}
+
+The proposed approach has several practical advantages: it produces a ranked, interpretable feature list that reflects selection stability; it reduces the risk of over-relying on a single penalized fit; and it directly links selection to classifier performance, allowing the researcher to identify a compact subset of predictors that empirically improves or preserves classification accuracy.\\
+
+\vspace*{2cm}
+
+
+
+
+\section{Data Analysis}\label{Sec4}
+\setlength{\parskip}{-2pt}
+Our proposed framework was evaluated on two publicly available, high-dimensional gene expression datasets with binary outcomes. These datasets are well-established benchmarks in computational biology and feature selection research due to their challenging characteristics, including a large number of predictors relative to the sample size. The key specifications of each dataset are as follows:
+\begin{itemize}
+	\item \textbf{DLBCL dataset}:
+	The Diffuse Large B-cell Lymphoma (DLBCL) dataset was created to distinguish between two clinically distinct lymphomas: DLBCL and follicular lymphoma (FL). The dataset contains gene expression data for 77 patient samples, with 58 classified as DLBCL and 19 as FL. The high dimensionality of the data, with $ p = 7070 $ features (genes), poses a substantial challenge for stable feature selection. The dataset is available at \url{https://file.biolab.si/biolab/supp/bi-cancer/projections/info/DLBCL.html}.
+	
+	\item \textbf{GSE15852 datasets}:
+	This dataset is publicly available microarray gene expression datasets from the NCBI Gene Expression Omnibus (GEO) database\footnote{http://www.ncbi.nlm.nih.gov/geo/}. It comprises gene expression data from 86 human breast tissue samples, which includes 43 tumors and their paired normal control tissues, with over $ 22000 $ features. 
+\end{itemize}
+
+
+The proposed framework was applied to both high-dimensional datasets using a comprehensive set of models. For the Feature Ranking stage, four penalized logistic regression methods were employed: Adaptive Lasso, Elastic Net ($\alpha$=0.5), SCAD, and MCP. For each method, the optimal tuning parameter $\lambda$ was selected via 5-fold cross-validation. This entire process was repeated N=100 times to generate a frequency-based ranking of the features.
+
+{ For the incremental feature selection stage, predictive performance was evaluated with four benchmark classifiers: K-Nearest Neighbors (KNN), Random Forest, Na\"ive Bayes, and a Support Vector Machine (SVM) employing both linear and Radial Basis Function (RBF) kernels. To ensure a fair and reproducible comparison across classifiers, we adopted commonly used and computationally efficient baseline hyperparameter settings. 
+	
+	The predictive performance of each model was assessed using four standard metrics: Accuracy, Sensitivity, Specificity, and area under the curve (AUC). The AUC was specifically chosen as the stopping criterion for the incremental feature selection process. These metrics are defined as follows:
+	\begin{align*}
+	&\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN},\\
+	&\text{Sensitivity} = \frac{TP}{TP + FN}, \qquad
+	\text{Specificity} = \frac{TN}{TN + FP}, 
+	\end{align*}
+	where $ TP $, $ TN $, $ FP $, and $ FN $ represent the number of true positives, true negatives, false positives, and false negatives from the confusion matrix, respectively. A higher value for Sensitivity and Specificity, along with a higher Accuracy (or lower misclassification error), indicates better classifica  tion performance. Furthermore, the AUC quantifies a binary classifier's ability to distinguish between classes, ranging from 0.5 (random guessing) to 1.0 (perfect discrimination). The evaluation of each feature subset was repeated $R = 10$ times to obtain a reliable and stable assessment of classifier performance. 
+	
+	
+	All computations were performed in \verb|R| (version 4.3.2). 
+	Penalized logistic regression models including Adaptive Lasso, Elastic Net, SCAD, and MCP were fitted using the \verb|ncvreg| and \verb|glmnet| packages. The incremental feature selection procedure and classifier training (KNN, Random Forest, Naive Bayes, Linear SVM, and RBF SVM) were implemented using the \verb|caret|, \verb|e1071|, and \verb|randomForest| packages.
+	
+}
+
+\subsubsection{Results}
+
+This subsection provides a detailed analysis of two representative datasets, DLBCL and GSE15852, to illustrate the performance of the proposed framework, with a focus on feature reduction, stability, and predictive accuracy. \\
+
+\noindent \textbf{$ \bullet $ DLBCL Dataset}\\
+\noindent The DLBCL dataset serves as our first case study, providing a challenging high-dimensional context to evaluate the performance of the proposed framework. The detailed numerical results for all 24 model configurations are summarized in Table \ref{tab:dlbcl_details}. The results highlight the consistent superiority of our two-stage framework over the base penalized regression models. Across all four regularizers, the models in the proposed framework achieved higher mean AUC and Accuracy values while substantially reducing the number of selected features. 
+
+
+\begin{table}[h!]
+	\centering
+	\small
+	\caption{Results for the DLBCL Dataset}
+	\label{tab:dlbcl_details}
+	\begin{tabular}{|l|l|ccccc|}
+		\hline
+		Regularizer & Classifier & Num. & AUC & Accuracy & Sensitivity & Specificity \\
+		\hline \hline
+		{Elastic Net }
+		& Base model   & 54 & $0.93 \pm 0.05$ & $0.89 \pm 0.07$ & $0.98 \pm 0.06$ & $0.88 \pm 0.08$ \\
+		& KNN (K=5)    & 9  & $0.97 \pm 0.02$ & $0.94 \pm 0.04$ & $1.00 \pm 0.00$ & $0.93 \pm 0.04$ \\
+		& Random Forest& 7  & $0.97 \pm 0.04$ & $0.96 \pm 0.05$ & $0.98 \pm 0.07$ & $0.95 \pm 0.05$ \\
+		& Naïve Bayes  & 9  & $0.98 \pm 0.02$ & $0.96 \pm 0.02$ & $0.99 \pm 0.03$ & $0.95 \pm 0.02$ \\
+		& Linear SVM   & 10 & $0.97 \pm 0.02$ & $0.95 \pm 0.04$ & $1.00 \pm 0.00$ & $0.94 \pm 0.04$ \\
+		& RBF SVM      & 9  & $0.99 \pm 0.01$ & $0.97 \pm 0.02$ & $1.00 \pm 0.00$ & $0.97 \pm 0.02$ \\
+		\hline
+		{MCP}
+		& Base model   & 4  & $0.85 \pm 0.09$ & $0.81 \pm 0.07$ & $0.91 \pm 0.02$ & $0.80 \pm 0.08$ \\
+		& KNN (K=5)    & 6  & $0.97 \pm 0.01$ & $0.94 \pm 0.03$ & $1.00 \pm 0.00$ & $0.94 \pm 0.03$ \\
+		& Random Forest& 10 & $0.97 \pm 0.03$ & $0.95 \pm 0.05$ & $0.99 \pm 0.04$ & $0.95 \pm 0.05$ \\
+		& Naïve Bayes  & 10 & $0.99 \pm 0.01$ & $0.98 \pm 0.02$ & $1.00 \pm 0.00$ & $0.97 \pm 0.02$ \\
+		& Linear SVM   & 3  & $0.96 \pm 0.03$ & $0.93 \pm 0.04$ & $0.99 \pm 0.04$ & $0.93 \pm 0.05$ \\
+		& RBF SVM      & 4  & $0.98 \pm 0.03$ & $0.98 \pm 0.03$ & $0.99 \pm 0.06$ & $0.98 \pm 0.03$ \\
+		\hline
+		{SCAD}
+		& Base model   & 13 & $0.90 \pm 0.07$ & $0.85 \pm 0.06$ & $0.96 \pm 0.01$ & $0.84 \pm 0.07$ \\
+		& KNN (K=5)    & 15 & $0.98 \pm 0.01$ & $0.96 \pm 0.02$ & $1.00 \pm 0.00$ & $0.95 \pm 0.03$ \\
+		& Random Forest& 7  & $0.97 \pm 0.04$ & $0.95 \pm 0.04$ & $0.99 \pm 0.06$ & $0.95 \pm 0.05$ \\
+		& Naïve Bayes  & 7  & $0.99 \pm 0.02$ & $0.98 \pm 0.02$ & $0.99 \pm 0.03$ & $0.98 \pm 0.03$ \\
+		& Linear SVM   & 5  & $0.96 \pm 0.02$ & $0.93 \pm 0.04$ & $1.00 \pm 0.00$ & $0.92 \pm 0.05$ \\
+		& RBF SVM      & 12 & $0.99 \pm 0.02$ & $0.98 \pm 0.02$ & $0.99 \pm 0.03$ & $0.98 \pm 0.02$ \\
+		\hline
+		{Adaptive Lasso}
+		& Base model   & 12 & $0.77 \pm 0.14$ & $0.75 \pm 0.11$ & $0.81 \pm 0.24$ & $0.75 \pm 0.11$ \\
+		& KNN (K=5)    & 18 & $0.87 \pm 0.06$ & $0.81 \pm 0.05$ & $0.95 \pm 0.13$ & $0.79 \pm 0.06$ \\
+		& Random Forest& 17 & $0.91 \pm 0.05$ & $0.90 \pm 0.05$ & $0.92 \pm 0.12$ & $0.90 \pm 0.06$ \\
+		& Naïve Bayes  & 12 & $0.89 \pm 0.09$ & $0.80 \pm 0.16$ & $0.99 \pm 0.04$ & $0.78 \pm 0.18$ \\
+		& Linear SVM   & 14 & $0.87 \pm 0.07$ & $0.84 \pm 0.07$ & $0.92 \pm 0.14$ & $0.83 \pm 0.08$ \\
+		& RBF SVM      & 18 & $0.89 \pm 0.08$ & $0.90 \pm 0.07$ & $0.87 \pm 0.17$ & $0.91 \pm 0.08$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+An important observation is the framework’s ability to maintain extremely sparse solutions without compromising predictive accuracy. For instance, Na\"ive Bayes achieved an AUC of 0.99 using SCAD while selecting only 7 features—nearly half of the 13 features selected by the base SCAD model. Similarly, the RBF SVM with MCP regularization achieved an AUC of 0.98 using only 4 features, demonstrating the capability of the proposed method to isolate a minimal yet highly informative subset of genes. Beyond improvements in mean predictive performance, the framework consistently produced lower standard deviations across all metrics, indicating enhanced model stability. This improvement in reliability is particularly evident in Na\"ive Bayes and SVM-based approaches. For example, the standard deviation of the base Elastic Net model’s AUC was 0.05, whereas this value dropped to 0.01 when using the RBF SVM. These findings demonstrate that the proposed method yields models that are not only more accurate but also more stable and statistically reliable.
+
+
+\vspace{1cm}
+\noindent \textbf{$ \bullet $ GSE15852 Dataset}\\
+\noindent The GSE15852 dataset serves as our second case study, and the results of all 24 model configurations are reported in Table \ref{tab:gse15852_results}. The results highlight clear and consistent benefits of the proposed two-stage framework over the base penalized regression models. For all four regularizers, the models produced by our framework achieved higher mean AUC and Accuracy values, while also exhibiting statistically significant improvements in most cases. These improvements are particularly notable for the SCAD and MCP regularizers, where the base models yielded relatively modest AUC values (0.84 and 0.83, respectively), yet the corresponding two-stage framework models reached AUC levels as high as 0.99.
+	
+	A major advantage of the proposed approach lies in its ability to achieve high predictive accuracy using remarkably sparse feature subsets. For instance, the base SCAD model selected 22 features, whereas the proposed method by RBF SVM classifier reached an AUC of 0.99 using only 6 features. Similar patterns emerge under MCP, where several classifiers achieved AUC values of 0.97 or higher with fewer than 15 selected features. These results confirm that the frequency-based ranking mechanism effectively isolates the truly informative features within the high-dimensional gene-expression space.
+	
+	\begin{table}[h!]
+		\centering
+		\caption{Results for the GSE15852 Dataset}
+		\label{tab:gse15852_results}
+		\small
+		\begin{tabular}{|l|l|ccccc|}
+			\hline
+			Regularizer & Classifier & Num. & AUC & Accuracy & Sensitivity & Specificity \\
+			\hline \hline
+			{Elastic Net}
+			& Base model    & 50 & $0.89 \pm 0.06$ & $0.89 \pm 0.06$ & $0.90 \pm 0.08$ & $0.88 \pm 0.08$ \\
+			& KNN (k=5)     & 3  & $0.92 \pm 0.07$ & $0.92 \pm 0.07$ & $0.93 \pm 0.09$ & $0.92 \pm 0.09$ \\
+			& Random Forest & 9  & $0.93 \pm 0.06$ & $0.93 \pm 0.06$ & $0.98 \pm 0.04$ & $0.88 \pm 0.11$ \\
+			& Naïve Bayes   & 17 & $0.90 \pm 0.08$ & $0.90 \pm 0.08$ & $0.90 \pm 0.12$ & $0.90 \pm 0.08$ \\
+			& Linear SVM    & 9  & $0.88 \pm 0.07$ & $0.88 \pm 0.07$ & $0.89 \pm 0.10$ & $0.87 \pm 0.10$ \\
+			& RBF SVM       & 19 & $0.96 \pm 0.05$ & $0.96 \pm 0.05$ & $0.98 \pm 0.04$ & $0.94 \pm 0.04$ \\
+			\hline
+			{MCP}
+			& Base model    & 15 & $0.83 \pm 0.09$ & $0.83 \pm 0.09$ & $0.81 \pm 0.15$ & $0.85 \pm 0.13$ \\
+			& KNN (k=5)     & 13 & $0.97 \pm 0.03$ & $0.98 \pm 0.03$ & $1.00 \pm 0.00$ & $0.96 \pm 0.06$ \\
+			& Random Forest & 13 & $0.97 \pm 0.03$ & $0.98 \pm 0.03$ & $1.00 \pm 0.00$ & $0.96 \pm 0.06$ \\
+			& Naïve Bayes   & 10 & $0.98 \pm 0.03$ & $0.98 \pm 0.03$ & $0.96 \pm 0.07$ & $1.00 \pm 0.00$ \\
+			& Linear SVM    & 9  & $0.95 \pm 0.04$ & $0.95 \pm 0.04$ & $0.94 \pm 0.06$ & $0.96 \pm 0.06$ \\
+			& RBF SVM       & 11 & $0.95 \pm 0.04$ & $0.95 \pm 0.04$ & $0.95 \pm 0.08$ & $0.95 \pm 0.07$ \\
+			\hline
+		{SCAD}
+			& Base model    & 22 & $0.84 \pm 0.07$ & $0.84 \pm 0.07$ & $0.85 \pm 0.11$ & $0.83 \pm 0.11$ \\
+			& KNN (k=5)     & 14 & $0.94 \pm 0.03$ & $0.97 \pm 0.03$ & $1.00 \pm 0.00$ & $0.94 \pm 0.06$ \\
+			& Random Forest & 12 & $0.97 \pm 0.03$ & $0.97 \pm 0.03$ & $1.00 \pm 0.00$ & $0.93 \pm 0.07$ \\
+			& Naïve Bayes   & 18 & $0.99 \pm 0.02$ & $0.99 \pm 0.02$ & $0.98 \pm 0.05$ & $0.99 \pm 0.01$ \\
+			& Linear SVM    & 9  & $0.97 \pm 0.04$ & $0.97 \pm 0.04$ & $0.99 \pm 0.03$ & $0.95 \pm 0.07$ \\
+			& RBF SVM       & 6  & $0.99 \pm 0.03$ & $0.99 \pm 0.03$ & $0.99 \pm 0.04$ & $0.99 \pm 0.04$ \\
+			\hline
+		{Adaptive Lasso}
+			& Base model    & 22 & $0.87 \pm 0.07$ & $0.87 \pm 0.07$ & $0.87 \pm 0.12$ & $0.86 \pm 0.12$ \\
+			& KNN (k=5)     & 16 & $0.97 \pm 0.05$ & $0.97 \pm 0.05$ & $1.00 \pm 0.00$ & $0.93 \pm 0.09$ \\
+			& Random Forest & 16 & $0.97 \pm 0.05$ & $0.97 \pm 0.05$ & $1.00 \pm 0.00$ & $0.93 \pm 0.09$ \\
+			& Naïve Bayes   & 11 & $0.96 \pm 0.05$ & $0.96 \pm 0.05$ & $0.94 \pm 0.08$ & $0.97 \pm 0.05$ \\
+			& Linear SVM    & 7  & $0.96 \pm 0.03$ & $0.96 \pm 0.03$ & $0.97 \pm 0.05$ & $0.94 \pm 0.07$ \\
+			& RBF SVM       & 9  & $0.99 \pm 0.03$ & $0.99 \pm 0.03$ & $0.99 \pm 0.01$ & $0.97 \pm 0.07$ \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	The stability analysis further supports the strength of our method. Across nearly all settings, models trained under the two-stage framework exhibit lower standard deviations in AUC, Accuracy, Sensitivity, and Specificity. For example, the base MCP model showed an AUC standard deviation of 0.09, which decreased to 0.03 when paired with Na\"ive Bayes classifier. Such reductions indicate more stable behavior across repeated runs, demonstrating that the proposed frequency-guided feature selection yields more dependable classifiers.
+
+
+
+
+
+
+
+
+
+\section{Conclusion}
+This paper proposed the Integrated Stability-Ranked Feature Selection (ISRS) framework, which combines frequency-based ranking with an incremental, performance-driven selection process. Empirical results on five benchmark datasets demonstrate that ISRS consistently outperforms conventional penalized regression models. The framework significantly improves predictive metrics, such as AUC and accuracy, while ensuring higher stability through lower standard deviations. Notably, these performance gains were achieved with a substantial reduction in the number of selected features.
+   
+   
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+	\bibitem[Breiman (2001)]{breiman2001}
+	Breiman L. (2001), Random forests, {\it Machine Learning} 45(1), 5--32.
+	
+	\bibitem[B{\"u}hlmann and van de Geer (2011)]{buhlmann2011statistics}
+	B{\"u}hlmann P. and van de Geer S. (2011), {\it Statistics for High-Dimensional Data: Methods, Theory and Applications}, Springer.
+	
+	\bibitem[Cortes and Vapnik (1995)]{Cortes1995}
+	Cortes C. and Vapnik V. (1995), Support-vector networks, {\it Machine Learning} 20(3), 273--297.
+	
+	\bibitem[Fan and Li (2001)]{Fan2001}
+	Fan J. and Li R. (2001), Variable selection via nonconcave penalized likelihood and its oracle properties, {\it J. Amer. Statist. Assoc.} 96(456), 1348--1360.
+	
+	\bibitem[Hastie et al. (2009)]{hastie2009elements}
+	Hastie T., Tibshirani R. and Friedman J. (2009), {\it The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.), Springer.
+	
+	\bibitem[Li et al. (2018)]{li2018feature}
+	Li J., Cheng K., Wang S., Morstatter F., Trevino R.P., Tang J. and Liu H. (2018), Feature selection: A data perspective, {\it ACM Comput. Surv.} 50(6), 94:1--94:45.
+	
+	\bibitem[Meinshausen and B{\"u}hlmann (2010)]{meinshausen2010stability}
+	Meinshausen N. and B{\"u}hlmann P. (2010), Stability selection, {\it J. Royal Stat. Soc. B} 72(4), 417--473.
+	
+	\bibitem[Shah and Samworth (2013)]{shah2013variable}
+	Shah R.D. and Samworth R.J. (2013), Variable selection with error control: another look at stability selection, {\it J. Royal Stat. Soc. B} 75(1), 55--80.
+	
+	\bibitem[Tibshirani (1996)]{Tibshirani1996}
+	Tibshirani R. (1996), Regression shrinkage and selection via the lasso, {\it J. Royal Stat. Soc. B} 58(1), 267--288.
+	
+	\bibitem[Yu et al. (2020)]{Yu2020}
+	Yu S., Chen H., Yu H., Zhang Z., Liang X., Qin W. and Shi P. (2020), Elastic net based feature ranking and selection, {\it arXiv preprint arXiv:2012.14982}.
+	
+	\bibitem[Zhang (2010)]{Zhang2010}
+	Zhang C.H. (2010), Nearly unbiased variable selection under minimax concave penalty, {\it Ann. Statist.} 38(2), 894--942.
+	
+	\bibitem[Zou and Hastie (2005)]{Zou2005}
+	Zou H. and Hastie T. (2005), Regularization and variable selection via the elastic net, {\it J. Royal Stat. Soc. B} 67(2), 301--320.
+	
+	\bibitem[Zou (2006)]{Zou2006}
+	Zou H. (2006), The adaptive lasso and its oracle properties, {\it J. Amer. Statist. Assoc.} 101, 1418--1429.
+	
+\end{thebibliography}
+
+ \end{document}
+

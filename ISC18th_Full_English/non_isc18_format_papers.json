@@ -1,0 +1,171 @@
+[
+  {
+    "paper_id": "p.1046",
+    "title": "Bayesian Estimation for the GIKw--Rayleigh Distribution under Various ",
+    "toc_author": "Nahid Sanjari",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1046\\p.1046.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1052",
+    "title": "Likelihood-Based Evidential Comparison of Classical Goodness-of-Fit Te",
+    "toc_author": "Fatemeh Yousefzadeh",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": true,
+    "tex": "main\\p.1052\\p.1052.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1066",
+    "title": "",
+    "toc_author": "",
+    "method": "pdf_fallback_isc18stamp",
+    "status": "pdf_only",
+    "has_sty_meta": false,
+    "reason": "no TeX (PDF-only)"
+  },
+  {
+    "paper_id": "p.1083",
+    "title": "series Explainable Ensemble Learning for Software Defect Prediction [4",
+    "toc_author": "Parviz Ghorbanzadeh",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1083\\p.1083.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1086",
+    "title": "Liu-type estimators for the Elliptical SUR Model",
+    "toc_author": "Morteza Amini",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1086\\p.1086.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1094",
+    "title": "Method for Estimating Genotype Stability, Adaptability, and Environmen",
+    "toc_author": "",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1094\\p.1094.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1096",
+    "title": "Application of Best Linear Unbiased Prediction (BLUP in Stability Anal",
+    "toc_author": "",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1096\\p.1096.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1097",
+    "title": "Effective Analysis of Genetic Diversity of Plant Species through Artif",
+    "toc_author": "",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1097\\p.1097.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1129",
+    "title": "A Machine Learning-Driven Framework for the Implementation of Statisti",
+    "toc_author": "Vadood Keramati",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": true,
+    "tex": "main\\p.1129\\p.1129.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1143",
+    "title": "A Functional Beta Regression Approach for Analyzing Bounded Data with ",
+    "toc_author": "Hamideh Dehnavi",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1143\\p.1143.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1147",
+    "title": "Least Angle Regression for Identifying Potential Predictors of HbA1c i",
+    "toc_author": "Elham Safari",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1147\\p.1147.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1205",
+    "title": "Construction and Analysis of a Nonstandard Finite Difference Scheme fo",
+    "toc_author": "Mehran Namjoo",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": true,
+    "tex": "main\\p.1205\\p.1205.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1211",
+    "title": "Periodic Splines, SARIMA, and Frequency-Domain Analysis: A Comparative",
+    "toc_author": "Roshanak Alimohammadi",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1211\\p.1211.tex",
+    "reason": "no ISC18 sty/input; no conference banner"
+  },
+  {
+    "paper_id": "p.1255",
+    "title": "Predicting Competitive Bidding Behavior Under Uncertainty Using Scenar",
+    "toc_author": "Mahshad Arabi",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1255\\p.1255.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  },
+  {
+    "paper_id": "p.1268",
+    "title": "Grey Relational Analysis: A Statistical Approach to Measuring Dependen",
+    "toc_author": "Mohamad Ahmadian",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1268\\p.1268.tex",
+    "reason": "no ISC18 sty/input; no conference banner; no fancyhdr"
+  },
+  {
+    "paper_id": "p.1350",
+    "title": "S. Nezamdoust",
+    "toc_author": "Soghra Rahimi",
+    "method": "native",
+    "status": "ok",
+    "has_sty_meta": false,
+    "tex": "main\\p.1350\\p.1350.tex",
+    "reason": "no ISC18 sty/input; no conference banner"
+  },
+  {
+    "paper_id": "p.1354",
+    "title": "High-Resolution Spectral Estimation of Univariate and Multivariate Sta",
+    "toc_author": "A. R. Nematollahi",
+    "method": "author_pdf_isc18stamp",
+    "status": "ok",
+    "has_sty_meta": true,
+    "tex": "main\\p.1354\\p.1354.tex",
+    "reason": "included via author/submission PDF (author_pdf_isc18stamp)"
+  }
+]

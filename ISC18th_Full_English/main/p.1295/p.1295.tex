@@ -1,0 +1,409 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+
+% Required for tables
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{caption}
+% Section-based equation numbering (ISC18 requirement)
+\numberwithin{equation}{section}
+
+\begin{document}
+	\thispagestyle{empty}
+	
+	\fancyhead[LE]{AL vs.\ ALP: A Spatial QR Alternative}
+	\fancyhead[RO]{S.\ Khademhosseini and F.\ Rivaz}
+	
+	\begin{center}
+		{\includegraphics[height=25mm,width=150.3mm]{Images/isc18E}}\\
+		\vspace*{-1.8cm}
+		\vspace*{4cm}
+		%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+		{\Large \bf The Asymmetric Laplace Process: A Powerful Alternative
+			to AL in Spatial Quantile Regression}\\[6pt]
+		%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+		{\bf
+			Sepehr Khademhosseini,
+			Firoozeh Rivaz\footnote{{\bf Corresponding Author:}
+				{\tt s\_khademhosseini@sbu.ac.ir}}\\
+			Department of Statistics, Shahid Beheshti University, Tehran, Iran}
+	\end{center}
+	
+	\rule{\textwidth}{0.2mm}\\
+	\noindent{\bf Abstract:}\\
+	Quantile regression is a powerful tool for modelling the conditional
+	distribution of a response variable, particularly when interest lies in the
+	tails of the distribution. Standard quantile regression models typically
+	employ the asymmetric Laplace (AL) distribution under the assumption of
+	independent errors, and therefore cannot capture spatial dependence when
+	it exists in the data. To address this, Lum and Gelfand (2012) introduced
+	the Asymmetric Laplace Process (ALP), which incorporates a latent Gaussian
+	process to capture spatial correlation within the error structure. We
+	conduct a simulation-based comparison evaluating the ALP against the
+	standard AL model under varying levels of spatial correlation. Results
+	show that the ALP achieves lower RMSE for the regression parameter in almost
+	all scenarios. However, credible interval coverage for $\beta_0$ declines substantially as the spatial range increases, ultimately falling below the nominal level. This deterioration in coverage suggests a potential identifiability issue between the spatial process and the intercept under strong spatial correlation. We conclude that while ALP offers improved point estimation, its credible intervals should be interpreted with caution in the presence of strong spatial dependence.
+	
+	\noindent{\bf Keywords:}
+	Spatial quantile regression, Asymmetric Laplace process, Bayesian
+	inference, Stan.\\
+	\noindent{\bf Mathematics Subject Classification (2010):}
+	$\rm 62F15$, $\rm 62M30$, $\rm 62J05$.\\
+	\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+	
+	%─────────────────────────────────────────────────────────────────────────────
+	\section{Introduction}
+	%─────────────────────────────────────────────────────────────────────────────
+	
+	Quantile regression, introduced by \cite{KoenkerBassett1978}, has become
+	a fundamental tool for analysing the relationship between a response
+	and a set of predictor variables across the entire conditional distribution.
+	Unlike mean regression, which focuses solely on the conditional expectation, quantile regression allows researchers to investigate effects at different points of the response distribution, such as lower or upper tails. This flexibility has made quantile regression particularly valuable in fields such as economics, environmental science, public health, and real estate analysis, where understanding extreme outcomes is often of primary interest \cite{KoenkerHallock2001,YuLuStander2003}. A comprehensive treatment of the methodology is given in \cite{Koenker2005}.
+	
+	A standard approach to Bayesian quantile regression employs the asymmetric Laplace (AL) distribution as the error term (\cite{YuMoyeed2001}). The AL distribution is particularly attractive because maximizing its likelihood is equivalent to minimizing the check loss function, and its location parameter corresponds directly to the desired conditional quantile. \cite{KozumiKobayashi2011} further advanced this framework by introducing a convenient Gibbs sampling algorithm based on a location-scale mixture representation of the AL distribution, making Bayesian quantile regression computationally efficient and widely accessible.
+	
+	Despite these advances, standard AL-based quantile regression models share a critical limitation: they assume independent errors. This assumption is often violated in many real-world applications where observations are collected across geographic locations. In spatial data, nearby observations tend to be more similar than distant ones, a phenomenon known as spatial autocorrelation. Ignoring such dependence can lead to biased parameter estimates, underestimated standard errors, and misleading inference (\cite{Banerjee2004}). To address this limitation, \cite{LumGelfand2012} proposed the Asymmetric Laplace Process (ALP). The ALP extends the standard AL model by embedding a latent Gaussian process within the error structure, thereby directly capturing spatial dependence. This approach preserves the interpretability of the regression coefficients as global quantile effects while allowing the errors to exhibit spatial correlation. The ALP has been shown to outperform non-spatial alternatives in applications such as housing price prediction and birth weight analysis (\cite{LumGelfand2012}).
+	
+	However, the performance of the ALP under varying degrees of spatial correlation has not been systematically investigated. In particular, it remains unclear whether the advantages of the ALP hold uniformly across different spatial ranges and quantile levels. Moreover, potential identifiability issues between the spatial process component and the intercept parameter—especially under strong spatial dependence—have not been thoroughly examined. Understanding these limitations is crucial for practitioners who wish to apply the ALP to real spatially correlated data.
+	
+	In this paper, we conduct a simulation-based comparison to evaluate the performance of the ALP against the standard non-spatial AL model of \cite{KozumiKobayashi2011}. We focus specifically on the estimation accuracy and credible interval coverage of the regression parameters across different quantile levels and varying degrees of spatial correlation. Our results reveal a critical trade-off. On one hand, the ALP consistently achieves a lower root mean squared error (RMSE) compared to the non-spatial AL model, confirming the advantage of incorporating spatial structure to improve point estimation accuracy. On the other hand, we find that the credible interval coverage of the intercept under ALP declines substantially as spatial correlation becomes stronger. This deterioration suggests a potential identifiability problem between the spatial process and the intercept parameter when spatial dependence is high.
+	
+	The remainder of this paper is organized as follows. Section~2
+	reviews the methodology. Section~3 presents the simulation design and
+	results. The ''Discussion and Conclusion'' section ends with recommendations for applied researchers and directions for future work.
+	
+	%─────────────────────────────────────────────────────────────────────────────
+	\section{Methodology}
+	%─────────────────────────────────────────────────────────────────────────────
+	
+	\subsection{Bayesian Quantile Regression}
+	
+	Let $y_i$ be a scalar response and $\mathbf{x}_i \in \mathbb{R}^k$ a vector
+	of predictors, $i = 1, \ldots, N$. The linear quantile model is
+	specified as
+	\begin{equation*}
+		y_i = \mathbf{x}_i^\top \boldsymbol{\beta}_p + \epsilon_i,
+	\end{equation*}
+	where $\boldsymbol{\beta}_p \in \mathbb{R}^k$ and $\epsilon_i$ satisfies
+	$\Pr(\epsilon_i \leq 0) = p$. 
+	
+	Following \cite{YuMoyeed2001}, we assign
+	$\epsilon_i \sim \mathrm{ALD}(0,\tau,p)$ with density
+	\begin{equation*}
+		f_p(\epsilon;\tau)
+		= \tau p(1-p)\exp\bigl\{-\tau\,\rho_p(\epsilon)\bigr\},
+	\end{equation*}
+	where $\rho_p(u) = u(p - \mathbf{1}_{u<0})$ is the check loss function and $\tau>0$ is the scale parameter.
+	The ALD admits a location-scale Gaussian mixture (\cite{KozumiKobayashi2011}):
+	for $\xi_i \sim \mathrm{Exponential}(\tau)$ and $z_i \sim N(0,1)$
+	independently,
+	\begin{equation}
+		\epsilon_i = \theta\,\xi_i
+		+ \sqrt{\frac{2\xi_i}{\tau\,p(1-p)}}\,z_i,
+		\qquad
+		\theta = \frac{1-2p}{p(1-p)}.
+		\label{eq:mixture}
+	\end{equation}
+	Conditional on $\xi_i$, the error is Gaussian:
+	\begin{equation*}
+		\epsilon_i \mid \xi_i
+		\;\sim\;
+		N\!\left(\theta\,\xi_i,\;\frac{2\xi_i}{\tau\,p(1-p)}\right).
+	\end{equation*}
+	
+	\subsection{The Asymmetric Laplace Process (ALP)}
+	
+	When observations are geo-referenced, \cite{LumGelfand2012} replace the independent scalar
+	$z_i \sim N(0,1)$ in~\eqref{eq:mixture} with a mean-zero,
+	unit-variance Gaussian process at location $\mathbf{s}_i$. Then the spatial error
+	process becomes
+	\begin{equation*}
+		\epsilon_p(\mathbf{s}) = \theta\,\xi(\mathbf{s}) +
+		\sqrt{\frac{2\xi(\mathbf{s})}{\tau\,p(1-p)}}\,Z(\mathbf{s}),
+	\end{equation*}
+	where $\xi(\mathbf{s}) \stackrel{\mathrm{iid}}{\sim}
+	\mathrm{Exponential}(\tau)$ and $Z(\mathbf{s})$ is a GP with mean zero and
+	correlation function $\rho(\mathbf{s},\mathbf{s}')$. Each site retains an
+	$\mathrm{ALD}(0,\tau,p)$ marginal.
+	Following \cite{LumGelfand2012},
+	we decompose $Z(\mathbf{s}) = \sqrt{1-\alpha}\;w(\mathbf{s}) +
+	\sqrt{\alpha}\;\delta(\mathbf{s})$, where $w(\mathbf{s})$ is a spatially
+	structured GP with exponential correlation.
+	Here, $\delta(\mathbf{s}) \stackrel{\mathrm{iid}}{\sim} N(0,1)$ is a white noise process,
+	and $\alpha \in [0,1]$.
+	This ensures $\mathrm{Var}[Z(\mathbf{s})]=1$ for all $\mathbf{s}$.
+	
+	\subsection{Prior Specification}
+	
+	Following \cite{LumGelfand2012}, the prior distributions are:
+	$\beta_0,\, \beta_1 \sim N(0,\, 10^2)$;
+	$\alpha            \sim \mathrm{Uniform}(0, 1)$;
+	$\phi              \sim \mathrm{Uniform}(\phi_{\min},\, \phi_{\max})$;
+	$\tau              \sim \mathrm{Gamma}(a_\tau = 1,\, b_\tau = 1/\sqrt{2/[p(1-p)] + a_p})$.
+	The prior bounds on $\phi$ are data-driven: $\phi_{\min} = \frac{3}{2\,d_{\max}}$ and $\phi_{\max} = \frac{3}{0.05\,d_{\max}},$ where $d_{\max}$ is the maximum pairwise distance.
+	
+	\subsection{MCMC Implementation}
+	
+	Both models are fitted in Stan \citep{Stan2023} using Hamiltonian
+	Monte Carlo with the No-U-Turn Sampler \citep{HoffmanGelman2014}, with
+	4 chains of 2000 iterations each (1000 warm-up), yielding 4000
+	post-warmup draws per fit. Convergence was assessed via the
+	$\hat{R}$ statistic; all parameters satisfied
+	$\hat{R} < 1.05$ across scenarios. To avoid the funnel geometry induced when sampling $\xi_i$ jointly with $\tau$,
+	we apply a non-centred reparameterisation
+	$\xi_i^{\mathrm{raw}} = \tau\xi_i \sim \mathrm{Exponential}(1)$
+	(\cite{Betancourt2017}).
+	
+	%─────────────────────────────────────────────────────────────────────────────
+	\section{Simulation Design and Results}
+	%─────────────────────────────────────────────────────────────────────────────
+	
+	\subsection{Data Generation}
+	
+	We generate $N=50$ locations uniformly at random on $[0,1] \times [0,1]$ using the
+	\texttt{geoR} package (\cite{geoR2001}). This sample size is
+	representative of moderate spatial datasets commonly encountered in
+	practice and is consistent with the design of \cite{LumGelfand2012}.
+	 For each of $S=100$ replications, we
+	simulate data across three quantile levels ($p \in \{0.10, 0.25, 0.50\}$) and
+	three spatial ranges ($\phi \in \{0.20, 0.60, 0.90\}$),
+	resulting in nine scenarios. The true parameters are set to $\beta_0 = -1.0$,
+	$\beta_1 = 2.0$, and $\alpha = 0.20$.
+	
+	The scale parameter $\tau$ for each quantile level is
+	determined by requiring the marginal error variance to satisfy
+	$\mathrm{Var}(\epsilon_p) = 3.555$. Since
+	$\mathrm{Var}(\epsilon_p) =
+	\bigl[\theta^2 + {2}/{\tau\,p(1-p)}\bigr]/\tau$,
+	where $\theta = (1-2p)/[p(1-p)]$, solving for $\tau$ yields
+	$\tau_{0.10} \approx 0.490$, $\tau_{0.25} \approx 0.813$, and
+	$\tau_{0.50} \approx 1.125$.
+	This ensures a constant signal-to-noise ratio across quantile levels
+	for fair comparison.
+	
+	For each replication, we draw $\xi_i \stackrel{\mathrm{iid}}{\sim}
+	\mathrm{Exponential}(\tau)$, sample a Gaussian random field
+	$Z(\mathbf{s})$ with unit marginal variance and covariance
+	\begin{equation*}
+		\mathrm{Cov}[Z(\mathbf{s}_i),Z(\mathbf{s}_j)]
+		= (1-\alpha)
+		\exp\!\left(-\|\mathbf{s}_i-\mathbf{s}_j\|/\phi\right)
+		+ \alpha \, \mathbf{1}_{i=j},
+	\end{equation*}
+	and set $y_i = \beta_0 + \beta_1 x_i + \epsilon_i$, where
+	$x_i \stackrel{\mathrm{iid}}{\sim} N(0,1)$ and
+	\begin{equation*}
+		\epsilon_i = \theta\,\xi_i
+		+ \sqrt{\frac{2\xi_i}{\tau\,p(1-p)}}\,Z(\mathbf{s}_i).
+	\end{equation*}
+	
+	\subsection{Evaluation Metrics}
+	
+	We compare models using \textbf{RMSE} of the
+	posterior mean, and empirical \textbf{95\% coverage}
+	(nominal target: $0.95$).
+	We also use the mean in-sample \textbf{check loss}
+	$\mathrm{CL} = N^{-1}\sum_i \rho_p(\hat{u}_i)$
+	\citep{KoenkerBassett1978} and the \textbf{Winkler interval score}
+	\citep{Winkler1972} applied to the credible interval of $\beta_0$.
+	For a nominal 95\% credible interval $(l, u)$ and true value $y$,
+	the Winkler score at level $\alpha_W = 0.05$ is
+	\begin{equation}
+		W(l,u,y;\,\alpha_W)
+		= (u - l)
+		+ \frac{2}{\alpha_W}(l - y)\,\mathbf{1}_{y < l}
+		+ \frac{2}{\alpha_W}(y - u)\,\mathbf{1}_{y > u}.
+		\label{eq:Winkler}
+	\end{equation}
+	Lower scores are better. A narrow interval that covers the truth incurs
+	only width as a penalty; an interval that misses the truth incurs an
+	additional penalty of $2/\alpha_W = 40$ per unit of miss.
+	
+	\subsection{Results}
+	
+	Table~\ref{tab:sim_results} reports the performance metrics across all nine
+	simulation scenarios for $p \in \{0.10, 0.25, 0.50\}$ and
+	$\phi \in \{0.20, 0.60, 0.90\}$.
+	For the RMSE and Winkler metrics, a ratio below $1.000$ indicates that
+	the spatial ALP model outperforms the AL model.
+	
+	As observed in Table~\ref{tab:sim_results}, the ALP model achieves lower RMSE
+	than the AL model in every single scenario, for both the intercept
+	($\beta_0$) and the slope ($\beta_1$).
+	The RMSE ratio decreases as $p$ approaches $0.50$ and as $\phi$ increases,
+	reaching its minimum when the quantile level is $p = 0.50$ and the spatial
+	range is moderate to strong ($\phi = 0.60$).
+	This emphasizes that near the median of the response distribution and under
+	strong spatial dependence, ignoring the spatial structure leads to loss of
+	important information and increased estimation error.
+	The slope estimator $\hat{\beta}_1$ follows the same ordering, although
+	its ratios are more attenuated.
+	
+	The most important finding concerns credible interval coverage.
+	Both models show undercoverage for $\beta_0$
+	when the spatial range increases, but the degree of this problem is very different between them. The AL model has much lower coverage, falling to $0.25$
+	at $(p, \phi) = (0.50, 0.90)$, because it assumes the residuals are independent while in reality they are spatially correlated. Because of this wrong assumption, the posterior underestimates the uncertainty of the parameters and the credible intervals become too narrow. The ALP coverage also deteriorates substantially, just less severely than AL — for example, it reaches $0.75$ at $(p, \phi) = (0.50, 0.90)$, which is still well below the nominal level of $0.95$. This remaining undercoverage in the ALP may be related to a potential identifiability problem between the global intercept and the latent spatial process, and this problem appears to become worse when the spatial dependence is stronger.
+	
+	The Winkler interval score~\eqref{eq:Winkler}, a proper scoring rule that
+	jointly penalises interval width and non-coverage, confirms this advantage:
+	the ALP-to-AL ratio reaches $0.159$ at $(p,\phi) = (0.50,\,0.60)$,
+	indicating that ALP-based credible intervals are simultaneously better
+	calibrated and more informative.
+	Conversely, the in-sample check loss ratio marginally exceeds unity across
+	all scenarios ($1.001$--$1.088$), indicating that the ALP incurs a slight
+	additional in-sample error attributable to spatial regularisation; however,
+	as reported by \citet{LumGelfand2012}, the ALP demonstrates greater
+	advantages in out-of-sample prediction.
+	
+	The bias was approximately zero for both models across all
+	scenarios, although the AL model performed slightly better on this
+	metric; these results are omitted from Table~\ref{tab:sim_results}
+	for the sake of brevity.
+	As shown in Table~\ref{tab:sim_results}, the credible interval
+	coverage for $\beta_1$ ranged between $0.91$ and $0.98$ across all
+	scenarios, with the ALP showing a slight overall advantage.
+	
+	\begin{table}[ht]
+		\centering
+		\small
+		\caption{Simulation performance metrics comparing the Asymmetric Laplace
+			Process (ALP) and the non-spatial Asymmetric
+			Laplace model (AL) across nine scenarios defined
+			by quantile level~$p$ and spatial range~$\phi$. RMSE and Winkler
+			ratios are computed as ALP/AL. An RMSE or Winkler ratio below 1.000
+			indicates superior performance for the ALP model.
+			Empirical 95\,\% credible interval coverage is reported
+			for~$\beta_0$ and~$\beta_1$; the nominal level is 0.95.
+			CL\,=\,check loss.}
+		\label{tab:sim_results}
+		\setlength{\tabcolsep}{5pt}
+		\begin{tabular}{@{}cc
+				S[table-format=1.3]
+				S[table-format=1.3]
+				S[table-format=1.2, detect-weight]
+				S[table-format=1.2, detect-weight]
+				S[table-format=1.2, detect-weight]
+				S[table-format=1.2, detect-weight]
+				S[table-format=1.3]
+				S[table-format=1.3]@{}}
+			\toprule
+			& &
+			\multicolumn{2}{c}{RMSE Ratio\,(ALP/AL)} &
+			\multicolumn{2}{c}{95\,\% Coverage\,($\beta_0$)} &
+			\multicolumn{2}{c}{95\,\% Coverage\,($\beta_1$)} &
+			{Winkler\,($\beta_0$)} & {CL} \\
+			\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+			{$p$} & {$\phi$} &
+			{$\hat\beta_0$} & {$\hat\beta_1$} &
+			{ALP} & {AL} &
+			{ALP} & {AL} &
+			{Ratio} & {Ratio} \\
+			\midrule
+			\multirow{3}{*}{0.10}
+			& 0.2 & 0.959 & 0.990 & \bfseries 0.90 & 0.83 & \bfseries 0.98 & 0.97 & 0.894 & 1.002 \\
+			& 0.6 & 0.930 & 0.999 & \bfseries 0.71 & 0.56 & 0.95           & 0.95 & 0.637 & 1.001 \\
+			& 0.9 & 0.923 & 1.006 & \bfseries 0.62 & 0.44 & 0.95           & \bfseries 0.96 & 0.591 & 1.002 \\
+			\midrule
+			\multirow{3}{*}{0.25}
+			& 0.2 & 0.857 & 0.864 & \bfseries 0.86 & 0.57 & 0.95           & 0.95 & 0.476 & 1.008 \\
+			& 0.6 & 0.766 & 0.828 & \bfseries 0.71 & 0.31 & \bfseries 0.96 & 0.95 & 0.318 & 1.038 \\
+			& 0.9 & 0.784 & 0.842 & \bfseries 0.64 & 0.29 & \bfseries 0.96 & 0.93 & 0.352 & 1.040 \\
+			\midrule
+			\multirow{3}{*}{0.50}
+			& 0.2 & 0.699 & 0.804 & \bfseries 0.86 & 0.55 & 0.94           & \bfseries 0.95 & 0.327 & 1.023 \\
+			& 0.6 & 0.594 & 0.702 & \bfseries 0.82 & 0.26 & \bfseries 0.96 & 0.91 & 0.159 & 1.076 \\
+			& 0.9 & 0.635 & 0.697 & \bfseries 0.75 & 0.25 & \bfseries 0.95 & 0.91 & 0.211 & 1.088 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	%─────────────────────────────────────────────────────────────────────────────
+	\section*{Discussion and Conclusion}
+	%─────────────────────────────────────────────────────────────────────────────
+	
+	While accounting for spatial dependence via the ALP \cite{LumGelfand2012} substantially improves point estimation accuracy over the non-spatial AL model \cite{KozumiKobayashi2011}, our findings reveal a critical trade-off in uncertainty quantification. Specifically, as the spatial range increases, the severe drop in credible interval coverage for the intercept suggests a potential identifiability issue between the global intercept and the latent spatial process. Therefore, while the ALP is highly effective for point estimation, applied researchers must interpret its credible intervals with caution under strong spatial correlation.
+	
+	%─────────────────────────────────────────────────────────────────────────────
+	\section*{Acknowledgments}
+	%─────────────────────────────────────────────────────────────────────────────
+	
+	The authors gratefully acknowledge the use of the RStan package for model
+	fitting and estimation.
+	
+	\begin{thebibliography}{99}
+		
+		\bibitem[Banerjee et al.\ (2004)]{Banerjee2004}
+		Banerjee S., Carlin B.P.\ and Gelfand A.E.\ (2004),
+		{\it Hierarchical Modeling and Analysis for Spatial Data,}
+		Chapman \& Hall/CRC, Boca Raton.
+		
+		\bibitem[Betancourt (2017)]{Betancourt2017}
+		Betancourt M.\ (2017),
+		A conceptual introduction to Hamiltonian Monte Carlo,
+		{\it arXiv preprint} arXiv:1701.02434.
+		
+		\bibitem[Hoffman and Gelman (2014)]{HoffmanGelman2014}
+		Hoffman M.D.\ and Gelman A.\ (2014),
+		The No-U-Turn Sampler: adaptively setting path lengths in Hamiltonian
+		Monte Carlo,
+		{\it Journal of Machine Learning Research} \textbf{15}, 1, 1593--1623.
+		
+		\bibitem[Koenker (2005)]{Koenker2005}
+		Koenker R.\ (2005),
+		{\it Quantile Regression,}
+		Cambridge University Press, Cambridge.
+		
+		\bibitem[Koenker and Bassett (1978)]{KoenkerBassett1978}
+		Koenker R.\ and Bassett G.\ (1978),
+		Regression quantiles,
+		{\it Econometrica} \textbf{46}, 1, 33--50.
+		
+		\bibitem[Koenker and Hallock (2001)]{KoenkerHallock2001}
+		Koenker R.\ and Hallock K.F.\ (2001),
+		Quantile regression,
+		{\it Journal of Economic Perspectives} \textbf{15}, 4, 143--156.
+		
+		\bibitem[Kozumi and Kobayashi (2011)]{KozumiKobayashi2011}
+		Kozumi H.\ and Kobayashi G.\ (2011),
+		Gibbs sampling methods for Bayesian quantile regression,
+		{\it Journal of Statistical Computation and Simulation}
+		\textbf{81}, 11, 1565--1578.
+		
+		\bibitem[Lum and Gelfand (2012)]{LumGelfand2012}
+		Lum K.\ and Gelfand A.E.\ (2012),
+		Spatial quantile multiple regression using the asymmetric Laplace process,
+		{\it Bayesian Analysis} \textbf{7}, 2, 235--258.
+		
+		\bibitem[Ribeiro and Diggle (2001)]{geoR2001}
+		Ribeiro P.J.\ and Diggle P.J.\ (2001),
+		\texttt{geoR}: a package for geostatistical analysis,
+		{\it R News} \textbf{1}, 2, 15--18.
+		
+		\bibitem[Stan Development Team (2023)]{Stan2023}
+		Stan Development Team (2023),
+		{\it Stan Modeling Language Users Guide and Reference Manual,}
+		version 2.32. \texttt{https://mc-stan.org}.
+		
+		\bibitem[Winkler (1972)]{Winkler1972}
+		Winkler R.L.\ (1972),
+		A decision-theoretic approach to interval estimation,
+		{\it Journal of the American Statistical Association}
+		\textbf{67}, 337, 187--191.
+		
+		\bibitem[Yu and Moyeed (2001)]{YuMoyeed2001}
+		Yu K.\ and Moyeed R.A.\ (2001),
+		Bayesian quantile regression,
+		{\it Statistics \& Probability Letters} \textbf{54}, 4, 437--447.
+		
+		\bibitem[Yu et al.\ (2003)]{YuLuStander2003}
+		Yu K., Lu Z.\ and Stander J.\ (2003),
+		Quantile regression: applications and current research areas,
+		{\it Journal of the Royal Statistical Society: Series D}
+		\textbf{52}, 3, 331--350.
+		
+	\end{thebibliography}
+	
+\end{document}

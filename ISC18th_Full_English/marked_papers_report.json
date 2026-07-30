@@ -1,0 +1,103 @@
+{
+  "summary": {
+    "marked_total": 12,
+    "no_tex": 1,
+    "tex_compile_failed": 0,
+    "wrapped_to_isc18": 9,
+    "other_marks": {
+      "NATIVE_FAIL_WRAPPED": 2
+    }
+  },
+  "by_mark": {
+    "WRAPPED_TO_ISC18": [
+      {
+        "paper_id": "p.1268",
+        "toc_author": "Mohamad Ahmadian",
+        "title": "Grey Relational Analysis: A Statistical Approach to Measuring Dependence in Data-Poor Conditions",
+        "method": "isc18_wrap",
+        "detail": "wrap:11@p37"
+      },
+      {
+        "paper_id": "p.1211",
+        "toc_author": "Roshanak Alimohammadi",
+        "title": "Periodic Splines, SARIMA, and Frequency-Domain Analysis: A Comparative Study Using the Arosa Ozone D",
+        "method": "isc18_wrap",
+        "detail": "wrap:8@p73"
+      },
+      {
+        "paper_id": "p.1086",
+        "toc_author": "Morteza Amini",
+        "title": "Liu-type estimators for the Elliptical SUR Model",
+        "method": "isc18_wrap",
+        "detail": "wrap:15@p81"
+      },
+      {
+        "paper_id": "p.1083",
+        "toc_author": "Parviz Ghorbanzadeh",
+        "title": "Explainable Ensemble Learning for Software Defect Prediction Using Fuzzy Integral-Based Aggregation",
+        "method": "isc18_wrap",
+        "detail": "wrap:14@p281"
+      },
+      {
+        "paper_id": "p.1350",
+        "toc_author": "Soghra Rahimi",
+        "title": "Shrinkage Estimations of Semi-parametric Models for High-Dimensional Data in Finite Mixture Models",
+        "method": "isc18_wrap",
+        "detail": "wrap:21@p687"
+      },
+      {
+        "paper_id": "p.1046",
+        "toc_author": "Nahid Sanjari",
+        "title": "Bayesian Estimation for the GIKw--Rayleigh Distribution under Various Loss Functions",
+        "method": "isc18_wrap",
+        "detail": "wrap:21@p775"
+      },
+      {
+        "paper_id": "p.1096",
+        "toc_author": "",
+        "title": "Application of Best Linear Unbiased Prediction (BLUP in Stability Analysis and Genotype × Environmen",
+        "method": "isc18_wrap",
+        "detail": "wrap:12@p961"
+      },
+      {
+        "paper_id": "p.1097",
+        "toc_author": "",
+        "title": "Effective Analysis of Genetic Diversity of Plant Species through Artificial Intelligence Tools",
+        "method": "isc18_wrap",
+        "detail": "wrap:10@p973"
+      },
+      {
+        "paper_id": "p.1094",
+        "toc_author": "",
+        "title": "Method for Estimating Genotype Stability, Adaptability, and Environmental Discrimination in Plant Br",
+        "method": "isc18_wrap",
+        "detail": "wrap:11@p993"
+      }
+    ],
+    "NATIVE_FAIL_WRAPPED": [
+      {
+        "paper_id": "p.1129",
+        "toc_author": "Vadood Keramati",
+        "title": "A Machine Learning-Driven Framework for the Implementation of Statistical Population Registers: A Hy",
+        "method": "isc18_wrap_after_native_fail",
+        "detail": "native:native pdf missing (i:\\Booklet ENG\\ISC18th_Full_English\\main\\p.1129\\_booklet_build.pdf); wrap:wrap:13@p369"
+      },
+      {
+        "paper_id": "p.1052",
+        "toc_author": "Fatemeh Yousefzadeh",
+        "title": "Likelihood-Based Evidential Comparison of Classical Goodness-of-Fit Tests",
+        "method": "isc18_wrap_after_native_fail",
+        "detail": "native:native pdf missing (i:\\Booklet ENG\\ISC18th_Full_English\\main\\p.1052\\_booklet_build.pdf); wrap:wrap:13@p921"
+      }
+    ],
+    "NO_TEX": [
+      {
+        "paper_id": "p.1066",
+        "toc_author": "",
+        "title": "",
+        "method": "pdf_only_isc18stamp",
+        "detail": "no LaTeX; stamped 1066.pdf"
+      }
+    ]
+  }
+}

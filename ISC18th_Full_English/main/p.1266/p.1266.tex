@@ -1,0 +1,269 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+\setlength{\floatsep}{0pt}
+\setlength{\intextsep}{0pt}
+\setlength{\textfloatsep}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Joint model of zero-inflated count data, survival, and cure fraction}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{S. Souri Pilangorgi, S. Khodakarim and Z. Shayan}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+%\begin{center}
+%\color{blue} 
+%{\hspace{0.1cm}\rule{\textwidth}{1mm}}\\
+%\end{center}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Joint Modeling of Zero-Inflated Longitudinal Count Data and Survival Outcomes with Cure Fraction}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Sahar Souri Pilangorgi$^1$, Soheila Khodakarim$^1$ \footnote[2]{{\bf Corresponding Author:} {\tt khodakarimsoheila@gmail.com }}, Zahra Shayan$^1$\\
+$^1$Department of Biostatistics, School of Medicine, Shiraz University of Medical Sciences, Shiraz, Iran} \\
+% $^2$Department of Biostatistics, School of Medicine, Shiraz University of Medical Sciences, Shiraz, Iran}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%%%% Article abstract  %%%%%%%%%%%%%%%%%%%%
+\noindent{\bf Abstract:}\\
+\paragraph*{Background:} Longitudinal data with excess zeros and survival data with a cured fraction are common in medical research, often exhibiting interdependence that complicates analysis. Joint modeling of these data types can address this interdependence, potentially improving estimation accuracy over independent models. This study introduces a joint model that integrates a zero-inflated count model for the longitudinal process with a mixture cure model for the survival process and investigates the performance of joint models compared to independent models under varying conditions of zero-inflation, cure rates, and sample sizes.
+\paragraph*{Methods:} We analyzed 500 datasets with sample sizes of 500 and 800 as part of a simulation study that included 32 scenarios.  Zero-Inflated Poisson (ZIP) and Zero-Inflated Negative Binomial (ZINB) distributions were used to generate longitudinal count data, with zero-inflation rates of 43\%-50\% and 69\%-75\%, respectively. A mixture cure model was used to model survival data, which included cure rates of 47\%-50\% and 59\%-66\%.  Joint models, fitted using Bayesian techniques with JAGS in R, connected longitudinal and survival processes through shared random effects.  By comparing the bias in parameter estimates between joint and independent models, the performance of the models was assessed.
+\paragraph*{Results:} Joint models consistently outperformed independent models, showing lower bias across most parameters. Joint modeling of ZINB longitudinal count data and survival data with a cure fraction (JZINBC model) exhibited less bias than joint modeling of ZIP longitudinal count data and survival data with a cure fraction (JZIPC model) in high zero-inflation settings due to better handling of overdispersion, while JZIPC model performed better with lower zero-inflation (43\%-50\%). Larger sample sizes (800) reduced bias compared to smaller samples (500). Lower cure rates (47\% - 50\%) generally improved estimation accuracy, especially in joint models.
+\paragraph*{Conclusion:} Joint modeling of zero-inflated longitudinal count data and survival data with a cure fraction (JZIC model) provides more accurate parameter estimates than independent models, particularly in complex scenarios with high zero-inflation and cure rates. These findings highlight the importance of joint modeling in medical research involving interdependent longitudinal and survival outcomes.
+
+
+\noindent{\bf Keywords:} 
+Zero-inflated, longitudinal count data, mixture cure model, joint model. \\
+\noindent{\bf Mathematics Subject Classification (2010):} $\rm 99X99$, $\rm 99X99$, $\rm 99X99$. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+Longitudinal data tracking the same subjects over multiple time points are widely used in medical and epidemiological studies. A common challenge arises when these data exhibit a large number of zeros (zero-inflated data). For instance, in studies of cigarette consumption, many participants may report zero cigarettes at certain visits. Ignoring this characteristic and applying conventional longitudinal models (e.g., Poisson or Negative Binomial) can lead to biased inference. Specialized models such as Zero-Inflated Poisson (ZIP) and Zero-Inflated Negative Binomial (ZINB) are typically employed.
+
+In parallel, standard survival analysis methods generally assume that, given sufficient follow-up, all individuals will eventually experience the event. However, in many medical contexts, a proportion of individuals may never experience the event, representing a cured or non-susceptible subpopulation. Mixture cure models address this limitation by splitting the population into two latent groups: susceptible (uncured) who will eventually experience the event, and non-susceptible (cured) who will never experience it.
+
+Analyzing longitudinal and survival data separately can result in biased estimates and reduced efficiency, as these processes are often interdependent. Joint modeling has evolved significantly, with Bayesian approaches allowing greater flexibility. Although significant advancements have been made, a joint model that simultaneously handles zero-inflated longitudinal count data and time-to-event data with a cure fraction remains unexplored. This study aims to fill this gap.
+
+\section{Mathematical notation and structure of joint models}
+
+\subsection{Zero-inflated longitudinal submodel}
+
+\subsubsection{Zero-inflated Poisson model}
+
+Let \( Y_{ij} \) denote the longitudinal response for subject \( i = 1, \ldots, n \) at time \( j \) for \( j = 1, \ldots, n_i \). The Zero-Inflated Poisson (ZIP) model is defined as
+
+\[
+Y_{ij} \sim \begin{cases} 
+0 & \text{with probability } \phi_{ij}, \\
+\text{Poisson}(\lambda_{ij}) & \text{with probability } 1 - \phi_{ij}.
+\end{cases}
+\]
+
+The associated probability distribution function is defined as follows
+
+\begin{align*}
+P(Y_{ij} &= 0 \mid \bm{Z_{ij}}, \bm{X_{ij}}) = \phi_{ij} + (1 - \phi_{ij})e^{-\lambda_{ij}},\\
+P(Y_{ij} &= y_{ij} \mid \bm{X_{ij}}) = (1 - \phi_{ij}) \frac{\lambda_{ij}^{y_{ij}} e^{-\lambda_{ij}}}{y_{ij}!} \quad \text{if } y_{ij} = 1, 2, 3, \ldots
+\end{align*}
+
+where \( \bm{Z_{ij}} \) and \( \bm{X_{ij}} \) denote vectors of covariates, which may partially or fully overlap \cite{Zhu:2018}.
+
+\subsubsection{Zero-inflated Negative Binomial model}
+
+An alternative approach for modeling count data with excess zeros and overdispersion is the zero-inflated Negative Binomial (ZINB) model.
+
+The general form of the zero-inflated Negative Binomial distribution is given by the following formula  
+
+\begin{align*}
+P(Y_{ij} &= 0 \mid \bm{Z_{ij}}, \bm{X_{ij}}) = \phi_{ij} + (1 - \phi_{ij}) \left(1 + \frac{\lambda_{ij}}{\tau}\right)^{-\tau},\\
+P(Y_{ij} &= y_{ij} \mid \bm{Z_{ij}}) = (1 - \phi_{ij}) \frac{\Gamma(y_{ij} + \tau)}{y_{ij}! \Gamma(\tau)}\left(1 + \frac{\lambda_{ij}}{\tau}\right)^{-\tau}\left(1 + \frac{\tau}{\lambda_{ij}}\right)^{-y_{ij}}
+\end{align*}
+
+
+where \( 0 \leq \phi_{ij} \leq 1 \) and \( \tau > 0 \). In both ZIP and ZINB models, the \( \log(\phi_{ij}) \) function serves as the canonical link for the Bernoulli probability of success (e.g., abstinence), while the log function, \( \log(\lambda_{ij}) \), is the standard link for the mean of the count component. To address within-subject correlation in the count process, we allow
+
+\begin{align}
+\operatorname{logit}(\phi_{ij}) &= \bm{\alpha} \bm{Z_{ij}} + b_{1i},\\
+\log(\lambda_{ij}) &= \bm{\beta} \bm{X_{ij}} + b_{2i},
+\end{align}
+
+where \( \bm{\alpha} \) and \( \bm{\beta} \) represent row vectors of regression coefficients, while \( \bm{Z_{ij}} \) and \( \bm{X_{ij}} \) denote vectors of covariates. Additionally, \( b_{1i} \) and \( b_{2i} \) are subject-specific random effects, incorporated to capture within-subject correlation within the respective components of the model. The random effects are assumed to follow a bivariate normal distribution with mean zero and covariance matrix, for all subjects \( i = 1, 2, \ldots, n \), as follows
+
+\[
+\begin{pmatrix} b_{1i} \\ b_{2i} \end{pmatrix} \sim \mathcal{N}\left(0, \sum\nolimits_{b_{1i}b_{2i}}\right), \quad \sum\nolimits_{b_{1i}b_{2i}} = \begin{bmatrix} \sigma_{b_{1}}^{2} & \rho \sigma_{b_{1}} \sigma_{b_{2}} \\ \rho \sigma_{b_{1}} \sigma_{b_{2}} & \sigma_{b_{2}}^{2} \end{bmatrix},
+\]
+
+where \( \rho = 0 \) corresponds to independence between the two random effects. The terms \( \sigma_{b_{1i}}^{2} \) and \( \sigma_{b_{2i}}^{2} \) represent the variance components associated with the Bernoulli and Poisson (Negative Binomial) portions of the model, respectively, while \( \rho \) reflects the correlation between these two segments.
+
+\subsection{Survival submodel}
+
+\subsubsection{Mixture cure model}
+
+We use the mixture cure model to model time-to-events. Let \( t_i \) be the observed time to the event of interest for subject \( i \), and \( \delta_i \) be the event indicator. The mixture cure model assumes that a proportion \( p \) of individuals are uncured, while the remaining proportion \( 1 - p \) are cured. The overall survival function for the entire population is given by
+
+\[
+S_m(t_i) = (1 - p) + p S(t \mid D_i = 1),
+\]
+
+where \( D_i = 1 \) denotes an uncured individual, and \( D_i = 0 \) if they are considered cured. The probability of being uncured, \( p \), is modeled via a logistic regression model (incidence model),
+
+\[
+P(D_i = 1 \mid \bm{W_i}) = \frac{\exp(\bm{\gamma} \bm{W_i})}{1 + \exp(\bm{\gamma} \bm{W_i})},
+\]
+
+where \( \bm{W_i} \) is the vector of covariates associated with the vector of parameters \( \bm{\gamma} \) and \( \bm{W_i} \) can share part of or all covariates in \( \bm{Z_{ij}} \) and \( \bm{X_{ij}} \) defined in Section 2.1. In this study, we used a Weibull proportional hazards model. For the \( i \)-th subject, the hazard function modeling the conditional instantaneous risk to develop the event at a certain time \( t \), given he/she is still event-free at time \( t \), is defined by \cite{Collett:2023}
+
+\begin{equation}
+h(t_i \mid D_i = 1, \bm{W_i}) = h_0(t_i) \exp(\bm{\gamma} \bm{W_i} + v_1 b_{1i} + v_2 b_{2i}), 
+\end{equation}
+
+where \( h_0(t_i) = \delta \zeta t^{-1} \) is the baseline hazard function with \( \delta \) and \( \zeta \) the shape and the scale parameters, respectively. The corresponding survival function is
+
+\[
+S(t_i \mid D_i = 1, \bm{W_i}) = \exp\{-\vartheta t^{\zeta} \exp(\bm{\gamma} \bm{W_i} + v_1 b_{1i} + v_2 b_{2i})\}.
+\]
+
+
+The terms \( b_{1i} \) and \( b_{2i} \) represent shared random effects that capture the correlation between the longitudinal and survival processes and \( v = (v_1, v_2)' \) reflects the strength of association between the counts and the survival submodels. The marginal likelihood of the survival outcomes \( t_i \) and \( \delta_i \) for individual \( i \) accounting for the mixture cure structure, is given by:
+
+\[
+L_s(t_i, \delta_i, D_i) = [p_i f(t_i)]^{\delta_i D_i} [p_i S(t_i)]^{(1-\delta_i) D_i} [1 - p_i]^{(1-\delta_i)(1-D_i)},
+\]
+
+where \( f(t_i) = h(t_i \mid D_i = 1) S(t_i \mid D_i = 1) \) is the density function for the uncured population.
+ 
+\subsection{Joint model}
+
+The longitudinal and survival submodels (models 1, 2, and 3) are linked through the random effects \( b_{1i} \) and \( b_{2i} \), with the assumption that the longitudinal and survival processes are independent given \( b_{1i} \) and \( b_{2i} \). When \( v_1 = v_2 = 0 \), the joint model reduces to independent longitudinal and survival models. The conditional likelihood of the longitudinal zero-inflated count data for subject \( i \), \( Y_i \), is
+
+\[
+L_y(y_i \mid b_{1i}, b_{2i}) = \prod_{j=1}^{n_i} P(Y_{ij} = 0 \mid \bm{\alpha}, \bm{\beta}, \tau, \Sigma_{b_{1i}, b_{2i}})^{I(Y_{ij}=0)} P(Y_{ij} = y_{ij} \mid \bm{\alpha}, \bm{\beta}, \tau, \Sigma_{b_{1i}, b_{2i}})^{I(Y_{ij}>0)}.
+\]
+
+The conditional likelihood of event outcomes \( t_i \) and \( \delta_i \) for patient \( i \) is
+
+\[
+L_s(t_i, \delta_i \mid b_{1i}, b_{2i}) = [p_i h(t_i) S(t_i)]^{\delta_i D_i} [p_i S(t_i)]^{(1-\delta_i) D_i} (1 - p_i)^{(1-\delta_i)(1-D_i)}.
+\]
+
+The full likelihood of the joint model for patient \( i \) is
+
+\[
+L(y_i, t_i, \delta_i, b_{1i}, b_{2i}) = L_y(y_i \mid b_{1i}, b_{2i}) L_g(t_i, \delta_i \mid b_{1i}, b_{2i}) P(b_{1i}, b_{2i}),
+\]
+
+where \( P(b_{1i}, b_{2i}) \) is the joint density function of random effects \( b_{1i} \) and \( b_{2i} \). To estimate the parameters, MCMC simulations are used. Bayesian inference was performed using the \texttt{rjags} package in R, which serves as an interface to JAGS (Just Another Gibbs Sampler) \cite{Plummer:2003} and is a tool for analysis of Bayesian hierarchical models using MCMC simulation. Three parallel chains with dispersed initial values were run for each model, with 7000 iterations discarded as burn-in and 1000 iterations retained per chain. Convergence was assessed using the Gelman-Rubin diagnostic (\( \hat{R} \)), with all potential scale reduction factors below 1.1. The posterior summaries were based on 3000 total post-burn-in samples (1000 iterations \(\times\) 3 chains) for each dataset. In the simulation study, the entire MCMC procedure was repeated 500 times, and computations were parallelized using the \texttt{doParallel} package.
+
+\section{Simulation}
+
+\subsection{Simulation models}
+
+We analyze 500 datasets, each with sample sizes of \( N = 500 \) and \( N = 800 \). The longitudinal zero-inflated count outcomes were generated using both ZIP and ZINB distributions. We structured the simulation study to feature correlation between the event time and the zero-inflated longitudinal counts (i.e., \( v_1 = 0.6, v_2 = 0.7 \)). For the longitudinal submodel, the data were generated according to the following model:
+
+\begin{align*}
+\operatorname{logit}(\phi_{ij}) &= \bm{\alpha}_0 + \bm{\alpha}_1 X_{1i} + \bm{\alpha}_2 X_{2ij} + b_{1i},\\
+\log(\lambda_{ij}) &= \bm{\beta}_0 + \bm{\beta}_1 X_{1i} + \bm{\beta}_2 X_{2ij} + b_{2i},
+\end{align*}
+
+
+
+where \( X_{1i} \) was generated from a standard normal distribution \( \mathcal{N}(0, 1) \) and \( X_{2ij} \) was a binary indicator variable. The index \( i = 1, 2, \dots, 500 \) and \( 800 \) denotes individuals, and \( j = 1, 2, \dots, 10 \) represents the number of repeated measurements per subject. We considered two sets of regression coefficients. We set \( \bm{\alpha} = (1, -2, 1)' \), \( \bm{\beta} = (1, -2, 1.5)' \) observing zero-inflation ranging from 69\% to 75\%. Alternatively, using \( \bm{\alpha} = (0.5, 0.7, 0.6)' \), \( \bm{\beta} = (0.5, 0.3, 0.6)' \) yielded zero-inflation levels between 43\% and 50\%. The random effects covariance structure was specified with \( \rho = 0.5 \), \( \sigma^2_{b1} = 1 \) and \( \sigma^2_{b2} = 1 \). For the ZINB model, the dispersion parameter was set to \( \tau = 2 \).
+
+Time-to-event data were generated under a mixture cure model framework to account for a cured subpopulation. The probability of being uncured to the event was modeled as:
+
+\[
+P(D_i = 1) = \frac{\exp(\gamma_{c1}X_{1i} + \gamma_{c2}X_{2ij})}{1 + \exp(\gamma_{c1}X_{1i} + \gamma_{c2}X_{2ij})}
+\]
+
+For uncured subjects (\( D_i = 1 \)), the event time \( T_i^* \) was generated from a Weibull proportional hazards model with hazard function
+
+\[
+h(t_i) = \vartheta \zeta t^{\zeta-1} \exp(\gamma_1 X_{1i} + \gamma_2 X_{2ij} + v_1 b_{1i} + v_2 b_{2i}),
+\]
+
+where the baseline hazard parameters were set to \( \vartheta = 0.1 \) and \( \zeta = 2 \). For cured subjects, \( T_i^* \) was set to infinity. Regression coefficients were specified as \( \bm{\gamma} = (0.5, 0.6) \), while two different values for the cure-incidence parameters, \( \bm{\gamma_c} = (0.4, 0.5) \) and \( \bm{\gamma_c} = (0.8, 1.5) \), were considered, yielding observed cure rates ranging from 47\% to 50\% and from 59\% to 66\%, respectively. The independent censoring time is generated from an Exponential distribution with rate 0.1, resulting in approximately 30\% censoring. The event indicator was defined as \( \delta_i = 1 \) if the observed event time was less than or equal to the censoring time and 0 otherwise. Cured subjects therefore always have \( \delta_i = 0 \).
+
+We use the Bayesian approach to obtain samples from the posterior distributions of the parameters we are interested in. We utilized the \textit{rjags} package to carry out our simulation study. In the developed program, we run MCMC chains for 1,000 iterations for each dataset and we repeat this process 500 times. We calculated the overall mean of the estimated parameter values (mean of estimated parameter values), the standard deviation of these means across all iterations, the 2.5th and 97.5th percentiles (credible interval), the root mean square error (RMSE) and overall interval coverage rates (overall ICR). The Gelman–Rubin diagnostic, for most parameters is smaller than 1.1 thus, convergence is achieved. Based on prior studies and existing literature, we hypothesize that an increase in the proportion of zeros in the longitudinal submodel or a rise in the cure rate within the survival submodel may influence the performance of the joint model.
+
+It remains to be investigated whether this effect leads to a deterioration in model efficiency or accuracy, an aspect we aim to explore through our simulation studies.
+
+\subsection{Results}
+
+\subsection*{Key Findings}
+
+\textbf{Joint vs. Independent Models:} Joint models consistently showed lower bias across most parameters, with the largest improvements in high zero-inflation and lower cure fraction settings.
+
+\textbf{ZIP vs. ZINB:} JZINBC performed better at high zero-inflation (69–75\%) and high cure rates (47–50\%) due to handling overdispersion. JZIPC performed better at lower zero-inflation (43–50\%).
+
+\textbf{Sample Size Effect:} Increasing \( N \) from 500 to 800 reduced bias for key parameters, though effects were inconsistent for some parameters in independent models.
+
+\textbf{Cure Rate Effect:} In joint models with low zero-inflation, higher cure rates increased bias for some parameters and decreased it for others. With high zero-inflation, higher cure rates increased bias for parameters such as RMSE and ICR: Joint models had consistently smaller RMSE and interval coverage rates (ICR) close to the nominal 0.95 level.
+
+\section{Application}
+
+The proposed joint model was applied to an HIV clinical trial dataset (\cite{Goldman:1996}) with 467 patients. The longitudinal outcome was square root of CD4 lymphocyte count measured at baseline, 2, 6, 12, and 18 months (2,335 total observations). About 41\% of CD4 values were zero. The survival outcome was time to death (months). Covariates: treatment (ddI vs. ddC) and sex (male vs. female).
+
+Both ZIP and ZINB longitudinal submodels were considered with a mixture cure survival submodel. Model comparison using DIC favored JZIPC (DIC = 40524) over JZINBC (DIC = 40567).
+
+\begin{itemize}
+\item \textbf{Longitudinal count component:} ddC treatment was associated with 11\% higher mean CD4 counts than ddI. Males had 12\% lower mean CD4 than females (non-significant).
+\item \textbf{Zero-inflation component:} ddC treatment increased odds of zero CD4 by 3.68 times. Males had 43\% lower odds of zero CD4 compared to females.
+\item \textbf{Survival incidence (cure) model:} Males had 1.4 times higher odds of experiencing the event.
+\item \textbf{Survival latency model (uncured):} Males had 7\% lower risk of death (non-significant). Treatment had no significant effect on survival.
+\end{itemize}
+
+\section{Discussion}
+
+This study developed a joint modeling framework that simultaneously analyzes zero-inflated longitudinal count data and survival data with a cure fraction. The Bayesian approach accommodates overdispersion and excess zeros while capturing dependence via shared random effects.
+
+Simulation results clearly demonstrate that joint modeling yields less biased estimates than separate analyses. The advantage becomes more pronounced with larger sample sizes. ZINB-based joint models are superior in high zero-inflation settings, while ZIP-based models perform better with lower zero-inflation.
+
+The mixture cure model enhances applicability to real-world medical contexts where a proportion of subjects may never experience the event. The successful application to HIV data illustrates practical utility.
+
+\subsection*{Limitations}
+
+\begin{itemize}
+\item The simulation study, though extensive, is based on specific model configurations; real data may present more complex patterns.
+\item JAGS-based implementation can be computationally intensive for large datasets.
+\item MCMC iterations were limited (1,000 per chain), but effective sample size (ESS) was adequate for most parameters when checked against longer chains.
+\end{itemize}
+
+\subsection*{Future directions}
+
+Extend to other zero-inflated distributions, multiple longitudinal outcomes, competing risks, time-varying covariates, or nonlinear trajectories.
+
+\subsection*{Conclusion}
+
+The proposed joint model represents a significant methodological advancement for studies involving zero-inflated longitudinal count data and survival outcomes with cure fractions. It provides more accurate and efficient inference, particularly in complex data settings, and has important implications for medical and epidemiological research.
+
+\subsection*{Ethics, Funding, and Data Availability}
+
+The study was approved by Shiraz University of Medical Sciences (ethics code IR.SUMS.REC.1402.280). Funding was provided by Shiraz University of Medical Sciences, with no role in study design, analysis, interpretation, or writing. The HIV dataset is available in the JM package in R. R code is available upon request from the first author.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+
+\bibitem[Goldman et al. (1996)]{Goldman:1996}
+Goldman A.I., et al. (1996), Response of CD4 lymphocytes and clinical consequences of treatment using ddI or ddC in patients with advanced HIV infection, {\it JAIDS Journal of Acquired Immune Deficiency Syndromes} 11(2), 161-169.
+
+\bibitem[Zhu et al. (2018)]{Zhu:2018}
+Zhu H., S.M. DeSantis, and S. Luo (2018), Joint modeling of longitudinal zero-inflated count and time-to-event data: a Bayesian perspective, {\it Statistical methods in medical research} 27(4), 1258-1270.
+
+\bibitem[Collett (2023)]{Collett:2023}
+Collett D. (2023), {\it Modelling survival data in medical research}. Chapman and Hall/CRC.
+
+\bibitem[Plummer (2003)]{Plummer:2003}
+Plummer M. (2003), JAGS: A program for analysis of Bayesian graphical models using Gibbs sampling, {\it In: Proceedings of the 3rd international workshop on distributed statistical computing}, 1-10.
+
+\end{thebibliography}
+ \end{document}
+

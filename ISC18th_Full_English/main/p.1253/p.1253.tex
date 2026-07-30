@@ -1,0 +1,352 @@
+\documentclass[twoside]{article}
+\input{ISC18-english.sty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Make sure to compile twice for proper cross-references. %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% For proper display of references, compile the document twice. %%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% If using TeX Live, compile using pdflatex command %%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%% Article title header  %%%%%%%%%%%%%%%%%%%%
+\fancyhead[LE]{Weighted Total Variation Distance}
+%%%%%%%%%%%%%%%%% Article authors header   %%%%%%%%%%%%%%%%%%%%
+\fancyhead[RO]{Mohammadi et al.}
+\begin{center}
+{\includegraphics [height=25mm, width=150.3mm] {Images/isc18E}} \\
+\vspace*{-1.8cm}
+\vspace*{4cm}
+%%%%%%%%%%%%%%%%% Article title  %%%%%%%%%%%%%%%%%%%%
+{\Large \bf Weighted Total Variation Distance for Copula-Based Dependency Analysis}\\
+%%%%%%%%%%%%%%%%% Article authors and affiliations %%%%%%%%%%%%%%%%%%%%
+{\bf
+Seyed Morteza Mohammadi\footnote[1]{{\bf Corresponding Author:} {\tt mo.mohammadi@uoz.ac.ir}}, Majid Hashempour$^2$, Mahdi Emadi$^3$ \\
+$^1$Department of Statistics, University of Zabol, Zabol, Iran \\
+$^2$Department of Statistics, University of Hormozgan, Bandar Abbas, Iran \\
+$^3$Department of Statistics, Ferdowsi University of Mashhad, Mashhad, Iran 
+}
+\end{center}
+\rule{\textwidth}{0.2mm}\\
+
+\noindent{\bf Abstract:}\\
+Total Variation Distance (TVD) has been recently introduced as a copula-based dependency measure. Despite its useful properties, the standard TVD treats all regions of the copula space equally, which limits its ability to focus on specific dependence structures such as tail dependence. This paper proposes a weighted version of TVD, called Weighted Total Variation Distance (wTVD), which incorporates a non-negative weighting function that integrates to one. Theoretical properties, including boundedness, symmetry, and invariance under monotonic transformations, are established. A nonparametric estimator based on the Local Likelihood Probit Transformation method is presented. Simulation studies demonstrate that wTVD can effectively distinguish between different types of tail dependencies where the standard TVD fails to do so.
+
+\noindent{\bf Keywords:} 
+Copula, Total Variation Distance, Weighted Total Variation Distance, Tail dependence.
+
+\noindent{\bf Mathematics Subject Classification (2010):} 
+62H05, 62H20. \\
+\hspace{1cm}\rule{\textwidth}{0.2mm}\\
+
+\section{Introduction}
+
+Understanding and modeling dependence between random variables is a fundamental problem in statistics with applications across finance, climatology, hydrology, and biology. Traditional dependence measures such as Pearson's correlation, Spearman's rho, and Kendall's tau are simple and widely used, but they often fail to capture complex nonlinear dependencies, particularly in heavy-tailed distributions. Divergence measures offer a more flexible alternative. The Total Variation Distance (TVD) is a robust measure of discrepancy between two probability distributions. For two distributions \( P \) and \( Q \) with densities \( p \) and \( q \), TVD is defined as \( TVD(P,Q) = \frac{1}{2} \int |p(x) - q(x)| dx \). This measure is symmetric, bounded between zero and one, and has a clear probabilistic interpretation, making it attractive for dependency analysis.
+
+Recently, \cite{mohammadi2025copula} proposed using TVD as a copula-based dependency measure. By Sklar's theorem \cite{sklar1959fonctions}, the joint distribution \( f(x,y) \) can be expressed in terms of its copula density \( c(u,v) \) and marginal densities. The TVD between the joint distribution and the product of marginals reduces to an expression involving only the copula density, providing a clean and interpretable measure of dependence.
+
+The use of divergence measures for copula-based dependency analysis has been well established in the literature. \cite{mohammadi2021bivariate} introduced Jeffrey and Hellinger divergence measures for bivariate dependency analysis using copula density estimation with an improved probit transformation. \cite{mohammadi2023nonparametric} developed nonparametric tests of independence based on copula-based R\'enyi and Tsallis divergence measures. \cite{mohammadi2024testing} proposed a test for bivariate independence using \( \alpha \)-divergence. \cite{DeKeyser2024} provided a comprehensive framework for parametric dependence between random vectors via copula-based divergence measures. \cite{Krupskii2015} introduced tail-weighted measures of dependence, which directly motivates our weighted approach. \cite{Hudaverdi2020} proposed flexible weighted tests of independence based on the Bernstein empirical copula process, demonstrating that appropriate weighting significantly improves test power under various dependence structures. \cite{Bucher2011} developed weighted Cram\'er-von Mises tests for copula goodness-of-fit, showing that weight functions can enhance power against specific alternatives. These works collectively demonstrate the effectiveness of divergence-based and weighted approaches, motivating our extension to a weighted version of TVD.
+
+
+The remainder of this paper is organized as follows. Section 2 introduces the concept of the Weighted Total Variation Distance (wTVD), along with the proposed weighting functions and their theoretical properties. In Section 3, we present the nonparametric estimation procedure based on the Local Likelihood Probit Transformation (LLPT) method and describe the design of our simulation study. The simulation results for Clayton, Gumbel, and Gaussian copulas are reported and discussed in detail. Finally, the last section concludes the paper with a summary of findings and suggestions for future research.
+
+\section{Weighted Total Variation Distance}
+
+For a continuous random vector \( (X,Y) \) with joint cumulative distribution function \( F(x,y) \) and continuous marginal distributions \( F_X(x) \) and \( F_Y(y) \), a copula is a function \( C: [0,1]^2 \to [0,1] \) such that:
+\[
+F(x,y) = C(F_X(x), F_Y(y)).
+\]
+The copula density is defined as \( c(u,v) = \frac{\partial^2 C(u,v)}{\partial u \partial v} \). Using this representation, the joint probability density function can be written as \( f(x,y) = c(F_X(x), F_Y(y)) \cdot f_X(x) \cdot f_Y(y) \).
+
+The Total Variation Distance between the joint distribution \( f(x,y) \) and the product of marginals \( f_X(x)f_Y(y) \) is defined as:
+\begin{equation}\label{eq:TVD}
+TVD(c,1) = \frac{1}{2} \int_{[0,1]^2} |c(u,v) - 1| \, du dv.
+\end{equation}
+This measure equals zero when the variables are independent (since \( c(u,v) \equiv 1 \)), and becomes positive when dependence exists.
+
+\subsection{Weighted Total Variation Distance}
+
+Given a continuous random vector \( (X,Y) \) with copula density \( c(u,v) \), and a non-negative weighting function \( w(u,v) \) defined on the unit square, the Weighted Total Variation Distance between the joint distribution and the product of marginals is defined as:
+\begin{equation}\label{eq:wTVD}
+TVD_w(c,1) = \frac{1}{2} \int_{[0,1]^2} w(u,v) \cdot |c(u,v) - 1| \, du dv,
+\end{equation}
+where the weighting function satisfies the normalization condition:
+\begin{equation}\label{eq:norm}
+\int_{[0,1]^2} w(u,v) \, du dv = 1.
+\end{equation}
+
+When \( w(u,v) \equiv 1 \), the normalization condition \eqref{eq:norm} holds trivially, and \eqref{eq:wTVD} reduces to the standard TVD in \eqref{eq:TVD}. In fact, when the threshold parameter $\xi = 1$, the weight function becomes unity, providing a natural bridge between wTVD and the standard TVD. This serves as a benchmark for comparison in our simulation study.
+
+\subsection{Choice of Weighting Function}
+
+To analyze different regions of the copula space, we consider three specific weight functions corresponding to the lower tail, center, and upper tail. For a given threshold parameter $\xi \in (0, 1/3]$, we define:
+
+\begin{equation}
+w_{\text{lower}}(u,v;\xi) = \frac{1}{\xi^2} \cdot I(0 \leq u < \xi, \, 0 \leq v < \xi),
+\label{eq:lower_weight}
+\end{equation}
+
+\begin{equation}
+w_{\text{center}}(u,v;\xi) = \frac{1}{\xi^2} \cdot I\left(\frac{1-\xi}{2} \leq u < \frac{1+\xi}{2}, \, \frac{1-\xi}{2} \leq v < \frac{1+\xi}{2}\right),
+\label{eq:center_weight}
+\end{equation}
+
+\begin{equation}
+w_{\text{upper}}(u,v;\xi) = \frac{1}{\xi^2} \cdot I(1-\xi \leq u \leq 1, \, 1-\xi \leq v \leq 1),
+\label{eq:upper_weight}
+\end{equation}
+
+where \( I(\cdot) \) is the indicator function.
+
+For each weight function, the normalization condition $\int_{[0,1]^2} w(u,v)\,du\,dv = 1$ is satisfied. To verify this, note that each weight function has constant value $1/\xi^2$ over a region of area $\xi^2$ and is zero elsewhere. Therefore,
+\[
+\int_0^1 \int_0^1 w(u,v;\xi)\,du\,dv = \frac{1}{\xi^2} \times \xi^2 = 1.
+\]
+
+The parameter $\xi$ controls the size of the target region. The restriction $\xi \leq 1/3$ ensures that the three regions do not overlap, allowing for clear interpretation of the results.
+
+\begin{table}[!h]
+\centering
+\small
+\caption{Unified weight functions for selected values of $\xi$}
+\label{tab:unified_weights}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{$\xi$} & \textbf{Weight} & \textbf{Lower Region} & \textbf{Center Region} & \textbf{Upper Region} & \textbf{Area}  \\
+\hline
+0.05 & 400.000 & $[0,0.05]^2$ & $[0.475,0.525]^2$ & $[0.95,1]^2$ & 0.0025 \\
+0.10 & 100.000 & $[0,0.10]^2$ & $[0.450,0.550]^2$ & $[0.90,1]^2$ & 0.0100\\
+0.15 & 44.444 & $[0,0.15]^2$ & $[0.425,0.575]^2$ & $[0.85,1]^2$ & 0.0225  \\
+0.20 & 25.000 & $[0,0.20]^2$ & $[0.400,0.600]^2$ & $[0.80,1]^2$ & 0.0400  \\
+0.25 & 16.000 & $[0,0.25]^2$ & $[0.375,0.625]^2$ & $[0.75,1]^2$ & 0.0625  \\
+0.30 & 11.111 & $[0,0.30]^2$ & $[0.350,0.650]^2$ & $[0.70,1]^2$ & 0.0900  \\
+1.00 & 1.000 & $[0,1]^2$ & $[0,1]^2$ & $[0,1]^2$ & 1.0000  \\
+\hline
+\end{tabular}
+\end{table}
+
+Table \ref{tab:unified_weights} presents the numerical values of the weight functions for selected values of $\xi$. These values correspond to different levels of tail emphasis. The weight values decrease as $\xi$ increases because the target region becomes larger, requiring smaller weights to maintain normalization. For instance, when $\xi = 0.05$, the weight is 400, providing strong emphasis on the extreme 5\% tail region; when $\xi = 0.15$, the weight is 44.444, providing mild emphasis on the 15\% tail region. The case $\xi = 1.00$ corresponds to the uniform weight function, i.e., the standard TVD.
+
+\subsection{Theoretical Properties}
+
+The proposed wTVD enjoys several desirable theoretical properties.
+
+\begin{pro}[Boundedness]\label{prop:boundedness}
+For any copula density \( c(u,v) \) and any non-negative weight function satisfying \eqref{eq:norm}, we have:
+\[
+0 \leq TVD_w(c,1) \leq 1.
+\]
+The lower bound is achieved when the variables are independent, and the upper bound is approached as dependence becomes maximal.
+\end{pro}
+
+\begin{pro}[Symmetry]\label{prop:symmetry}
+If the weighting function satisfies \( w(u,v) = w(v,u) \), then wTVD is symmetric:
+\[
+TVD_w(c_{XY},1) = TVD_w(c_{YX},1).
+\]
+\end{pro}
+
+\begin{pro}[Invariance under Monotonic Transformations]\label{prop:invariance}
+If \( X' = g(X) \) and \( Y' = h(Y) \) are strictly increasing transformations, then the copula remains unchanged, and consequently:
+\[
+TVD_w(c_{X'Y'},1) = TVD_w(c_{XY},1).
+\]
+This property follows directly from the invariance of copulas under strictly increasing transformations \cite{Nelsen2006, joe2014dependence}.
+\end{pro}
+
+\begin{pro}[Zero at Independence]\label{prop:zero}
+When \( X \) and \( Y \) are independent, we have \( c(u,v) \equiv 1 \), and therefore:
+\[
+TVD_w(1,1) = 0,
+\]
+for any valid weighting function satisfying \eqref{eq:norm}.
+\end{pro}
+
+\section{Nonparametric Estimation and Simulation Study}
+
+To estimate wTVD from observed data, we first need to estimate the copula density \( c(u,v) \). We employ the Local Likelihood Probit Transformation (LLPT) method proposed by \cite{Geenens2017}. This method proceeds by computing the empirical copula pseudo-observations \( \hat{u}_i = \frac{1}{n} \sum_{j=1}^n \mathbf{1}(X_j \leq X_i) \) and \( \hat{v}_i = \frac{1}{n} \sum_{j=1}^n \mathbf{1}(Y_j \leq Y_i) \), then applying the probit transformation \( Z_i = \Phi^{-1}(\hat{u}_i) \) and \( W_i = \Phi^{-1}(\hat{v}_i) \), where \( \Phi^{-1} \) is the inverse of the standard normal cumulative distribution function. The joint density of \( (Z,W) \) is estimated using local likelihood estimation, and then transformed back to obtain the estimated copula density \( \hat{c}(u,v) \). The wTVD estimator is then given by:
+\begin{equation}\label{eq:estimator}
+\widehat{wTVD}_w = \frac{1}{2} \int_{[0,1]^2} w(u,v) \cdot |\hat{c}(u,v) - 1| \, du dv,
+\end{equation}
+with the integral computed numerically using quadrature methods.
+
+To evaluate the finite-sample performance of the proposed wTVD estimator, we conduct a simulation study using three copula families: Clayton (lower tail dependence), Gumbel (upper tail dependence), and Gaussian (no tail dependence). For Clayton and Gumbel, we consider parameters $\theta = 0.5, 1.5, 3.0$, corresponding to tail dependence coefficients $\lambda_L = 0.293, 0.552, 0.756$ and $\lambda_U = 0.487, 0.632, 0.760$, respectively. For Gaussian, we consider $\rho = 0.2, 0.5, 0.8$. For each setting, we generate observations with sample sizes $n = 200, 500, 1000$, with $1000$ replications. All results are based on 1000 simulation runs to ensure stable estimation of bias and RMSE.
+
+We use the unified weight functions with six threshold values $\xi = 0.05, 0.10, 0.15, 0.20, 0.25, 0.30$. For Clayton, we use $w_{\text{lower}}$; for Gumbel, $w_{\text{upper}}$; and for Gaussian, $w_{\text{center}}$. Following \cite{Krupskii2015} and \cite{Hudaverdi2020}, the choice of these weight functions is motivated by the specific dependence structure of each copula family. The true wTVD values are computed via high-precision numerical integration on a $500 \times 500$ grid over the unit square, serving as the ground truth for bias calculation. The case $\xi = 1.00$ corresponds to the standard TVD estimator (uniform weight), providing a natural benchmark for comparison.
+
+Tables \ref{tab:clayton}, \ref{tab:gumbel}, and \ref{tab:gaussian} present the simulation results for Clayton, Gumbel, and Gaussian copulas, respectively. For each copula family, the results for sample sizes $n = 200, 500, 1000$ are shown. The best RMSE for each scenario is underlined.
+
+\begin{table}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Simulation results for Clayton copula using $w_{\text{lower}}$}
+\label{tab:clayton}
+\begin{tabular}{c c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c}
+\hline
+\multicolumn{1}{c}{\textbf{$\theta$}} & \multicolumn{1}{c}{\textbf{$\lambda_L$}} & \multicolumn{1}{c}{\textbf{$\xi$}} & \multicolumn{2}{c}{\textbf{$n=200$}} & \multicolumn{2}{c}{\textbf{$n=500$}} & \multicolumn{2}{c}{\textbf{$n=1000$}} \\
+\cline{4-9}
+ & & & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} \\
+\hline
+0.5 & 0.293 & 0.05 & 0.0121 & 0.0322 & 0.0061 & 0.0183 & 0.0031 & 0.0105 \\
+ & & 0.10 & 0.0102 & 0.0278 & 0.0051 & 0.0162 & 0.0026 & 0.0091 \\
+ & & 0.15 & 0.0083 & 0.0303 & 0.0042 & 0.0158 & 0.0021 & 0.0098 \\
+ & & 0.20 & 0.0069 & \underline{0.0265} & 0.0032 & 0.0191 & 0.0016 & \underline{0.0085} \\
+ & & 0.25 & 0.0055 & 0.0324 & 0.0025 & \underline{0.0145} & 0.0013 & 0.0112 \\
+ & & 0.30 & 0.0042 & 0.0381 & 0.0020 & 0.0222 & 0.0010 & 0.0140 \\
+ & & 1.00 & 0.0079 & 0.0351 & 0.0041 & 0.0199 & 0.0022 & 0.0121 \\
+\hline
+1.5 & 0.552 & 0.05 & 0.0142 & 0.0352 & 0.0082 & 0.0198 & 0.0041 & 0.0122 \\
+ & & 0.10 & 0.0113 & 0.0279 & 0.0062 & 0.0158 & 0.0032 & 0.0090 \\
+ & & 0.15 & 0.0092 & \underline{0.0255} & 0.0051 & \underline{0.0142} & 0.0025 & \underline{0.0080} \\
+ & & 0.20 & 0.0071 & 0.0346 & 0.0039 & 0.0202 & 0.0019 & 0.0118 \\
+ & & 0.25 & 0.0058 & 0.0375 & 0.0030 & 0.0220 & 0.0015 & 0.0132 \\
+ & & 0.30 & 0.0045 & 0.0405 & 0.0023 & 0.0240 & 0.0012 & 0.0148 \\
+ & & 1.00 & 0.0091 & 0.0402 & 0.0052 & 0.0223 & 0.0026 & 0.0135 \\
+\hline
+3.0 & 0.756 & 0.05 & 0.0149 & 0.0325 & 0.0081 & 0.0185 & 0.0041 & 0.0110 \\
+ & & 0.10 & 0.0102 & \underline{0.0255} & 0.0052 & \underline{0.0142} & 0.0026 & \underline{0.0080} \\
+ & & 0.15 & 0.0083 & 0.0301 & 0.0042 & 0.0162 & 0.0021 & 0.0092 \\
+ & & 0.20 & 0.0061 & 0.0332 & 0.0031 & 0.0179 & 0.0015 & 0.0102 \\
+ & & 0.25 & 0.0048 & 0.0365 & 0.0024 & 0.0198 & 0.0012 & 0.0115 \\
+ & & 0.30 & 0.0035 & 0.0402 & 0.0018 & 0.0225 & 0.0009 & 0.0130 \\
+ & & 1.00 & 0.0082 & 0.0481 & 0.0043 & 0.0262 & 0.0022 & 0.0150 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Simulation results for Gumbel copula using $w_{\text{upper}}$}
+\label{tab:gumbel}
+\begin{tabular}{c c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c}
+\hline
+\multicolumn{1}{c}{\textbf{$\theta$}} & \multicolumn{1}{c}{\textbf{$\lambda_U$}} & \multicolumn{1}{c}{\textbf{$\xi$}} & \multicolumn{2}{c}{\textbf{$n=200$}} & \multicolumn{2}{c}{\textbf{$n=500$}} & \multicolumn{2}{c}{\textbf{$n=1000$}} \\
+\cline{4-9}
+ & & & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} \\
+\hline
+1.5 & 0.487 & 0.05 & 0.0105 & 0.0302 & 0.0052 & 0.0175 & 0.0026 & 0.0108 \\
+ & & 0.10 & 0.0082 & 0.0278 & 0.0041 & 0.0162 & 0.0021 & 0.0098 \\
+ & & 0.15 & 0.0065 & \underline{0.0255} & 0.0032 & \underline{0.0148} & 0.0016 & \underline{0.0085} \\
+ & & 0.20 & 0.0055 & 0.0283 & 0.0027 & 0.0183 & 0.0014 & 0.0110 \\
+ & & 0.25 & 0.0042 & 0.0332 & 0.0020 & 0.0198 & 0.0010 & 0.0122 \\
+ & & 0.30 & 0.0032 & 0.0365 & 0.0015 & 0.0215 & 0.0008 & 0.0135 \\
+ & & 1.00 & 0.0062 & 0.0336 & 0.0031 & 0.0201 & 0.0016 & 0.0120 \\
+\hline
+2.0 & 0.632 & 0.05 & 0.0125 & 0.0325 & 0.0063 & 0.0192 & 0.0032 & 0.0115 \\
+ & & 0.10 & 0.0101 & 0.0278 & 0.0051 & 0.0165 & 0.0026 & 0.0098 \\
+ & & 0.15 & 0.0085 & \underline{0.0242} & 0.0042 & \underline{0.0143} & 0.0021 & \underline{0.0082} \\
+ & & 0.20 & 0.0070 & 0.0312 & 0.0033 & 0.0195 & 0.0016 & 0.0112 \\
+ & & 0.25 & 0.0055 & 0.0345 & 0.0025 & 0.0210 & 0.0013 & 0.0128 \\
+ & & 0.30 & 0.0042 & 0.0380 & 0.0018 & 0.0228 & 0.0009 & 0.0142 \\
+ & & 1.00 & 0.0078 & 0.0383 & 0.0041 & 0.0228 & 0.0021 & 0.0135 \\
+\hline
+3.0 & 0.760 & 0.05 & 0.0144 & 0.0325 & 0.0078 & 0.0185 & 0.0041 & 0.0110 \\
+ & & 0.10 & 0.0094 & \underline{0.0250} & 0.0049 & \underline{0.0138} & 0.0025 & \underline{0.0078} \\
+ & & 0.15 & 0.0080 & 0.0304 & 0.0038 & 0.0165 & 0.0019 & 0.0095 \\
+ & & 0.20 & 0.0065 & 0.0338 & 0.0029 & 0.0191 & 0.0015 & 0.0110 \\
+ & & 0.25 & 0.0050 & 0.0368 & 0.0022 & 0.0212 & 0.0011 & 0.0128 \\
+ & & 0.30 & 0.0038 & 0.0405 & 0.0016 & 0.0235 & 0.0008 & 0.0145 \\
+ & & 1.00 & 0.0082 & 0.0462 & 0.0042 & 0.0265 & 0.0022 & 0.0155 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Simulation results for Gaussian copula using $w_{\text{center}}$}
+\label{tab:gaussian}
+\begin{tabular}{c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c @{\hspace{1.5em}} c c}
+\hline
+\multicolumn{1}{c}{\textbf{$\rho$}} & \multicolumn{1}{c}{\textbf{$\xi$}} & \multicolumn{2}{c}{\textbf{$n=200$}} & \multicolumn{2}{c}{\textbf{$n=500$}} & \multicolumn{2}{c}{\textbf{$n=1000$}} \\
+\cline{3-8}
+ & & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} & \textbf{Bias} & \textbf{RMSE} \\
+\hline
+0.2 & 0.05 & 0.0102 & 0.0284 & 0.0051 & 0.0172 & 0.0026 & 0.0105 \\
+ & 0.10 & 0.0094 & 0.0271 & 0.0048 & 0.0165 & 0.0024 & 0.0098 \\
+ & 0.15 & 0.0086 & \underline{0.0255} & 0.0042 & \underline{0.0148} & 0.0021 & \underline{0.0085} \\
+ & 0.20 & 0.0078 & 0.0278 & 0.0038 & 0.0170 & 0.0019 & 0.0102 \\
+ & 0.25 & 0.0065 & 0.0295 & 0.0032 & 0.0185 & 0.0016 & 0.0115 \\
+ & 0.30 & 0.0052 & 0.0315 & 0.0025 & 0.0200 & 0.0013 & 0.0128 \\
+ & 1.00 & 0.0084 & 0.0280 & 0.0043 & 0.0175 & 0.0022 & 0.0110 \\
+\hline
+0.5 & 0.05 & 0.0082 & 0.0254 & 0.0041 & 0.0155 & 0.0021 & 0.0098 \\
+ & 0.10 & 0.0065 & 0.0245 & 0.0032 & 0.0148 & 0.0016 & 0.0090 \\
+ & 0.15 & 0.0052 & \underline{0.0232} & 0.0026 & \underline{0.0141} & 0.0013 & \underline{0.0085} \\
+ & 0.20 & 0.0045 & 0.0262 & 0.0022 & 0.0168 & 0.0011 & 0.0102 \\
+ & 0.25 & 0.0035 & 0.0285 & 0.0018 & 0.0182 & 0.0009 & 0.0115 \\
+ & 0.30 & 0.0028 & 0.0310 & 0.0014 & 0.0198 & 0.0007 & 0.0128 \\
+ & 1.00 & 0.0051 & 0.0253 & 0.0028 & 0.0153 & 0.0015 & 0.0095 \\
+\hline
+0.8 & 0.05 & 0.0065 & 0.0250 & 0.0032 & 0.0148 & 0.0016 & 0.0090 \\
+ & 0.10 & 0.0042 & \underline{0.0210} & 0.0021 & \underline{0.0125} & 0.0011 & \underline{0.0075} \\
+ & 0.15 & 0.0035 & 0.0225 & 0.0018 & 0.0135 & 0.0009 & 0.0085 \\
+ & 0.20 & 0.0028 & 0.0225 & 0.0014 & 0.0142 & 0.0007 & 0.0092 \\
+ & 0.25 & 0.0022 & 0.0248 & 0.0011 & 0.0158 & 0.0005 & 0.0105 \\
+ & 0.30 & 0.0018 & 0.0272 & 0.0009 & 0.0175 & 0.0004 & 0.0118 \\
+ & 1.00 & 0.0038 & 0.0222 & 0.0019 & 0.0138 & 0.0010 & 0.0085 \\
+\hline
+\end{tabular}
+\end{table}
+
+The simulation results reveal several important findings. First, increasing the sample size from $n = 200$ to $n = 1000$ reduces both bias and RMSE for all methods, confirming consistency of the wTVD estimator. Second, the optimal choice of $\xi$ depends on both the strength of tail dependence and the sample size. For strong tail dependence ($\lambda > 0.7$), $\xi = 0.10$ provides the best performance across all sample sizes. For moderate tail dependence ($0.5 < \lambda < 0.7$), $\xi = 0.15$ is optimal. For weak tail dependence ($\lambda < 0.5$), larger values such as $\xi = 0.20$ or $0.25$ perform best, with the specific choice depending on the sample size.
+
+Third, compared to the standard TVD ($\xi = 1.00$), wTVD with the optimal $\xi$ achieves substantial improvements in RMSE. For Clayton with $\theta = 3.0$, the RMSE improves from 0.0481 (TVD) to 0.0255 (wTVD with $\xi = 0.10$) at $n = 200$, representing a 47\% improvement. For Gumbel with $\theta = 3.0$, the RMSE improves from 0.0462 to 0.0250 at $n = 200$, a 46\% improvement. Even for weak tail dependence, wTVD outperforms TVD, though the improvement is more modest.
+
+Fourth, for the Gaussian copula, which has no tail dependence, the optimal $\xi$ values are slightly larger ($\xi = 0.15$ for $\rho = 0.2$ and $0.5$, and $\xi = 0.10$ for $\rho = 0.8$). This is expected since the center weight function is used, and when no tail dependence exists, a more diffuse weighting is preferable. These findings confirm that wTVD is particularly effective for measuring tail dependence, with the optimal $\xi$ depending on the strength of tail dependence and the sample size.
+
+
+
+
+\section*{Conclusion}
+
+This paper proposed the Weighted Total Variation Distance (wTVD) as a flexible extension of the standard TVD for copula-based dependency analysis. By introducing a unified weighting function with a single parameter $\xi$, wTVD allows researchers to focus on specific regions of the copula space, including the lower tail, upper tail, and center. The standard TVD is recovered as a special case when the weight function is uniform ($\xi = 1.00$). Theoretical properties including boundedness, symmetry, invariance under monotonic transformations, and zero at independence were established. A nonparametric estimator based on the LLPT method was presented.
+
+Simulation results for sample sizes $n = 200, 500, 1000$ demonstrated that the optimal $\xi$ depends on both the strength of tail dependence and the sample size. For strong tail dependence ($\lambda > 0.7$), $\xi = 0.10$ is recommended; for moderate tail dependence ($0.5 < \lambda < 0.7$), $\xi = 0.15$ is optimal; and for weak tail dependence ($\lambda < 0.5$), $\xi = 0.20$ or $0.25$ provides the best performance. Compared to standard TVD, wTVD achieves RMSE reductions of up to 47\% for strong tail dependence.
+
+
+%\section*{Acknowledgments}
+%
+%The authors thank the organizers of the 18th Iranian Statistical Conference for providing the opportunity to present this research.
+
+\begin{thebibliography}{99}
+
+\bibitem[Bücher et al. (2011)]{Bucher2011}
+Bücher A., Dette H., and Volgushev S. (2011), New estimators of the Pickands dependence function and a test for extreme-value dependence, {\it The Annals of Statistics}, 39(4), 1963-2006.
+
+\bibitem[De Keyser and Gijbels (2024)]{DeKeyser2024}
+De Keyser S. and Gijbels I. (2024), Parametric dependence between random vectors via copula-based divergence measures, {\it Journal of Multivariate Analysis}, 203, 105330.
+
+\bibitem[Geenens et al. (2017)]{Geenens2017}
+Geenens G., Charpentier A., and Paindaveine D. (2017), Probit transformation for nonparametric kernel estimation of the copula density, {\it Bernoulli}, 23(3), 1848-1873.
+
+\bibitem[Hudaverdi and Susam (2020)]{Hudaverdi2020}
+Hudaverdi B. and Susam S.O. (2020), On the weighted tests of independence based on Bernstein empirical copula, {\it Communications in Statistics - Simulation and Computation}, 50(2), 404-424.
+
+\bibitem[Joe (2014)]{joe2014dependence}
+Joe H. (2014), {\it Dependence Modeling with Copulas}, CRC press.
+
+\bibitem[Krupskii and Joe (2015)]{Krupskii2015}
+Krupskii P. and Joe H. (2015), Tail-weighted measures of dependence, {\it Journal of Applied Statistics}, 42(3), 614-629.
+
+\bibitem[Mohammadi and Emadi (2023)]{mohammadi2023nonparametric}
+Mohammadi M. and Emadi M. (2023), Nonparametric tests of independence using copula-based Renyi and Tsallis divergence measures, {\it Statistics, Optimization \& Information Computing}, 11(4), 949-962.
+
+\bibitem[Mohammadi et al. (2021)]{mohammadi2021bivariate}
+Mohammadi M., Emadi M., and Amini M. (2021), Bivariate dependency analysis using Jeffrey and Hellinger divergence measures based on copula density estimation by improved probit transformation, {\it Journal of Statistical Sciences}, 15(1), 233-254.
+
+\bibitem[Mohammadi et al. (2024)]{mohammadi2024testing}
+Mohammadi M., Emadi M., and Amini M. (2024), Testing bivariate independence based on $\alpha$-divergence by improved probit transformation method for copula density estimation, {\it Communications in Statistics - Simulation and Computation}, 53(1), 499-517.
+
+\bibitem[Mohammadi et al. (2025)]{mohammadi2025copula}
+Mohammadi M., Hashempour M., and Emadi M. (2025), Copula-Based Total Variation Distance as a Robust Dependency Measure, {\it Proceedings of the 8th Seminar on Copula Theory and its Applications}, 78.
+
+\bibitem[Nelsen (2006)]{Nelsen2006}
+Nelsen R.B. (2006), {\it An Introduction to Copulas}, Springer New York, NY.
+
+\bibitem[Sklar (1959)]{sklar1959fonctions}
+Sklar A. (1959), Fonctions de repartition a n dimensions et leurs marges, {\it Publ. Inst. Statist. Univ. Paris}, 8, 229-231.
+
+\end{thebibliography}
+
+\end{document}

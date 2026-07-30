@@ -1,0 +1,35 @@
+MARKED PAPERS REPORT
+====================
+No TeX (PDF stamped only): 1
+TeX compile failed (PDF fallback): 0
+Non-ISC18 TeX wrapped into conference format: 9
+
+--- NATIVE_FAIL_WRAPPED (2) ---
+  p.1129: Vadood Keramati
+      native:native pdf missing (i:\Booklet ENG\ISC18th_Full_English\main\p.1129\_booklet_build.pdf); wrap:wrap:13@p369
+  p.1052: Fatemeh Yousefzadeh
+      native:native pdf missing (i:\Booklet ENG\ISC18th_Full_English\main\p.1052\_booklet_build.pdf); wrap:wrap:13@p921
+
+--- NO_TEX (1) ---
+  p.1066: ?
+      no LaTeX; stamped 1066.pdf
+
+--- WRAPPED_TO_ISC18 (9) ---
+  p.1268: Mohamad Ahmadian
+      wrap:11@p37
+  p.1211: Roshanak Alimohammadi
+      wrap:8@p73
+  p.1086: Morteza Amini
+      wrap:15@p81
+  p.1083: Parviz Ghorbanzadeh
+      wrap:14@p281
+  p.1350: Soghra Rahimi
+      wrap:21@p687
+  p.1046: Nahid Sanjari
+      wrap:21@p775
+  p.1096: ?
+      wrap:12@p961
+  p.1097: ?
+      wrap:10@p973
+  p.1094: ?
+      wrap:11@p993
